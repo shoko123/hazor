@@ -62,7 +62,6 @@
 
 <script lang="ts" script>
 import { defineComponent } from "vue";
-//import Test from '@/views/components/Test.vue'
 import MenuMain from './menus/MenuMain.vue'
 
 export default defineComponent({

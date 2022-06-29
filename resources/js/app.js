@@ -1,5 +1,7 @@
 import './bootstrap';
 import '../css/app.scss';
+import '@mdi/font/css/materialdesignicons.css'
+import 'vuetify/styles'
 
 import { createApp } from 'vue'
 import App from './components/App.vue'
