@@ -12,7 +12,8 @@
     <v-btn text @click="testClick()">Test</v-btn>
     <v-spacer></v-spacer>
 
-    <v-btn icon>
+  <v-btn text @click="loginClick()" color="purple">Login</v-btn>
+    <!-- <v-btn icon>
       <v-icon>mdi-magnify</v-icon>
     </v-btn>
 
@@ -22,7 +23,7 @@
 
     <v-btn icon>
       <v-icon>mdi-dots-vertical</v-icon>
-    </v-btn>
+    </v-btn> -->
   </v-app-bar>
  
 
@@ -51,6 +52,9 @@ function aboutClick() {
 }
 function testClick() {
   router.push({ path: '/test' })
+}
+function loginClick() {
+  router.push({ path: '/login' })
 }
 </script>
 
