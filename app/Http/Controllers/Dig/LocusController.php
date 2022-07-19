@@ -10,7 +10,8 @@ class LocusController extends DigController
 {
     public function __construct()
     {
-        DigController::__construct('Locus');
+        //DigController::__construct('Locus');
+        $this->createModel('Locus');
     }
 
     public function index(Request $r)

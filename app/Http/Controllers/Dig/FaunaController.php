@@ -16,7 +16,8 @@ class FaunaController extends FindController
 {
     public function __construct()
     {
-        DigController::__construct('Fauna');
+        $this->createModel('Fauna');
+        //DigController::__construct('Fauna');
     }
 
     public function index(Request $request)

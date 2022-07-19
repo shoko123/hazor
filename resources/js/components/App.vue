@@ -2,54 +2,12 @@
 <template>
   <v-app>
     <!-- <MenuMain /> -->
- <MenuMain />
+    <MenuMain />
     <!-- Sizes your content based upon application components -->
     <v-main>
 
       <!-- Provides the application the proper gutter -->
       <v-container fluid>
-
-     
-        <!-- If using vue-router -->
-        <!-- <div class="d-flex justify-space-around align-center flex-column flex-sm-row fill-height">
-          <v-btn flat>
-            Normal
-          </v-btn>
-
-          <v-btn flat color="secondary">
-            Secondary
-          </v-btn>
-
-          <v-btn flat color="error">
-            Error
-          </v-btn>
-
-          <v-btn flat disabled>
-            Disabled
-          </v-btn>
-        </div>
-
-        <div class="text-center">
-          <v-chip class="ma-2">
-            Default
-          </v-chip>
-
-          <v-chip class="ma-2" color="primary">
-            Primary
-          </v-chip>
-
-          <v-chip class="ma-2" color="secondary">
-            Secondary
-          </v-chip>
-
-          <v-chip class="ma-2" color="error" text-color="white">
-            Red Chip
-          </v-chip>
-
-          <v-chip class="ma-2 green" color="green" text-color="white">
-            Green Chip
-          </v-chip>
-        </div> -->
         <router-view></router-view>
       </v-container>
     </v-main>
@@ -60,11 +18,20 @@
   </v-app>
 </template>
 
-<script lang="ts" script>
+<script setup lang="ts" >
 import { defineComponent } from "vue";
 import MenuMain from './menus/MenuMain.vue'
 
-export default defineComponent({
+import { useXhrStore } from '../scripts/stores/xhr';
+
+
+
+import { onBeforeMount } from 'vue'
+let xhr = useXhrStore()
+
+
+
+defineComponent({
   name: "App",
   components: {
     MenuMain,
@@ -73,5 +40,19 @@ export default defineComponent({
     // Snackbar,
     // MediaLightBox
   },
+
+
+
 });
+onBeforeMount(() => {
+  console.log("App.onMounted()");
+  let baseUrl = `${window.location.protocol}//${window.location.host}`;
+  console.log("app.init() setting axios.baseURL to " + baseUrl);
+  xhr.setBaseUrl(baseUrl);
+  //console.log(`axios: ${JSON.stringify(axios, null, 2)}`);
+  
+  //dispatch("mgr/initApp", null, { root: true });
+  //load global settings and load media used by app
+  xhr.send({endpoint: "app/init", method: "get", data: null})
+})
 </script>

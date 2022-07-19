@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Dig</title>
-    @vite('resources/js/app.js')
+    @vite('resources/js/app.ts')
 </head>
 
 <body class="antialiased">

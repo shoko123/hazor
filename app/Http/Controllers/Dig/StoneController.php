@@ -6,11 +6,12 @@ use App\Http\Controllers\Dig\FindController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class FaunaController extends FindController
+class StoneController extends FindController
 {
     public function __construct()
     {
-        DigController::__construct('Stone');
+        $this->createModel('Locus');
+        //DigController::__construct('Stone');
     }
 
     public function index(Request $request)

@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\DB;
 
 class FindController extends DigController
 {
+    public function __construct(String $model_name)
+    {
+        parent::__construct($model_name);
+    }
+    
     public function store(Request $r)
     {
         return response()->json([

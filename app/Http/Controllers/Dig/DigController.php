@@ -14,12 +14,16 @@ class DigController extends Controller
 
     protected $model = null;
 
-    public function __construct(String $model_name)
+    public function __construct(/*String $model_name*/)
+    {
+        //$this->model_full_path = "App\Models\Dig\\" . $model_name . "\\" . $model_name;
+        //$this->model = new ($this->model_full_path);
+    }
+    public function createModel(String $model_name)
     {
         $this->model_full_path = "App\Models\Dig\\" . $model_name . "\\" . $model_name;
         $this->model = new ($this->model_full_path);
     }
-
     public function store(Request $r)
     {
         return response()->json([

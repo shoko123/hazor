@@ -12,7 +12,7 @@ const router = createRouter({
 
 router.onError.bind(navigationErrorHandler)
 
-
+console.log("routes.index.ts setting router.beforeEach()")
 router.beforeEach(async (to, from) => {
   try {
     if(!parseAndAuthorize(to, from)) {
