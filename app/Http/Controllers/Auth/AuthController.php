@@ -45,32 +45,26 @@ class AuthController extends Controller
         // Check email
         $user = User::where('email', $fields['email'])->first();
         if (is_null($user)) {
-            return response([
-                'message' => 'User doesn\'t exist'
-            ], 401);
+            return response()->json(['user' => null, 'message' => 'Email not found'], 200);
         }
 
         // Check password
         if (!$user || !Hash::check($fields['password'], $user->password)) {
-            return response([
-                'message' => 'Incorrect password supplied'
-            ], 401);
+            return response()->json(['user' => null, 'message' => 'Wrong password supplied'], 200);
         }
 
-        $token = $user->createToken('myapptoken', ['Locus-read'])->plainTextToken;
+        $token = $user->createToken('myapptoken')->plainTextToken;
 
-        $response = [
-            'user_name' => $user->name,
-            'user_id' => $user->id,
-            'token' => $token,
-            'tokens' => $user->tokens,
-            //'permissions' => $user->getAllPermissions()->pluck('name')
-            'permissions' => $user->getAllPermissions()
-        ];
-
-        return response($response, 201);
+        return response()->json([
+            'user' => [
+                'name' => $user->name,
+                'id' => $user->id,
+                'token' => $token,
+                'permissions' => $user->getAllPermissions()->pluck('name')
+            ]
+        ], 201);
     }
-    
+
     public function logout(Request $request)
     {
 
@@ -84,7 +78,7 @@ class AuthController extends Controller
             'endpoint' => '/auth/me',
             'user' =>  $user,
             'tokens' => $user->tokens,
-            'permissions' =>  auth()->user()->getAllPermissions()->pluck('name')
+            'permissions' =>  $user->getAllPermissions()->pluck('name')
         ];
         return response($response, 200);
     }

@@ -19,20 +19,21 @@
 
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts" >
+import { defineComponent } from "vue";
+import { useAuthStore } from '../../scripts/stores/auth';
+import { storeToRefs } from 'pinia'
+let auth =  useAuthStore()
+let { form }  = storeToRefs(useAuthStore())
 
 
-
-let form = {
-  email: "",
-  password: "",
+async function authenticate() {
+  await auth.authenticate(form)
 }
 
-function authenticate() {
-  console.log('form.submit()')
-}
-
+defineComponent({
+  name: "Login",  
+})
 </script>
-<style scoped>
-</style>
+
 

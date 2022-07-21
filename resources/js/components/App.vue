@@ -2,6 +2,8 @@
 <template>
   <v-app>
     <!-- <MenuMain /> -->
+    <Snackbar />
+    <LoadingSpinner/>
     <MenuMain />
     <!-- Sizes your content based upon application components -->
     <v-main>
@@ -19,10 +21,12 @@
 </template>
 
 <script setup lang="ts" >
-import { defineComponent } from "vue";
+import { defineComponent } from "vue"
 import MenuMain from './menus/MenuMain.vue'
+import Snackbar from './notifications/snackbar.vue'
+import LoadingSpinner from './notifications/loadingSpinner.vue'
 
-import { useXhrStore } from '../scripts/stores/xhr';
+import { useXhrStore } from '../scripts/stores/xhr'
 
 
 
@@ -36,8 +40,8 @@ defineComponent({
   components: {
     MenuMain,
     // Footer,
-    // LoadingSpinner,
-    // Snackbar,
+    Snackbar,
+    LoadingSpinner
     // MediaLightBox
   },
 
@@ -50,9 +54,6 @@ onBeforeMount(() => {
   console.log("app.init() setting axios.baseURL to " + baseUrl);
   xhr.setBaseUrl(baseUrl);
   //console.log(`axios: ${JSON.stringify(axios, null, 2)}`);
-  
-  //dispatch("mgr/initApp", null, { root: true });
-  //load global settings and load media used by app
-  xhr.send({endpoint: "app/init", method: "get", data: null})
+  xhr.send('app/init', 'get')
 })
 </script>
