@@ -7,15 +7,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+
 class MediaController extends Controller
 {
-    public function init(Request $r)
-    {
-        return response()->json([
-            "msg" => "AppController.init()",
-        ], 200);
-    }
-
     public function totals()
     {
         $tables = ['loci', 'fauna'];

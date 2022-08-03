@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 import { useXhrStore } from './xhr';
 import axios from 'axios';
 import { useNotificationsStore } from './notifications';
+import { router } from '../setups/vue-router'
 
 interface LoginForm {
   email: string,
@@ -50,7 +51,8 @@ export const useAuthStore = defineStore('auth', {
             this.$state.user = res.data.user
             axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.user.token}`
             notifications.showSnackbar('Successfully logged-in; redirected to previous page')
-            this.$router.push({ name: 'Home' })
+            router.push({ name: 'Home' })
+            router.go(-1)
           } else {
             notifications.showSnackbar(`Login failed. Error: ${res.data.message}. Please try again!`)
           }

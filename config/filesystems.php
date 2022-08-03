@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('FILESYSTEM_DISK', 'local'),
+    'default' => env('FILESYSTEM_DISK', 'minio'),
 
     /*
     |--------------------------------------------------------------------------
@@ -54,6 +54,27 @@ return [
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
+        ],
+
+        'do' => [
+            'driver' => 's3',
+            'key' => env('DO_SPACES_KEY'),
+            'secret' => env('DO_SPACES_SECRET'),
+            'endpoint' => env('DO_SPACES_ENDPOINT'),
+            'region' => env('DO_SPACES_REGION'),
+            'bucket' => env('DO_SPACES_BUCKET'),
+            'visibility' => 'public',            
+        ],
+    
+        'minio' => [
+            'driver' => 's3',            
+            'key' => env('MINIO_KEY'),
+            'secret' => env('MINIO_SECRET'),
+            'endpoint' => env('MINIO_ENDPOINT'),
+            'region' => env('MINIO_REGION'),
+            'bucket' => env('MINIO_BUCKET'),           
+            'url' => env('MINIO_ENDPOINT'),
+            'use_path_style_endpoint' => true,
         ],
 
     ],

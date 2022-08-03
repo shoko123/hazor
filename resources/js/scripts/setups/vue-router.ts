@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import parseAndAuthorize from './parseAndAuthorize'
-import prepareForNewRoute from './prepareForNewRoute'
-import navigationErrorHandler from './navigationErrorHandler'
-import routes from './routes'
+import parseAndAuthorize from '../routes/parseAndAuthorize'
+import prepareForNewRoute from '../routes/prepareForNewRoute'
+import navigationErrorHandler from '../routes/navigationErrorHandler'
+import routes from '../routes/routes'
 
 
-const router = createRouter({
+export const router = createRouter({
   history: createWebHistory(),
   routes,
 })
