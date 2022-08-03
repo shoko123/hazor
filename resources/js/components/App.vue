@@ -3,9 +3,8 @@
   <v-app>
     <Snackbar />
     <LoadingSpinner />
-
-    <MenuMain />
-
+    <MainMenu />
+    <SubMenu />
     <v-main>
       <v-container fluid class="ma-0 pa-0">
         <router-view></router-view>
@@ -19,19 +18,22 @@
 
 <script setup lang="ts" >
 import { defineComponent } from "vue"
-import MenuMain from './menus/MenuMain.vue'
+import { onBeforeMount } from 'vue'
+import MainMenu from './menus/MainMenu.vue'
+import SubMenu from './menus/SubMenu.vue'
 import Snackbar from './notifications/snackbar.vue'
 import LoadingSpinner from './notifications/loadingSpinner.vue'
 import { useXhrStore } from '../scripts/stores/xhr'
 import { useMainStore } from '../scripts/stores/main'
-import { onBeforeMount } from 'vue'
 
 let xhr = useXhrStore()
 let main = useMainStore()
+
 defineComponent({
   name: "App",
   components: {
-    MenuMain,
+    MainMenu,
+    SubMenu,
     // Footer,
     Snackbar,
     LoadingSpinner
@@ -46,13 +48,14 @@ onBeforeMount(() => {
   xhr.setBaseUrl(baseUrl);
   //console.log(`axios: ${JSON.stringify(axios, null, 2)}`);
   xhr.send('app/init', 'get')
-  .then( res => {
-    main.bucketUrl = res.data.bucketUrl
-    main.accessibility = res.data.accessibility
-  })
-  .catch(err => {
-    console.log(`app/init failed with error: ${err}`)
-    throw("app.init() failed")
-  })
+    .then(res => {
+      main.bucketUrl = res.data.bucketUrl
+      main.accessibility = res.data.accessibility
+    })
+    .catch(err => {
+      console.log(`app/init failed with error: ${err}`)
+      throw ("app.init() failed")
+    })
 })
+
 </script>

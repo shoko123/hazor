@@ -8,6 +8,7 @@ export const useMainStore = defineStore('main', {
     return {
       accessibility: null,
       bucketUrl: null,
+      action: true
     }
   },
 
@@ -19,6 +20,7 @@ export const useMainStore = defineStore('main', {
     },
   },
   getters: {
-    carousel: (state) => "I am carousel from mainStore"
+    carousel: (state) => "I am carousel from mainStore",
+    subMenu: (state) => state.action
   },
 })

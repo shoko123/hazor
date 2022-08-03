@@ -1,7 +1,7 @@
-import Home from '../../components/routes/Home.vue'
-import About from '../../components/routes/About.vue'
-import Test from '../../components/routes/Test.vue'
-import Login from '../../components/routes/Login.vue'
+import Home from '../../components/content/Home.vue'
+import About from '../../components/content/About.vue'
+import Test from '../../components/content/Test.vue'
+import Login from '../../components/content/Login.vue'
 
 const routes = [
     { path: '/', component: Home, name: 'Home' },
