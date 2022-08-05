@@ -2,25 +2,32 @@
 //Stores data common to the whole app:
 //accessibility, bucketUrl, carousel, 
 import { defineStore, storeToRefs } from 'pinia'
+import { ref } from 'vue'
+import { computed } from 'vue'
 
-export const useMainStore = defineStore('main', {
-  state: () => {
-    return {
-      accessibility: null,
-      bucketUrl: null,
-      action: true
-    }
-  },
+export const useMainStore = defineStore('main', () => {
 
-  actions: {
-    appInit(data: any) {
-      this.$state.accessibility = data.accessibility
-      this.$state.bucketUrl = data.bucketUrl
+  let accessibility = ref({ authorizedUsersOnly: true, readOnly: false })
+  let bucketUrl = ref(null)
+  let action = true
 
-    },
-  },
-  getters: {
-    carousel: (state) => "I am carousel from mainStore",
-    subMenu: (state) => state.action
-  },
+  function appInit(data: any) {
+    accessibility = data.accessibility
+    bucketUrl = data.bucketUrl
+  }
+
+  const isLoading = computed(() => {
+    return action
+  })
+
+  const subMenu = computed(() => {
+    return action
+  })
+
+  const authorizedUsersOnly = computed(() => {
+    return accessibility.value.authorizedUsersOnly
+  })
+
+  return { authorizedUsersOnly, bucketUrl, appInit, isLoading, subMenu }
 })
+

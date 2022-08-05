@@ -25,7 +25,7 @@ type TypeUserOptions = "Dashboard" | "Logout"
 let options: TypeUserOptions[] = ["Dashboard", "Logout"]
 
 function loginClick() {
-  router.push({ path: '/login' })
+  router.push({ path: '/auth/login' })
 }
 function userOptionsClicked(item: 'Dashboard' | 'Logout') {
   switch (item) {

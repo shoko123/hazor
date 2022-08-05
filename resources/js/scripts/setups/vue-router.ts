@@ -16,10 +16,15 @@ console.log("routes.index.ts setting router.beforeEach()")
 router.beforeEach(async (to, from) => {
   const r = useRoutesStore()
   try {
-    if(!r.parseAndAuthorize(to, from)) {
-      console.log(`new route parse/authorize failure - aborting navigation`)
-      return false
-    };
+    switch (r.parseAndAuthorize(to, from)) {
+      case 'ok':
+        break
+      case 'bad-module':
+        return { path: from.path, params: { module: from.params.module }}
+      case 'unauthorized':
+        console.log("vue-router - UNAUTHORIZED")
+        return { path: '/auth/login' }
+    }
     await r.prepareForNewRoute(to, from);
   }
   catch (err) {

@@ -2,8 +2,8 @@
   <v-app-bar :height="36" color=primary dark app>
     <v-app-bar-title @click="homeClick()">Hazor</v-app-bar-title>
     <v-btn text @click="homeClick()">Home</v-btn>
-    <v-btn text @click="aboutClick()">About</v-btn>
-    <v-btn text @click="testClick()">Test</v-btn>
+    <v-btn text @click="locusClick()">Loci</v-btn>
+    <v-btn text @click="faunaClick()">Fauna</v-btn>
     <v-spacer></v-spacer>
     <UserOptions />
   </v-app-bar>
@@ -26,11 +26,12 @@ const router = useRouter()
 function homeClick() {
   router.push({ path: '/' })
 }
-function aboutClick() {
-  router.push({ path: '/about' })
+function locusClick() {
+  router.push({ path: '/loci/welcome' })
 }
-function testClick() {
-  router.push({ path: '/test' })
+function faunaClick() {
+  router.push({ path: '/fauna/welcome' })
 }
+
 </script>
 
