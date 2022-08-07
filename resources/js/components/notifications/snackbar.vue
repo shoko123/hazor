@@ -7,5 +7,6 @@
 <script setup lang="ts">
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 import { storeToRefs } from 'pinia'
+
 let { snackbar } = storeToRefs(useNotificationsStore())
 </script>

@@ -1,49 +1,45 @@
 // notifications.ts
 //handles spinner and snackbar
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
-interface Snackbar {
+type TSnackbar = {
     turnOn: boolean,
     message: string,
     color: string,
     timeout: number,
 }
 
-interface Spinner {
+type TSpinner = {
     isOn: boolean,
     message: string,
 }
-export const useNotificationsStore = defineStore('notifications', {
 
-    state: () => {
-        return {
-            sb_turnOn: false,
-            sb_message: "Hello from notifications.ts",
-            sb_color: 'blue',
-            sb_timeout: 4000,
-            sp_isOn: false,
-            sp_message: "",
-        }
-    },
-    getters: {
-        //sar: (state) => state.snackbar,
-        snackbar(): Snackbar { return { turnOn: this.sb_turnOn, message: this.sb_message, color: this.sb_color, timeout: this.sb_timeout } },
-        spinner(): Spinner { return { isOn: this.sp_isOn, message: this.sp_message } }
-    },
+export const useNotificationsStore = defineStore('notifications', () => {
+    let snackbar = ref<TSnackbar>({
+        turnOn: false,
+        message: "",
+        color: 'blue',
+        timeout: 4000
+    })
 
-    actions: {
-        showSnackbar(message: string, color = 'blue', timeout = 5000) {
-            this.$state.sb_color = color
-            this.$state.sb_message = message
-            this.$state.sb_turnOn = true
-            setTimeout(() => {
-                this.$state.sb_turnOn = false
-            }, timeout)
-        },
-        //call with a message to show; call without params to turn off
-        showSpinner(message?: string) {
-            this.$state.sp_isOn = (typeof message !== 'undefined')
-            this.$state.sp_message =  (typeof message !== 'undefined') ? message : ""
-        },
-    },
+    let spinner = ref<TSpinner>({
+        isOn: false,
+        message: "",
+    })
+
+    function showSnackbar(message: string, color = 'blue', timeout = 5000) {
+        snackbar.value.color = color
+        snackbar.value.message = message
+        snackbar.value.turnOn = true
+        setTimeout(() => {
+            snackbar.value.turnOn = false
+        }, timeout)
+    }
+    //call with a message to show; call with false to hide
+    function showSpinner(param: false | string) {
+        spinner.value.isOn = !(param === false)
+        spinner.value.message = (param === false) ? '' : param
+    }
+    return { snackbar, spinner, showSnackbar, showSpinner }
 })

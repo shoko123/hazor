@@ -4,7 +4,7 @@
       <v-toolbar-title>Login</v-toolbar-title>
     </v-toolbar>
     <v-card-text>
-      <v-form @submit.prevent="authenticate">
+      <v-form @submit.prevent="register">
         <v-text-field prepend-icon="mdi-account" name="email" email="email" v-model="form.email"></v-text-field>
         <v-text-field prepend-icon="mdi-lock" name="password" label="password" type="password" v-model="form.password">
         </v-text-field>
@@ -24,11 +24,11 @@ import { defineComponent } from "vue";
 import { useAuthStore } from '../../../scripts/stores/auth';
 import { storeToRefs } from 'pinia'
 let auth =  useAuthStore()
-let { form }  = storeToRefs(useAuthStore())
+let { registrationForm }  = storeToRefs(useAuthStore())
 
 
-async function authenticate() {
-  await auth.authenticate(form)
+async function register() {
+  //await auth.register(registrationForm)
 }
 
 defineComponent({

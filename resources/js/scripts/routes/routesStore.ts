@@ -7,7 +7,7 @@ import { useMainStore } from '../stores/main';
 import { useAuthStore } from '../stores/auth';
 import { useNotificationsStore } from '../stores/notifications';
 import { router } from '../setups/vue-router'
-import type { RouteLocationNormalized } from 'vue-router'
+import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
 import { ref } from 'vue'
 import { computed } from 'vue'
 
@@ -61,13 +61,22 @@ export const useRoutesStore = defineStore('routesStore', () => {
         return false
     })
 
-
+    async function handleRouteChange(to: RouteLocationNormalized, from: RouteLocationNormalized): Promise<RouteLocationRaw | boolean>{
+          let n = useNotificationsStore()
+          //authorize
+         if (!authorize(to.path)) {
+            n.showSnackbar('Unauthorized; redirected to Login Page')
+            return { path: '/auth/login' }
+        }
+        //parseAndAuthorize(to, from)
+        return true
+    }
 
     function parseAndAuthorize(to: RouteLocationNormalized, from: RouteLocationNormalized): 'ok' | 'bad-module' | 'unauthorized' {
         let n = useNotificationsStore()
 
-        console.log(`routes/parseAndAuth() \nfrom.path: ${JSON.stringify(from.path, null, 2)} from.params: ${JSON.stringify(from.params, null, 2)}`);
-        console.log(`to.path: ${JSON.stringify(to.path, null, 2)} to.params: ${JSON.stringify(to.params, null, 2)}`);
+        // console.log(`routes/parseAndAuth() \nfrom.path: ${JSON.stringify(from.path, null, 2)} from.params: ${JSON.stringify(from.params, null, 2)}`);
+        // console.log(`to.path: ${JSON.stringify(to.path, null, 2)} to.params: ${JSON.stringify(to.params, null, 2)}`);
 
         //authorize
         if (!authorize(to.path)) {
@@ -119,10 +128,10 @@ export const useRoutesStore = defineStore('routesStore', () => {
     function authorize(path: string) {
         let auth = useAuthStore()
         let main = useMainStore()
-        console.log(`authorize() to.path: ${path} authUsersOnly: ${main.authorizedUsersOnly}\nisLoggedIn: ${auth.authenticated}`);
+        console.log(`authorize() to.path: ${path} authUsersOnly: ${main.authenticatedUsersOnly}\nisLoggedIn: ${auth.authenticated}`);
         if (path === "/auth/login" || path === "/") {
             return true;
-        } else if (main.authorizedUsersOnly && !auth.authenticated) {
+        } else if (main.authenticatedUsersOnly && !auth.authenticated) {
            return false
         } else {
             console.log('authorize - TRUE')
@@ -199,5 +208,5 @@ export const useRoutesStore = defineStore('routesStore', () => {
         //console.log(`middleware.authorize() to.path: ${to.path} appSettings: ${JSON.stringify(appSettings, null, 2)}\nisLoggedIn: ${isLoggedIn}`);
     }
 
-    return { parseAndAuthorize, prepareForNewRoute, isLoading, from, target }
+    return { parseAndAuthorize, prepareForNewRoute, isLoading, from, target, handleRouteChange }
 })

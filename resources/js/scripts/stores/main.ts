@@ -2,18 +2,26 @@
 //Stores data common to the whole app:
 //accessibility, bucketUrl, carousel, 
 import { defineStore, storeToRefs } from 'pinia'
-import { ref } from 'vue'
-import { computed } from 'vue'
-
+import { ref, computed } from 'vue'
+import { useXhrStore } from './xhr'
 export const useMainStore = defineStore('main', () => {
-
-  let accessibility = ref({ authorizedUsersOnly: true, readOnly: false })
+  let initialized = ref(false)
+  let accessibility = ref({ authenticatedUsersOnly: true, readOnly: false })
   let bucketUrl = ref(null)
   let action = true
 
-  function appInit(data: any) {
-    accessibility = data.accessibility
-    bucketUrl = data.bucketUrl
+  async function appInit() {
+    let xhr = useXhrStore()
+    return xhr.send('app/init', 'get')
+    .then(res => {
+      bucketUrl.value = res.data.bucketUrl
+      accessibility.value = res.data.accessibility
+      initialized.value = true
+    })
+    .catch(err => {
+      console.log(`app/init failed with error: ${err}`)
+      throw ("app.init() failed")
+    })
   }
 
   const isLoading = computed(() => {
@@ -24,10 +32,10 @@ export const useMainStore = defineStore('main', () => {
     return action
   })
 
-  const authorizedUsersOnly = computed(() => {
-    return accessibility.value.authorizedUsersOnly
+  const authenticatedUsersOnly = computed(() => {
+    return accessibility.value.authenticatedUsersOnly
   })
 
-  return { authorizedUsersOnly, bucketUrl, appInit, isLoading, subMenu }
+  return { initialized, accessibility, authenticatedUsersOnly, bucketUrl, appInit, isLoading, subMenu }
 })
 

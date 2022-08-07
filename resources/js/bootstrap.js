@@ -8,9 +8,8 @@ window._ = _;
  */
 
 import axios from 'axios';
-console.log(`bootstrap.js - setting global axios`)
-window.axios = axios;
 
+window.axios = axios;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /**

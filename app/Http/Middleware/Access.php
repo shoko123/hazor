@@ -15,8 +15,6 @@ class Access
             return response()->json([
                 "msg" => "This API is only available to authenticated users at this time",
                 "user" => $request->user('sanctum')
-                //"authorizedUsersOnly" => $this->globalSettings->authorizedUsersOnly(),
-                //"user" => auth('api')->user(),
             ], 401);
         }
     }

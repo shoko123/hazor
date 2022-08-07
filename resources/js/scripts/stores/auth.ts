@@ -29,7 +29,7 @@ export const useAuthStore = defineStore('auth', () => {
     return user.value !== null
   })
 
-  async function authenticate(r: any) {
+  async function login(r: any) {
 
     let xhr = useXhrStore();
     let notifications = useNotificationsStore()
@@ -38,7 +38,7 @@ export const useAuthStore = defineStore('auth', () => {
     axios.defaults.headers.common["Authorization"] = ``
     user.value = null
 
-    console.log(`auth.authenticate() form: ${JSON.stringify(loginForm.value, null, 2)}`)
+    console.log(`auth.login() form: ${JSON.stringify(loginForm.value, null, 2)}`)
     notifications.showSpinner('Logging in ...')
 
     xhr.send('auth/login', 'post', loginForm.value)
@@ -58,7 +58,7 @@ export const useAuthStore = defineStore('auth', () => {
         console.log(`auth.error is ${JSON.stringify(err, null, 2)}`)
       })
       .finally(() => {
-        notifications.showSpinner()
+        notifications.showSpinner(false)
       })
   }
 
@@ -80,8 +80,8 @@ export const useAuthStore = defineStore('auth', () => {
         //clear user
         axios.defaults.headers.common["Authorization"] = ``
         user.value = null
-        notifications.showSpinner()
+        notifications.showSpinner(false)
       })
   }
-  return {loginForm, user, authenticated, authenticate, logout}
+  return { loginForm, user, authenticated, login, logout }
 })
