@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Dig;
+namespace App\Http\Controllers\App;
 
-use App\Http\Controllers\Dig\DigController;
+use App\Http\Controllers\App\ModelController;
 use App\Http\Requests\FindStoreRequest;
 use App\Http\Requests\StoneStoreRequest;
 use App\Models\Find;
-use App\Models\Dig\Locus;
-use App\Models\Dig\Stone;
+use App\Models\Model\Locus;
+use App\Models\Model\Stone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class FindController extends DigController
+class FindController extends ModelController
 {
     public function __construct(String $model_name)
     {

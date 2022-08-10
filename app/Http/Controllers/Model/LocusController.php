@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Dig;
+namespace App\Http\Controllers\Model;
 
-use App\Http\Controllers\Dig\DigController;
-use App\Models\Dig\Locus\Locus;
+use App\Http\Controllers\App\ModelController;
+use App\Models\Model\Locus;
 use Illuminate\Http\Request;
 
-class LocusController extends DigController
+class LocusController extends ModelController
 {
     public function __construct()
     {

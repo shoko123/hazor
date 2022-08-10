@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Dig;
+namespace App\Http\Controllers\Model;
 
-use App\Http\Controllers\Dig\FindController;
+use App\Http\Controllers\App\ModelController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class StoneController extends FindController
+class StoneController extends ModelController
 {
     public function __construct()
     {

@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\App\ModelController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\RegistrarController;
-use App\Http\Controllers\Dig\DigController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Dig\LocusController;
 use App\Http\Controllers\Dig\FaunaController;
@@ -30,38 +30,30 @@ Route::post('app/test', [TestController::class, 'test']);
 Route::post('auth/login', [AuthController::class, 'login']);
 Route::get('auth/me', [AuthController::class, 'me'])->middleware('auth:sanctum');
 Route::post('auth/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-//Route::post('register', [AuthController::class, 'register']);
+//Route::post('auth/register', [AuthController::class, 'register']);
 
 //read only APIs. Accessible when config.accessibility.authenticatedUsersOnly is false, or authenticated.
 Route::group(['middleware' => ['read.accessibility']], function () {
-    Route::post('dig/model/init', [DigController::class, 'init']);
-    Route::post('dig/loci', [LocusController::class, 'index']);
-    Route::post('dig/fauna', [FaunaController::class, 'index']);
-    Route::post('dig/stones', [StoneController::class, 'index']);
-
-    Route::get('dig/show/{dot}', [LocusController::class, 'show']);
-    Route::get('dig/fauna/{dot}', [FaunaController::class, 'show']);
-    Route::get('dig/stones/{dot}', [StoneController::class, 'show']);
-    Route::post('app/chunk', [AppController::class, 'chunk']);
-    Route::get('app/totals', [AppController::class, 'totals']);
-
+    Route::get('app/totals', [AppController::class, 'totals']);    
+    Route::post('model/hydrate', [ModelController::class, 'hydrate']);
+    Route::post('model/index', [ModelController::class, 'index']);
+    Route::post('model/chunk', [ModelController::class, 'chunk']);
+    Route::post('model/show', [ModelController::class, 'show']);
     Route::post('registrar/loci-for-area-season', [RegistrarController::class, 'loci-for-area-season']);
     Route::post('registrar/finds-for-locus', [RegistrarController::class, 'finds-for-locus']);
 });
 
 //mutator APIs
 Route::group(['middleware' => ['auth:sanctum']], function () {
-
-    Route::post('dig/loci/store', [LocusController::class, 'store'])->middleware('can:Locus-create');
-    Route::put('dig/loci/store', [LocusController::class, 'store'])->middleware('can:Locus-update');
-
-    Route::post('dig/tags', [TagController::class, 'sync']);
+    Route::post('tags/sync', [TagController::class, 'sync']);
     Route::post('media/upload', [MediaController::class, 'upload']);
     Route::post('media/delete', [MediaController::class, 'delete']);
     Route::post('media/edit', [MediaController::class, 'edit']);
 
-
-
-
-    //Route::post('dig/loci', [LocusController::class, 'index']);
+    Route::post('loci/store', [LocusController::class, 'store'])->middleware('can:Locus-create');
+    Route::put('loci/store', [LocusController::class, 'store'])->middleware('can:Locus-update');
+    Route::post('stones/store', [StoneController::class, 'store'])->middleware('can:Stone-create');
+    Route::put('stones/store', [StoneController::class, 'store'])->middleware('can:Stone-update');
+    Route::post('fauna/store', [FaunaController::class, 'store'])->middleware('can:Fauna-create');
+    Route::put('fauna/store', [FaunaController::class, 'store'])->middleware('can:Fauna-update');
 });

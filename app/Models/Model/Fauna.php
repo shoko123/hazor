@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Models\Dig\Fauna;
+namespace App\Models\Model;
 
-use App\Models\FindModel;
-use App\Models\DigModel;
+use App\Models\App\FindModel;
+use App\Models\App\DigModel;
 
 class Fauna extends FindModel
 {

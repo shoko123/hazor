@@ -11,7 +11,7 @@ import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
 import { ref } from 'vue'
 import { computed } from 'vue'
 
-const target: TRouteInfo = {
+const to: TRouteInfo = {
     url_model: null,
     url_id: null,
     url_action: null,
@@ -30,19 +30,19 @@ const modelConversion = {
 }
 
 
-export function parse(to: RouteLocationNormalized): TParseResponse {
+export function parse(handle_to: RouteLocationNormalized): TParseResponse {
     //validate module
-    if (to.params.hasOwnProperty('module')) {
-        let res = parseModule(<string>to.params.module)
+    if (handle_to.params.hasOwnProperty('module')) {
+        let res = parseModule(<string>handle_to.params.module)
         if (res === true) {
-            return { success: true, data: target}
+            return { success: true, data: to}
         } else {
             return { success: false, data: 'BadModelName'}
         }
     } else {
-        target.model = 'Home'
-        target.url_model = ''
-        return { success: true, data: target}
+        to.model = 'Home'
+        to.url_model = ''
+        return { success: true, data: to}
     }
 }
 
@@ -53,8 +53,8 @@ function parseModule(module: string): TParsingError | true {
         case "loci":
         case "stones":
         case 'fauna':
-            target.model = <TModel>modelConversion[module]
-            target.url_model = module
+            to.model = <TModel>modelConversion[module]
+            to.url_model = module
             return true;
         default:
             console.log(`******* URL Parser error: can\'t find module name "${module}" *********`)
@@ -63,26 +63,26 @@ function parseModule(module: string): TParsingError | true {
 }
 
 
-    // function parseAndAuthorize(to: RouteLocationNormalized, from: RouteLocationNormalized): 'ok' | 'bad-module' | 'unauthorized' {
+    // function parseAndAuthorize(handle_to: RouteLocationNormalized, from: RouteLocationNormalized): 'ok' | 'bad-module' | 'unauthorized' {
     //     let n = useNotificationsStore()
 
     //     // console.log(`routes/parseAndAuth() \nfrom.path: ${JSON.stringify(from.path, null, 2)} from.params: ${JSON.stringify(from.params, null, 2)}`);
-    //     // console.log(`to.path: ${JSON.stringify(to.path, null, 2)} to.params: ${JSON.stringify(to.params, null, 2)}`);
+    //     // console.log(`handle_to.path: ${JSON.stringify(handle_to.path, null, 2)} handle_to.params: ${JSON.stringify(handle_to.params, null, 2)}`);
 
     //     //authorize
-    //     if (!authorize(to.path)) {
-    //         n.showSnackbar('Unauthorized; redirected to Login Page')
+    //     if (!authorize(handle_to.path)) {
+    //         n.showSnackbar('Unauthorized; redirected handle_to Login Page')
     //         return 'unauthorized'
     //     }
 
     //     //validate module
-    //     if (to.params.hasOwnProperty('module')) {
-    //         if (!validateModule(<string>to.params.module)) {
-    //             n.showSnackbar('Navigation Error (Bad module name); redirected to Home/Previous Page')
+    //     if (handle_to.params.hasOwnProperty('module')) {
+    //         if (!validateModule(<string>handle_to.params.module)) {
+    //             n.showSnackbar('Navigation Error (Bad module name); redirected handle_to Home/Previous Page')
     //             return 'bad-module'
     //         }
     //     } else {
-    //         target.value.model = 'Home';
+    //         to.value.model = 'Home';
     //     }
 
     //     //parse url_id
@@ -90,13 +90,13 @@ function parseModule(module: string): TParsingError | true {
 
     //     return 'ok'
 
-    //     // if (to.params.hasOwnProperty("action")) {
-    //     //     target.value.action = to.params.action;
+    //     // if (handle_to.params.hasOwnProperty("action")) {
+    //     //     to.value.action = handle_to.params.action;
     //     // } else {
-    //     //     to.action = null;
+    //     //     handle_to.action = null;
     //     // }
     //     // if (payload.params.hasOwnProperty("dot")) {
-    //     //     parseDot(to.module, payload.params.dot);
+    //     //     parseDot(handle_to.module, payload.params.dot);
     //     // } else {
     //     //     commit("clearDotAndDotParams");
     //     // }
@@ -104,13 +104,13 @@ function parseModule(module: string): TParsingError | true {
 
     //     // //query params will only be copied on 'list' action. (We don't want unnecessary reload of chunks).
     //     // if (payload.params.hasOwnProperty("action") && payload.params.action === "list") {
-    //     //     //console.log(`setting to.queryParams to: ${JSON.stringify(payload.query, null, 2)}`);
-    //     //     to.queryParams = payload.query;
+    //     //     //console.log(`setting handle_to.queryParams handle_to: ${JSON.stringify(payload.query, null, 2)}`);
+    //     //     handle_to.queryParams = payload.query;
     //     // }
-    //     // //console.log(`parseTo.done to: ${JSON.stringify(state.to, null, 2)}`);
-    //     // commit("to", to);
+    //     // //console.log(`parseTo.done handle_to: ${JSON.stringify(state.handle_to, null, 2)}`);
+    //     // commit("handle_to", handle_to);
 
-    //     // return to;
+    //     // return handle_to;
 
     //     // console.log(`middleware.parsAndAuthorize ()`)
 
@@ -159,7 +159,7 @@ function parseModule(module: string): TParsingError | true {
 
     //     commit("dot", dot);
     //     commit("dotParams", dotParams);
-    //     //console.log(`parseDot to: ${JSON.stringify(state.to, null, 2)}`);
+    //     //console.log(`parseDot handle_to: ${JSON.stringify(state.handle_to, null, 2)}`);
     // }
 
 

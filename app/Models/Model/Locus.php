@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Models\Dig\Locus;
+namespace App\Models\Model;
 
-use App\Models\DigModel;
+use App\Models\App\DigModel;
+use App\Models\App\FindModel;
 
-class Locus extends DigModel
+class Locus extends FindModel
 {
     public $timestamps = false;
     protected $guarded = [];

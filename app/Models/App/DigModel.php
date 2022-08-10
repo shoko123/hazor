@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\App;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +18,6 @@ class DigModel extends Model implements HasMedia
     public $timestamps = false;
     protected $guarded = [];
     protected $eloquent_model_name;
-    protected static $bucketUrl = null;
 
     public function __construct($eloquent_model_name = null)
     {

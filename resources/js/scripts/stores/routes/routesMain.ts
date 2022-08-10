@@ -24,7 +24,7 @@ export const useRoutesStore = defineStore('routesStore', () => {
         id_db: null,
     })
 
-    const target = ref<TRouteInfo>({
+    const to = ref<TRouteInfo>({
         url_model: null,
         url_id: null,
         url_action: null,
@@ -38,24 +38,23 @@ export const useRoutesStore = defineStore('routesStore', () => {
     const loading = ref(false)
 
     const isLoading = computed((state) => {
-
         return false
     })
-
-    async function handleRouteChange(to: RouteLocationNormalized, from: RouteLocationNormalized): Promise<RouteLocationRaw | boolean> {
+   
+    async function handleRouteChange(handle_to: RouteLocationNormalized, handle_from: RouteLocationNormalized): Promise<RouteLocationRaw | boolean> {
         let n = useNotificationsStore()
         //authorize
-        if (!authorize(to.path)) {
+        if (!authorize(handle_to.path)) {
             n.showSnackbar('Unauthorized; redirected to Login Page')
             return { path: '/auth/login' }
         }
 
         //parse
-        let res = parse(to)
+        let res = parse(handle_to)
         if (res.success) {
             // target.value.model = (<TRouteInfo>res.data).model
             // target.value.url_model = (<TRouteInfo>res.data).url_model
-            target.value = {...(<TRouteInfo>res.data)}
+            to.value = {...(<TRouteInfo>res.data)}
             console.log("parse OK")
         } else {
             //cancel navigation
@@ -66,14 +65,13 @@ export const useRoutesStore = defineStore('routesStore', () => {
         try {
 
 
-            // res = prepareForNewRoute(to)
-            // if (!res) {
-            //     //cancel navigation
-            //     n.showSnackbar(`Parsing error ${res}; redirected to Home Page`)
-            //     return Promise.reject(false)
-            // } else {
-            //     console.log("parse OK")
-            // };
+            let prepare = prepareForNewRoute(to.value, from.value)
+            if (!prepare) {
+                //cancel navigation
+                return Promise.reject(false)
+            } else {
+                console.log("prepare OK")
+            };
 
             // finalizeRouting("gg")
 
@@ -81,7 +79,7 @@ export const useRoutesStore = defineStore('routesStore', () => {
             return true
         }
         catch (err) {
-            console.log(`navigationErrorHandler error: ${JSON.stringify(err, null, 2)} to: ${to.path}`);
+            console.log(`navigationErrorHandler error: ${JSON.stringify(err, null, 2)} to: ${handle_to.path}`);
             return false
         }
 
@@ -110,5 +108,5 @@ export const useRoutesStore = defineStore('routesStore', () => {
 
 
 
-    return { prepareForNewRoute, isLoading, from, target, handleRouteChange }
+    return { prepareForNewRoute, isLoading, from, to, handleRouteChange }
 })

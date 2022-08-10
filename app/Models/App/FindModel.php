@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\App;
 
-use App\Models\DigModel;
+use App\Models\App\DigModel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;

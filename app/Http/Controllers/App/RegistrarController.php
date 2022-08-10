@@ -1,16 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class TestController extends Controller
+class RegistrarController extends Controller
 {
-
-
     public function init(Request $r)
     {
         return response()->json([

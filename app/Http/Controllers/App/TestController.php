@@ -1,15 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-
-class MediaController extends Controller
+class TestController extends Controller
 {
+    public function init(Request $r)
+    {
+        return response()->json([
+            "msg" => "AppController.init()",
+        ], 200);
+    }
+
     public function totals()
     {
         $tables = ['loci', 'fauna'];

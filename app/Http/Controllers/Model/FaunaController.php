@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Dig;
+namespace App\Http\Controllers\Model;
 
-use App\Http\Controllers\Dig\FindController;
+use App\Http\Controllers\App\ModelController;
 use App\Http\Requests\FindStoreRequest;
 use App\Http\Requests\FaunaStoreRequest;
 use App\Models\Find;
-use App\Models\Dig\Fauna;
-use App\Models\Dig\Locus;
+use App\Models\Model\Fauna;
+use App\Models\Model\Locus;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
 
-class FaunaController extends FindController
+class FaunaController extends ModelController
 {
     public function __construct()
     {
