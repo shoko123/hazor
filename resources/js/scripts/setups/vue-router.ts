@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import navigationErrorHandler from '../routes/navigationErrorHandler'
-import { useRoutesStore } from '../routes/routesStore'
+import navigationErrorHandler from './routes/navigationErrorHandler'
+import { useRoutesStore } from '../stores/routes/routesMain'
 import { useMainStore } from '../stores/main'
-import routes from '../routes/routes'
+import routes from './routes/routes'
 
 
 export const router = createRouter({
@@ -24,7 +24,7 @@ router.beforeEach(async (to, from) => {
   }
   try {
     let res = r.handleRouteChange(to, from)
-    console.log(`router.beforeEach returned ${JSON.stringify(res, null, 2)}`);
+    //console.log(`router.beforeEach returned ${JSON.stringify(res, null, 2)}`);
     return res
   }
   catch (err) {

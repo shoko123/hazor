@@ -3,6 +3,7 @@
     <v-app-bar-title @click="homeClick()">Hazor</v-app-bar-title>
     <v-btn text @click="homeClick()">Home</v-btn>
     <v-btn text @click="locusClick()">Loci</v-btn>
+        <v-btn text @click="stoneClick()">Stones</v-btn>
     <v-btn text @click="faunaClick()">Fauna</v-btn>
     <v-spacer></v-spacer>
     <UserOptions />
@@ -32,6 +33,8 @@ function locusClick() {
 function faunaClick() {
   router.push({ path: '/fauna/welcome' })
 }
-
+function stoneClick() {
+  router.push({ path: '/stones/welcome' })
+}
 </script>
 

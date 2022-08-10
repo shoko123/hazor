@@ -1,13 +1,13 @@
-import SubRouteContainer from '../../components/routes/SubRouteContainer.vue'
-import Collection from '../../components/content/collections/Collection.vue'
-import ShowItem from '../../components/content/show-item/ShowItem.vue'
-import NotFound from '../../components/routes/NotFound.vue'
+import SubRouteContainer from '@/components/routes/SubRouteContainer.vue'
+import Collection from '@/components/content/collections/Collection.vue'
+import ShowItem from '@/components/content/show-item/ShowItem.vue'
+import NotFound from '@/components/routes/NotFound.vue'
 
 
 const routes = [
   {
     path: '/',
-    component: () => import('../../components/content/Home.vue'),
+    component: () => import('@/components/content/Home.vue'),
     name: 'Home'
   },
   {
@@ -17,7 +17,7 @@ const routes = [
     children: [
       {
         path: 'dashboard',
-        component: () => import('../../components/content/admin/Dashboard.vue')
+        component: () => import('@/components/content/admin/Dashboard.vue')
       },
       {
         path: ":catchAll(.*)",
@@ -33,11 +33,11 @@ const routes = [
       {
         path: ':action(login)',
         name: 'Login',
-        component: () => import('../../components/content/auth/Login.vue')
+        component: () => import('@/components/content/auth/Login.vue')
       },
       {
         path: ':action(register)',
-        component: () => import('../../components/content/auth/Login.vue')
+        component: () => import('@/components/content/auth/Login.vue')
 
       },
       {
@@ -53,11 +53,11 @@ const routes = [
     children: [
       {
         path: ':action(welcome)',
-        component: () => import('../../components/content/Welcome.vue')
+        component: () => import('@/components/content/Welcome.vue')
       },
       {
         path: ':action(Filter)',
-        component: () => import('../../components/content/filter/Filter.vue')
+        component: () => import('@/components/content/filter/Filter.vue')
       },
       {
         path: ':action(list)',
