@@ -8,15 +8,11 @@
 </template>
 
 <script setup lang="ts" >
+import { computed } from 'vue';
 import { useMainStore } from '../../scripts/stores/main'
-import { computed } from "vue";
+import { TMediaItem } from '../../types/mediaTypes'
 
 let main = useMainStore()
-
-type TMediaItem = {
-  fullUrl: string,
-  tnUrl: string
-}
 
 const items = computed(() => {
   let c: Array<TMediaItem> = [];

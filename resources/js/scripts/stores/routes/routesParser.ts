@@ -1,13 +1,13 @@
 // routesStore.js
 //handles the entire routing mechanism - parsing, loading resources, error handling
 
-import type { TParsingError, TParseResponse, TModel, TRouteInfo } from './routesTypes'
+import type { TParsingError, TParseResponse, TModel, TRouteInfo } from '../../../types/routesTypes'
 import { useXhrStore } from '../xhr';
 import { useMainStore } from '../main';
 import { useAuthStore } from '../auth';
 import { useNotificationsStore } from '../notifications';
 import { router } from '../../setups/vue-router'
-import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
+import type { LocationQuery, RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
 import { ref } from 'vue'
 import { computed } from 'vue'
 
@@ -17,8 +17,9 @@ const to: TRouteInfo = {
     url_action: null,
     url_query_params: null,
     model: 'Home',
-    id_params: {},
-    id_db: null,
+    action: '',
+    idParams: null,
+    queryParams: null
 }
 
 const modelConversion = {
@@ -31,22 +32,74 @@ const modelConversion = {
 
 
 export function parse(handle_to: RouteLocationNormalized): TParseResponse {
-    //validate module
-    if (handle_to.params.hasOwnProperty('module')) {
-        let res = parseModule(<string>handle_to.params.module)
+    let urlModel = handle_to.params.hasOwnProperty('module') ? handle_to.params.module : false
+    let urlAction = handle_to.params.hasOwnProperty('action') ? handle_to.params.action : false
+    let urlId = handle_to.params.hasOwnProperty('id') ? handle_to.params.id : false
+    let urlQuery = Object.keys(handle_to.query).length > 0 ? handle_to.query : false
+
+    //console.log(`parse handle_to: ${JSON.stringify(handle_to, null, 2)}`);
+    
+    //parse/validate url_module
+    if (urlModel) {
+        let res = parseUrlModule(<string>urlModel)
         if (res === true) {
-            return { success: true, data: to}
+            return { success: true, data: to }
         } else {
-            return { success: false, data: 'BadModelName'}
+            return { success: false, data: 'BadModelName' }
         }
     } else {
         to.model = 'Home'
         to.url_model = ''
-        return { success: true, data: to}
+
     }
+
+    //validate url_action
+    if (urlAction) {
+        switch (urlAction) {
+            case "welcome":
+            case "filter":
+            case "index":
+            case "update":
+            case 'create':
+                break
+            default:
+                console.log(`******* URL Parser error: nsupported action name "${urlAction}" *********`)
+                return { success: false, data: 'BadActionName' }
+        }
+    } else {
+        to.action = <string>urlAction;
+    }
+
+    //parse/validate url_id
+    if (urlId) {
+        let res = parseUrlId(to.model, <string>urlId);
+        if (res === true) {
+            return { success: true, data: to }
+        } else {
+            return { success: false, data: 'BadModelName' }
+        }
+    } else {
+        to.idParams = null
+    }
+
+     //parse/validate queryParams
+     if (urlQuery) {
+        let res = parseUrlQuery(to.model, urlQuery);
+        if (res === true) {
+            return { success: true, data: to }
+        } else {
+            return { success: false, data: 'BadModelName' }
+        }
+    } else {
+        to.idParams = null
+    }
+    return { success: true, data: to }
+
 }
 
-function parseModule(module: string): TParsingError | true {
+
+
+function parseUrlModule(module: string): TParsingError | true {
     switch (module) {
         case "admin":
         case "auth":
@@ -57,112 +110,30 @@ function parseModule(module: string): TParsingError | true {
             to.url_model = module
             return true;
         default:
-            console.log(`******* URL Parser error: can\'t find module name "${module}" *********`)
+            console.log(`******* URL Parser error: Unsupported module name "${module}" *********`)
             return 'BadModelName'
     }
 }
 
+function parseUrlId(model: TModel, urlId: string): TParsingError | true {
+    //console.log(`parseUrlId() model: ${module}, urlId: ${urlId}`);
+    switch (model) {
+        case "Locus":
 
-    // function parseAndAuthorize(handle_to: RouteLocationNormalized, from: RouteLocationNormalized): 'ok' | 'bad-module' | 'unauthorized' {
-    //     let n = useNotificationsStore()
+            break;
+        case "Fauna":
 
-    //     // console.log(`routes/parseAndAuth() \nfrom.path: ${JSON.stringify(from.path, null, 2)} from.params: ${JSON.stringify(from.params, null, 2)}`);
-    //     // console.log(`handle_to.path: ${JSON.stringify(handle_to.path, null, 2)} handle_to.params: ${JSON.stringify(handle_to.params, null, 2)}`);
+            break;
+        case "Stone":
 
-    //     //authorize
-    //     if (!authorize(handle_to.path)) {
-    //         n.showSnackbar('Unauthorized; redirected handle_to Login Page')
-    //         return 'unauthorized'
-    //     }
+            break;
+    }
 
-    //     //validate module
-    //     if (handle_to.params.hasOwnProperty('module')) {
-    //         if (!validateModule(<string>handle_to.params.module)) {
-    //             n.showSnackbar('Navigation Error (Bad module name); redirected handle_to Home/Previous Page')
-    //             return 'bad-module'
-    //         }
-    //     } else {
-    //         to.value.model = 'Home';
-    //     }
+    return true
+}
 
-    //     //parse url_id
-
-
-    //     return 'ok'
-
-    //     // if (handle_to.params.hasOwnProperty("action")) {
-    //     //     to.value.action = handle_to.params.action;
-    //     // } else {
-    //     //     handle_to.action = null;
-    //     // }
-    //     // if (payload.params.hasOwnProperty("dot")) {
-    //     //     parseDot(handle_to.module, payload.params.dot);
-    //     // } else {
-    //     //     commit("clearDotAndDotParams");
-    //     // }
-
-
-    //     // //query params will only be copied on 'list' action. (We don't want unnecessary reload of chunks).
-    //     // if (payload.params.hasOwnProperty("action") && payload.params.action === "list") {
-    //     //     //console.log(`setting handle_to.queryParams handle_to: ${JSON.stringify(payload.query, null, 2)}`);
-    //     //     handle_to.queryParams = payload.query;
-    //     // }
-    //     // //console.log(`parseTo.done handle_to: ${JSON.stringify(state.handle_to, null, 2)}`);
-    //     // commit("handle_to", handle_to);
-
-    //     // return handle_to;
-
-    //     // console.log(`middleware.parsAndAuthorize ()`)
-
-    // }
-
-    // function parseDot(module, dot) {
-    //     //console.log(`parseDot() module: ${module}, dot: ${dot}`);
-    //     let arr = dot.split('.');
-    //     let dotParams = {};
-    //     switch (module) {
-    //         case "About":
-    //             dotParams.tab = parseInt(arr[0]);
-    //             dotParams.no = parseInt(arr[1]);
-    //             break;
-    //         case "Area":
-    //             dotParams.area = arr[0];
-    //             break;
-    //         case "Season":
-    //             dotParams.season = parseInt(arr[0]);
-    //             break;
-    //         case "AreaSeason":
-    //             dotParams.season = parseInt(arr[0]);
-    //             dotParams.area = arr[1];
-    //             break;
-    //         case "Locus":
-    //             dotParams.season = parseInt(arr[0]);
-    //             dotParams.area = arr[1];
-    //             dotParams.locus_no = parseInt(arr[2]);
-    //             break;
-    //         case "Pottery":
-    //         case "Stone":
-    //         case "Lithic":
-    //         case "Metal":
-    //         case "Glass":
-    //         case "Flora":
-    //         case "Fauna":
-    //         case "Tbd":
-    //             dotParams.season = parseInt(arr[0]);
-    //             dotParams.area = arr[1];
-    //             dotParams.locus_no = parseInt(arr[2]);
-    //             dotParams.registration_category = arr[3];
-    //             dotParams.basket_no = parseInt(arr[4]);
-    //             dotParams.artifact_no = parseInt(arr[5]);
-    //             break;
-    //     }
-
-    //     commit("dot", dot);
-    //     commit("dotParams", dotParams);
-    //     //console.log(`parseDot handle_to: ${JSON.stringify(state.handle_to, null, 2)}`);
-    // }
-
-
-
-
-
+function parseUrlQuery(model: TModel | null, urlQuery: LocationQuery): TParsingError | true {
+    //console.log(`parseUrlQuery() urlQuery: ${urlQuery}, urlId: ${urlId}`);
+    
+    return true
+}

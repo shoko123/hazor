@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts" >
-import { defineComponent } from "vue"
+import { defineComponent } from 'vue'
 import MainMenu from './menus/MainMenu.vue'
 import SubMenu from './menus/SubMenu.vue'
 import Snackbar from './notifications/snackbar.vue'

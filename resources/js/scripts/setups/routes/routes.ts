@@ -69,7 +69,7 @@ const routes = [
 
       // },
       {
-        path: ':dot',
+        path: ':id',
         component: ShowItem,
         // children: [
 

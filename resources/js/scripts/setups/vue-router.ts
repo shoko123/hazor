@@ -22,12 +22,16 @@ router.beforeEach(async (to, from) => {
     await m.appInit()
     console.log(`store(main) appInit returned`)
   }
+
   try {
-    let res = r.handleRouteChange(to, from)
+    r.isLoading = true
+    let res = await r.handleRouteChange(to, from)
     //console.log(`router.beforeEach returned ${JSON.stringify(res, null, 2)}`);
+    r.isLoading = false
     return res
   }
   catch (err) {
+    r.isLoading = false
     console.log(`navigationErrorHandler error: ${JSON.stringify(err, null, 2)} to: ${to.path}`);
     return false
   }

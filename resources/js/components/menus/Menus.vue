@@ -4,7 +4,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent } from "vue"
+import { defineComponent } from 'vue'
 import MainMenu from './MainMenu.vue'
 import SubMenu from './SubMenu.vue'
 import { storeToRefs } from 'pinia'

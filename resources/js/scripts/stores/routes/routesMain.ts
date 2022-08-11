@@ -3,7 +3,7 @@
 
 import { defineStore, storeToRefs } from 'pinia'
 import { parse } from './routesParser';
-import { prepareForNewRoute } from './routesPrepare';
+import { useRoutePrepareStore } from './routesPrepare';
 import { useMainStore } from '../main';
 import { useAuthStore } from '../auth';
 import { useNotificationsStore } from '../notifications';
@@ -11,17 +11,18 @@ import { router } from '../../setups/vue-router'
 import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
 import { ref } from 'vue'
 import { computed } from 'vue'
-import { TUrlModel, TModel, TRouteInfo, TParsingError, TParseResponse } from './routesTypes';
+import type { TUrlModel, TModel, TRouteInfo, TParsingError, TParseResponse } from '../../../types/routesTypes';
 
 export const useRoutesStore = defineStore('routesStore', () => {
-    const from = ref<TRouteInfo>({
+    const current = ref<TRouteInfo>({
         url_model: null,
         url_id: null,
         url_action: null,
         url_query_params: null,
         model: null,
-        id_params: {},
-        id_db: null,
+        action: null,
+        idParams: null,
+        queryParams: null
     })
 
     const to = ref<TRouteInfo>({
@@ -30,19 +31,21 @@ export const useRoutesStore = defineStore('routesStore', () => {
         url_action: null,
         url_query_params: null,
         model: null,
-        id_params: {},
-        id_db: null,
+        action: null,
+        idParams: null,
+        queryParams: null
     })
 
     const localFilters = ref(null)
-    const loading = ref(false)
+    const isLoading = ref(false)
 
-    const isLoading = computed((state) => {
+    const ddd = computed((state) => {
         return false
     })
    
     async function handleRouteChange(handle_to: RouteLocationNormalized, handle_from: RouteLocationNormalized): Promise<RouteLocationRaw | boolean> {
         let n = useNotificationsStore()
+        let p = useRoutePrepareStore()
         //authorize
         if (!authorize(handle_to.path)) {
             n.showSnackbar('Unauthorized; redirected to Login Page')
@@ -65,13 +68,13 @@ export const useRoutesStore = defineStore('routesStore', () => {
         try {
 
 
-            let prepare = prepareForNewRoute(to.value, from.value)
+            let prepare = await p.prepareForNewRoute(to.value, current.value)
             if (!prepare) {
                 //cancel navigation
-                return Promise.reject(false)
+                return false//Promise.reject(false)
             } else {
                 console.log("prepare OK")
-            };
+            }
 
             // finalizeRouting("gg")
 
@@ -82,7 +85,6 @@ export const useRoutesStore = defineStore('routesStore', () => {
             console.log(`navigationErrorHandler error: ${JSON.stringify(err, null, 2)} to: ${handle_to.path}`);
             return false
         }
-
     }
 
     function authorize(path: string) {
@@ -108,5 +110,5 @@ export const useRoutesStore = defineStore('routesStore', () => {
 
 
 
-    return { prepareForNewRoute, isLoading, from, to, handleRouteChange }
+    return { isLoading, current, to, handleRouteChange }
 })

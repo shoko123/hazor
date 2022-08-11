@@ -20,8 +20,8 @@
 </template>
 
 <script setup lang="ts" >
-import { defineComponent } from "vue";
-import { useAuthStore } from '../../../scripts/stores/auth';
+import { defineComponent } from 'vue'
+import { useAuthStore } from '../../../scripts/stores/auth'
 import { storeToRefs } from 'pinia'
 let auth =  useAuthStore()
 let { loginForm }  = storeToRefs(useAuthStore())

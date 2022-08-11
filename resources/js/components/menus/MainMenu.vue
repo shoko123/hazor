@@ -12,7 +12,7 @@
 
 <script lang="ts" setup>
 import { useRouter } from 'vue-router'
-import { defineComponent } from "vue"
+import { defineComponent } from 'vue'
 import UserOptions from './UserOptions.vue'
 
 defineComponent({
