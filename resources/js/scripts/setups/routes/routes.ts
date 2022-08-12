@@ -56,7 +56,7 @@ const routes = [
         component: () => import('@/components/content/Welcome.vue')
       },
       {
-        path: ':action(Filter)',
+        path: ':action(filter)',
         component: () => import('@/components/content/filter/Filter.vue')
       },
       {

@@ -1,5 +1,7 @@
 <template>
   <v-img id="img" v-if="backgroundImage" :src="backgroundImage.fullUrl" :lazy-src="backgroundImage.tnUrl" :cover="true">
+
+
     <v-card width="30%" height="100%" flat color="rgb(255, 0, 0, 0)" class="opac">
       <v-card-title class="title text-white text-h4">{{ name }} Welcome Page</v-card-title>
       <v-card-text class="white--text text-h5">
@@ -31,17 +33,19 @@
 import { defineComponent, computed, onMounted, onUnmounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useMainStore } from '../../scripts/stores/main'
+import { useStatusStore } from '../../scripts/stores/status'
 import { useModelStore } from '../../scripts/stores/model'
+import { useRoutesStore } from '../../scripts/stores/routes/routesMain'
 import { TMediaItem } from '../../types/mediaTypes'
 defineComponent({
   name: "Welcome",
 });
 
 let main = useMainStore()
-let model = useModelStore()
 
-const { name, counts, backgroundImage } = storeToRefs(model)
-const { isLoading } = storeToRefs(main)
+const { name, counts, backgroundImage } = storeToRefs(useModelStore())
+const { module } = storeToRefs(useStatusStore())
+const { current } = storeToRefs(useRoutesStore())
 const text = 'Main Text'
 
 onMounted(() => {
@@ -53,17 +57,6 @@ onUnmounted(() => {
   let elHtml = document.getElementsByTagName("html")[0];
   elHtml.style.overflowY = '';
 })
-
-// mounted: function () {
-//   let elHtml = document.getElementsByTagName("html")[0];
-//   elHtml.style.overflowY = "hidden";
-// },
-// unmounted: function () {
-//   let elHtml = document.getElementsByTagName("html")[0];
-//   elHtml.style.overflowY = null;
-// },
-
-
 
 </script>
 

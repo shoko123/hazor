@@ -24,11 +24,17 @@ type Nullable<T> = T | null
 export const useAuthStore = defineStore('auth', () => {
   let loginForm = ref<TLoginForm>({ email: "", password: "" })
   let user = ref<TUser>(null)
+  
+  let accessibility = ref({ authenticatedUsersOnly: true, readOnly: false })
 
   const authenticated = computed(() => {
     return user.value !== null
   })
 
+  const authenticatedUsersOnly = computed(() => {
+    return accessibility.value.authenticatedUsersOnly
+  })
+  
   async function login(r: any) {
 
     let xhr = useXhrStore();
@@ -83,5 +89,5 @@ export const useAuthStore = defineStore('auth', () => {
         notifications.showSpinner(false)
       })
   }
-  return { loginForm, user, authenticated, login, logout }
+  return { loginForm, user, accessibility, authenticated, login, logout }
 })

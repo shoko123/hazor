@@ -38,57 +38,77 @@ export function parse(handle_to: RouteLocationNormalized): TParseResponse {
     let urlQuery = Object.keys(handle_to.query).length > 0 ? handle_to.query : false
 
     //console.log(`parse handle_to: ${JSON.stringify(handle_to, null, 2)}`);
-    
+    console.log(`parse() urlModel: ${urlModel} urlAction: ${urlAction} urlId: ${urlId} `);
+    console.log(`urlQuery: ${JSON.stringify(urlQuery, null, 2)}`);
+
     //parse/validate url_module
     if (urlModel) {
-        let res = parseUrlModule(<string>urlModel)
-        if (res === true) {
-            return { success: true, data: to }
-        } else {
+        if (!parseUrlModule(<string>urlModel)) {
             return { success: false, data: 'BadModelName' }
         }
     } else {
         to.model = 'Home'
         to.url_model = ''
-
     }
 
     //validate url_action
     if (urlAction) {
-        switch (urlAction) {
-            case "welcome":
-            case "filter":
-            case "index":
-            case "update":
-            case 'create':
-                break
-            default:
-                console.log(`******* URL Parser error: nsupported action name "${urlAction}" *********`)
-                return { success: false, data: 'BadActionName' }
+        if (urlModel) {
+            switch (to.model) {
+                case 'Auth':
+                    switch (<string>urlAction) {
+                        case "login":
+                        case "register":
+
+                            to.action = <string>urlAction;
+                            break
+                        default:
+                            console.log(`******* URL Parser error: insupported action name "${urlAction}" *********`)
+                            return { success: false, data: 'BadActionName' }
+                    }
+                    break
+                case 'Home':
+                    break
+
+                case 'Locus':
+                case 'Stone':
+                case 'Fauna':
+                    switch (<string>urlAction) {
+                        case "welcome":
+                        case "filter":
+                        case "index":
+                        case "update":
+                        case 'create':
+                            to.action = <string>urlAction;
+                            break
+                        default:
+                            console.log(`******* URL Parser error: nsupported action name "${urlAction}" *********`)
+                            return { success: false, data: 'BadActionName' }
+                    }
+                    break
+                    default:
+                        console.log(`******* URL Parser error: SOMETHING WENT WRONG ******`) 
+            }
+
         }
     } else {
-        to.action = <string>urlAction;
+        //console.log(`parse action(${urlAction}) set to null`)
+        to.action = null
     }
 
     //parse/validate url_id
     if (urlId) {
-        let res = parseUrlId(to.model, <string>urlId);
-        if (res === true) {
-            return { success: true, data: to }
-        } else {
-            return { success: false, data: 'BadModelName' }
+        if (!parseUrlId(<TModel>to.model, <string>urlId)) {
+            return { success: false, data: 'BadIdFormat' }
         }
     } else {
         to.idParams = null
     }
 
-     //parse/validate queryParams
-     if (urlQuery) {
-        let res = parseUrlQuery(to.model, urlQuery);
-        if (res === true) {
-            return { success: true, data: to }
-        } else {
-            return { success: false, data: 'BadModelName' }
+    //parse/validate queryParams
+    if (urlQuery) {
+        if (!parseUrlQuery(to.model, urlQuery)) {
+            return { success: false, data: 'BadQueryParams' }
         }
     } else {
         to.idParams = null
@@ -96,8 +116,6 @@ export function parse(handle_to: RouteLocationNormalized): TParseResponse {
     return { success: true, data: to }
 
 }
-
-
 
 function parseUrlModule(module: string): TParsingError | true {
     switch (module) {
@@ -134,6 +152,6 @@ function parseUrlId(model: TModel, urlId: string): TParsingError | true {
 
 function parseUrlQuery(model: TModel | null, urlQuery: LocationQuery): TParsingError | true {
     //console.log(`parseUrlQuery() urlQuery: ${urlQuery}, urlId: ${urlId}`);
-    
+
     return true
 }

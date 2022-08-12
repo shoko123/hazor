@@ -9,7 +9,7 @@ class Stone extends FindModel
 {
     public $timestamps = false;
     protected $guarded = [];
-    protected $table = 'loci';
+    protected $table = 'stones';
 
     public function __construct()
     {

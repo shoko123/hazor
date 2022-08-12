@@ -1,7 +1,7 @@
 <template>
   <div id="home">
     <v-carousel height="100%" continuos cycle>
-      <v-carousel-item v-for="(item, i) in items" :key="i" :src="item.fullUrl" :lazy-src="item.tnUrl">
+      <v-carousel-item v-for="(item, i) in items" :key="i" :src="item?.fullUrl" :lazy-src="item?.tnUrl" :cover="true">
       </v-carousel-item>
     </v-carousel>
   </div>

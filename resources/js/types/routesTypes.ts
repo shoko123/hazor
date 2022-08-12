@@ -2,7 +2,7 @@
 type TUrlModel = 'auth' | 'admin' | 'loci' | 'fauna' | 'stones' | ''
 type TModel = 'Home' | 'Auth' | 'Admin' | 'Locus' | 'Fauna' | 'Stone'
 type TRoutingError = {}
-type TParsingError = 'BadModelName' | 'BadIdFormat' | 'BadActionName'
+type TParsingError = 'BadModelName' | 'BadIdFormat' | 'BadActionName' | 'BadQueryParams'
 type TUrlAction = 'welcome' | 'filter' | 'index' | 'create' | 'update' | 'tags' | 'media'
 
 type TRouteInfo = {

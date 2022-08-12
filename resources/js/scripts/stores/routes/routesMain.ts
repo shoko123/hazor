@@ -42,7 +42,7 @@ export const useRoutesStore = defineStore('routesStore', () => {
     const ddd = computed((state) => {
         return false
     })
-   
+
     async function handleRouteChange(handle_to: RouteLocationNormalized, handle_from: RouteLocationNormalized): Promise<RouteLocationRaw | boolean> {
         let n = useNotificationsStore()
         let p = useRoutePrepareStore()
@@ -57,7 +57,7 @@ export const useRoutesStore = defineStore('routesStore', () => {
         if (res.success) {
             // target.value.model = (<TRouteInfo>res.data).model
             // target.value.url_model = (<TRouteInfo>res.data).url_model
-            to.value = {...(<TRouteInfo>res.data)}
+            to.value = { ...(<TRouteInfo>res.data) }
             console.log("parse OK")
         } else {
             //cancel navigation
@@ -67,7 +67,7 @@ export const useRoutesStore = defineStore('routesStore', () => {
 
         try {
 
-
+            isLoading.value = true
             let prepare = await p.prepareForNewRoute(to.value, current.value)
             if (!prepare) {
                 //cancel navigation
@@ -76,12 +76,14 @@ export const useRoutesStore = defineStore('routesStore', () => {
                 console.log("prepare OK")
             }
 
-            // finalizeRouting("gg")
+            finalizeRouting()
 
             //console.log(`router.beforeEach returned ${JSON.stringify(res, null, 2)}`);
+            isLoading.value = false
             return true
         }
         catch (err) {
+            isLoading.value = false
             console.log(`navigationErrorHandler error: ${JSON.stringify(err, null, 2)} to: ${handle_to.path}`);
             return false
         }
@@ -89,11 +91,10 @@ export const useRoutesStore = defineStore('routesStore', () => {
 
     function authorize(path: string) {
         let auth = useAuthStore()
-        let main = useMainStore()
         //console.log(`authorize() to.path: ${path} authUsersOnly: ${main.authenticatedUsersOnly}\nisLoggedIn: ${auth.authenticated}`);
         if (path === "/auth/login" || path === "/") {
             return true;
-        } else if (main.authenticatedUsersOnly && !auth.authenticated) {
+        } else if (auth.accessibility.authenticatedUsersOnly && !auth.authenticated) {
             return false
         } else {
             //console.log('authorize - TRUE')
@@ -101,9 +102,10 @@ export const useRoutesStore = defineStore('routesStore', () => {
         }
     }
 
-    function finalizeRouting(path: string) {
-
-
+    function finalizeRouting() {
+        console.log('finalize routing')
+        //copy to -> current
+        current.value = JSON.parse(JSON.stringify(to.value))
     }
 
 
