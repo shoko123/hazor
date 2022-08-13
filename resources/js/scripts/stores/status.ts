@@ -4,25 +4,25 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
 import { useMainStore } from './main'
-import { useModelStore } from './model'
+import { useModuleStore } from './module'
 import { useRoutesStore } from './routes/routesMain'
 
 export const useStatusStore = defineStore('status', () => {
 
   let routes = useRoutesStore()
   let main = useRoutesStore()
-  let model = useModelStore()
+  //let m = useModuleStore()
 
   const isLoading = computed(() => {
     return routes.isLoading
   })
 
   const module = computed(() => {
-    return { name: routes.current.model }
+    return { name: routes.current.module }
   })
   const subMenu = computed(() => {
 
-    return routes.current.model
+    return routes.current.module
 
   })
 

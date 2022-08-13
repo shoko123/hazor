@@ -1,12 +1,12 @@
 // stores/media.js
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { TModel } from '../../types/routesTypes'
+import { TModule } from '../../types/routesTypes'
 import { TMediaItem } from '../../types/mediaTypes'
 import { useMainStore } from './main'
-export const useModelStore = defineStore('model', () => {
+export const useModuleStore = defineStore('module', () => {
   const main = useMainStore()
-  let name = ref<TModel>('Home')
+  let name = ref<TModule>('Home')
   let counts = ref({ items: 0, media: 0 })
 
   const backgroundImage = computed(() => {

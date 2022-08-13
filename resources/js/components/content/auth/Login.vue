@@ -31,11 +31,11 @@
 <script setup lang="ts" >
 import { defineComponent } from 'vue'
 import { useAuthStore } from '../../../scripts/stores/auth'
-import { useModelStore } from '../../../scripts/stores/model'
+import { useModuleStore } from '../../../scripts/stores/module'
 import { storeToRefs } from 'pinia'
 let auth = useAuthStore()
 let { loginForm } = storeToRefs(useAuthStore())
-const { backgroundImage } = storeToRefs(useModelStore())
+const { backgroundImage } = storeToRefs(useModuleStore())
 
 async function login() {
   await auth.login(loginForm.value)

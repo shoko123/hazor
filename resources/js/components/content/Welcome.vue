@@ -34,7 +34,7 @@ import { defineComponent, computed, onMounted, onUnmounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useMainStore } from '../../scripts/stores/main'
 import { useStatusStore } from '../../scripts/stores/status'
-import { useModelStore } from '../../scripts/stores/model'
+import { useModuleStore } from '../../scripts/stores/module'
 import { useRoutesStore } from '../../scripts/stores/routes/routesMain'
 import { TMediaItem } from '../../types/mediaTypes'
 defineComponent({
@@ -43,7 +43,7 @@ defineComponent({
 
 let main = useMainStore()
 
-const { name, counts, backgroundImage } = storeToRefs(useModelStore())
+const { name, counts, backgroundImage } = storeToRefs(useModuleStore())
 const { module } = storeToRefs(useStatusStore())
 const { current } = storeToRefs(useRoutesStore())
 const text = 'Main Text'

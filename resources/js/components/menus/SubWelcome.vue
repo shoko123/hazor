@@ -9,7 +9,7 @@ import { useRouter } from 'vue-router'
 
 import { storeToRefs } from 'pinia'
 import { useMainStore } from '../../scripts/stores/main'
-import { useModelStore } from '../../scripts/stores/model'
+import { useModuleStore } from '../../scripts/stores/module'
 
 
 defineComponent({
@@ -19,11 +19,11 @@ defineComponent({
   }
 })
 
-const model = useModelStore()
+const module = useModuleStore()
 
 const buttons = computed(() => {
   let btns = [];
-  if (model.name === 'Stone') {
+  if (module.name === 'Stone') {
     btns.push({ text: "Query Collection", method: "filter" });
   }
   btns.push({ text: "Show All", method: "showAll" });

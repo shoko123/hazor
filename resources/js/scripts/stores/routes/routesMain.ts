@@ -11,26 +11,26 @@ import { router } from '../../setups/vue-router'
 import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
 import { ref } from 'vue'
 import { computed } from 'vue'
-import type { TUrlModel, TModel, TRouteInfo, TParsingError, TParseResponse } from '../../../types/routesTypes';
+import type { TUrlModule, TModule, TRouteInfo, TParsingError, TParseResponse } from '../../../types/routesTypes';
 
 export const useRoutesStore = defineStore('routesStore', () => {
     const current = ref<TRouteInfo>({
-        url_model: null,
+        url_module: null,
         url_id: null,
         url_action: null,
         url_query_params: null,
-        model: null,
+        module: null,
         action: null,
         idParams: null,
         queryParams: null
     })
 
     const to = ref<TRouteInfo>({
-        url_model: null,
+        url_module: null,
         url_id: null,
         url_action: null,
         url_query_params: null,
-        model: null,
+        module: null,
         action: null,
         idParams: null,
         queryParams: null
@@ -55,8 +55,8 @@ export const useRoutesStore = defineStore('routesStore', () => {
         //parse
         let res = parse(handle_to)
         if (res.success) {
-            // target.value.model = (<TRouteInfo>res.data).model
-            // target.value.url_model = (<TRouteInfo>res.data).url_model
+            // target.value.module = (<TRouteInfo>res.data).module
+            // target.value.url_module = (<TRouteInfo>res.data).url_module
             to.value = { ...(<TRouteInfo>res.data) }
             console.log("parse OK")
         } else {

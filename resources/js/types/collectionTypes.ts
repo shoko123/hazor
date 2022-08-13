@@ -4,14 +4,13 @@ type TView = 'Media' | 'Chips' | 'Table'
 type TCollection = {
         array: [],
         index: number,
-        chunk: [],
-        viewIndex: number,
+        page: [],
         views: TView[],
-        chunkIndex: number,
+        viewIndex: number,
 }
 const itemPerPagePerView = {
         Media: 18,
         Chips: 100,
         Table: 50
-    }
-export  { TView, TCollection, itemPerPagePerView}
+}
+export { TView, TCollection, itemPerPagePerView }

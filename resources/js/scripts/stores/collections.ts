@@ -7,30 +7,28 @@ import { TCollection } from '../../types/collectionTypes'
 export const useCollectionsStore = defineStore('collections', () => {
 
     let main = ref<TCollection>({
-            array: [],
-            index: 0,
-            chunk: [],
-            viewIndex: 0,
-            views: ["Media", "Chips", "Table"],
-            chunkIndex: 0,
-        })
-
-    const related = ref<TCollection>({
-         array: [],
-            index: 0,
-            chunk: [],
-            viewIndex: 0,
-            views: ["Media", "Chips"],
-            chunkIndex: 0,
+        array: [],
+        index: 0,
+        page: [],
+        views: ["Media", "Chips", "Table"],
+        viewIndex: 0,
     })
+
+
     const media = ref<TCollection>({
         array: [],
-           index: 0,
-           chunk: [],
-           viewIndex: 0,
-           views: ["Media"],
-           chunkIndex: 0,
-   })
-   
+        index: 0,
+        page: [],
+        views: ["Media"],
+        viewIndex: 0,
+    })
+
+    const related = ref<TCollection>({
+        array: [],
+        index: 0,
+        page: [],
+        views: ["Media", "Chips"],
+        viewIndex: 0,
+    })
     return { main, related, media }
 })

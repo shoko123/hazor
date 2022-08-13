@@ -7,13 +7,13 @@ import { defineStore, storeToRefs } from 'pinia'
 import { useXhrStore } from '../xhr';
 import { useMainStore } from '../main';
 import { useAuthStore } from '../auth';
-import { useModelStore } from '../model';
+import { useModuleStore } from '../module';
 import { useNotificationsStore } from '../notifications';
 import { router } from '../../setups/vue-router'
 import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
 import { ref } from 'vue'
 import { computed } from 'vue'
-import type { TUrlModel, TModel, TRouteInfo, TParsingError, TParseResponse } from '../../../types/routesTypes';
+import type { TUrlModule, TModule, TRouteInfo, TParsingError, TParseResponse } from '../../../types/routesTypes';
 
 export const useRoutePrepareStore = defineStore('routePrepareStore', () => {
 
@@ -21,14 +21,14 @@ async function prepareForNewRoute(to: TRouteInfo, from: TRouteInfo): Promise<boo
 
     let xhr = useXhrStore();
     let n = useNotificationsStore();
-    let m = useModelStore();
+    let m = useModuleStore();
     
-    //if navigate to a new model initialize model (unless Auth or Home)
-    if(to.model !== from.model && to.model !== 'Auth' && to.model !== 'Home') {
-        await xhr.send('model/hydrate', 'post', { model: to.model })
+    //if navigate to a new module initialize module (unless Auth or Home)
+    if(to.module !== from.module && to.module !== 'Auth' && to.module !== 'Home') {
+        await xhr.send('model/hydrate', 'post', { model: to.module })
         .then(res => {
           //console.log(`auth.response is ${JSON.stringify(res, null, 2)}`)
-          m.name = <TModel>to.model
+          m.name = <TModule>to.module
           m.counts = res.data.counts
           return true
         })
@@ -41,7 +41,7 @@ async function prepareForNewRoute(to: TRouteInfo, from: TRouteInfo): Promise<boo
           n.showSpinner(false)
         })
     } else {
-      m.name = <TModel>to.model
+      m.name = <TModule>to.module
     }
     return true//Promise.resolve(true)
 
