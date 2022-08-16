@@ -1,8 +1,9 @@
 <template>
-  <v-btn v-if="!auth.authenticated" text @click="loginClick()">Login</v-btn>
+  <v-btn v-if="showLoginButton" text @click="loginClick()">Login</v-btn>
   <v-menu v-if="auth.authenticated">
     <template v-slot:activator="{ props }">
       <v-btn v-bind="props">
+      <v-icon left dark>mdi-account</v-icon>
         {{ auth.user?.name }}
       </v-btn>
     </template>
@@ -15,19 +16,29 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../scripts/stores/auth';
+import { useStatusStore} from '../../scripts/stores/status';
 
 let auth = useAuthStore()
+let { authenticated} = storeToRefs(auth)
 const router = useRouter()
+let { action } = storeToRefs(useStatusStore())
 
-type TypeUserOptions = "Dashboard" | "Logout"
-let options: TypeUserOptions[] = ["Dashboard", "Logout"]
+type TUserOption = 'Dashboard' | 'Logout'
+
+let options: TUserOption[] = ['Dashboard', 'Logout']
+
+const showLoginButton = computed(() => {
+return !authenticated.value && action.value !== 'login'
+})
 
 function loginClick() {
   router.push({ path: '/auth/login' })
 }
-function userOptionsClicked(item: 'Dashboard' | 'Logout') {
+function userOptionsClicked(item: TUserOption) {
   switch (item) {
     case "Logout":
       auth.logout()

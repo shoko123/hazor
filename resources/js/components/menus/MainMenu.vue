@@ -6,19 +6,19 @@
         <v-btn text @click="stoneClick()">Stones</v-btn>
     <v-btn text @click="faunaClick()">Fauna</v-btn>
     <v-spacer></v-spacer>
-    <UserOptions />
+    <LoginOrUser />
   </v-app-bar>
 </template>
 
 <script lang="ts" setup>
 import { useRouter } from 'vue-router'
 import { defineComponent } from 'vue'
-import UserOptions from './UserOptions.vue'
+import LoginOrUser from './LoginOrUser.vue'
 
 defineComponent({
   name: "MainMenu",
   components: {
-    UserOptions
+    LoginOrUser
   }
 })
 

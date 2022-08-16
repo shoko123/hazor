@@ -30,5 +30,21 @@ export const useCollectionsStore = defineStore('collections', () => {
         views: ["Media", "Chips"],
         viewIndex: 0,
     })
-    return { main, related, media }
+
+    function collectionSet(name: string, array: []) {
+        switch(name) {
+            case 'main':
+                main.value.array = {...array}
+                break
+
+                case 'media':
+                media.value.array = {...array}
+                break
+
+                case 'related':
+                related.value.array = {...array}
+                break
+        }
+    }
+    return { main, related, media, collectionSet }
 })

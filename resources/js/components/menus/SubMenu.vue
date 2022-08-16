@@ -6,12 +6,17 @@
     </v-app-bar>
 </template>
 <script lang="ts" setup>
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
 import SubWelcome from './SubWelcome.vue'
+import { useStatusStore } from '../../scripts/stores/status'
+import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
 defineComponent({
     name: "MainMenu",
     components: {
         SubWelcome
     }
 })
+
+
 </script>

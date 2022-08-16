@@ -9,7 +9,7 @@ import { useRouter } from 'vue-router'
 
 import { storeToRefs } from 'pinia'
 import { useMainStore } from '../../scripts/stores/main'
-import { useModuleStore } from '../../scripts/stores/module'
+import { useRoutesStore } from '../../scripts/stores/routes/routesMain'
 
 
 defineComponent({
@@ -19,11 +19,11 @@ defineComponent({
   }
 })
 
-const module = useModuleStore()
-
+const { current } = storeToRefs(useRoutesStore())
+const router = useRouter()
 const buttons = computed(() => {
   let btns = [];
-  if (module.name === 'Stone') {
+  if (current.value.module === 'Stone') {
     btns.push({ text: "Query Collection", method: "filter" });
   }
   btns.push({ text: "Show All", method: "showAll" });
@@ -50,7 +50,7 @@ function filter() {
 
 }
 function showAll() {
-
+  router.push({ name: 'List', params: { module: current.value.url_module, action: 'index' } })
 }
 function showItem() {
 

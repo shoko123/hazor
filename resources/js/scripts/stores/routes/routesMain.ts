@@ -39,9 +39,7 @@ export const useRoutesStore = defineStore('routesStore', () => {
     const localFilters = ref(null)
     const isLoading = ref(false)
 
-    const ddd = computed((state) => {
-        return false
-    })
+  
 
     async function handleRouteChange(handle_to: RouteLocationNormalized, handle_from: RouteLocationNormalized): Promise<RouteLocationRaw | boolean> {
         let n = useNotificationsStore()

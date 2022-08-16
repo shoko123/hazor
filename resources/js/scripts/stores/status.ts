@@ -21,15 +21,13 @@ export const useStatusStore = defineStore('status', () => {
     return { name: routes.current.module }
   })
   const subMenu = computed(() => {
-
-    return routes.current.module
-
+    return routes.current.module === 'Home' || routes.current.module === 'Auth' ? undefined : routes.current.module
   })
 
-  const auth = computed(() => {
-    return true
+  const action = computed(() => {
+    return routes.current.action
   })
 
-  return { module, auth, isLoading, subMenu }
+  return { module, action, isLoading, subMenu }
 })
 

@@ -60,8 +60,9 @@ const routes = [
         component: () => import('@/components/content/filter/Filter.vue')
       },
       {
-        path: ':action(list)',
-        component: Collection
+        path: ':action(index)',
+        component: Collection,
+        name: 'List'
       },
       // {
       //     path: ':action(create)',
