@@ -5,7 +5,7 @@
 
 import { defineStore, storeToRefs } from 'pinia'
 import { useXhrStore } from '../xhr';
-import { useMainStore } from '../main';
+import { useCollectionsStore } from '../collections';
 import { useAuthStore } from '../auth';
 import { useModuleStore } from '../module';
 import { useNotificationsStore } from '../notifications';
@@ -22,7 +22,7 @@ async function prepareForNewRoute(to: TRouteInfo, from: TRouteInfo): Promise<boo
     let xhr = useXhrStore();
     let n = useNotificationsStore();
     let m = useModuleStore();
-    
+    let c = useCollectionsStore();
     //if navigate to a new module initialize module (unless Auth or Home)
     if(to.module !== from.module && to.module !== 'Auth' && to.module !== 'Home') {
         await xhr.send('model/hydrate', 'post', { model: to.module })
@@ -42,6 +42,25 @@ async function prepareForNewRoute(to: TRouteInfo, from: TRouteInfo): Promise<boo
         })
     } else {
       m.name = <TModule>to.module
+    }
+
+
+    if(to.name === 'index') {
+       console.log(`Navigation to index: loading...`)
+      await xhr.send('model/index', 'post', { model: to.module })
+      .then(res => {
+        console.log(`index() returned res: ${JSON.stringify(res, null, 2)}`)
+        c.setCollection('main', 'array', res.data.collection)
+        return true
+      })
+      .catch(err => {
+        n.showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
+        console.log(`Navigation to new routes failed with err: ${JSON.stringify(err, null, 2)}`)
+        return false
+      })
+      .finally(() => {
+        n.showSpinner(false)
+      })
     }
     return true//Promise.resolve(true)
 

@@ -6,11 +6,13 @@ import { ref, computed } from 'vue'
 import { useMainStore } from './main'
 import { useModuleStore } from './module'
 import { useRoutesStore } from './routes/routesMain'
-
+import { useCollectionsStore} from './collections'
 export const useStatusStore = defineStore('status', () => {
 
   let routes = useRoutesStore()
-  let main = useRoutesStore()
+  let c = useCollectionsStore()
+  let { collectionMain } = storeToRefs(useCollectionsStore())
+  const { getCollection } = c
   //let m = useModuleStore()
 
   const isLoading = computed(() => {
@@ -20,14 +22,19 @@ export const useStatusStore = defineStore('status', () => {
   const module = computed(() => {
     return { name: routes.current.module }
   })
+
   const subMenu = computed(() => {
     return routes.current.module === 'Home' || routes.current.module === 'Auth' ? undefined : routes.current.module
   })
 
-  const action = computed(() => {
-    return routes.current.action
+  const routeName = computed(() => {
+    return routes.current.name
   })
 
-  return { module, action, isLoading, subMenu }
+  const mainCollectionHeader = computed(() => {
+    return `${routes.current.module} Query results [${getCollection('main').value.array.length}]`
+  })
+
+  return { module, routeName, isLoading, subMenu, mainCollectionHeader }
 })
 

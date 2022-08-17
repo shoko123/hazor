@@ -2,9 +2,9 @@
 
 type TView = 'Media' | 'Chips' | 'Table'
 type TCollection = {
-        array: [],
+        array: object[],
         index: number,
-        page: [],
+        page: object[],
         views: TView[],
         viewIndex: number,
 }

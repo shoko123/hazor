@@ -50,7 +50,7 @@ function filter() {
 
 }
 function showAll() {
-  router.push({ name: 'List', params: { module: current.value.url_module, action: 'index' } })
+  router.push({ name: 'index', params: { module: current.value.url_module } })
 }
 function showItem() {
 

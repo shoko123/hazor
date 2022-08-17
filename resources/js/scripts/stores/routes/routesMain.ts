@@ -17,10 +17,9 @@ export const useRoutesStore = defineStore('routesStore', () => {
     const current = ref<TRouteInfo>({
         url_module: null,
         url_id: null,
-        url_action: null,
         url_query_params: null,
         module: null,
-        action: null,
+        name: 'home',
         idParams: null,
         queryParams: null
     })
@@ -28,10 +27,9 @@ export const useRoutesStore = defineStore('routesStore', () => {
     const to = ref<TRouteInfo>({
         url_module: null,
         url_id: null,
-        url_action: null,
         url_query_params: null,
         module: null,
-        action: null,
+        name: 'home',
         idParams: null,
         queryParams: null
     })

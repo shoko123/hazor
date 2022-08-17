@@ -1,5 +1,5 @@
 import SubRouteContainer from '@/components/routes/SubRouteContainer.vue'
-import Collection from '@/components/content/collections/Collection.vue'
+import Index from '@/components/content/Index.vue'
 import ShowItem from '@/components/content/show-item/ShowItem.vue'
 import NotFound from '@/components/routes/NotFound.vue'
 
@@ -8,7 +8,7 @@ const routes = [
   {
     path: '/',
     component: () => import('@/components/content/Home.vue'),
-    name: 'Home'
+    name: 'home'
   },
   {
     path: '/:module(admin)',
@@ -17,11 +17,13 @@ const routes = [
     children: [
       {
         path: 'dashboard',
-        component: () => import('@/components/content/admin/Dashboard.vue')
+        component: () => import('@/components/content/admin/Dashboard.vue'),
+        name: 'dashboard'
       },
       {
         path: ":catchAll(.*)",
         component: NotFound,
+        name: 'not-found'
       }
     ],
   },
@@ -31,18 +33,19 @@ const routes = [
     props: true,
     children: [
       {
-        path: ':action(login)',
-        name: 'Login',
-        component: () => import('@/components/content/auth/Login.vue')
+        path: 'login',
+        component: () => import('@/components/content/auth/Login.vue'),       
+        name: 'login',
       },
       {
-        path: ':action(register)',
-        component: () => import('@/components/content/auth/Login.vue')
-
+        path: 'register',
+        component: () => import('@/components/content/auth/Login.vue'),
+        name: 'register',
       },
       {
         path: ":catchAll(.*)",
         component: NotFound,
+        name: 'not-found'
       }
     ]
   },
@@ -52,41 +55,44 @@ const routes = [
     props: true,
     children: [
       {
-        path: ':action(welcome)',
-        component: () => import('@/components/content/Welcome.vue')
+        path: 'welcome',
+        component: () => import('@/components/content/Welcome.vue'),
+        name: 'welcome'
       },
       {
-        path: ':action(filter)',
-        component: () => import('@/components/content/filter/Filter.vue')
+        path: 'filter',
+        component: () => import('@/components/content/filter/Filter.vue'),
+        name: 'filter'
       },
       {
-        path: ':action(index)',
-        component: Collection,
-        name: 'List'
+        path: 'index',
+        component: Index,
+        name: 'index'
       },
       // {
-      //     path: ':action(create)',
+      //     path: 'create',
       //     component: stepper,
 
       // },
       {
         path: ':id',
         component: ShowItem,
+        name: 'show'
         // children: [
 
         //     {
-        //         path: ':action(update)',
+        //         path: ':update',
         //         props: true,
         //         component: stepper,
 
         //     },
         //     {
-        //         path: ':action(media)',
+        //         path: ':media',
         //         props: true,
         //         component: MediaEdit,
         //     },
         //     {
-        //         path: ':action(tags)',
+        //         path: 'tags',
         //         props: true,
         //         component: Tagger,
         //     },
@@ -96,8 +102,9 @@ const routes = [
   },
   {
     path: "/:catchAll(.*)",
-    //name: "NotFound",
+    
     component: NotFound,
+    name: "not-found",
   },
 ]
 

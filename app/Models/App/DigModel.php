@@ -32,4 +32,7 @@ class DigModel extends Model implements HasMedia
             ->sharpen(10)
             ->nonQueued();
     }
+
+   
+
 }

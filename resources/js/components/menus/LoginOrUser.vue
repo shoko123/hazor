@@ -21,18 +21,18 @@ import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../scripts/stores/auth';
 import { useStatusStore} from '../../scripts/stores/status';
-
+import type { TName } from '../../types/routesTypes'
 let auth = useAuthStore()
 let { authenticated} = storeToRefs(auth)
 const router = useRouter()
-let { action } = storeToRefs(useStatusStore())
+let { routeName } = storeToRefs(useStatusStore())
 
 type TUserOption = 'Dashboard' | 'Logout'
 
 let options: TUserOption[] = ['Dashboard', 'Logout']
 
 const showLoginButton = computed(() => {
-return !authenticated.value && action.value !== 'login'
+return !authenticated.value && String(routeName.value) !== 'login'
 })
 
 function loginClick() {

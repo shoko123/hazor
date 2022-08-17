@@ -16,8 +16,8 @@ class Locus extends FindModel
         DigModel::__construct('Locus');
     }
     
-    public function index()
-    {
-        return $this->limit(10)->get();
-    }
+    // public function index()
+    // {
+    //     return $this->limit(10)->get();
+    // }
 }

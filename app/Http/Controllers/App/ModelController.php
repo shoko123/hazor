@@ -41,9 +41,13 @@ class ModelController extends Controller
 
      public function index(Request $r)
     {
-        return response()->json([
-            "msg" => "ModelControler.index()",
-            "model_name" => $this->model_name
+        $this->createModel($r["model"]);
+        $collection = $this->model->index($r["queryParams"]);
+       
+        return response()->json([           
+            //"model" =>  $this->model_name,
+            "msg" => "ModelController.index(" .  $this->model_name . ")",
+            "collection" => $collection,
         ], 200);
     }
 
