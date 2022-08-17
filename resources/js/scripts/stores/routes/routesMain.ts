@@ -3,6 +3,7 @@
 
 import { defineStore, storeToRefs } from 'pinia'
 import { parse } from './routesParser';
+import { planTransition } from './routesPlanTransition';
 import { useRoutePrepareStore } from './routesPrepare';
 import { useMainStore } from '../main';
 import { useAuthStore } from '../auth';
@@ -11,16 +12,16 @@ import { router } from '../../setups/vue-router'
 import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
 import { ref } from 'vue'
 import { computed } from 'vue'
-import type { TUrlModule, TModule, TRouteInfo, TParsingError, TParseResponse } from '../../../types/routesTypes';
+import type { TUrlModule, TModule, TRouteInfo, TParsingError, TParseResponse, TPreparePlan } from '../../../types/routesTypes';
 
 export const useRoutesStore = defineStore('routesStore', () => {
     const current = ref<TRouteInfo>({
         url_module: null,
         url_id: null,
         url_query_params: null,
-        module: null,
+        module: 'Home',
         name: 'home',
-        idParams: null,
+        idParams: undefined,
         queryParams: null
     })
 
@@ -28,31 +29,27 @@ export const useRoutesStore = defineStore('routesStore', () => {
         url_module: null,
         url_id: null,
         url_query_params: null,
-        module: null,
+        module: 'Home',
         name: 'home',
-        idParams: null,
+        idParams: undefined,
         queryParams: null
     })
 
-    const localFilters = ref(null)
     const isLoading = ref(false)
-
-  
 
     async function handleRouteChange(handle_to: RouteLocationNormalized, handle_from: RouteLocationNormalized): Promise<RouteLocationRaw | boolean> {
         let n = useNotificationsStore()
         let p = useRoutePrepareStore()
+        
         //authorize
         if (!authorize(handle_to.path)) {
             n.showSnackbar('Unauthorized; redirected to Login Page')
             return { path: '/auth/login' }
         }
 
-        //parse
+        //parse (module, id, queryParams)
         let res = parse(handle_to)
         if (res.success) {
-            // target.value.module = (<TRouteInfo>res.data).module
-            // target.value.url_module = (<TRouteInfo>res.data).url_module
             to.value = { ...(<TRouteInfo>res.data) }
             console.log("parse OK")
         } else {
@@ -61,12 +58,20 @@ export const useRoutesStore = defineStore('routesStore', () => {
             return { path: '/' }//Promise.reject(false)
         };
 
-        try {
+        //verify transitions and plan preparations needed
+        let plan = planTransition(to.value, current.value)
 
+        if (!plan.success) {
+            n.showSnackbar(`Routes transition error ${plan.data}; Navigation cancelled`)
+            return false//Promise.reject(false)
+        }
+
+        console.log("plan OK")
+
+        try {
             isLoading.value = true
-            let prepare = await p.prepareForNewRoute(to.value, current.value)
+            let prepare = await p.prepareForNewRoute(to.value, current.value, <TPreparePlan>plan.data)
             if (!prepare) {
-                //cancel navigation
                 return false//Promise.reject(false)
             } else {
                 console.log("prepare OK")
@@ -81,7 +86,7 @@ export const useRoutesStore = defineStore('routesStore', () => {
         catch (err) {
             isLoading.value = false
             console.log(`navigationErrorHandler error: ${JSON.stringify(err, null, 2)} to: ${handle_to.path}`);
-            return false
+            return { name: 'home' }
         }
     }
 
@@ -103,10 +108,6 @@ export const useRoutesStore = defineStore('routesStore', () => {
         //copy to -> current
         current.value = JSON.parse(JSON.stringify(to.value))
     }
-
-
-
-
 
     return { isLoading, current, to, handleRouteChange }
 })

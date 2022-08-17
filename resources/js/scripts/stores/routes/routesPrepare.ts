@@ -13,61 +13,98 @@ import { router } from '../../setups/vue-router'
 import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
 import { ref } from 'vue'
 import { computed } from 'vue'
-import type { TUrlModule, TModule, TRouteInfo, TParsingError, TParseResponse } from '../../../types/routesTypes';
+import type { TUrlModule, TModule, TRouteInfo, TParsingError, TParseResponse, TPreparePlan } from '../../../types/routesTypes';
 
 export const useRoutePrepareStore = defineStore('routePrepareStore', () => {
 
-async function prepareForNewRoute(to: TRouteInfo, from: TRouteInfo): Promise<boolean>{
+  async function prepareForNewRoute(to: TRouteInfo, from: TRouteInfo, plan: TPreparePlan): Promise<boolean> {
 
     let xhr = useXhrStore();
     let n = useNotificationsStore();
     let m = useModuleStore();
     let c = useCollectionsStore();
+
     //if navigate to a new module initialize module (unless Auth or Home)
-    if(to.module !== from.module && to.module !== 'Auth' && to.module !== 'Home') {
+    switch (plan.scaffold) {
+      case 'load':
         await xhr.send('model/hydrate', 'post', { model: to.module })
-        .then(res => {
-          //console.log(`auth.response is ${JSON.stringify(res, null, 2)}`)
-          m.name = <TModule>to.module
-          m.counts = res.data.counts
-          return true
-        })
-        .catch(err => {
-          n.showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
-          console.log(`Navigation to new routes failed with err: ${JSON.stringify(err, null, 2)}`)
-          return false
-        })
-        .finally(() => {
-          n.showSpinner(false)
-        })
-    } else {
-      m.name = <TModule>to.module
+          .then(res => {
+            //console.log(`auth.response is ${JSON.stringify(res, null, 2)}`)
+            m.name = <TModule>to.module
+            m.counts = res.data.counts
+            return true
+          })
+          .catch(err => {
+            n.showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
+            console.log(`Navigation to new routes failed with err: ${JSON.stringify(err, null, 2)}`)
+            return false
+          })
+          .finally(() => {
+            n.showSpinner(false)
+          })
+        break;
+      case 'reset':
+      //reset
+      default:
+      //nothing
     }
 
+    switch (plan.mainCollection) {
+      case 'load':
 
-    if(to.name === 'index') {
-       console.log(`Navigation to index: loading...`)
-      await xhr.send('model/index', 'post', { model: to.module })
-      .then(res => {
-        console.log(`index() returned res: ${JSON.stringify(res, null, 2)}`)
-        c.setCollection('main', 'array', res.data.collection)
-        return true
-      })
-      .catch(err => {
-        n.showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
-        console.log(`Navigation to new routes failed with err: ${JSON.stringify(err, null, 2)}`)
-        return false
-      })
-      .finally(() => {
-        n.showSpinner(false)
-      })
+
+        console.log(`Navigation to index: loading...`)
+        await xhr.send('model/index', 'post', { model: to.module })
+          .then(res => {
+            console.log(`index() returned res: ${JSON.stringify(res, null, 2)}`)
+            c.setCollection('main', 'array', res.data.collection)
+            return true
+          })
+          .catch(err => {
+            n.showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
+            console.log(`Navigation to new routes failed with err: ${JSON.stringify(err, null, 2)}`)
+            return false
+          })
+          .finally(() => {
+            n.showSpinner(false)
+          })
+          case 'reset':
+            //reset mainCollection
+            default:
+              //nothing
     }
+
+    switch (plan.item) {
+      case 'load':
+
+
+        console.log(`Navigation to index: loading...`)
+        // await xhr.send('model/index', 'post', { model: to.module })
+        //   .then(res => {
+        //     console.log(`index() returned res: ${JSON.stringify(res, null, 2)}`)
+        //     c.setCollection('main', 'array', res.data.collection)
+        //     return true
+        //   })
+        //   .catch(err => {
+        //     n.showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
+        //     console.log(`Navigation to new routes failed with err: ${JSON.stringify(err, null, 2)}`)
+        //     return false
+        //   })
+        //   .finally(() => {
+        //     n.showSpinner(false)
+        //   })
+          case 'reset':
+            //reset mainCollection
+            default:
+              //nothing
+    }
+
     return true//Promise.resolve(true)
 
 
-    
-    
-}
 
-return { prepareForNewRoute }
+
+  }
+
+  return { prepareForNewRoute }
 })

@@ -17,7 +17,7 @@ const to: TRouteInfo = {
     url_query_params: null,
     name: 'home',
     module: 'Home',
-    idParams: null,
+    idParams: undefined,
     queryParams: null
 }
 
@@ -56,7 +56,7 @@ export function parse(handle_to: RouteLocationNormalized): TParseResponse {
             return { success: false, data: 'BadIdFormat' }
         }
     } else {
-        to.idParams = null
+        to.idParams = undefined
     }
 
     //parse/validate queryParams
@@ -65,7 +65,7 @@ export function parse(handle_to: RouteLocationNormalized): TParseResponse {
             return { success: false, data: 'BadQueryParams' }
         }
     } else {
-        to.idParams = null
+        to.idParams = undefined
     }
     return { success: true, data: to }
 
