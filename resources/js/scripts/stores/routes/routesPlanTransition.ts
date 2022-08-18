@@ -50,6 +50,11 @@ export function planTransition(to: TRouteInfo, from: TRouteInfo): TPlanResponse 
                     data.item = 'reset'
                     return { success: true, data }
 
+                    case 'index':
+                        data.scaffold = 'load'
+                        data.mainCollection = 'load'
+                        data.item = 'reset'
+                        return { success: true, data }
                 default:
                     return { success: false, data: 'BadTransition' }
             }

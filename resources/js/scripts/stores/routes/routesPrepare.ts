@@ -27,10 +27,10 @@ export const useRoutePrepareStore = defineStore('routePrepareStore', () => {
     //if navigate to a new module initialize module (unless Auth or Home)
     switch (plan.scaffold) {
       case 'load':
+        n.showSpinner('Loading module data ...')
         await xhr.send('model/hydrate', 'post', { model: to.module })
           .then(res => {
             //console.log(`auth.response is ${JSON.stringify(res, null, 2)}`)
-            m.name = <TModule>to.module
             m.counts = res.data.counts
             return true
           })
@@ -52,7 +52,7 @@ export const useRoutePrepareStore = defineStore('routePrepareStore', () => {
     switch (plan.mainCollection) {
       case 'load':
 
-
+        n.showSpinner(`Loading ${to.url_module} ...`)
         console.log(`Navigation to index: loading...`)
         await xhr.send('model/index', 'post', { model: to.module })
           .then(res => {

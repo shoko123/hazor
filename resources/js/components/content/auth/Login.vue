@@ -29,14 +29,14 @@
 </template>
 
 <script setup lang="ts" >
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useAuthStore } from '../../../scripts/stores/auth'
 import { useModuleStore } from '../../../scripts/stores/module'
-import { storeToRefs } from 'pinia'
+
 let auth = useAuthStore()
 let { loginForm } = storeToRefs(useAuthStore())
-const { backgroundImage } = storeToRefs(useModuleStore())
-
+let { backgroundImage } = storeToRefs(useModuleStore())
 async function login() {
   await auth.login(loginForm.value)
 }

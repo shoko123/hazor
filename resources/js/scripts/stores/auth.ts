@@ -1,11 +1,14 @@
 // auth.js
 //handles and stores user's login and capabilities
-import { defineStore } from 'pinia'
-import { useXhrStore } from './xhr';
-import axios from 'axios';
-import { useNotificationsStore } from './notifications';
-import { router } from '../setups/vue-router'
 import { ref, computed } from 'vue'
+import axios from 'axios';
+import { defineStore, storeToRefs } from 'pinia'
+import { router } from '../setups/vue-router'
+import { useXhrStore } from './xhr';
+import { useNotificationsStore } from './notifications';
+import { useMediaStore } from './media';
+
+
 
 type TLoginForm = {
   email: string,
@@ -31,10 +34,6 @@ export const useAuthStore = defineStore('auth', () => {
     return user.value !== null
   })
 
-  const authenticatedUsersOnly = computed(() => {
-    return accessibility.value.authenticatedUsersOnly
-  })
-  
   async function login(r: any) {
 
     let xhr = useXhrStore();

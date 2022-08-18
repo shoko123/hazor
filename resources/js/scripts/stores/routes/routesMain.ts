@@ -43,8 +43,8 @@ export const useRoutesStore = defineStore('routesStore', () => {
         
         //authorize
         if (!authorize(handle_to.path)) {
-            n.showSnackbar('Unauthorized; redirected to Login Page')
-            return { path: '/auth/login' }
+            n.showSnackbar('Unauthorized; redirected to Login Page')           
+            return { name: 'login', params: { module: 'auth' } }
         }
 
         //parse (module, id, queryParams)
@@ -55,13 +55,16 @@ export const useRoutesStore = defineStore('routesStore', () => {
         } else {
             //cancel navigation
             n.showSnackbar(`Parsing error ${res.data}; redirected to Home Page`)
-            return { path: '/' }//Promise.reject(false)
+            return { name: 'home' }
         };
 
         //verify transitions and plan preparations needed
+
         let plan = planTransition(to.value, current.value)
 
         if (!plan.success) {
+
+        console.log("plan failed...")
             n.showSnackbar(`Routes transition error ${plan.data}; Navigation cancelled`)
             return false//Promise.reject(false)
         }
@@ -104,7 +107,7 @@ export const useRoutesStore = defineStore('routesStore', () => {
     }
 
     function finalizeRouting() {
-        console.log('finalize routing')
+        console.log('finalize OK')
         //copy to -> current
         current.value = JSON.parse(JSON.stringify(to.value))
     }

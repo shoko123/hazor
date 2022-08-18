@@ -36,8 +36,8 @@ export function parse(handle_to: RouteLocationNormalized): TParseResponse {
     let urlQuery = Object.keys(handle_to.query).length > 0 ? handle_to.query : false
 
     //console.log(`parse handle_to: ${JSON.stringify(handle_to, null, 2)}`);
-    console.log(`parse() name: ${to.name} urlModule: ${urlModule} urlId: ${urlId} `);
-    console.log(`urlQuery: ${JSON.stringify(urlQuery, null, 2)}`);
+    //console.log(`parse() name: ${to.name} urlModule: ${urlModule} urlId: ${urlId} `);
+    //console.log(`urlQuery: ${JSON.stringify(urlQuery, null, 2)}`);
 
     //parse/validate url_module
     if (urlModule) {

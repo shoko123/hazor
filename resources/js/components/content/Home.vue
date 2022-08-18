@@ -8,18 +8,19 @@
 </template>
 
 <script setup lang="ts" >
-import { computed } from 'vue';
-import { useMainStore } from '../../scripts/stores/main'
+import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useMediaStore } from '../../scripts/stores/media'
 import { TMediaItem } from '../../types/mediaTypes'
 
-let main = useMainStore()
+let { bucketUrl } = storeToRefs(useMediaStore())
 
 const items = computed(() => {
   let c: Array<TMediaItem> = [];
   for (let i = 1; i <= 6; i++) {
     c.push({
-      fullUrl: `${main.bucketUrl}app/carousel/hazor${i}.jpg`,
-      tnUrl: `${main.bucketUrl}app/carousel/hazor${i}-tn.jpg`
+      fullUrl: `${bucketUrl.value}app/carousel/hazor${i}.jpg`,
+      tnUrl: `${bucketUrl.value}app/carousel/hazor${i}-tn.jpg`
     })
   }
   return c;

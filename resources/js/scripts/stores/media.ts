@@ -1,8 +1,12 @@
 // stores/media.js
-import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { defineStore } from 'pinia'
+
 
 export const useMediaStore = defineStore('media', () => {
-  let carousel = ref('xxx')
-  return { carousel }
+
+  let bucketUrl = ref('')
+
+  
+  return { bucketUrl }
 })
