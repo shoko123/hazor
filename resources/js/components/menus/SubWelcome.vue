@@ -4,20 +4,12 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, computed } from 'vue'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { storeToRefs } from 'pinia'
 import { useMainStore } from '../../scripts/stores/main'
 import { useRoutesStore } from '../../scripts/stores/routes/routesMain'
-
-
-defineComponent({
-  name: "SubWelcome",
-  components: {
-
-  }
-})
 
 const { current } = storeToRefs(useRoutesStore())
 const router = useRouter()

@@ -10,13 +10,6 @@ import SubMenu from './SubMenu.vue'
 import { storeToRefs } from 'pinia'
 import { useStatusStore } from '../../scripts/stores/status'
 
-defineComponent({
-  name: "Menus",
-  components: {
-    MainMenu,
-    SubMenu
-  }
-})
 
 let { subMenu } = storeToRefs(useStatusStore())
 

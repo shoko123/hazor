@@ -1,5 +1,5 @@
 <template>
-  <v-row wrap>I'm CollectionPageChips
+  <v-row wrap>
     <v-chip
       v-for="(item, index) in c.main.value.array"
       :key="index"
@@ -13,7 +13,7 @@
 
 <script lang="ts" setup >
 import { useCollectionsStore } from '../../../scripts/stores/collections';
-import { defineComponent, computed } from 'vue'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import CollectionPageMedia from './CollectionPageMedia.vue'

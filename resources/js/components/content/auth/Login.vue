@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts" >
-import { defineComponent, computed } from 'vue'
+import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '../../../scripts/stores/auth'
 import { useModuleStore } from '../../../scripts/stores/module'
@@ -41,9 +41,6 @@ async function login() {
   await auth.login(loginForm.value)
 }
 
-defineComponent({
-  name: "Login",
-})
 </script>
 <style scoped>
 #img {

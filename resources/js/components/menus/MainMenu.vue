@@ -1,6 +1,6 @@
 <template>
   <v-app-bar :height="36" color=primary dark app>
-    <v-app-bar-title @click="homeClick()">Hazor</v-app-bar-title>
+    <v-app-bar-title @click="homeClick()">Dig({{module.name}})</v-app-bar-title>
     <v-btn text @click="homeClick()">Home</v-btn>
     <v-btn text @click="locusClick()">Loci</v-btn>
         <v-btn text @click="stoneClick()">Stones</v-btn>
@@ -12,15 +12,11 @@
 
 <script lang="ts" setup>
 import { useRouter } from 'vue-router'
-import { defineComponent } from 'vue'
 import LoginOrUser from './LoginOrUser.vue'
+import { storeToRefs } from 'pinia'
+import { useStatusStore } from '../../scripts/stores/status'
 
-defineComponent({
-  name: "MainMenu",
-  components: {
-    LoginOrUser
-  }
-})
+let { module } = storeToRefs(useStatusStore())
 
 const router = useRouter()
 

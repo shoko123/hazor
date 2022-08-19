@@ -7,7 +7,6 @@
       }}
       </v-btn>
     </v-card-title>
-    <div> I am the collection element</div>
 
   <v-card-text>
       <v-container fluid class="ma-0 pa-0">
@@ -37,7 +36,7 @@
 
 
 <script lang="ts" setup >
-import { defineComponent, computed } from 'vue'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import CollectionPageMedia from './CollectionPageMedia.vue'
@@ -51,25 +50,10 @@ const props = defineProps({
     type: String,
     required: true
   },
-  // index: {
-  //   type: Number,
-  //   required: true
-  // }
   
 })
 
 let status = storeToRefs(useStatusStore())
-
-defineComponent({
-  name: "MainMenu",
-  components: {
-    CollectionPageMedia,
-    CollectionPageChips,
-    CollectionPageTable,
-  }
-})
-
-
 
 const page = computed({
   get: () => 0,
