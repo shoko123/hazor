@@ -23,8 +23,8 @@ export const useStatusStore = defineStore('status', () => {
     return { name: routes.current.module }
   })
 
-  const subMenu = computed(() => {
-    return routes.current.module === 'Home' || routes.current.module === 'Auth' ? undefined : routes.current.module
+  const hasSubMenu = computed(() => {
+    return !(routes.current.module === 'Home' || routes.current.module === 'Auth')
   })
 
   const routeName = computed(() => {
@@ -35,6 +35,6 @@ export const useStatusStore = defineStore('status', () => {
     return `${routes.current.module} Query results [${getCollection('main').value.array.length}]`
   })
 
-  return { module, routeName, isLoading, subMenu, mainCollectionHeader }
+  return { module, routeName, isLoading, hasSubMenu, mainCollectionHeader }
 })
 

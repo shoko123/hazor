@@ -5,8 +5,8 @@
     </v-toolbar>
     <v-card-text>
       <v-form @submit.prevent="register">
-        <v-text-field prepend-icon="mdi-account" name="email" email="email" v-model="registrationForm.email"></v-text-field>
-        <v-text-field prepend-icon="mdi-lock" name="password" label="password" type="password" v-model="registrationForm.password">
+        <v-text-field prepend-icon="mdi-account" name="email" email="email"></v-text-field>
+        <v-text-field prepend-icon="mdi-lock" name="password" label="password" type="password">
         </v-text-field>
         <v-card-actions>
           <v-row justify="center">

@@ -1,6 +1,6 @@
 <template>
   <MainMenu />
-  <SubMenu v-if="subMenu"/>
+  <SubMenu v-if="hasSubMenu"/>
 </template>
 
 <script lang="ts" setup>
@@ -11,7 +11,7 @@ import { storeToRefs } from 'pinia'
 import { useStatusStore } from '../../scripts/stores/status'
 
 
-let { subMenu } = storeToRefs(useStatusStore())
+let { hasSubMenu } = storeToRefs(useStatusStore())
 
 </script>
 

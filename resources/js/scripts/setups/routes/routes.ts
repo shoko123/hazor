@@ -1,8 +1,6 @@
-import SubRouteContainer from '@/components/routes/SubRouteContainer.vue'
 import Index from '@/components/content/Index.vue'
 import ShowItem from '@/components/content/show-item/ShowItem.vue'
 import NotFound from '@/components/routes/NotFound.vue'
-
 
 const routes = [
   {
@@ -11,98 +9,75 @@ const routes = [
     name: 'home'
   },
   {
-    path: '/:module(admin)',
-    component: SubRouteContainer,  
-    props: true,
-    children: [
-      {
-        path: 'dashboard',
-        component: () => import('@/components/content/admin/Dashboard.vue'),
-        name: 'dashboard'
-      },
-      {
-        path: ":catchAll(.*)",
-        component: NotFound,
-        name: 'not-found'
-      }
-    ],
+    path: '/:module(admin)/dashboard',
+    component: () => import('@/components/content/admin/Dashboard.vue'),
+    name: 'dashboard'
   },
   {
-    path: '/:module(auth)',
-    component: SubRouteContainer,
-    props: true,
-    children: [
-      {
-        path: 'login',
-        component: () => import('@/components/content/auth/Login.vue'),       
-        name: 'login',
-      },
-      {
-        path: 'register',
-        component: () => import('@/components/content/auth/Login.vue'),
-        name: 'register',
-      },
-      {
-        path: ":catchAll(.*)",
-        component: NotFound,
-        name: 'not-found'
-      }
-    ]
+    path: '/:module(admin)/:catchAll(.*)',
+    component: NotFound,
+    name: 'not-found'
   },
+  {
+    path: '/:module(auth)/login',
+    component: () => import('@/components/content/auth/Login.vue'),
+    name: 'login',
+  },
+  {
+    path: '/:module(auth)/register',
+    component: () => import('@/components/content/auth/Login.vue'),
+    name: 'register',
+  },
+  {
+    path: "/:module(auth)/:catchAll(.*)",
+    component: NotFound,
+    name: 'not-found'
+  },
+  //dig modules ( loci, stones, etc...)
   {
     path: '/:module',
-    component: SubRouteContainer,
-    props: true,
-    children: [
-      {
-        path: 'welcome',
-        component: () => import('@/components/content/Welcome.vue'),
-        name: 'welcome'
-      },
-      {
-        path: 'filter',
-        component: () => import('@/components/content/filter/Filter.vue'),
-        name: 'filter'
-      },
-      {
-        path: 'index',
-        component: Index,
-        name: 'index'
-      },
-      // {
-      //     path: 'create',
-      //     component: stepper,
-
-      // },
-      {
-        path: ':id',
-        component: ShowItem,
-        name: 'show'
-        // children: [
-
-        //     {
-        //         path: ':update',
-        //         props: true,
-        //         component: stepper,
-
-        //     },
-        //     {
-        //         path: ':media',
-        //         props: true,
-        //         component: MediaEdit,
-        //     },
-        //     {
-        //         path: 'tags',
-        //         props: true,
-        //         component: Tagger,
-        //     },
-        // ],
-      },
-    ]
+    component: Index,
+    name: 'index'
   },
   {
-    path: "/:catchAll(.*)",
-    
+    path: '/:module/welcome',
+    component: () => import('@/components/content/Welcome.vue'),
+    name: 'welcome'
+  },
+  {
+    path: '/:module/filter',
+    component: () => import('@/components/content/filter/Filter.vue'),
+    name: 'filter'
+  },
+
+  {
+    path: '/:module/create',
+    component: Index,
+    name: 'create'
+  },
+  {
+    path: '/:module/:id',
+    component: ShowItem,
+    name: 'show'
+  },
+
+  {
+    path: '/:module/:id/update',
+    component: Index,
+    name: 'update'
+  },
+  {
+    path: '/:module/:id/:media',
+    component: Index,
+    name: 'media'
+  },
+  {
+    path: '/:module/:id/tags',
+    component: Index,
+    name: 'tags'
+  },
+  {
+    path: "/:module/:id/:catchAll(.*)",
     component: NotFound,
     name: "not-found",
   },
