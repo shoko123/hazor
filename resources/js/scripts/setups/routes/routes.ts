@@ -60,7 +60,6 @@ const routes = [
     component: ShowItem,
     name: 'show'
   },
-
   {
     path: '/:module/:id/update',
     component: Index,

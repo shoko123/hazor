@@ -21,6 +21,7 @@ class AppController extends Controller
         return response()->json([
             "accessibility" => config('accessibility.accessibility'),
             "bucketUrl" =>  bucket_url(),
+            "itemsPerPage" => config('display_options.itemsPerPage'),
             "msg" => "AppController.init()",
         ], 200);
     }

@@ -1,11 +1,11 @@
 <?php
-
 namespace App\Models\Model;
 
+use Illuminate\Support\Facades\DB;
 use App\Models\App\DigModel;
 use App\Models\App\FindModel;
 
-class Locus extends FindModel
+class Locus extends DigModel
 {
     public $timestamps = false;
     protected $guarded = [];
@@ -15,9 +15,12 @@ class Locus extends FindModel
     {
         DigModel::__construct('Locus');
     }
+
+    function buildSqlDescription() : string {
+        return 'type AS description';
+    }
     
-    // public function index()
-    // {
-    //     return $this->limit(10)->get();
-    // }
+    function buildSqlUrlId() : string {
+        return 'name AS url_id';
+    }
 }

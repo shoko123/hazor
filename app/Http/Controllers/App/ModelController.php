@@ -51,14 +51,18 @@ class ModelController extends Controller
         ], 200);
     }
 
-    public function chunk(Request $r)
+    public function page(Request $r)
     {
+        $this->createModel($r["model"]);
         return response()->json([
-            "msg" => "ModelControler.chunk()",
-            "model_name" => $this->model_name
+            "page" => $this->model->page($r),
         ], 200);
     }
 
+
+
+
+    
     public function destroy($id)
     {
         return response()->json([

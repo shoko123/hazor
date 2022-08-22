@@ -56,8 +56,11 @@ export const useRoutePrepareStore = defineStore('routePrepareStore', () => {
         console.log(`Navigation to index: loading...`)
         await xhr.send('model/index', 'post', { model: to.module })
           .then(res => {
-            console.log(`index() returned res: ${JSON.stringify(res, null, 2)}`)
-            c.setCollection('main', 'array', res.data.collection)
+            console.log(`index() returned (success)`)
+            //console.log(`index() returned res: ${JSON.stringify(res, null, 2)}`)
+            c.setCollectionElement('main', 'array', res.data.collection)
+            c.setCollectionElement('main', 'viewIndex', 0)
+            c.setCollectionElement('main', 'page', 1)
             return true
           })
           .catch(err => {

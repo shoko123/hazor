@@ -37,7 +37,7 @@ Route::group(['middleware' => ['read.accessibility']], function () {
     Route::get('app/totals', [AppController::class, 'totals']);    
     Route::post('model/hydrate', [ModelController::class, 'hydrate']);
     Route::post('model/index', [ModelController::class, 'index']);
-    Route::post('model/chunk', [ModelController::class, 'chunk']);
+    Route::post('model/page', [ModelController::class, 'page']);
     Route::post('model/show', [ModelController::class, 'show']);
     Route::post('registrar/loci-for-area-season', [RegistrarController::class, 'loci-for-area-season']);
     Route::post('registrar/finds-for-locus', [RegistrarController::class, 'finds-for-locus']);

@@ -6,7 +6,7 @@
       
       class="font-weight-normal ma-2 body-1"
       @click="goTo(item)"
-      >{{ item?.dot}}</v-chip
+      >{{ item?.url_id}}</v-chip
     >
   </v-row>
 </template>

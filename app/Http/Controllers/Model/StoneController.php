@@ -11,15 +11,6 @@ class StoneController extends ModelController
     public function __construct()
     {
         $this->createModel('Locus');
-        //DigController::__construct('Stone');
-    }
-
-    public function index(Request $request)
-    {
-        return response()->json([
-            "msg" => "dig.index() from DigController",
-            "model_name" => $this->model_name
-        ], 200);
     }
 
     public function store(Request $r)

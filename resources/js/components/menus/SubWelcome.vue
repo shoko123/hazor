@@ -15,39 +15,25 @@ const { current } = storeToRefs(useRoutesStore())
 const router = useRouter()
 const buttons = computed(() => {
   let btns = [];
-  if (current.value.module === 'Stone') {
-    btns.push({ text: "Query Collection", method: "filter" });
-  }
+  btns.push({ text: "Filter", method: "filter" });
   btns.push({ text: "Show All", method: "showAll" });
   btns.push({ text: "Show Item", method: "showItem" });
-
   return btns;
 });
 
 function btnClicked(f: string) {
   switch (f) {
     case "showAll":
-      showAll()
+      router.push({ name: 'index', params: { module: current.value.url_module } })
       break
     case 'filter':
-      filter()
+
       break
 
     case 'showItem':
-      showItem()
+
       break
   }
 }
-function filter() {
-
-}
-function showAll() {
-  router.push({ name: 'index', params: { module: current.value.url_module } })
-}
-function showItem() {
-
-}
-
-
 
 </script>

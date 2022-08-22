@@ -5,23 +5,24 @@ import { defineStore, storeToRefs } from 'pinia'
 import { useXhrStore } from './xhr'
 import { useAuthStore } from './auth'
 import { useMediaStore } from './media'
-export const useMainStore = defineStore('main', () => {
+import { useCollectionsStore } from './collections'
 
-  let initialized = ref(false)
+export const useMainStore = defineStore('main', () => {
   const { bucketUrl } = storeToRefs(useMediaStore())
   const { accessibility } = storeToRefs(useAuthStore())
-  
-  async function appInit() {
-    let xhr = useXhrStore()
-    let auth = useAuthStore()
+  const { itemsPerPage } = storeToRefs(useCollectionsStore())
+  const { send } = useXhrStore()
 
-    return xhr.send('app/init', 'get')
-    
+  let initialized = ref(false)
+
+  async function appInit() {
+
+    return send('app/init', 'get')
       .then(res => {
-        console.log(`Setting bucketUrl to ${res.data.bucketUrl}`)
-        console.log(`Setting accessibility to ${JSON.stringify(res.data.accessibility, null, 2)}`)
+        console.log(`app.init() Setting basic configs: ${JSON.stringify(res.data, null, 2)}`)
         bucketUrl.value = res.data.bucketUrl
         accessibility.value = res.data.accessibility
+        itemsPerPage.value = res.data.itemsPerPage
         initialized.value = true
       })
       .catch(err => {

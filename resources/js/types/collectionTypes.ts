@@ -1,16 +1,30 @@
 // collectionTypes.ts
 
 type TView = 'Media' | 'Chips' | 'Table'
+type TSource = 'main' | 'media' | 'related'
+type TElement = 'array' | 'page' | 'viewIndex'
+type TItemsPerPage = {
+        Media: number,
+        Chips: number,
+        Table: number
+}
+
+type TArrayItem = { id: number, url_id: string }
+interface IPageMediaItem extends TArrayItem {
+        url: { full: string, tn: string} | null
+}
+
+interface IPageTableItem extends TArrayItem {
+        description: string
+}
+
 type TCollection = {
-        array: object[],
+        array: TArrayItem[],
         index: number,
-        page: object[],
+        page: IPageMediaItem[] | IPageTableItem[],
         views: TView[],
         viewIndex: number,
+        ready: { array: boolean, index: boolean, page: boolean }
 }
-const itemPerPagePerView = {
-        Media: 18,
-        Chips: 100,
-        Table: 50
-}
-export { TView, TCollection, itemPerPagePerView }
+
+export { TView, TCollection, TElement, TSource, TItemsPerPage, TArrayItem, IPageMediaItem, IPageTableItem }
