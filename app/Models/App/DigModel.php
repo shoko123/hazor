@@ -41,7 +41,7 @@ abstract class DigModel extends Model implements HasMedia
         $url_id = $this->buildSqlUrlId();
         $builder = (object)[];
         $builder = $this->select('id', DB::raw($url_id));
-        $collection = $builder->take(100)->get();
+        $collection = $builder->take(40)->get();
         return $collection;
     }
     public function page($r)

@@ -18,7 +18,7 @@ const sub = computed(() => {
     switch (routeName.value) {
         case 'welcome':
             return SubWelcome
-               case 'index':
+        case 'index':
             return SubIndex
         default:
             return SubWelcome

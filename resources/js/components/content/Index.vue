@@ -8,7 +8,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import Collection from './collections/Collection.vue'
+import Collection from '../collections/Collection.vue'
 
 const xx = computed(() => {
   return 'main'
