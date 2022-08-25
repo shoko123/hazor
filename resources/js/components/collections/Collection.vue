@@ -16,7 +16,7 @@
             </v-pagination>
           </div>
         </template>
-        <component :is="collectionPage" source="props.source" />
+        <component :is="collectionPage" :source=props.source />
       </v-container>
     </v-card-text>
   </v-card>
@@ -59,7 +59,7 @@ const header = computed(() => {
 
 const paginator = computed(() => {
   let dd = collections.getCollectionDisplayData(props.source)
-  console.log(`paginator() display: ${JSON.stringify(dd, null, 2)}`);
+  //console.log(`paginator() display: ${JSON.stringify(dd, null, 2)}`);
 
   return { show: dd.noOfPages > 1
   , page: dd.pageNoB1, pages: dd.noOfPages }

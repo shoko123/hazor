@@ -13,10 +13,29 @@ type TItemsPerPage = {
 interface IArrayItem { id: number, url_id: string }
 
 interface IPageMediaItem extends IArrayItem {
-        media: { full: string, tn: string } | null
+        description: string
+        primaryMedia: { full: string, tn: string } | null
 }
 
 interface IPageTableItem extends IArrayItem {
+        description: string
+}
+
+interface IPageChipItemDisplay {
+        id: number
+        tag: string,
+}
+
+interface IPageMediaItemDisplay {
+        id: number
+        tag: string,
+        description: string
+        urls: { full: string, tn: string } | null
+}
+
+interface IPageTableItemDisplay {
+        id: number,
+        tag: string
         description: string
 }
 
@@ -30,7 +49,8 @@ type TCollection = {
         ready: { array: boolean, index: boolean, page: boolean }
 }
 
-type TCollectionDisplayData = {
+type TPageDisplayData = {
+        page: IPageMediaItemDisplay[] | IPageTableItemDisplay[] | IPageChipItemDisplay[],
         pageNoB1: number,
         noOfItems: number,
         noOfPages: number,
@@ -39,4 +59,4 @@ type TCollectionDisplayData = {
         lastItemNo: number
 }
 
-export { TView, TCollection, TElement, TSource, TItemsPerPage, TCollectionDisplayData, IArrayItem, IPageMediaItem, IPageTableItem }
+export { TView, TCollection, TElement, TSource, TItemsPerPage, TPageDisplayData, IArrayItem, IPageMediaItem, IPageTableItem, IPageChipItemDisplay, IPageMediaItemDisplay, IPageTableItemDisplay }

@@ -16,8 +16,8 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { TSource } from '../../types/collectionTypes'
-import { useCollectionsStore } from '../../scripts/stores/collections';
-import { useStatusStore } from '../../scripts/stores/status';
+import { useCollectionsStore } from '../../scripts/stores/collections'
+import { useStatusStore } from '../../scripts/stores/status'
 
 
 const props = defineProps<{

@@ -4,8 +4,8 @@
       <template v-slot:default="{ hover }">
         <v-card class="mx-auto" max-width="size" max-height="size">
           <v-img
-            :src="size > 250 ? item.fullUrl : item.tnUrl"
-            :lazy-src="item.tnUrl"
+            :src="item.urls?.full"
+            :lazy-src="item.urls?.tn"
             contain
             aspect-ratio="1"
             class="grey lighten-2"
@@ -26,10 +26,7 @@
             <v-overlay v-if="hover" absolute color="#036358">
               <component
                 v-bind:is="overlay"
-                v-bind:item="item"
-                v-bind:source="source"
-                v-bind:page="page"
-                v-bind:index="index"
+               
               ></component>
             </v-overlay>
           </v-fade-transition>
@@ -39,80 +36,80 @@
   </div>
 </template>
 
-<script>
-import OverlayRelated from "./OverlayRelated";
-import OverlayItemMedia from "./OverlayItemMedia";
-import OverlayMediaEdit from "./OverlayMediaEdit";
-import OverlayCollectionItem from "./OverlayCollectionItem";
+<script lang="ts" setup >
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { TSource, IPageMediaItemDisplay } from '../../types/collectionTypes'
+import { useCollectionsStore } from '../../scripts/stores/collections'
+import { useStatusStore } from '../../scripts/stores/status'
 
-export default {
-  components: {
-    OverlayRelated,
-    OverlayItemMedia,
-    OverlayMediaEdit,
-    OverlayCollectionItem,
-  },
-  props: {
-    source: String,
-    caller: String,
-    page: Number,
-    index: Number,
-    item: Object,
-    size: Number,
-  },
 
-  created() {
-    //console.log(
-    //  `MediaSquare.created() source: ${this.source} index: ${this.index}`
-    //);
-  },
-  computed: {
-    tagText() {
-      switch (this.source) {
-        case "main":
-        case "related":
-          return this.item.tag;
+import OverlayRelated from './OverlayRelated.vue'
+import OverlayItemMedia from './OverlayItemMedia.vue'
+import OverlayMediaEdit from './OverlayMediaEdit.vue'
+import OverlayCollectionItem from './OverlayCollectionItem.vue'
+import { ItemNotFoundError } from '@/js/scripts/setups/routes/errors'
 
-        case "media":
-          if (this.caller === "mediaPrimary") {
-            let c = this.$store.getters["mgr/collections"]("media");
-            return `media (${c.collection.length})`;
-          } else {
-            return "";
-          }
-      }
-    },
-    overlayText() {
-      switch (this.source) {
-        case "main":
-        case "related":
-          if (!this.item.hasMedia) {
-            let text = this.item.description;
-            if (text === null || text === undefined) {
-              return "";
-            } else {
-              return text.length < 101 ? text : text.substr(0, 100) + "...";
-            }
-          }
+const props = defineProps<{
+  source: TSource, 
+  caller: string, 
+  item: IPageMediaItemDisplay
+}>()
 
-        case "media":
-          return "";
-      }
-    },
+const tagText = computed(() => {
+  return props.item.tag
 
-    overlay() {
-      switch (this.source) {
-        case "main":
-          return OverlayCollectionItem;
-        case "related":
-          return OverlayRelated;
-        case "media":
-          return this.$store.getters["mgr/status"].isMediaEdit
-            ? OverlayMediaEdit
-            : OverlayItemMedia;
-      }
-    },
-  },
-};
+  // switch (this.source) {
+  //       case "main":
+  //       case "related":
+  //         return this.item.tag;
+
+  //       case "media":
+  //         if (this.caller === "mediaPrimary") {
+  //           let c = this.$store.getters["mgr/collections"]("media");
+  //           return `media (${c.collection.length})`;
+  //         } else {
+  //           return "";
+  //         }
+  //     }
+})
+
+const overlayText = computed(() => {
+  return props.item.description
+
+  // switch (this.source) {
+  //       case "main":
+  //       case "related":
+  //         if (!this.item.hasMedia) {
+  //           let text = this.item.description;
+  //           if (text === null || text === undefined) {
+  //             return "";
+  //           } else {
+  //             return text.length < 101 ? text : text.substr(0, 100) + "...";
+  //           }
+  //         }
+
+  //       case "media":
+  //         return "";
+  //     }
+})
+
+const overlay = computed(() => {
+  return OverlayItemMedia
+  //  switch (props.source) {
+  //       case "main":
+  //         return OverlayCollectionItem;
+  //       case "related":
+  //         return OverlayRelated;
+  //       case "media":
+  //         // return this.$store.getters["mgr/status"].isMediaEdit
+  //         true
+  //           ? OverlayMediaEdit
+  //           : OverlayItemMedia;
+  //     }
+  return props.item.tag
+})
+
 </script>
 

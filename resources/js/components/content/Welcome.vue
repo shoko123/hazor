@@ -28,14 +28,9 @@
 
 
 
-import { defineComponent, onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useModuleStore } from '../../scripts/stores/module'
-
-defineComponent({
-  name: "Welcome",
-});
-
 
 const { counts } = storeToRefs(useModuleStore())
 const text = 'Main Text'
