@@ -21,6 +21,6 @@ const buttons = computed(() => {
 });
 
 function btnClicked(routeName: string) {
-      router.push({ name: 'filter', params: { module: routeName } })
+      router.push({ name: routeName, params: { module: current.value.url_module } })
 }
 </script>

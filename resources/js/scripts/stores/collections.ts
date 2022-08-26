@@ -153,7 +153,6 @@ export const useCollectionsStore = defineStore('collections', () => {
                     main.value.pageNoB1 = pageNoB1
                     return
                 }
-                n.showSpinner("Loading Page...")
                 await send('model/page', 'post', { model: to.value.module, view, ids })
                     .then(res => {
                         formatAndSavePage('main', res.data.page)
@@ -172,7 +171,6 @@ export const useCollectionsStore = defineStore('collections', () => {
                     })
                     .finally(() => {
                         main.value.pageNoB1 = pageNoB1
-                        n.showSpinner(false)
                     })
         }
     }
@@ -189,10 +187,9 @@ export const useCollectionsStore = defineStore('collections', () => {
             }
         }
 
-
         let c = getCollectionRef(name)
         let view = c.value.views[c.value.viewIndex]
-        let x
+
         switch (view) {
             case 'Media':
                 c.value.page = page.map(x => { return { id: x.id, tag: x.url_id, description: x.description, hasMedia: x.primaryMedia !== null, urls: getUrls(x.primaryMedia) } })

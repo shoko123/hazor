@@ -107,9 +107,9 @@ export const useRoutesStore = defineStore('routesStore', () => {
     }
 
     function finalizeRouting() {
-        console.log('finalize OK')
         //copy to -> current
         current.value = JSON.parse(JSON.stringify(to.value))
+        console.log('finalize OK')        
     }
 
     return { isLoading, current, to, handleRouteChange }

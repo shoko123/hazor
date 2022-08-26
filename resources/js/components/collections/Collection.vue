@@ -1,6 +1,12 @@
 <template>
   <v-card class="elevation-12">
     <v-card-title id="collection">{{ header }}
+    <template v-if="showPaginator">
+          <div class="text-center">
+            <v-pagination v-if="paginator.show" v-model="page" :length="paginator.pages" :total-visible="10" :disabled="disable">
+            </v-pagination>
+          </div>
+        </template>
       <v-spacer></v-spacer>
       <v-btn v-if="allowChips" size="small" variant="outlined" @click="toggleDisplayOption()">view: {{
           displayOption
@@ -10,12 +16,6 @@
 
     <v-card-text>
       <v-container fluid class="ma-0 pa-0">
-        <template v-if="showPaginator">
-          <div class="text-center">
-            <v-pagination v-if="paginator.show" v-model="page" :length="paginator.pages" :total-visible="20" :disabled="disable">
-            </v-pagination>
-          </div>
-        </template>
         <component :is="collectionPage" :source=props.source />
       </v-container>
     </v-card-text>
