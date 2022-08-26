@@ -3,7 +3,7 @@
   <v-menu v-if="auth.authenticated">
     <template v-slot:activator="{ props }">
       <v-btn v-bind="props">
-      <v-icon left dark>mdi-account</v-icon>
+        <v-icon left dark>mdi-account</v-icon>
         {{ auth.user?.name }}
       </v-btn>
     </template>
@@ -15,24 +15,22 @@
   </v-menu>
 </template>
 
+
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../scripts/stores/auth';
-import { useStatusStore} from '../../scripts/stores/status';
+import { useRoutesStore } from '../../scripts/stores/routes/routesMain';
 import type { TName } from '../../types/routesTypes'
 let auth = useAuthStore()
-let { authenticated} = storeToRefs(auth)
 const router = useRouter()
-let { routeName } = storeToRefs(useStatusStore())
-
+let { current } = storeToRefs(useRoutesStore())
 type TUserOption = 'Dashboard' | 'Logout'
-
 let options: TUserOption[] = ['Dashboard', 'Logout']
 
 const showLoginButton = computed(() => {
-return !authenticated.value && String(routeName.value) !== 'login'
+  return !auth.authenticated && String(current.value.name) !== 'login'
 })
 
 function loginClick() {

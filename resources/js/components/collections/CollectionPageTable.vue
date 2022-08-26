@@ -17,7 +17,7 @@
     <tbody>
       <tr v-for="item in page" :key="item.id">
         <td>{{ item.id }}</td>
-        <td>{{ item.url_id }}</td>
+        <td>{{ item.tag }}</td>
         <td>{{ item.description }}</td>
       </tr>
     </tbody>
@@ -29,18 +29,18 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-import { TSource, IPageTableItem } from '../../types/collectionTypes'
+import { TSource, IPageTableItem, IPageTableItemDisplay } from '../../types/collectionTypes'
 import { useCollectionsStore } from '../../scripts/stores/collections';
 
 const props = defineProps<{
   source: TSource
 }>()
 
-let { getCollection } = useCollectionsStore()
+let { getCollectionDisplayData } = useCollectionsStore()
 
 const page = computed(() => {
-  let c = getCollection(props.source)
-  return c.page as IPageTableItem[]
+  let c = getCollectionDisplayData(props.source)
+  return c.page as IPageTableItemDisplay[]
 })
 
 </script>

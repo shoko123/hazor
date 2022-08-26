@@ -35,7 +35,6 @@ export const useAuthStore = defineStore('auth', () => {
   })
 
   async function login(r: any) {
-
     let xhr = useXhrStore();
     let notifications = useNotificationsStore()
 

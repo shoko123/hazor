@@ -1,19 +1,19 @@
 // collection.ts
-//handles all collections and loading of chunks (pages)
+//handles all collections and loading of pages
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed, registerRuntimeCompiler } from 'vue'
 import { TCollection, TSource, TElement, TItemsPerPage, TView, IArrayItem, TPageDisplayData, IPageMediaItem, IPageTableItem, IPageChipItemDisplay, IPageMediaItemDisplay, IPageTableItemDisplay } from '../../types/collectionTypes'
 import { useXhrStore } from './xhr'
 import { useRoutesStore } from './routes/routesMain'
 import { useMediaStore } from './media'
-import { useStatusStore } from './status'
 import { useNotificationsStore } from './notifications'
+
 export const useCollectionsStore = defineStore('collections', () => {
     const { send } = useXhrStore()
-    const { to } = storeToRefs(useRoutesStore())
+    const { to, current } = storeToRefs(useRoutesStore())
     let { bucketUrl } = storeToRefs(useMediaStore())
-    let { module } = storeToRefs(useStatusStore())    
     let n = useNotificationsStore()
+
     const itemsPerPage = ref<TItemsPerPage>({
         Media: 0,
         Chips: 0,
@@ -50,21 +50,16 @@ export const useCollectionsStore = defineStore('collections', () => {
         ready: { array: false, index: false, page: false }
     })
 
-    const collectionMain = computed(() => {
-        return {
-            collection: main.value,
-            pageNoB1: main.value.pageNoB1,
-            noOfItems: main.value.array.length,
-            noOfPages: Math.floor(main.value.array.length / itemsPerPage.value[<TView>main.value.views[main.value.viewIndex]]),
-            noOfItemsInCurrentPage: main.value.page.length
-        }
-    })
-
     const cMain = computed(() => {
         return getCollectionDisplayData('main')
     })
 
-    const collection = computed((name: TSource) => {
+    function viewsData(name: TSource) {
+        const c = getCollectionRef(name)
+        return { views: c.value.views, viewIndex: c.value.viewIndex, viewText: c.value.views[c.value.viewIndex] }
+    }
+
+    function getCollectionRef(name: TSource) {
         switch (name) {
             case 'main':
                 return main
@@ -75,85 +70,52 @@ export const useCollectionsStore = defineStore('collections', () => {
             default:
                 return main
         }
-    })
-
-
-    function getCollection(name: TSource): TCollection {
-        switch (name) {
-            case 'main':
-                return main.value
-            case 'media':
-                return media.value
-            case 'related':
-                return related.value
-            default:
-                return main.value
-        }
     }
 
     function getCollectionDisplayData(name: TSource): TPageDisplayData {
-        let c = getCollectionByName(name)
-        let ipp = itemsPerPage.value[<TView>c.views[c.viewIndex]]
-        let view = c.views[c.viewIndex]
+        let c = getCollectionRef(name)
+        let ipp = itemsPerPage.value[<TView>c.value.views[c.value.viewIndex]]
+        let view = c.value.views[c.value.viewIndex]
         let page, pageFormatted
 
-        function getUrls(urls: object | null) : object {
-            if(urls === null){
+        function getUrls(urls: object | null): object {
+            if (urls === null) {
                 return {
-                    full: `${bucketUrl.value}app/filler/${module.value.name}Filler.jpg`,
-                    tn: `${bucketUrl.value}app/filler/${module.value.name}Filler-tn.jpg`
-                  }
+                    full: `${bucketUrl.value}app/filler/${current.value.module}Filler.jpg`,
+                    tn: `${bucketUrl.value}app/filler/${current.value.module}Filler-tn.jpg`
+                }
             } else {
-                return { full: null, tn: null}
+                return { full: null, tn: null }
             }
         }
 
         switch (view) {
             case 'Media':
-                page = c.page as IPageMediaItem[]
+                page = c.value.page as IPageMediaItem[]
                 let urls = {}
                 pageFormatted = page.map(x => { return { id: x.id, tag: x.url_id, description: x.description, urls: getUrls(x.primaryMedia) } }) as IPageMediaItemDisplay[]
                 break;
 
             case 'Chips':
-                page = c.page as IArrayItem[]
+                page = c.value.page as IArrayItem[]
                 pageFormatted = page.map(x => { return { id: x.id, tag: x.url_id } }) as IPageChipItemDisplay[]
                 break;
-            
+
             case 'Table':
-                page = c.page as IPageTableItem[]
+                page = c.value.page as IPageTableItem[]
                 pageFormatted = page.map(x => { return { id: x.id, tag: x.url_id, description: x.description } }) as IPageTableItemDisplay[]
                 break;
         }
 
-
-
-
         return {
 
-            pageNoB1: c.pageNoB1,
-            noOfItems: c.array.length,
-            noOfPages: Math.floor(c.array.length / ipp) + (c.array.length % ipp === 0 ? 0 : 1),
-            noOfItemsInCurrentPage: c.page.length,
-            firstItemNo: (c.pageNoB1 - 1) * ipp + 1,
-            lastItemNo: (c.pageNoB1 - 1) * ipp + c.page.length,
+            pageNoB1: c.value.pageNoB1,
+            noOfItems: c.value.array.length,
+            noOfPages: Math.floor(c.value.array.length / ipp) + (c.value.array.length % ipp === 0 ? 0 : 1),
+            noOfItemsInCurrentPage: c.value.page.length,
+            firstItemNo: (c.value.pageNoB1 - 1) * ipp + 1,
+            lastItemNo: (c.value.pageNoB1 - 1) * ipp + c.value.page.length,
             page: pageFormatted
-        }
-    }
-
-    function getCollectionByName(name: TSource): TCollection {
-        switch (name) {
-            case 'main':
-                return main.value
-                break
-            case 'media':
-                return media.value
-                break
-            case 'related':
-                return related.value
-            default:
-                alert(`getCollectionByName() Bad array name: ${name}`)
-                return main.value
         }
     }
 
@@ -189,8 +151,11 @@ export const useCollectionsStore = defineStore('collections', () => {
         }
     }
 
-    async function setPage(name: TSource, pageNoB1: number) {
+    function formatPageItems<S, T>(){
 
+    }
+    
+    async function setPage(name: TSource, pageNoB1: number) {
         switch (name) {
             case 'main':
                 let view = main.value.views[main.value.viewIndex]
@@ -199,7 +164,7 @@ export const useCollectionsStore = defineStore('collections', () => {
                 let ids = main.value.array.slice(start, start + ipp).map(x => x.id);
                 console.log(`setPage() source: ${name} pageB1: ${pageNoB1} start: ${start} ipp: ${ipp}`);
                 if (view === 'Chips') {
-                    main.value.page = main.value.array.slice(start, start + ipp) as IArrayItem[]
+                    main.value.page = [...main.value.array.slice(start, start + ipp) as IArrayItem[]]
                     main.value.pageNoB1 = pageNoB1
                     return
                 }
@@ -257,5 +222,5 @@ export const useCollectionsStore = defineStore('collections', () => {
         related.value.index = 0
         related.value.viewIndex = 0
     }
-    return { itemsPerPage, main, related, media, getCollection, getCollectionDisplayData, collectionMain, setCollectionElement, reset, cMain }
+    return { itemsPerPage, viewsData, getCollectionDisplayData, setCollectionElement, reset, cMain }
 })

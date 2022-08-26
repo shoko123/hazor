@@ -41,8 +41,6 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { TSource, IPageMediaItemDisplay } from '../../types/collectionTypes'
-import { useCollectionsStore } from '../../scripts/stores/collections'
-import { useStatusStore } from '../../scripts/stores/status'
 
 
 import OverlayRelated from './OverlayRelated.vue'

@@ -9,13 +9,13 @@
 import { ref, computed } from 'vue'
 import SubWelcome from './SubWelcome.vue'
 import SubIndex from './SubIndex.vue'
-import { useStatusStore } from '../../scripts/stores/status'
+import { useRoutesStore } from '../../scripts/stores/routes/routesMain'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-const { routeName } = storeToRefs(useStatusStore())
+const { current } = storeToRefs(useRoutesStore())
 
 const sub = computed(() => {
-    switch (routeName.value) {
+    switch (current.value.name) {
         case 'welcome':
             return SubWelcome
         case 'index':

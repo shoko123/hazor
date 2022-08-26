@@ -15,10 +15,6 @@ import { storeToRefs } from 'pinia'
 import { TCollection, TSource, TElement, TItemsPerPage, TView, IArrayItem, IPageMediaItem, IPageTableItem, IPageMediaItemDisplay } from '../../types/collectionTypes'
 
 import MediaSquare from '../media/MediaSquare.vue'
-import CollectionPageChips from './CollectionPageChips.vue'
-import CollectionPageTable from './CollectionPageTable.vue'
-import { useStatusStore } from '../../scripts/stores/status';
-
 
 const props = defineProps<{
   source: TSource

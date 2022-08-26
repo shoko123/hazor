@@ -65,15 +65,15 @@ const paginator = computed(() => {
   , page: dd.pageNoB1, pages: dd.noOfPages }
   //return `${to.value.module} results. Showing page(${dd.pageNoB1}/${dd.noOfPages}), items(${dd.firstItemNo}- ${dd.lastItemNo}/${dd.noOfItems})`
 
-  //return status.mainCollectionHeader.value
+
 })
 const showPaginator = computed(() => {
   return `CollectionPageMedia`
 })
 
 const collectionPage = computed(() => {
-  let c = collections.getCollection(props.source)
-  switch (c.views[c.viewIndex]) {
+  let c = collections.viewsData(props.source)
+  switch (c.viewText) {
     case 'Media':
       return CollectionPageMedia
     case 'Chips':
@@ -90,8 +90,8 @@ const allowChips = computed(() => {
 
 
 const displayOption = computed(() => {
-  let c = collections.getCollection(props.source)
-  return c.views[c.viewIndex]
+   let c = collections.viewsData(props.source)
+  return c.viewText
 })
 
 const itemsPerPage = computed(() => {
@@ -112,7 +112,7 @@ const disable = computed(() => {
 
 
 function toggleDisplayOption() {
-  let c = collections.getCollection(props.source)
+  let c = collections.viewsData(props.source)
   //console.log(`toggle display option() collection: ${JSON.stringify(c, null, 2)}\ncurrent: ${c.viewIndex}, next: ${(c.viewIndex + 1)%(c.views.length)}`);
   //c.viewIndex = (c.viewIndex + 1)%(c.views.length)
   collections.setCollectionElement(props.source, 'viewIndex', (c.viewIndex + 1) % (c.views.length))

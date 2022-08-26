@@ -4,12 +4,10 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, computed } from 'vue'
-import MainMenu from './MainMenu.vue'
-import SubMenu from './SubMenu.vue'
 import { storeToRefs } from 'pinia'
 import { useStatusStore } from '../../scripts/stores/status'
-
+import MainMenu from './MainMenu.vue'
+import SubMenu from './SubMenu.vue'
 
 let { hasSubMenu } = storeToRefs(useStatusStore())
 
