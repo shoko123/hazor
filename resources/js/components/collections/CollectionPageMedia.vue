@@ -12,7 +12,7 @@ import { useCollectionsStore } from '../../scripts/stores/collections';
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { TCollection, TSource, TElement, TItemsPerPage, TView, IArrayItem, IPageMediaItem, IPageTableItem, IPageMediaItemDisplay } from '../../types/collectionTypes'
+import { TCollection, TSource, TElement, TItemsPerPage, TView, IArrayItem,  IMediaItem } from '../../types/collectionTypes'
 
 import MediaSquare from '../media/MediaSquare.vue'
 
@@ -25,7 +25,7 @@ let { getCollectionDisplayData } = useCollectionsStore()
 const page = computed(() => {
   let c = getCollectionDisplayData(props.source)
   //console.log(`CPMedia.page() CollectionDisplayData: ${JSON.stringify(c, null, 2)} source: ${props.source}` )
-  return c.page as IPageMediaItemDisplay[]
+  return c.page as IMediaItem[]
 })
 
 function goTo(item: any) {

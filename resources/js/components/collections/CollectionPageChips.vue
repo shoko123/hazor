@@ -11,7 +11,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { TSource, IPageChipItemDisplay } from '../../types/collectionTypes'
+import { TSource, IChipItem } from '../../types/collectionTypes'
 import { useCollectionsStore } from '../../scripts/stores/collections'
 
 
@@ -25,7 +25,7 @@ let { getCollectionDisplayData } = useCollectionsStore()
 const page = computed(() => {
   let c = getCollectionDisplayData(props.source)
   //console.log(`CPMedia.page() CollectionDisplayData: ${JSON.stringify(c, null, 2)} source: ${props.source}` )
-  return c.page as IPageChipItemDisplay[]
+  return c.page as IChipItem[]
 })
 
 function goTo(item: any) {

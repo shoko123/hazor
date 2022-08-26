@@ -27,7 +27,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { TCollection, TSource, TElement, TItemsPerPage, TView, IArrayItem, IPageMediaItem, IPageTableItem } from '../../types/collectionTypes'
+import { TCollection, TSource, TElement, TItemsPerPage, TView, IArrayItem} from '../../types/collectionTypes'
 
 import CollectionPageMedia from './CollectionPageMedia.vue'
 import CollectionPageChips from './CollectionPageChips.vue'

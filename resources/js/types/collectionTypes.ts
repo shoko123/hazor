@@ -10,39 +10,45 @@ type TItemsPerPage = {
         Table: number
 }
 
+//'main' array items
 interface IArrayItem { id: number, url_id: string }
 
-interface IPageMediaItem extends IArrayItem {
-        description: string
-        primaryMedia: { full: string, tn: string } | null
+//raw data received from DB (from 'main, page('media') & page('table'))
+interface IPage {
+        id: number, 
+        url_id: string, 
+        description?: string,
+        primaryMedia?: { full: string, tn: string } | null
 }
 
-interface IPageTableItem extends IArrayItem {
-        description: string
-}
-
-interface IPageChipItemDisplay {
+//conversions ready for consumption for 'Media', 'Chip', and 'Table' views
+interface IChipItem {
         id: number
         tag: string,
 }
 
-interface IPageMediaItemDisplay {
+interface IMediaItem {
         id: number
         tag: string,
         description: string
+        hasMedia: boolean,        
         urls: { full: string, tn: string } | null
 }
 
-interface IPageTableItemDisplay {
+interface ITableItem {
         id: number,
         tag: string
         description: string
 }
+//union of the above
+type IPageDisplay = IMediaItem | IChipItem | ITableItem
 
+
+//all the data kept in a specific collection
 type TCollection = {
         array: IArrayItem[],
         index: number,
-        page: IArrayItem[] | IPageMediaItem[] | IPageTableItem[],
+        page: IPageDisplay[],
         pageNoB1: number,
         views: TView[],
         viewIndex: number,
@@ -50,7 +56,7 @@ type TCollection = {
 }
 
 type TPageDisplayData = {
-        page: IPageMediaItemDisplay[] | IPageTableItemDisplay[] | IPageChipItemDisplay[],
+        page: IPageDisplay[],
         pageNoB1: number,
         noOfItems: number,
         noOfPages: number,
@@ -59,4 +65,4 @@ type TPageDisplayData = {
         lastItemNo: number
 }
 
-export { TView, TCollection, TElement, TSource, TItemsPerPage, TPageDisplayData, IArrayItem, IPageMediaItem, IPageTableItem, IPageChipItemDisplay, IPageMediaItemDisplay, IPageTableItemDisplay }
+export { TView, TCollection, TElement, TSource, IPage, TItemsPerPage, TPageDisplayData, IPageDisplay, IArrayItem, IChipItem, IMediaItem, ITableItem }

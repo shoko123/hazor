@@ -40,7 +40,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { TSource, IPageMediaItemDisplay } from '../../types/collectionTypes'
+import { TSource, IMediaItem } from '../../types/collectionTypes'
 
 
 import OverlayRelated from './OverlayRelated.vue'
@@ -52,7 +52,7 @@ import { ItemNotFoundError } from '@/js/scripts/setups/routes/errors'
 const props = defineProps<{
   source: TSource, 
   caller: string, 
-  item: IPageMediaItemDisplay
+  item: IMediaItem
 }>()
 
 const tagText = computed(() => {
