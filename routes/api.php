@@ -35,7 +35,7 @@ Route::post('auth/logout', [AuthController::class, 'logout'])->middleware('auth:
 //read only APIs. Accessible when config.accessibility.authenticatedUsersOnly is false, or authenticated.
 Route::group(['middleware' => ['read.accessibility']], function () {
     Route::get('app/totals', [AppController::class, 'totals']);    
-    Route::post('model/hydrate', [ModelController::class, 'hydrate']);
+    Route::post('model/init', [ModelController::class, 'init']);
     Route::post('model/index', [ModelController::class, 'index']);
     Route::post('model/page', [ModelController::class, 'page']);
     Route::post('model/show', [ModelController::class, 'show']);

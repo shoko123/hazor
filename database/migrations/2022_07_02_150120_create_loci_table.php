@@ -36,35 +36,23 @@ class CreateLociTable extends Migration
         });
 
 
-        Schema::create('loci_orig', function (Blueprint $table) {
-            $table->increments('id');     
-            $table->string('name', 10)->nullable();
-            $table->string('type', 30)->nullable();
-            $table->string('stratum', 15)->nullable();
-            $table->string('area', 10)->nullable();
-            $table->string('square', 10)->nullable();
-            $table->string('elevation', 20)->nullable();
-            $table->string('cross_ref', 130)->nullable();   
-            
-            //$table->unique('name');   
-        });
-        /*
-        Schema::create('locus_tag_types', function (Blueprint $table) {
+        
+        
+        Schema::create('locus_tag_groups', function (Blueprint $table) {
             $table->tinyIncrements('id');
             $table->string('name', 40);
             $table->boolean('multiple')->default(0);
-            $table->json('dependency')->nullable();
         });
 
         Schema::create('locus_tags', function (Blueprint $table) {
             $table->smallIncrements('id');
             $table->string('name', 50);
-            $table->unsignedTinyInteger('type_id');
+            $table->unsignedTinyInteger('group_id');
             $table->unsignedSmallInteger('order_column');
                 
-            $table->foreign('type_id')
+            $table->foreign('group_id')
                 ->references('id')
-                ->on('locus_tag_types')
+                ->on('locus_tag_groups')
                 ->onUpdate('cascade');
         });
 
@@ -77,7 +65,21 @@ class CreateLociTable extends Migration
 
             $table->primary(['item_id', 'tag_id']);
         });
-        */
+       
+        ///////
+
+        Schema::create('loci_orig', function (Blueprint $table) {
+            $table->increments('id');     
+            $table->string('name', 10)->nullable();
+            $table->string('type', 30)->nullable();
+            $table->string('stratum', 15)->nullable();
+            $table->string('area', 10)->nullable();
+            $table->string('square', 10)->nullable();
+            $table->string('elevation', 20)->nullable();
+            $table->string('cross_ref', 130)->nullable();   
+            
+            //$table->unique('name');   
+        });
     }
 
     /**

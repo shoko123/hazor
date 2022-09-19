@@ -9,7 +9,7 @@ use Database\Seeders\FaunaTablesSeeder;
 use Database\Seeders\StoneTablesSeeder;
 use Database\Seeders\UsersTableSeeder;
 use Database\Seeders\PermissionsSeeder;
-
+use Database\Seeders\TagTablesSeeder;
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
         $this->call(LociTablesSeeder::class);
         $this->call(FaunaTablesSeeder::class);
         $this->call(StoneTablesSeeder::class);
+        $this->call(TagTablesSeeder::class);
         // \App\Models\User::factory(10)->create();
 
         // \App\Models\User::factory()->create([

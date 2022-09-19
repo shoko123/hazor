@@ -28,7 +28,7 @@ export const useRoutePrepareStore = defineStore('routePrepareStore', () => {
     switch (plan.scaffold) {
       case 'load':
         n.showSpinner('Loading module data ...')
-        await xhr.send('model/hydrate', 'post', { model: to.module })
+        await xhr.send('model/init', 'post', { model: to.module })
           .then(res => {
             //console.log(`auth.response is ${JSON.stringify(res, null, 2)}`)
             m.counts = res.data.counts

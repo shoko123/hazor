@@ -9,37 +9,23 @@ use Illuminate\Support\Facades\DB;
 
 class ModelController extends Controller
 {
-    public $model_full_path = null;
     protected $model_name = null;
-
     protected $model = null;
 
-    public function __construct(/*String $model_name*/)
-    {
-        //$this->model_full_path = "App\Models\Model\\" . $model_name . "\\" . $model_name;
-        //$this->model = new ($this->model_full_path);
-    }
     public function createModel(String $model_name)
     {
         $this->model_name = $model_name;
-        $this->model_full_path = "App\Models\Model\\" . $model_name;
-        $this->model = new ($this->model_full_path);
+        $model_full_path = "App\Models\Model\\" . $model_name;
+        $this->model = new ($model_full_path);
     }
 
-    public function hydrate(Request $r)
+    public function init(Request $r)
     {  
         $this->createModel($r["model"]);
-        $count = $this->model->count();
-        $mediaCount = '6777';
-       
-        return response()->json([           
-            //"model" =>  $this->model_name,
-            "msg" => "ModelController.hydrate(" .  $this->model_name . ")",
-            "counts" => [ "items" => $count, "media" => 777,],
-        ], 200);
+        return response()->json($this->model->init(), 200);
     }
 
-     public function index(Request $r)
+    public function index(Request $r)
     {
         $this->createModel($r["model"]);
         $collection = $this->model->index($r["queryParams"]);
@@ -58,10 +44,6 @@ class ModelController extends Controller
             "page" => $this->model->page($r),
         ], 200);
     }
-
-
-
-
     
     public function destroy($id)
     {

@@ -13,8 +13,20 @@ return new class extends Migration
      */
     public function up()
     {
+        Schema::create('stone_base_types', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name', 50);
+        });
+
+        Schema::create('stone_materials', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name', 50);
+        });
+
         Schema::create('stones', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('material_id')->default(1);
+            $table->unsignedInteger('base_type_id')->default(1);
             $table->string('type', 50)->nullable();
             $table->string('area', 50)->nullable();
             $table->string('date', 50)->nullable();
@@ -24,6 +36,43 @@ return new class extends Migration
             $table->string('material', 50)->nullable();
             $table->string('dimensions', 100)->nullable();
             $table->string('details')->nullable();
+
+
+            $table->foreign('base_type_id')
+                ->references('id')->on('stone_base_types')
+                ->onUpdate('cascade');
+
+            $table->foreign('material_id')
+                ->references('id')->on('stone_materials')
+                ->onUpdate('cascade');
+        });
+
+        Schema::create('stone_tag_groups', function (Blueprint $table) {
+            $table->tinyIncrements('id');
+            $table->string('name', 40);
+            $table->boolean('multiple')->default(0);
+        });
+
+        Schema::create('stone_tags', function (Blueprint $table) {
+            $table->smallIncrements('id');
+            $table->string('name', 50);
+            $table->unsignedTinyInteger('group_id');
+            $table->unsignedSmallInteger('order_column');
+
+            $table->foreign('group_id')
+                ->references('id')
+                ->on('stone_tag_groups')
+                ->onUpdate('cascade');
+        });
+
+        Schema::create('stone-stone_tags', function (Blueprint $table) {
+            $table->unsignedInteger('item_id');
+            $table->foreign('item_id')->references('id')->on('loci')->onUpdate('cascade');
+
+            $table->unsignedSmallInteger('tag_id')->unsigned();
+            $table->foreign('tag_id')->references('id')->on('stone_tags')->onUpdate('cascade');
+
+            $table->primary(['item_id', 'tag_id']);
         });
     }
 

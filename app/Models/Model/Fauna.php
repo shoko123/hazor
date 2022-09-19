@@ -16,6 +16,19 @@ class Fauna extends FindModel
     {
         DigModel::__construct('Fauna');  
     }
+
+    public function init() : array {
+        return [
+            "message" => $this->eloquent_model_name . '.init()',
+            "counts" => [ "items" => $this->count(), "media" => 777,],
+            "trio" => $this->getTrio()
+        ];
+    }
+ 
+    function getTrio(): array {
+        return [];
+    }
+    
     function buildSqlDescription() : string {
         return 'CONCAT(label, ", ", taxon, ", ", element) AS description';
     }
