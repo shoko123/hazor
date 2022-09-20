@@ -141,22 +141,19 @@ abstract class DigModel extends Model implements HasMedia
 
     private function getGlobalTagsGroupDetails($data)
     {
-        $tagGroupName = "App\\Models\\Tags\\" . $this->eloquent_model_name . "TagGroup";
+        $tagGroupName = "App\\Models\\Tags\\TagGroup";
         $tg = new $tagGroupName;
-
-        $tagGroup = $tg->with(['tags' => function ($q) {
+        $group =$tg->with(['tags' => function ($q) {
             $q->select('id', 'name', 'group_id');
         }])
-            ->select('id', 'multiple')
-            ->where('name', $data)
+            ->select('id', 'name')
+            ->where('name', $data->name)
             ->first();
 
         return [
-            "group_type_code" => "TM",
-            "group_id" => $tagGroup->id,
-            "group_name" => $data,
-            "multiple" => $tagGroup->multiple,
-            "params"  => $tagGroup->tags->map(function ($y) {
+            "group_type_code" => "TG",
+            "group_name" => $data->name,
+            "params"  => $group->tags->map(function ($y) {
                 return ["id" => $y->id, "name" => $y->name];
             }),
             "dependency" => null

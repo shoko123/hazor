@@ -2,18 +2,31 @@
 
 namespace App\Http\Controllers\App;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\App\ModelController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class TestController extends Controller
+class TestController extends ModelController
 {
     public function init(Request $r)
     {
         return response()->json([
             "msg" => "AppController.init()",
         ], 200);
+    }
+
+    public function test(Request $r)
+    {
+        $this->createModel($r["model"]);
+        $res = $this->model->with(['global_tags' => function ($q) {
+            $q->select('id', 'name', 'group_id');
+        }])
+            ->select('*')
+            ->where('id',1)
+            ->first();
+
+        return response()->json(["res" => $res], 200);
     }
 
     public function totals()

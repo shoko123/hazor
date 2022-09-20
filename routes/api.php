@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\App\ModelController;
-use App\Http\Controllers\TestController;
+use App\Http\Controllers\App\TestController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\AppController;

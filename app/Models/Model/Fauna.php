@@ -5,6 +5,8 @@ namespace App\Models\Model;
 use Illuminate\Support\Facades\DB;
 use App\Models\App\FindModel;
 use App\Models\App\DigModel;
+use App\Models\Tags\FaunaTag;
+use App\Models\Tags\Tag;
 
 class Fauna extends FindModel
 {
@@ -15,6 +17,16 @@ class Fauna extends FindModel
     public function __construct()
     {
         DigModel::__construct('Fauna');  
+    }
+
+    public function module_tags()
+    {
+        return $this->belongsToMany(FaunaTag::class, 'locus-locus_tags', 'item_id', 'tag_id');
+    }
+    
+    public function global_tags()
+    {
+        return $this->morphToMany(Tag::class, 'taggable');
     }
 
     public function init() : array {

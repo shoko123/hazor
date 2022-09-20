@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\App\DigModel;
 use App\Models\App\FindModel;
 use App\Models\Tags\StoneTag;
+use App\Models\Tags\Tag;
 
 class Stone extends FindModel
 {
@@ -24,6 +25,11 @@ class Stone extends FindModel
         return $this->belongsToMany(StoneTag::class, 'stone-stone_tags', 'item_id', 'tag_id');
     }
 
+    public function global_tags()
+    {
+        return $this->morphToMany(Tag::class, 'taggable');
+    }
+
     public function init(): array
     {
         return [
@@ -39,6 +45,11 @@ class Stone extends FindModel
             "Registration" => [
                 ['TS', null],
                 ['VC', (object)["table_name" => "loci", "column_name" => "area"]],
+            ],
+            "Periods" => [
+                ['TG', (object)["name" => "Periods (Top-Level)", "dependency" => null]],
+                ['TG', (object)["name" => "Neolithic Subperiods", "dependency" => null]],
+                ['TG', (object)["name" => "Bronze Subperiods", "dependency" => null]],
             ],
             "Basic Charectaristics" => [
                 ['TM', (object)["name" => "Life-Stage", "dependency" => null]],

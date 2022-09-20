@@ -4,7 +4,8 @@ namespace App\Models\Model;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\App\DigModel;
-use App\Models\App\FindModel;
+use App\Models\Tags\LocusTag;
+use App\Models\Tags\Tag;
 
 class Locus extends DigModel
 {
@@ -15,6 +16,16 @@ class Locus extends DigModel
     public function __construct()
     {
         DigModel::__construct('Locus');
+    }
+
+    public function module_tags()
+    {
+        return $this->belongsToMany(StoneTag::class, 'stone-stone_tags', 'item_id', 'tag_id');
+    }
+    
+    public function global_tags()
+    {
+        return $this->morphToMany(Tag::class, 'taggable');
     }
 
     public function init(): array
@@ -38,11 +49,6 @@ class Locus extends DigModel
         ];
 
         return $this->buildTrio($cats);
-    }
-
-    public function module_tags()
-    {
-        return $this->belongsToMany(LocusTag::class, 'locus-locus_tags', 'item_id', 'tag_id');
     }
 
     function buildSqlDescription(): string
