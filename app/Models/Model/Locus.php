@@ -18,9 +18,9 @@ class Locus extends DigModel
         DigModel::__construct('Locus');
     }
 
-    public function module_tags()
+    public function model_tags()
     {
-        return $this->belongsToMany(StoneTag::class, 'stone-stone_tags', 'item_id', 'tag_id');
+        return $this->belongsToMany(LocusTag::class, 'locus-locus_tags', 'item_id', 'tag_id');
     }
     
     public function global_tags()
@@ -41,7 +41,7 @@ class Locus extends DigModel
     {
         $cats = [
             "Registration" => [
-                ['VC', (object)[ "table_name" => "loci", "column_name" => "area"]], 
+                ['CV', (object)[ "table_name" => "loci", "column_name" => "area"]], 
                 ['TS', null]],
             "Chronology" => [
                 ['TM', (object)["name" => "Stratum", "dependency" => null]],

@@ -4,11 +4,15 @@ import { ref, computed } from 'vue'
 import { useMediaStore } from './media'
 import { useRoutesStore } from './routes/routesMain'
 
+
+
+
 export const useModuleStore = defineStore('module', () => {
-  const { bucketUrl } = storeToRefs( useMediaStore())
+  const { bucketUrl } = storeToRefs(useMediaStore())
   const routes = useRoutesStore()
-  
+
   let counts = ref({ items: 0, media: 0 })
+ 
 
   const backgroundImage = computed(() => {
     return routes.current.module !== 'Home' ? {
@@ -18,7 +22,7 @@ export const useModuleStore = defineStore('module', () => {
   })
 
   const name = computed(() => {
-    return routes.current.module 
+    return routes.current.module
   })
 
   return { name, counts, backgroundImage }

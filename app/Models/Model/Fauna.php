@@ -19,9 +19,9 @@ class Fauna extends FindModel
         DigModel::__construct('Fauna');  
     }
 
-    public function module_tags()
+    public function model_tags()
     {
-        return $this->belongsToMany(FaunaTag::class, 'locus-locus_tags', 'item_id', 'tag_id');
+        return $this->belongsToMany(FaunaTag::class, 'fauna-fauna_tags', 'item_id', 'tag_id');
     }
     
     public function global_tags()

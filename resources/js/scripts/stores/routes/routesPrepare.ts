@@ -5,6 +5,7 @@
 
 import { defineStore, storeToRefs } from 'pinia'
 import { useXhrStore } from '../xhr';
+import { useTrioStore } from '../trio';
 import { useCollectionsStore } from '../collections';
 import { useAuthStore } from '../auth';
 import { useModuleStore } from '../module';
@@ -23,6 +24,7 @@ export const useRoutePrepareStore = defineStore('routePrepareStore', () => {
     let n = useNotificationsStore();
     let m = useModuleStore();
     let c = useCollectionsStore();
+    let t = useTrioStore();
 
     //if navigate to a new module initialize module (unless Auth or Home)
     switch (plan.scaffold) {
@@ -32,6 +34,7 @@ export const useRoutePrepareStore = defineStore('routePrepareStore', () => {
           .then(res => {
             //console.log(`auth.response is ${JSON.stringify(res, null, 2)}`)
             m.counts = res.data.counts
+            t.setTrio(res.data.trio)
             return true
           })
           .catch(err => {

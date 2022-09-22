@@ -44,7 +44,7 @@ class Stone extends FindModel
         $cats = [
             "Registration" => [
                 ['TS', null],
-                ['VC', (object)["table_name" => "loci", "column_name" => "area"]],
+                ['CV', (object)["table_name" => "loci", "column_name" => "area"]],
             ],
             "Periods" => [
                 ['TG', (object)["name" => "Periods (Top-Level)", "dependency" => null]],

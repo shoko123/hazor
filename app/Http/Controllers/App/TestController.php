@@ -21,7 +21,7 @@ class TestController extends ModelController
         $this->createModel($r["model"]);
         $res = $this->model->with(['global_tags' => function ($q) {
             $q->select('id', 'name', 'group_id');
-        }])
+        }, 'model_tags'])
             ->select('*')
             ->where('id',1)
             ->first();

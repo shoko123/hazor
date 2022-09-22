@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-
 use Exception;
+use App\Models\Tags\TagGroup;
 
 abstract class DigModel extends Model implements HasMedia
 {
@@ -91,7 +91,7 @@ abstract class DigModel extends Model implements HasMedia
                 return $this->getModelTagsGroupDetails($data);
 
                 //column values
-            case "VC":
+            case "CV":
                 return $this->getColumnGroupDetails($data);
 
                 //lookup values
@@ -141,9 +141,7 @@ abstract class DigModel extends Model implements HasMedia
 
     private function getGlobalTagsGroupDetails($data)
     {
-        $tagGroupName = "App\\Models\\Tags\\TagGroup";
-        $tg = new $tagGroupName;
-        $group =$tg->with(['tags' => function ($q) {
+        $group = TagGroup::with(['tags' => function ($q) {
             $q->select('id', 'name', 'group_id');
         }])
             ->select('id', 'name')
@@ -165,7 +163,7 @@ abstract class DigModel extends Model implements HasMedia
         $params = DB::table($data->table_name)->select($column_name)->distinct()->orderBy($column_name)->get();
 
         return [
-            "group_type_code" => "VC",
+            "group_type_code" => "CV",
             "table_name" => $data->table_name,
             "column_name" => $data->column_name,
             "group_name" => $data->column_name,
