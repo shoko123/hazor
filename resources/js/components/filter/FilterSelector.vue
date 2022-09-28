@@ -7,7 +7,7 @@
       </v-tabs>
 
       <v-tabs v-model="groupIndex" class="primary">
-        <v-tab v-for="(tab, index) in trio.currentGroups" :key="index">{{ tab.name }}</v-tab>
+        <v-tab v-for="(tab, index) in trio.currentGroups" :key="index" class="no-uppercase">{{ tab.name }}</v-tab>
       </v-tabs>
 
       <v-sheet elevation="10" class="pa-4">

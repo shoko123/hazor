@@ -108,7 +108,7 @@ export const useTrioStore = defineStore('trio', () => {
 
 
   function setTrio(res: object) {
-    console.log(`aux/normalizeGroups() payload: ${JSON.stringify(res, null, 2)}`);
+    //console.log(`aux/normalizeGroups() payload: ${JSON.stringify(res, null, 2)}`);
 
     const ParamSchema = new schema.Entity('params', {}, {
       idAttribute: (value, parent, key) => {
