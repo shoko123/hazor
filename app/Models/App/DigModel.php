@@ -127,6 +127,11 @@ abstract class DigModel extends Model implements HasMedia
             ->where('name', $data->name)
             ->first();
 
+        if (is_null($tagGroup)) {
+            throw new Exception("***MODEL INIT() ERROR*** Group * " . $data->name . " * NOT FOUND");
+            //dd("***MODEL INIT() ERROR*** Group \"" . $data->name . "\" NOT FOUND");
+        }
+
         return [
             "group_type_code" => "TM",
             "group_id" => $tagGroup->id,
@@ -135,7 +140,7 @@ abstract class DigModel extends Model implements HasMedia
             "params"  => $tagGroup->tags->map(function ($y) {
                 return ["id" => $y->id, "name" => $y->name];
             }),
-            "dependency" => null
+            "dependency" => $data->dependency,
         ];
     }
 
@@ -150,11 +155,14 @@ abstract class DigModel extends Model implements HasMedia
 
         return [
             "group_type_code" => "TG",
+            "group_id" => $group->id,
             "group_name" => $data->name,
+            "multiple" => $data->multiple,
+            "dependency" => $data->dependency,
             "params"  => $group->tags->map(function ($y) {
                 return ["id" => $y->id, "name" => $y->name];
             }),
-            "dependency" => null
+
         ];
     }
     private function getColumnGroupDetails($data)
@@ -167,8 +175,8 @@ abstract class DigModel extends Model implements HasMedia
             "table_name" => $data->table_name,
             "column_name" => $data->column_name,
             "group_name" => $data->column_name,
-            "params" => $params->map(function ($y) use (&$column_name) {
-                return $y->$column_name;
+            "params" => $params->map(function ($y, $key) use (&$column_name) {
+                return ["id" => $key, "name" => $y->area];
             })
         ];
     }

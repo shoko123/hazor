@@ -9,6 +9,7 @@
 import { ref, computed } from 'vue'
 import SubWelcome from './SubWelcome.vue'
 import SubIndex from './SubIndex.vue'
+import SubMenuFilter from '../filter/SubMenuFilter.vue'
 import { useRoutesStore } from '../../scripts/stores/routes/routesMain'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
@@ -20,6 +21,8 @@ const sub = computed(() => {
             return SubWelcome
         case 'index':
             return SubIndex
+        case 'filter':
+            return SubMenuFilter
         default:
             return SubWelcome
 

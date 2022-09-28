@@ -50,9 +50,15 @@ export function planTransition(to: TRouteInfo, from: TRouteInfo): TPlanResponse 
                     data.item = 'reset'
                     return { success: true, data }
 
-                    case 'index':
+                case 'index':
+                    data.scaffold = 'load'
+                    data.mainCollection = 'load'
+                    data.item = 'reset'
+                    return { success: true, data }
+
+                    case 'filter':
                         data.scaffold = 'load'
-                        data.mainCollection = 'load'
+                        data.mainCollection = 'reset'
                         data.item = 'reset'
                         return { success: true, data }
                 default:
@@ -72,6 +78,12 @@ export function planTransition(to: TRouteInfo, from: TRouteInfo): TPlanResponse 
                         console.log("routes - welcome -> welcome with the same module")
                         return { success: true, data }
                     }
+
+                case 'filter':
+                    data.scaffold = 'none'
+                    data.mainCollection = 'reset'
+                    data.item = 'reset'
+                    return { success: true, data }
 
                 case 'index':
                     data.scaffold = 'none'
@@ -99,6 +111,18 @@ export function planTransition(to: TRouteInfo, from: TRouteInfo): TPlanResponse 
                     return { success: true, data }
 
                 case 'welcome':
+                    if (changed.module) {
+                        data.scaffold = 'load'
+                        data.mainCollection = 'reset'
+                        data.item = 'reset'
+                        return { success: true, data }
+                    } else {
+                        console.log("routes - filter -> welcome with the same module")
+                        data.scaffold = 'none'
+                        data.mainCollection = 'reset'
+                        data.item = 'reset'
+                        return { success: true, data }
+                    }
                     return { success: true, data }
 
                 default:

@@ -43,40 +43,38 @@ class Stone extends FindModel
     {
         $cats = [
             "Registration" => [
-                ['TS', null],
                 ['CV', (object)["table_name" => "loci", "column_name" => "area"]],
             ],
             "Periods" => [
-                ['TG', (object)["name" => "Periods (Top-Level)", "dependency" => null]],
-                ['TG', (object)["name" => "Neolithic Subperiods", "dependency" => null]],
-                ['TG', (object)["name" => "Bronze Subperiods", "dependency" => null]],
+                ['TG', (object)["name" => "Periods (Top-Level)", "dependency" => null, "multiple" => true]],
+                ['TG', (object)["name" => "Neolithic Subperiods", "dependency" => [["TG.10300"]], "multiple" => true]],
+                ['TG', (object)["name" => "Bronze Subperiods", "dependency" => [["TG.10500"]], "multiple" => true]],
             ],
             "Basic Charectaristics" => [
-                ['TM', (object)["name" => "Life-Stage", "dependency" => null]],
-                ['TM', (object)["name" => "Morphology", "dependency" => null]],
-                ['TM', (object)["name" => "Production", "dependency" => null]],
-                ['TM', (object)["name" => "Profile", "dependency" => null]],
                 ['LV', (object)["name" => "Material", "table_name" => "stone_materials", "column_name" => "material_id"]],
+                ['TM', (object)["name" => "Life Stage", "dependency" => null, "multiple" => true]],
+                ['TM', (object)["name" => "Morphology", "dependency" => null, "multiple" => true]],
+                ['TM', (object)["name" => "Profile", "dependency" => null, "multiple" => true]],
+                ['TM', (object)["name" => "Production", "dependency" => null, "multiple" => true]],
+                ['TM', (object)["name" => "Use Wear", "dependency" => null, "multiple" => true]],
+                ['TM', (object)["name" => "Profile", "dependency" => null, "multiple" => true]],
+                ['LV', (object)["name" => "Basic Typology", "table_name" => "stone_base_types", "column_name" => "base_type_id"]],
+
             ],
+            "Typology" => [
+                ['TM', (object)["name" => "Passive Subtype", "dependency" => [["LV.base_type_id.2"]], "multiple" => true]],
+                ['TM', (object)["name" => "Active Subtype", "dependency" => [["LV.base_type_id.3"]], "multiple" => true]],
+                ['TM', (object)["name" => "Vessel Part", "dependency" => [["LV.base_type_id.5"]], "multiple" => true]],
+                ['TM', (object)["name" => "Vessel Base", "dependency" => [["TM.101"]], "multiple" => true]],
+                ['TM', (object)["name" => "Vessel Wall", "dependency" => [["TM.102"]], "multiple" => true]],
+                ['TM', (object)["name" => "Vessel Rim", "dependency" => [["TM.103"]], "multiple" => true]],
+                ['TM', (object)["name" => "Non-Processor Subtype", "dependency" => [["LV.base_type_id.6"]], "multiple" => true]],
+            ]
+
         ];
 
         return $this->buildTrio($cats);
     }
-
-    /*
-    (1,'Life-Stage',1,NULL),
-    (2,'Morphology',1,NULL),
-    (3,'Production',1,NULL),
-    (4,'Profile',1,NULL),
-    (5,'Type-Active',1,'[[\"L>base_type_id>3\"]]'),
-    (6,'Type-Non-Processor',1,'[[\"L>base_type_id>6\"]]'),
-    (7,'Type-Passive',1,'[[\"L>base_type_id>2\"]]'),
-    (8,'Use-Wear',1,NULL),
-    (9,'Vessel-Base',1,'[[\"M>101\"]]'),
-    (10,'Vessel-Part',1,'[[\"L>base_type_id>5\"]]'),
-    (11,'Vessel-Rim',1,'[[\"M>103\"]]'),
-    (12,'Vessel-Wall',1,'[[\"M>102\"]]');
-    */
 
     function buildSqlDescription(): string
     {

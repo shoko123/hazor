@@ -44,7 +44,7 @@ class Locus extends DigModel
                 ['CV', (object)[ "table_name" => "loci", "column_name" => "area"]], 
                 ['TS', null]],
             "Chronology" => [
-                ['TM', (object)["name" => "Stratum", "dependency" => null]],
+                ['TM', (object)["name" => "Stratum", "dependency" => null, "multiple" => true]],
             ],
         ];
 

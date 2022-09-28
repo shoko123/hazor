@@ -27,7 +27,7 @@ function btnClicked(f: string) {
       router.push({ name: 'index', params: { module: current.value.url_module } })
       break
     case 'filter':
-
+      router.push({ name: 'filter', params: { module: current.value.url_module } })
       break
 
     case 'showItem':

@@ -46,7 +46,7 @@ const routes = [
   },
   {
     path: '/:module/filter',
-    component: () => import('@/components/content/filter/Filter.vue'),
+    component: () => import('@/components/filter/Filter.vue'),
     name: 'filter'
   },
 
