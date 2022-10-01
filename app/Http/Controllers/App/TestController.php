@@ -9,13 +9,6 @@ use Illuminate\Support\Facades\DB;
 
 class TestController extends ModelController
 {
-    public function init(Request $r)
-    {
-        return response()->json([
-            "msg" => "AppController.init()",
-        ], 200);
-    }
-
     public function test(Request $r)
     {
         $this->createModel($r["model"]);

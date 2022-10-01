@@ -10,7 +10,7 @@ class StoneController extends ModelController
 {
     public function __construct()
     {
-        $this->createModel('Locus');
+        parent::__construct('Stone');
     }
 
     public function store(Request $r)

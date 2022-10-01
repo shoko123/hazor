@@ -10,7 +10,7 @@ class LocusController extends ModelController
 {
     public function __construct()
     {
-        $this->createModel('Locus');
+        parent::__construct('Locus');
     }
 
     public function store(Request $r)

@@ -8,9 +8,14 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Exception;
+//use App\Models\DigModelInterface;
 use App\Models\Tags\TagGroup;
 
-abstract class DigModel extends Model implements HasMedia
+
+
+
+
+abstract class DigModel extends Model implements HasMedia, DigModelInterface
 {
     use  InteractsWithMedia;
     public $timestamps = false;
@@ -21,6 +26,45 @@ abstract class DigModel extends Model implements HasMedia
     abstract function buildSqlUrlId(): string;
     abstract function getTrio(): array;
     abstract function init(): array;
+
+    static protected $base_model_groups = [
+        "Periods (Top-Level)" => [
+            "group_type_code" => "TG",
+            "dependency" => null
+        ],
+        "Neolithic Subperiods" => [
+            "group_type_code" => "TG",
+            "dependency" => [["TG.10300"]],
+        ],
+        "Bronze Subperiods" => [
+            "group_type_code" => "TG",
+            "dependency" => null
+        ],
+        "Iron Subperiods" => [
+            "group_type_code" => "TG",
+            "dependency" => [["TG.10300"]],
+        ],
+        "Hellenistic Subperiods" => [
+            "group_type_code" => "TG",
+            "dependency" => null
+        ],
+        "Roman Subperiods" => [
+            "group_type_code" => "TG",
+            "dependency" => [["TG.10300"]],
+        ],
+        "Early-Islamic Subperiods" => [
+            "group_type_code" => "TG",
+            "dependency" => null
+        ],
+        "Medieval Subperiods" => [
+            "group_type_code" => "TG",
+            "dependency" => [["TG.10300"]],
+        ],
+        "Modern Subperiods" => [
+            "group_type_code" => "TG",
+            "dependency" => [["TG.10300"]],
+        ],
+    ];
 
     public function __construct($eloquent_model_name = null)
     {

@@ -16,7 +16,7 @@ class FaunaController extends ModelController
 {
     public function __construct()
     {
-        $this->createModel('Fauna');
+        parent::__construct('Fauna');
     }
 
     public function store(Request $r)

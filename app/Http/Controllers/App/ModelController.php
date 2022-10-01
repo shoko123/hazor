@@ -6,45 +6,36 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\App\DigModelInterface;
 
 class ModelController extends Controller
 {
     protected $model_name = null;
     protected $model = null;
 
-    public function createModel(String $model_name)
+    public function init(Request $r, DigModelInterface $m)
     {
-        $this->model_name = $model_name;
-        $model_full_path = "App\Models\Model\\" . $model_name;
-        $this->model = new ($model_full_path);
+        return response()->json($m->init(), 200);
     }
 
-    public function init(Request $r)
-    {  
-        $this->createModel($r["model"]);
-        return response()->json($this->model->init(), 200);
-    }
-
-    public function index(Request $r)
+    public function index(Request $r, DigModelInterface $m)
     {
-        $this->createModel($r["model"]);
-        $collection = $this->model->index($r["queryParams"]);
-       
-        return response()->json([           
+        $collection = $m->index($r["queryParams"]);
+        return response()->json([
             //"model" =>  $this->model_name,
             "msg" => "ModelController.index(" .  $this->model_name . ")",
             "collection" => $collection,
         ], 200);
     }
 
-    public function page(Request $r)
+    public function page(Request $r, DigModelInterface $m)
     {
-        $this->createModel($r["model"]);
         return response()->json([
-            "page" => $this->model->page($r),
+            //"page" => $this->model->page($r),
+            "page" => $m->page($r),
         ], 200);
     }
-    
+
     public function destroy($id)
     {
         return response()->json([
@@ -52,5 +43,4 @@ class ModelController extends Controller
             "model_name" => $this->model_name
         ], 200);
     }
-   
 }
