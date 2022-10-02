@@ -5,24 +5,23 @@ namespace App\Http\Controllers\App;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Models\App\DigModelInterface;
+use App\Models\Interfaces\DigModelInterface;
+use App\Models\Interfaces\ModelGroupInterface;
 
 class ModelController extends Controller
 {
     protected $model_name = null;
     protected $model = null;
 
-    public function init(Request $r, DigModelInterface $m)
+    public function init(Request $r, DigModelInterface $m, ModelGroupInterface $mgi)
     {
-        return response()->json($m->init(), 200);
+        return response()->json(array_merge($m->init(), $mgi->trio()), 200);
     }
 
     public function index(Request $r, DigModelInterface $m)
     {
         $collection = $m->index($r["queryParams"]);
         return response()->json([
-            //"model" =>  $this->model_name,
             "msg" => "ModelController.index(" .  $this->model_name . ")",
             "collection" => $collection,
         ], 200);

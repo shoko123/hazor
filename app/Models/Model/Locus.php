@@ -33,22 +33,7 @@ class Locus extends DigModel
         return [
             "message" => $this->eloquent_model_name . '.init()',
             "counts" => ["items" => $this->count(), "media" => 777,],
-            "trio" => $this->getTrio()
         ];
-    }
-
-    function getTrio(): array
-    {
-        $cats = [
-            "Registration" => [
-                ['CV', (object)[ "table_name" => "loci", "column_name" => "area"]], 
-                ['TS', null]],
-            "Chronology" => [
-                ['TM', (object)["name" => "Stratum", "dependency" => null, "multiple" => true]],
-            ],
-        ];
-
-        return $this->buildTrio($cats);
     }
 
     function buildSqlDescription(): string
