@@ -3,13 +3,13 @@
     <v-card-title id="title" class="grey py-0 mb-4">Selected Tags</v-card-title>
     <v-card-text>
       <v-list>
-        <v-list-item v-for="group in groups" :key="group.id">
+        <v-list-item v-for="group in groups">
 
             <v-list-item-title>
               <v-container fluid class="pa-0 ma-0">
                 <v-row wrap no-gutters>
-                  <div class="font-weight-bold">{{ group.display_name }}:</div>
-                  <v-chip v-for="param in group.params" :key="param.id" class="pa-2 ml-2 mb-1">{{ param.name }}</v-chip>
+                  <div class="font-weight-bold">{{ group.groupName }}:</div>
+                  <v-chip v-for="param in group.params" class="pa-2 ml-2 mb-1">{{ param }}</v-chip>
                 </v-row>
               </v-container>
             </v-list-item-title>
@@ -23,13 +23,16 @@
 
 <script lang="ts" setup >
 import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import SubMenuFilter from './SubMenuFilter.vue';
+import { useTrioStore } from '../../scripts/stores/trio';
+let { selectedFilters } = storeToRefs(useTrioStore())
 
 const props = defineProps<{
   source: string
 }>()
 const groups = computed(() => {
-  return [{id: 1, display_name: "name", params: [{id: 2, name: "param with id=2"}]}]
+  return selectedFilters.value
 })
 const noSelected = computed(() => {
   return 3

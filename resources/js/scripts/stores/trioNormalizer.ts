@@ -15,39 +15,20 @@ export default function normalizeTrio(res: object): Trio {
 
   const ParamSchema = new schema.Entity('params', {}, {
     idAttribute: (value, parent, key) => {
-      switch (parent.group_type_code) {
-        case 'TM':
-        case 'TG':
-          return `${parent.group_type_code}.${value.id}`
-        case 'LV':
-        case 'CV':
-          return `${parent.group_type_code}.${parent.column_name}.${value.id}`
-        default:
-          return 'XXX'
-      }
+      return `${parent.group_name}.${value.name}`
     },
-
     processStrategy: (value, parent, key) => {
       return {
         ...value,
-        selected: false,
-        //groupKey
+        paramKey: `${parent.group_name}.${value.name}`,
+        order: 0
       };
     },
   });
 
   const GroupSchema = new schema.Entity('groups', { params: [ParamSchema], }, {
     idAttribute: (value, parent, key) => {
-      switch (value.group_type_code) {
-        case 'TM':
-        case 'TG':
-          return `${value.group_type_code}.${value.group_id}`
-        case 'LV':
-        case 'CV':
-          return `${value.group_type_code}.${value.column_name}`
-        default:
-          return 'XXX'
-      }
+      return value.group_name
     },
     processStrategy: (value, parent, key) => {
       return {
@@ -70,5 +51,18 @@ export default function normalizeTrio(res: object): Trio {
   const categoriesSchema = [categorySchema];
 
   trio = normalize(res, categoriesSchema);
+
+  //add param order field 
+  let order = 0
+  trio.result.forEach((r) => {
+    trio.entities.categories[r].groups.forEach(g => {
+      trio.entities.groups[g].params.forEach(p => {
+        trio.entities.params[p].order = order
+        order++
+      })
+      order++
+    })
+    order++
+  })
   return trio
 }

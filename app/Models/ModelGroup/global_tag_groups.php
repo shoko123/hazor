@@ -14,35 +14,35 @@ function globalGroups()
         ],
         "Neolithic Subperiods" => [
             "group_type_code" => "TG",
-            "dependency" => [["TG.10300"]],
+            "dependency" => ["Periods (Top-Level).Neolithic"],
         ],
         "Bronze Subperiods" => [
             "group_type_code" => "TG",
-            "dependency" => null
+            "dependency" => ["Periods (Top-Level).Bronze"],
         ],
         "Iron Subperiods" => [
             "group_type_code" => "TG",
-            "dependency" => [["TG.10300"]],
+            "dependency" => ["Periods (Top-Level).Iron"],
         ],
         "Hellenistic Subperiods" => [
             "group_type_code" => "TG",
-            "dependency" => null
+            "dependency" => ["Periods (Top-Level).Hellenistic"],
         ],
         "Roman Subperiods" => [
             "group_type_code" => "TG",
-            "dependency" => [["TG.10300"]],
+            "dependency" => ["Periods (Top-Level).Roman"],
         ],
         "Early-Islamic Subperiods" => [
             "group_type_code" => "TG",
-            "dependency" => null
+            "dependency" => ["Periods (Top-Level).Early Islamic"],
         ],
         "Medieval Subperiods" => [
             "group_type_code" => "TG",
-            "dependency" => [["TG.10300"]],
+            "dependency" =>  ["Periods (Top-Level).Medieval"],
         ],
         "Modern Subperiods" => [
             "group_type_code" => "TG",
-            "dependency" => [["TG.10300"]],
+            "dependency" =>  ["Periods (Top-Level).Modern"],
         ],
     ];
 }

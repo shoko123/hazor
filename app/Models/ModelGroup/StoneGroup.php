@@ -47,37 +47,37 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
         ],
         "Passive Subtype" => [
             "group_type_code" => "TM",
-            "dependency" => null,
+            "dependency" => ["Basic Typology.Passive"],
             "multiple" => true
         ],
         "Active Subtype" => [
             "group_type_code" => "TM",
-            "dependency" => null,
+            "dependency" => ["Basic Typology.Active (handheld)"],
             "multiple" => true
         ],
         "Vessel Part" => [
             "group_type_code" => "TM",
-            "dependency" => null,
+            "dependency" => ["Basic Typology.Vessel"],
             "multiple" => true
         ],
         "Vessel Base" => [
             "group_type_code" => "TM",
-            "dependency" => null,
+            "dependency" => ["Vessel Part.Base"],
             "multiple" => true
         ],
         "Vessel Wall" => [
             "group_type_code" => "TM",
-            "dependency" => null,
+            "dependency" => ["Vessel Part.Wall"],
             "multiple" => true
         ],
         "Vessel Rim" => [
             "group_type_code" => "TM",
-            "dependency" => null,
+            "dependency" => ["Vessel Part.Rim"],
             "multiple" => true
         ],
         "Non-Processor Subtype" => [
             "group_type_code" => "TM",
-            "dependency" => null,
+            "dependency" => ["Basic Typology.Non-Processor"],
             "multiple" => true
         ],
     ];

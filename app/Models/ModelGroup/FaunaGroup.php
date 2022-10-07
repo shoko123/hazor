@@ -37,53 +37,66 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
         ],
         "Bird" => [
             "group_type_code" => "TM",
-            "dependency" => null,
+            "dependency" => ["Base Taxon.Bird"],
             "multiple" => true
         ],
         "Mammal" => [
             "group_type_code" => "TM",
-            "dependency" => null,
+            "dependency" => ["Base Taxon.Mammal"],
             "multiple" => true
         ],
         "Fusion" => [
             "group_type_code" => "TM",
-            "dependency" => null,
+            "dependency" => ["Element.Bone"],
             "multiple" => true
         ],
         "Breakage" => [
             "group_type_code" => "TM",
-            "dependency" => null,
+            "dependency" => ["Element.Bone"],
             "multiple" => true
         ],
         "D&R (Grant 1982)" => [
             "group_type_code" => "TM",
-            "dependency" => null,
+            "dependency" => ["Element.Bone"],
             "multiple" => true
         ],
         "Bone Name" => [
             "group_type_code" => "TM",
-            "dependency" => null,
+            "dependency" => ["Element.Bone"],
             "multiple" => true
         ],
         "Tooth Name" => [
             "group_type_code" => "TM",
-            "dependency" => null,
+            "dependency" => ["Element.Tooth"],
             "multiple" => true
         ],
         "Tooth Age" => [
             "group_type_code" => "TM",
-            "dependency" => null,
+            "dependency" => ["Element.Tooth"],
             "multiple" => true
         ],
         "Tooth Wear" => [
             "group_type_code" => "TM",
-            "dependency" => null,
+            "dependency" => ["Element.Tooth"],
             "multiple" => true
         ],
-
-
     ];
 
+    /*
+(1,'Mammal',0,'[[\"L>taxon_L1_id>4\"]]'),
+(2,'Bird',0,'[[\"L>taxon_L1_id>5\"]]'),
+-- element
+(10,'Life-Stage',1,NULL),
+(11,'Symmetry',0,NULL),
+(12,'Fusion',0,'[[\"L>element_L1_id>3\"]]'),
+(13,'Breakage',1,'[[\"L>element_L1_id>3\"]]'),
+(14,'D&R',1,'[[\"L>element_L1_id>3\"]]'),
+(15,'Weathering',0,'[[\"L>element_L1_id>3\"]]'),
+(20,'Bone-Name',0,'[[\"L>element_L1_id>3\"]]'),
+(70,'Tooth-Name',0,'[[\"L>element_L1_id>4\"]]'),
+(71,'Tooth-Age',0,'[[\"L>element_L1_id>4\"]]'),
+(72,'Tooth-Wear',1,'[[\"L>element_L1_id>4\"]]');
+    */
     public function __construct()
     {
         ModelGroup::__construct('Fauna');
