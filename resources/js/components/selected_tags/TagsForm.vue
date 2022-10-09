@@ -7,9 +7,9 @@
 
             <v-list-item-title>
               <v-container fluid class="pa-0 ma-0">
-                <v-row wrap no-gutters>
+                <v-row class="pa-2 ma-2">
                   <div class="font-weight-bold">{{ group.groupName }}:</div>
-                  <v-chip v-for="param in group.params" class="pa-2 ml-2 mb-1">{{ param }}</v-chip>
+                  <v-chip v-for="param in group.params" class="ml-2 mb-2">{{ param }}</v-chip>
                 </v-row>
               </v-container>
             </v-list-item-title>

@@ -110,7 +110,7 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
                 ["Periods (Top-Level)", "Neolithic Subperiods", "Bronze Subperiods"],
             ],
             "Basic Charectaristics" => [
-                ["Material", "Life Stage", "Morphology", "Profile", "Production", "Profile", "Basic Typology"]
+                ["Material", "Life Stage", "Morphology", "Profile", "Production", "Basic Typology"]
             ],
             "Typology" => [
                 ["Passive Subtype", "Active Subtype", "Vessel Part", "Vessel Base", "Vessel Wall", "Vessel Rim", "Non-Processor Subtype"],

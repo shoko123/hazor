@@ -3,11 +3,17 @@
     <v-card-title id="title" class="grey py-0 mb-4">{{ header }}</v-card-title>
     <v-card-text>
       <v-tabs v-model="categoryIndex" class="primary">
-        <v-tab v-for="(cat, index) in trio.visibleCategories" :key="index">{{ cat.name }}</v-tab>
+        <v-tab v-for="(cat, index) in trio.visibleCategories" :key="index"
+          :class="{ 'has-selected': cat.selectedCount > 0 }">
+          {{ cat.selectedCount === 0 ? cat.name : `${cat.name}(${cat.selectedCount})` }}
+        </v-tab>
       </v-tabs>
 
-      <v-tabs v-model="groupIndex" class="primary">
-        <v-tab v-for="(tab, index) in trio.visibleGroups" :key="index" class="no-uppercase">{{ tab.name }}</v-tab>
+      <v-tabs v-model="groupIndex">
+        <v-tab v-for="(group, index) in trio.visibleGroups" :key="index"
+          :class="{ 'has-selected': group.selectedCount > 0 , 'no-uppercase' : true, }">
+          {{ group.selectedCount === 0 ? group.name : `${group.name}(${group.selectedCount})` }}
+        </v-tab>
       </v-tabs>
 
       <v-sheet elevation="10" class="pa-4">
@@ -47,27 +53,17 @@ const groupIndex = computed({
   }
 })
 
-// const selected = computed(() => {
-//   let selected: number[] = []
-//   trio.visibleParams.forEach((x, index) => {
-//     if (x.selected === true) {
-//       selected.push(index)
-//     }
-//   })
-//   return selected
-// })
-
 const selected = computed({
   get: () => {
-  let selected: number[] = []
-  trio.visibleParams.forEach((x, index) => {
-    if (x.selected === true) {
-      selected.push(index)
-    }
-  })
-  return selected
-},
-set: val => {}
+    let selected: number[] = []
+    trio.visibleParams.forEach((x, index) => {
+      if (x.selected === true) {
+        selected.push(index)
+      }
+    })
+    return selected
+  },
+  set: val => { }
 })
 
 const params = computed(() => {
@@ -84,6 +80,11 @@ function paramClicked(paramIndex: number) {
 <style scoped>
 .no-uppercase {
   text-transform: none !important;
+}
+
+.has-selected {
+  background-color: rgb(212, 235, 244);
+  margin: 2px;
 }
 
 #title {
