@@ -3,15 +3,15 @@
     <v-card-title id="title" class="grey py-0 mb-4">{{ header }}</v-card-title>
     <v-card-text>
       <v-tabs v-model="categoryIndex" class="primary">
-        <v-tab v-for="(cat, index) in trio.visibleCategories" :key="index"
-          :class="{ 'has-selected': cat.selectedCount > 0 }">
+        <v-tab v-for="(cat, index) in trio.visibleCategories" :key="index" color="purple"
+          :class="cat.selectedCount > 0 ? 'has-selected': ''">
           {{ cat.selectedCount === 0 ? cat.name : `${cat.name}(${cat.selectedCount})` }}
         </v-tab>
       </v-tabs>
 
       <v-tabs v-model="groupIndex">
-        <v-tab v-for="(group, index) in trio.visibleGroups" :key="index"
-          :class="{ 'has-selected': group.selectedCount > 0 , 'no-uppercase' : true, }">
+        <v-tab v-for="(group, index) in trio.visibleGroups" :key="index"  color="purple"
+          :class="[group.selectedCount > 0 ? 'has-selected': '', 'no-uppercase']">
           {{ group.selectedCount === 0 ? group.name : `${group.name}(${group.selectedCount})` }}
         </v-tab>
       </v-tabs>

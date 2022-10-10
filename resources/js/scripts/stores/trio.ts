@@ -15,7 +15,7 @@ type TViewGroup = { groupKey: string, name: string, visible: boolean, params: st
 type TViewCategory = { name: string, visible: boolean, selectedCount: number }
 
 type TmpGroup = { groupName: string, params: string[], selectedCount: number }
-type TmpCat = { groupName: string, params: string[] }
+type TSelectedByCat = { categoryName: string, groups: TmpGroup[] }
 
 export const useTrioStore = defineStore('trio', () => {
   const { current } = storeToRefs(useRoutesStore())
@@ -60,11 +60,48 @@ export const useTrioStore = defineStore('trio', () => {
     return groups
   })
 
+  //Public facing API to be consumed by TagForm
+  const selectedFiltersTrio = computed(() => {
+
+    //collect all groups that have at least one param selected
+    let groups: TmpGroup[] = []
+
+    selectedFilterParams.value.forEach(x => {
+      let pieces = x.split('.')
+      let group = pieces[0]
+      let param = pieces[1]
+
+      let i = groups.findIndex(x => x.groupName === group)
+      if (i === -1) {
+        let params: string[] = [param]
+        groups.push({ groupName: group, params: params, selectedCount: 1 })
+      } else {
+        groups[i].params.push(param)
+        groups[i].selectedCount++
+      }
+    })
+    
+    //Assign each "selected" group to a category
+    let catsWithGroups: { catName: string, groups: TmpGroup[] }[] = []
+    groups.forEach(g => {
+      let i = catsWithGroups.findIndex(y => {
+        return trio.value.entities.groups[g.groupName].categoryKey === y.catName
+      })
+
+      if (i === -1) {
+        catsWithGroups.push({ catName: trio.value.entities.groups[g.groupName].categoryKey, groups: [g] })
+      } else {
+        catsWithGroups[i].groups.push(g)
+      }
+    })
+    return catsWithGroups
+  })
+
   //A category is visible if at least one of its groups is viewable 
   const visibleCategories = computed<TViewCategory[]>(() => {
     let allCategories = trio.value.result.map(x => {
       let category = trio.value.entities.categories[x]
-      
+
       //sum the  counts of all selected params (per category)
       let selectedCount = category.groups.reduce((accumulator, groupKey) => {
         let index = selectedFilters.value.findIndex(y => y.groupName === groupKey)
@@ -252,5 +289,5 @@ export const useTrioStore = defineStore('trio', () => {
     selectedFilterParams.value = []
   }
 
-  return { clearFilters, paramClicked, setTrio, selectedFilterParams, selectedFilters, trio, visibleCategories, visibleGroups, visibleParams, selectedCategoryIndex, selectedGroupIndex }
+  return { clearFilters, paramClicked, setTrio, selectedFilterParams, selectedFilters, selectedFiltersTrio, trio, visibleCategories, visibleGroups, visibleParams, selectedCategoryIndex, selectedGroupIndex }
 })
