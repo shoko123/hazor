@@ -2,9 +2,9 @@
   <v-card class="elevation-12">
     <v-card-title id="title" class="grey py-0 mb-4">Selected Tags</v-card-title>
     <v-card-text>
-      <div v-if="!selectedFiltersTrio.length">[ No filters selected ]</div>
-      <v-list v-if="selectedFiltersTrio.length">
-        <v-list-item v-for="cat in selectedFiltersTrio">
+      <div v-if="!trio.length">[ No filters selected ]</div>
+      <v-list v-if="trio.length">
+        <v-list-item v-for="cat in trio">
           <div  class="font-weight-bold">{{ cat.catName}}</div>
           <v-list-item v-for="group in cat.groups">
             <v-list-item-title>
@@ -25,16 +25,17 @@
 
 <script lang="ts" setup >
 import { computed } from 'vue'
-import { storeToRefs } from 'pinia'
-import SubMenuFilter from './SubMenuFilter.vue';
 import { useTrioStore } from '../../scripts/stores/trio';
-let { selectedFiltersTrio } = storeToRefs(useTrioStore())
+import { TrioSourceName } from '../../types/trioTypes'
 
+let { selectedTrio } = useTrioStore()
 const props = defineProps<{
-  source: string
+  source: TrioSourceName
 }>()
 
-
+const trio = computed(() => {
+  return selectedTrio(props.source)
+})
 
 
 

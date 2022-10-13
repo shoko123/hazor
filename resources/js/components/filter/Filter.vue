@@ -6,7 +6,7 @@
           <FilterSelect></FilterSelect>
         </v-col>
         <v-col md="12" lg="3" class="d-flex flex-column">
-          <TagsForm source="filters"></TagsForm>
+          <TagsForm source="Filter"></TagsForm>
         </v-col>
       </v-row>
     </v-container>

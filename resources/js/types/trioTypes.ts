@@ -52,4 +52,7 @@ type TSelectedParam = {
   groupKey: string,
   groupTypeCode: string
 }
-export { IObject, TCategory, TGroupValue, TGroupTag, IGroupObject, ICategoryObject, TEntities, Trio, TSelectedParam }
+
+type TrioSourceName = 'Item' | 'New' | 'Filter'
+
+export { IObject, TCategory, TGroupValue, TGroupTag, IGroupObject, ICategoryObject, TEntities, Trio, TSelectedParam, TrioSourceName }
