@@ -11,7 +11,7 @@ type TItemsPerPage = {
 }
 
 //'main' array items
-interface IArrayItem { id: number, url_id: string }
+type TArrayItem = { id: number, url_id: string }
 
 //raw data received from DB (from 'main, page('media') & page('table'))
 interface IPage {
@@ -32,7 +32,7 @@ interface IMediaItem {
         tag: string,
         description: string
         hasMedia: boolean,        
-        urls: { full: string, tn: string } | null
+        urls: { full: string, tn: string }
 }
 
 interface ITableItem {
@@ -41,22 +41,22 @@ interface ITableItem {
         description: string
 }
 //union of the above
-type IPageDisplay = IMediaItem | IChipItem | ITableItem
+type IPageItem = IMediaItem | IChipItem | ITableItem
 
 
 //all the data kept in a specific collection
 type TCollection = {
-        array: IArrayItem[],
+        length: number,
         index: number,
-        page: IPageDisplay[],
         pageNoB1: number,
         views: TView[],
         viewIndex: number,
         ready: { array: boolean, index: boolean, page: boolean }
 }
 
-type TPageDisplayData = {
-        page: IPageDisplay[],
+type TCollectionMeta = {
+        views: string[],
+        viewIndex: number,
         pageNoB1: number,
         noOfItems: number,
         noOfPages: number,
@@ -65,4 +65,5 @@ type TPageDisplayData = {
         lastItemNo: number
 }
 
-export { TView, TCollection, TElement, TSource, IPage, TItemsPerPage, TPageDisplayData, IPageDisplay, IArrayItem, IChipItem, IMediaItem, ITableItem }
+
+export { TView, TCollection, TElement, TSource, IPage, TItemsPerPage, TCollectionMeta, IPageItem, TArrayItem, IChipItem, IMediaItem, ITableItem }

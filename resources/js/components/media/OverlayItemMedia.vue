@@ -4,39 +4,25 @@
   </div>
 </template>  
 
-<script>
-export default {
-  props: {
-    item: Object,
-    page: Number,
-    index: Number,
-  },
-  created() {
-    /*
-    console.log(
-      `MediaOL page: ${this.page} index: ${this.index} item: ${JSON.stringify(
-        this.item,
-        null,
-        2
-      )}`
-    );
-    */
-  },
-  computed: {
-    showLightBoxOption() {
-      return this.item.hasMedia;
-    },
-  },
-  methods: {
-    openLightBox() {
-      let c = this.$store.getters["mgr/collections"]("media");
-      this.$store.commit("med/openLightBox", {
-        value: true,
-        source: "media",
-        index: this.index % c.itemsPerPage,
-      });
-    },
-  },
-};
+<script lang="ts" setup >
+import { TSource, IMediaItem } from '../../types/collectionTypes'
+import { computed } from 'vue'
+
+const props = defineProps<{
+  source: TSource, 
+  caller: string, 
+  item: IMediaItem
+}>()
+
+const tagText = computed(() => {
+  return props.item.tag
+})
+const showLightBoxOption = computed(() => {
+  return true
+})
+function openLightBox() {
+  console.log(`Open lightbox clicked`)
+}
+
 </script>
 

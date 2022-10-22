@@ -1,8 +1,15 @@
 <template>
   <v-row wrap>
      <v-col v-for="(item, index) in page" :key="item.id" cols="2">
-      <MediaSquare :source=props.source caller="collectionItem" :item=item size="250"
-      ></MediaSquare> 
+      <MediaSquare
+        v-bind="{
+          source: source,
+          item,          
+          pageNoB1: pageNoB1,
+          indexInPage: index,
+          size: 250,
+        }"
+      ></MediaSquare>
     </v-col>
   </v-row>
 </template>
@@ -10,23 +17,21 @@
 <script lang="ts" setup >
 import { useCollectionsStore } from '../../scripts/stores/collections';
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { storeToRefs } from 'pinia'
-import { TCollection, TSource, TElement, TItemsPerPage, TView, IArrayItem,  IMediaItem } from '../../types/collectionTypes'
+import { TSource, IMediaItem } from '../../types/collectionTypes'
 
 import MediaSquare from '../media/MediaSquare.vue'
 
 const props = defineProps<{
   source: TSource
+  pageNoB1: number
 }>()
 
-let { getCollectionDisplayData } = useCollectionsStore()
+let { pageArrayRef } = useCollectionsStore()
 
 const page = computed(() => {
-  let c = getCollectionDisplayData(props.source)
-  //console.log(`CPMedia.page() CollectionDisplayData: ${JSON.stringify(c, null, 2)} source: ${props.source}` )
-  return c.page as IMediaItem[]
+  return pageArrayRef(props.source).value as IMediaItem[]
 })
+
 
 function goTo(item: any) {
   console.log("goTo")

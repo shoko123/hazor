@@ -105,7 +105,7 @@ function parseUrlId(module: TModule, urlId: string): TParsingError | true {
 }
 
 function parseUrlQuery(module: TModule | null, urlQuery: LocationQuery): TParsingError | true {
-    //console.log(`parseUrlQuery() urlQuery: ${urlQuery}, urlId: ${urlId}`);
-
+    console.log(`parseUrlQuery() urlQuery: ${JSON.stringify(urlQuery, null, 2)}`);
+    to.queryParams = urlQuery
     return true
 }

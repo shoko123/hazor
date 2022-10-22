@@ -1,7 +1,7 @@
 <template>
   <v-row wrap>
     <v-chip v-for="(item, index) in page" :key="index" class="font-weight-normal ma-2 body-1" @click="goTo(item)">{{
-        item?.tag
+    item.tag
     }}</v-chip>
   </v-row>
 </template>
@@ -14,18 +14,14 @@ import { storeToRefs } from 'pinia'
 import { TSource, IChipItem } from '../../types/collectionTypes'
 import { useCollectionsStore } from '../../scripts/stores/collections'
 
-
 const props = defineProps<{
   source: TSource
+  pageNoB1: number
 }>()
 
-
-let { getCollectionDisplayData } = useCollectionsStore()
-
+let { pageArrayRef } = useCollectionsStore()
 const page = computed(() => {
-  let c = getCollectionDisplayData(props.source)
-  //console.log(`CPMedia.page() CollectionDisplayData: ${JSON.stringify(c, null, 2)} source: ${props.source}` )
-  return c.page as IChipItem[]
+  return pageArrayRef(props.source).value
 })
 
 function goTo(item: any) {

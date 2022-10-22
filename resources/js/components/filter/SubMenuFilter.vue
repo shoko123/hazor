@@ -10,9 +10,9 @@ import { storeToRefs } from 'pinia'
 import { useRoutesStore } from '../../scripts/stores/routes/routesMain'
 import { useTrioStore } from '../../scripts/stores/trio';
 import { useRouter } from 'vue-router'
-
+import { serializeQueryParams } from '../../scripts/stores/routes/filterQueryParams'
 let { current } = storeToRefs(useRoutesStore())
-let { clearFilters } = useTrioStore()
+let { clearFilters, selectedParamGroups } = useTrioStore()
 const router = useRouter()
 
 const name = computed(() => {
@@ -25,7 +25,9 @@ const subMenuTitle = computed(() => {
 
 function submit() {
   console.log(`filter.submit()`);
-  router.push({ name: 'index', params: { module: current.value.url_module } })
+  let query = serializeQueryParams(selectedParamGroups('Filter'));
+
+  router.push({ name: 'index', params: { module: current.value.url_module }, query})
 }
 
 function clear() {

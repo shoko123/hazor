@@ -54,5 +54,5 @@ type TSelectedParam = {
 }
 
 type TrioSourceName = 'Item' | 'New' | 'Filter'
-
-export { IObject, TCategory, TGroupValue, TGroupTag, IGroupObject, ICategoryObject, TEntities, Trio, TSelectedParam, TrioSourceName }
+type TmpGroup = { groupName: string, params: string[], selectedCount: number }
+export { IObject, TCategory, TGroupValue, TGroupTag, IGroupObject, ICategoryObject, TEntities, Trio, TSelectedParam, TrioSourceName, TmpGroup }

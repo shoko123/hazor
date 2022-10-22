@@ -37,31 +37,31 @@ const header = computed(() => {
 })
 
 const cats = computed(() => {
-  return trio.visibleCats('Filter')
+  return trio.visibleCategories('Filter')
 })
 
 const groups = computed(() => {
-  return trio.visibleGrps('Filter')
+  return trio.visibleGroups('Filter')
 })
 
 const params = computed(() => {
-  return trio.visiblePars('Filter')
+  return trio.visibleParams('Filter')
 })
 
 const categoryIndex = computed({
-  get: () => { return trio.selectedCategoryIndex },
+  get: () => { return trio.categoryIndex },
   set: val => {
     console.log(`categoryIndex set to ${val}`)
-    trio.selectedGroupIndex = 0
-    trio.selectedCategoryIndex = val
+    trio.groupIndex = 0
+    trio.categoryIndex = val
   }
 })
 
 const groupIndex = computed({
-  get: () => { return trio.selectedGroupIndex },
+  get: () => { return trio.groupIndex },
   set: val => {
     console.log(`groupIndex set to ${val}`)
-    trio.selectedGroupIndex = val
+    trio.groupIndex = val
   }
 })
 
@@ -79,8 +79,7 @@ const selected = computed({
 })
 
 function paramClicked(paramIndex: number) {
-  //console.log(`FilterSelector Param(${paramIndex}) clicked`)
-  trio.paramClicked('Filter', trio.selectedGroupIndex, paramIndex)
+  trio.paramClicked('Filter', trio.groupIndex, paramIndex)
 }
 
 

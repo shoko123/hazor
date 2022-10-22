@@ -29,18 +29,17 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-import { TSource, IPageTableItem, IPageTableItemDisplay } from '../../types/collectionTypes'
+import { TSource, ITableItem } from '../../types/collectionTypes'
 import { useCollectionsStore } from '../../scripts/stores/collections';
 
 const props = defineProps<{
   source: TSource
+  pageNoB1: number
 }>()
 
-let { getCollectionDisplayData } = useCollectionsStore()
-
+let { pageArrayRef } = useCollectionsStore()
 const page = computed(() => {
-  let c = getCollectionDisplayData(props.source)
-  return c.page as IPageTableItemDisplay[]
+  return pageArrayRef(props.source).value as ITableItem[]
 })
 
 </script>
