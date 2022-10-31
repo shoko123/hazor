@@ -10,10 +10,10 @@ import { ref, computed } from 'vue'
 import SubWelcome from './SubWelcome.vue'
 import SubIndex from './SubIndex.vue'
 import SubMenuFilter from '../filter/SubMenuFilter.vue'
-import { useRoutesStore } from '../../scripts/stores/routes/routesMain'
+import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-const { current } = storeToRefs(useRoutesStore())
+const { current } = storeToRefs(useRoutesMainStore())
 
 const sub = computed(() => {
     switch (current.value.name) {

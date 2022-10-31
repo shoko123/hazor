@@ -16,7 +16,7 @@ import { ref } from 'vue'
 import { computed } from 'vue'
 import type { TUrlModule, TModule, TRouteInfo, TParsingError, TParseResponse, TPreparePlan } from '../../../types/routesTypes';
 
-export const useRoutePrepareStore = defineStore('routePrepareStore', () => {
+export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
   async function prepareForNewRoute(to: TRouteInfo, from: TRouteInfo, plan: TPreparePlan): Promise<boolean> {
 

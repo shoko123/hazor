@@ -2,9 +2,9 @@
 //handles the entire routing mechanism - parsing, loading resources, error handling
 
 import { defineStore, storeToRefs } from 'pinia'
-import { parse } from './routesParser';
+import { useRoutesParserStore } from './routesParser';
 import { planTransition } from './routesPlanTransition';
-import { useRoutePrepareStore } from './routesPrepare';
+import { useRoutesPrepareStore } from './routesPrepare';
 import { useMainStore } from '../main';
 import { useAuthStore } from '../auth';
 import { useNotificationsStore } from '../notifications';
@@ -14,7 +14,8 @@ import { ref } from 'vue'
 import { computed } from 'vue'
 import type { TUrlModule, TModule, TRouteInfo, TParsingError, TParseResponse, TPreparePlan } from '../../../types/routesTypes';
 
-export const useRoutesStore = defineStore('routesStore', () => {
+export const useRoutesMainStore = defineStore('routesMain', () => {
+    const { parse } = useRoutesParserStore()
     const current = ref<TRouteInfo>({
         url_module: null,
         url_id: null,
@@ -39,7 +40,7 @@ export const useRoutesStore = defineStore('routesStore', () => {
 
     async function handleRouteChange(handle_to: RouteLocationNormalized, handle_from: RouteLocationNormalized): Promise<RouteLocationRaw | boolean> {
         let n = useNotificationsStore()
-        let p = useRoutePrepareStore()
+        let p = useRoutesPrepareStore()
         
         //authorize
         if (!authorize(handle_to.path)) {

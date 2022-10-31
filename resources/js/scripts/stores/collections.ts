@@ -4,13 +4,13 @@ import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed, registerRuntimeCompiler } from 'vue'
 import { TCollection, TSource, TElement, TItemsPerPage, IPage, IPageItem, TView, TArrayItem, TCollectionMeta, IChipItem, IMediaItem, ITableItem } from '../../types/collectionTypes'
 import { useXhrStore } from './xhr'
-import { useRoutesStore } from './routes/routesMain'
+import { useRoutesMainStore } from './routes/routesMain'
 import { useMediaStore } from './media'
 import { useNotificationsStore } from './notifications'
 
 export const useCollectionsStore = defineStore('collections', () => {
     const { send } = useXhrStore()
-    const { to, current } = storeToRefs(useRoutesStore())
+    const { to, current } = storeToRefs(useRoutesMainStore())
     let { bucketUrl } = storeToRefs(useMediaStore())
     let n = useNotificationsStore()
 

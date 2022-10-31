@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import navigationErrorHandler from './routes/navigationErrorHandler'
-import { useRoutesStore } from '../stores/routes/routesMain'
+import { useRoutesMainStore } from '../stores/routes/routesMain'
 import { useMainStore } from '../stores/main'
 import routes from './routes/routes'
 
@@ -15,7 +15,7 @@ router.onError.bind(navigationErrorHandler)
 console.log("setups.vue-router")
 
 router.beforeEach(async (to, from) => {
-  const r = useRoutesStore()
+  const r = useRoutesMainStore()
   const m = useMainStore()
   if (!m.initialized) {
     console.log(`vue-router beforeEach app is not initialized calling appInit()`)

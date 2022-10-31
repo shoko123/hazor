@@ -21,11 +21,11 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../scripts/stores/auth';
-import { useRoutesStore } from '../../scripts/stores/routes/routesMain';
+import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain';
 import type { TName } from '../../types/routesTypes'
 let auth = useAuthStore()
 const router = useRouter()
-let { current } = storeToRefs(useRoutesStore())
+let { current } = storeToRefs(useRoutesMainStore())
 type TUserOption = 'Dashboard' | 'Logout'
 let options: TUserOption[] = ['Dashboard', 'Logout']
 

@@ -2,14 +2,14 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
 import { useMediaStore } from './media'
-import { useRoutesStore } from './routes/routesMain'
+import { useRoutesMainStore } from './routes/routesMain'
 
 
 
 
 export const useModuleStore = defineStore('module', () => {
   const { bucketUrl } = storeToRefs(useMediaStore())
-  const routes = useRoutesStore()
+  const routes = useRoutesMainStore()
 
   let counts = ref({ items: 0, media: 0 })
  

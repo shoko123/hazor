@@ -7,12 +7,13 @@
 <script lang="ts" setup >
 import { computed, } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useRoutesStore } from '../../scripts/stores/routes/routesMain'
+import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useTrioStore } from '../../scripts/stores/trio';
 import { useRouter } from 'vue-router'
-import { serializeQueryParams } from '../../scripts/stores/routes/filterQueryParams'
-let { current } = storeToRefs(useRoutesStore())
+import { useRoutesParserStore } from '../../scripts/stores/routes/routesParser'
+let { current } = storeToRefs(useRoutesMainStore())
 let { clearFilters, selectedParamGroups } = useTrioStore()
+const { serializeQueryParams } = useRoutesParserStore()
 const router = useRouter()
 
 const name = computed(() => {
@@ -27,7 +28,7 @@ function submit() {
   console.log(`filter.submit()`);
   let query = serializeQueryParams(selectedParamGroups('Filter'));
 
-  router.push({ name: 'index', params: { module: current.value.url_module }, query})
+  router.push({ name: 'index', params: { module: current.value.url_module }, query })
 }
 
 function clear() {

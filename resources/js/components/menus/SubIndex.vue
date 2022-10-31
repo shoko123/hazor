@@ -9,9 +9,9 @@ import { useRouter } from 'vue-router'
 
 import { storeToRefs } from 'pinia'
 import { useMainStore } from '../../scripts/stores/main'
-import { useRoutesStore } from '../../scripts/stores/routes/routesMain'
+import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 
-const { current } = storeToRefs(useRoutesStore())
+const { current } = storeToRefs(useRoutesMainStore())
 const router = useRouter()
 const buttons = computed(() => {
   let btns = [];

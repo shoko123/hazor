@@ -5,7 +5,7 @@
         <v-toolbar-title>{{ header }}</v-toolbar-title>
         <v-pagination v-model="page" :length="paginator.pages" :total-visible="10">
         </v-pagination>
-        <v-spacer></v-spacer>
+        <!-- <v-spacer></v-spacer> -->
         <v-btn size="small" variant="outlined" @click="toggleDisplayOption()">view: {{ displayOption }} </v-btn>
       </v-toolbar>
     </template>
@@ -28,14 +28,14 @@ import { TSource } from '../../types/collectionTypes'
 import CollectionPageMedia from './CollectionPageMedia.vue'
 import CollectionPageChips from './CollectionPageChips.vue'
 import CollectionPageTable from './CollectionPageTable.vue'
-import { useRoutesStore } from '../../scripts/stores/routes/routesMain';
+import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain';
 import { useCollectionsStore } from '../../scripts/stores/collections'
 
 const props = defineProps<{
   source: TSource
 }>()
 
-let { to } = storeToRefs(useRoutesStore())
+let { to } = storeToRefs(useRoutesMainStore())
 let { collectionMeta, setCollectionElement } = useCollectionsStore()
 
 
