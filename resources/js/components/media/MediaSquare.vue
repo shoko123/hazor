@@ -1,6 +1,6 @@
 <template>
   <v-hover v-slot="{ isHovering, props }">
-    <v-card :class="{ 'on-hover': isHovering }" v-bind="props" :color="isHovering ? 'blue' : undefined">
+    <v-card v-bind="props" :color="isHovering ? 'blue' : undefined">
       <v-img v-if="itemHasUrls" :src="item.urls.full" :lazy-src="item.urls.tn" contain aspect-ratio="1"
         class="grey lighten-2">
         <v-btn class="text-subtitle-1 font-weight-medium black--text" color="grey">{{ tagText }}</v-btn>

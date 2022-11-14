@@ -30,7 +30,9 @@ router.beforeEach(async (to, from) => {
   }
   catch (err) {
     console.log(`navigationErrorHandler error: ${JSON.stringify(err, null, 2)} to: ${to.path}`);
-    return false
+    alert(`Navigation Error - Redirected to Home Page`)
+    return({ name: 'home' })
+    //return false
   }
 })
 

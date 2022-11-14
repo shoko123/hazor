@@ -1,21 +1,20 @@
 // routesStore.js
 //handles the entire routing mechanism - parsing, loading resources, error handling
 
+import { ref } from 'vue'
+import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
 import { defineStore, storeToRefs } from 'pinia'
 import { useRoutesParserStore } from './routesParser';
-import { planTransition } from './routesPlanTransition';
+import { useRoutesPlanTransitionStore } from './routesPlanTransition';
 import { useRoutesPrepareStore } from './routesPrepare';
-import { useMainStore } from '../main';
 import { useAuthStore } from '../auth';
 import { useNotificationsStore } from '../notifications';
-import { router } from '../../setups/vue-router'
-import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
-import { ref } from 'vue'
-import { computed } from 'vue'
 import type { TUrlModule, TModule, TRouteInfo, TParsingError, TParseResponse, TPreparePlan } from '../../../types/routesTypes';
 
 export const useRoutesMainStore = defineStore('routesMain', () => {
     const { parse } = useRoutesParserStore()
+    const { planTransition } = useRoutesPlanTransitionStore()
+
     const current = ref<TRouteInfo>({
         url_module: null,
         url_id: null,
@@ -41,10 +40,10 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     async function handleRouteChange(handle_to: RouteLocationNormalized, handle_from: RouteLocationNormalized): Promise<RouteLocationRaw | boolean> {
         let n = useNotificationsStore()
         let p = useRoutesPrepareStore()
-        
+
         //authorize
         if (!authorize(handle_to.path)) {
-            n.showSnackbar('Unauthorized; redirected to Login Page')           
+            n.showSnackbar('Unauthorized; redirected to Login Page')
             return { name: 'login', params: { module: 'auth' } }
         }
 
@@ -64,13 +63,12 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         let plan = planTransition(to.value, current.value)
 
         if (!plan.success) {
-
-        console.log("plan failed...")
-            n.showSnackbar(`Routes transition error ${plan.data}; Navigation cancelled`)
-            return false//Promise.reject(false)
+            console.log("plan failed...")
+            n.showSnackbar(`Routes transition error ${plan.data}; redirected to Home Page`)
+            return { name: 'home' }
         }
 
-        console.log("plan OK")
+        console.log(`Plan: ${JSON.stringify(plan, null, 2)}`)
 
         try {
             isLoading.value = true
@@ -110,7 +108,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     function finalizeRouting() {
         //copy to -> current
         current.value = JSON.parse(JSON.stringify(to.value))
-        console.log('finalize OK')        
+        console.log('finalize OK')
     }
 
     return { isLoading, current, to, handleRouteChange }

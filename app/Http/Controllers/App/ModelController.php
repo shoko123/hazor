@@ -30,11 +30,17 @@ class ModelController extends Controller
     public function page(Request $r, DigModelInterface $m)
     {
         return response()->json([
-            //"page" => $this->model->page($r),
             "page" => $m->page($r),
         ], 200);
     }
 
+    public function show(Request $r, DigModelInterface $m)
+    {
+        return response()->json([
+            "msg" => "ModelControler.show()",
+            "item" => $m->show($r)
+        ], 200);
+    }
     public function destroy($id)
     {
         return response()->json([

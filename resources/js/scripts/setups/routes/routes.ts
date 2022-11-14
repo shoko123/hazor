@@ -16,7 +16,7 @@ const routes = [
   {
     path: '/:module(admin)/:catchAll(.*)',
     component: NotFound,
-    name: 'not-found'
+    name: 'not-found-admin'
   },
   {
     path: '/:module(auth)/login',
@@ -56,29 +56,29 @@ const routes = [
     name: 'create'
   },
   {
-    path: '/:module/:id',
+    path: '/:module/:url_id',
     component: ShowItem,
     name: 'show'
   },
   {
-    path: '/:module/:id/update',
+    path: '/:module/:url_id/update',
     component: Index,
     name: 'update'
   },
   {
-    path: '/:module/:id/:media',
+    path: '/:module/:url_id/:media',
     component: Index,
     name: 'media'
   },
   {
-    path: '/:module/:id/tags',
+    path: '/:module/:url_id/tags',
     component: Index,
     name: 'tags'
   },
   {
-    path: "/:module/:id/:catchAll(.*)",
+    path: "/:module/:url_id/:catchAll(.*)",
     component: NotFound,
-    name: "not-found",
+    name: "not-found-item-action",
   },
 ]
 

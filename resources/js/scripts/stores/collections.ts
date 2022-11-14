@@ -10,9 +10,9 @@ import { useNotificationsStore } from './notifications'
 
 export const useCollectionsStore = defineStore('collections', () => {
     const { send } = useXhrStore()
-    const { to, current } = storeToRefs(useRoutesMainStore())
     let { bucketUrl } = storeToRefs(useMediaStore())
     let n = useNotificationsStore()
+    //const rms = useRoutesMainStore()
 
     const itemsPerPage = ref<TItemsPerPage>({
         Media: 0,
@@ -93,7 +93,6 @@ export const useCollectionsStore = defineStore('collections', () => {
         let ipp = itemsPerPage.value[<TView>meta.value.views[meta.value.viewIndex]]
         let noOfPages = Math.floor(meta.value.length / ipp) + (meta.value.length % ipp === 0 ? 0 : 1)
         let pageArr = pageArrayRef(name)
-        console.log(`collectionMeta`)
         return {
             views: meta.value.views,
             viewIndex: meta.value.viewIndex,
@@ -145,8 +144,8 @@ export const useCollectionsStore = defineStore('collections', () => {
         let start = (pageNoB1.valueOf() - 1) * ipp;
         let array = collectionArrayRef(name)
         let ids = array.value.slice(start, start + ipp).map(x => x.id);
-        
-        console.log(`setPage() source: ${name} pageB1: ${pageNoB1} start: ${start} ipp: ${ipp}`);
+        const rms = useRoutesMainStore()   
+        console.log(`setPage() source: ${name} pageB1: ${pageNoB1} start: ${start} ipp: ${ipp} to: ${JSON.stringify(rms.to.module, null, 2)}`);
 
         switch (name) {
             case 'main':
@@ -155,7 +154,7 @@ export const useCollectionsStore = defineStore('collections', () => {
                     meta.value.pageNoB1 = pageNoB1
                     return true
                 }
-                await send('model/page', 'post', { model: to.value.module, view, ids })
+                await send('model/page', 'post', { model: rms.to.module, view, ids })
                     .then(res => {
                         console.log(`setPage() returned (success)`)
                         savePage('main', res.data.page, view)
@@ -173,11 +172,12 @@ export const useCollectionsStore = defineStore('collections', () => {
     }
 
     function savePage(name: TSource, page: IPage[], view: TView): void {
+        const rms = useRoutesMainStore()  
         function getUrls(urls: { full: string, tn: string } | null | undefined): object | null {
             if (urls === null) {
                 return {
-                    full: `${bucketUrl.value}app/filler/${current.value.module}Filler.jpg`,
-                    tn: `${bucketUrl.value}app/filler/${current.value.module}Filler-tn.jpg`
+                    full: `${bucketUrl.value}app/filler/${rms.current.module}Filler.jpg`,
+                    tn: `${bucketUrl.value}app/filler/${rms.current.module}Filler-tn.jpg`
                 }
             } else {
                 return {

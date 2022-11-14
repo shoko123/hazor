@@ -3,11 +3,12 @@
     <template v-slot:title density="compact">
       <v-toolbar id="collection" density="compact">
         <v-toolbar-title>{{ header }}</v-toolbar-title>
-        <v-pagination v-model="page" :length="paginator.pages" :total-visible="10">
+        <v-pagination v-model="page" :length="paginator.pages" :total-visible="16">
         </v-pagination>
         <!-- <v-spacer></v-spacer> -->
         <v-btn size="small" variant="outlined" @click="toggleDisplayOption()">view: {{ displayOption }} </v-btn>
-      </v-toolbar>
+      
+    </v-toolbar>
     </template>
 
     <v-card-text>

@@ -1,20 +1,15 @@
-// routesPrepare
-//at this point the new route is assured to be synthecly correct and all relevant fields
-//are stored in routesStore from and to.
+//routesPrepare
+//At this point the new route is assured to have a correct form and all r
+//relevant fields are stored in routesStore from and to.
 //Now we need to decide on the loading sequence and do the loading.
 
+import type { TRouteInfo, TPreparePlan } from '../../../types/routesTypes';
 import { defineStore, storeToRefs } from 'pinia'
 import { useXhrStore } from '../xhr';
 import { useTrioStore } from '../trio';
 import { useCollectionsStore } from '../collections';
-import { useAuthStore } from '../auth';
 import { useModuleStore } from '../module';
 import { useNotificationsStore } from '../notifications';
-import { router } from '../../setups/vue-router'
-import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
-import { ref } from 'vue'
-import { computed } from 'vue'
-import type { TUrlModule, TModule, TRouteInfo, TParsingError, TParseResponse, TPreparePlan } from '../../../types/routesTypes';
 
 export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
@@ -26,9 +21,9 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     let c = useCollectionsStore();
     let t = useTrioStore();
 
-    //if navigate to a new module initialize module (unless Auth or Home)
     switch (plan.scaffold) {
       case 'load':
+        t.clearFilters()
         n.showSpinner('Loading module data ...')
         await xhr.send('model/init', 'post', { model: to.module })
           .then(res => {

@@ -1,10 +1,10 @@
 <template>
   <v-card class="mx-auto" color="transparent" flat>
-    <v-card-text class="text-body-1 white--text"> {{text}}
-    </v-card-text>
+    <!-- <v-card-text class="text-body-1 white--text"> {{text}}
+    </v-card-text> -->
     <v-card-actions>
-      <v-btn @click="goTo(item)">Visit</v-btn>
-      <v-btn @click="openLightBox()">Lightbox</v-btn>
+      <v-btn  class="but" @click="goTo(item)">Visit</v-btn>
+      <v-btn class="but" @click="openLightBox()">Lightbox</v-btn>
     </v-card-actions>
   </v-card>
   <!--h5 v-if="hasMedia">{{ text }}</h5-->
@@ -22,8 +22,7 @@ const props = defineProps<{
 }>()
 
 onMounted(() => {
-  // text content should be the same as current `count.value`
-  console.log(`Overlay.onMounted props: ${JSON.stringify(props, null, 2)}`)
+  //console.log(`Overlay.onMounted props: ${JSON.stringify(props, null, 2)}`)
 })
 const text = computed(() => {
   if (props.item.description === null) {
@@ -47,3 +46,8 @@ function goTo(item: IMediaItem) {
 
 </script>
 
+<style scoped>
+.but {
+  background-color: rgb(118, 127, 123);
+}
+</style>
