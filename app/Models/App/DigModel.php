@@ -19,6 +19,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
     abstract function buildSqlDescription(): string;
     abstract function buildSqlUrlId(): string;
     abstract function init(): array;
+    abstract function getIdFromUrlId(string $url_id) : int;
 
     public function __construct($eloquent_model_name = null)
     {
@@ -61,12 +62,9 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         }
         return $items;
     }
-    public function show($queryParams)
+    public function show($id)
     {
-        $url_id = $this->buildSqlUrlId();
-        $builder = (object)[];
-        $builder = $this->select('id', DB::raw($url_id));
-        $collection = $builder->take(5000)->get();
-        return $collection;
+        $item = self::findOrFail($id);
+        return $item;
     }
 }

@@ -10,7 +10,7 @@ import { useNotificationsStore } from './notifications'
 
 export const useCollectionsStore = defineStore('collections', () => {
     const { send } = useXhrStore()
-    let { bucketUrl } = storeToRefs(useMediaStore())
+    //let { bucketUrl } = storeToRefs(useMediaStore())
     let n = useNotificationsStore()
     //const rms = useRoutesMainStore()
 
@@ -172,17 +172,18 @@ export const useCollectionsStore = defineStore('collections', () => {
     }
 
     function savePage(name: TSource, page: IPage[], view: TView): void {
-        const rms = useRoutesMainStore()  
+        const rms = useRoutesMainStore()
+        let { bucketUrl } = useMediaStore()
         function getUrls(urls: { full: string, tn: string } | null | undefined): object | null {
             if (urls === null) {
                 return {
-                    full: `${bucketUrl.value}app/filler/${rms.current.module}Filler.jpg`,
-                    tn: `${bucketUrl.value}app/filler/${rms.current.module}Filler-tn.jpg`
+                    full: `${bucketUrl}app/filler/${rms.current.module}Filler.jpg`,
+                    tn: `${bucketUrl}app/filler/${rms.current.module}Filler-tn.jpg`
                 }
             } else {
                 return {
-                    full: `${bucketUrl.value}db/${urls?.full}`,
-                    tn: `${bucketUrl.value}db/${urls?.tn}`
+                    full: `${bucketUrl}db/${urls?.full}`,
+                    tn: `${bucketUrl}db/${urls?.tn}`
                 }
             }
         }

@@ -45,4 +45,8 @@ class Locus extends DigModel
     {
         return 'name AS url_id';
     }
+
+    function getIdFromUrlId(string $url_id) : int {
+        return 5;
+    }
 }

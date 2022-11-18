@@ -7,22 +7,22 @@
     "dependencies": {
         "@mdi/font": "7.0.96",
         "roboto-fontface": "*",
-        "vue": "^3.2.40",
+        "vue": "^3.2.45",
         "vuetify": "^3.0.0-beta.0",
         "webfontloader": "^1.6.28"
     },
     "devDependencies": {
-        "@vitejs/plugin-vue": "^3.1.2",
+        "@vitejs/plugin-vue": "^3.2.0",
         "axios": "^1.1",
-        "laravel-vite-plugin": "^0.6.1",
+        "laravel-vite-plugin": "^0.7.0",
         "lodash": "^4.17.21",
         "normalizr": "^3.6.2",
-        "pinia": "^2.0.22",
-        "postcss": "^8.4.17",
-        "sass": "^1.55.0",
-        "vite": "^3.1.6",
-        "vite-plugin-vuetify": "^1.0.0-alpha.17",
+        "pinia": "^2.0.23",
+        "postcss": "^8.4.19",
+        "sass": "^1.56.1",
+        "vite": "^3.2.4",
+        "vite-plugin-vuetify": "^1.0.0",
         "vue-cli-plugin-vuetify": "~2.5.8",
-        "vue-router": "^4.1.5"
+        "vue-router": "^4.1.6"
     }
 }

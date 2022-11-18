@@ -16,13 +16,13 @@ import { IObject, TmpGroup } from '../../../types/trioTypes'
 import { useTrioStore } from '../../../scripts/stores/trio';
 
 const to: TRouteInfo = {
-    url_module: null,
-    url_id: null,
-    url_query_params: null,
+    url_module: undefined,
+    url_id: undefined,
+    url_query_params: undefined,
     name: 'home',
     module: 'Home',
     idParams: undefined,
-    queryParams: null
+    queryParams: undefined
 }
 
 const moduleConversion = {
@@ -40,7 +40,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
     function parse(handle_to: RouteLocationNormalized): TParseResponse {
         to.name = <TName>handle_to.name
         let urlModule = handle_to.params.hasOwnProperty('module') ? handle_to.params.module : false
-        let urlId = handle_to.params.hasOwnProperty('id') ? handle_to.params.id : false
+        let urlId = handle_to.params.hasOwnProperty('url_id') ? handle_to.params.url_id : undefined
         let urlQuery = Object.keys(handle_to.query).length > 0 ? handle_to.query : false
 
         //console.log(`parse handle_to: ${JSON.stringify(handle_to, null, 2)}`);
@@ -62,6 +62,8 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
         if (urlId) {
             if (!parseUrlId(<TModule>to.module, <string>urlId)) {
                 return { success: false, data: 'BadIdFormat' }
+            } else{
+                to.url_id = <string>urlId
             }
         } else {
             to.idParams = undefined

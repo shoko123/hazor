@@ -20,9 +20,9 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '../../scripts/stores/auth';
-import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain';
-import type { TName } from '../../types/routesTypes'
+import { useAuthStore } from '../../../scripts/stores/auth';
+import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain';
+import type { TName } from '../../../types/routesTypes'
 let auth = useAuthStore()
 const router = useRouter()
 let { current } = storeToRefs(useRoutesMainStore())

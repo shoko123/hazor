@@ -14,5 +14,6 @@ interface DigModelInterface
     public function index($queryParams);
     public function init(): array;
     public function page(Request $r);
-    public function show(Request $r);
+    public function show(int $id);
+    public function getIdFromUrlId(string $s) : int;    
 }

@@ -12,7 +12,7 @@ export const useModuleStore = defineStore('module', () => {
   const routes = useRoutesMainStore()
 
   let counts = ref({ items: 0, media: 0 })
- 
+  const itemViews = ref<string[]>([])
 
   const backgroundImage = computed(() => {
     return routes.current.module !== 'Home' ? {

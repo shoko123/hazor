@@ -22,6 +22,10 @@
             ]
         }
     },
+    "vueCompilerOptions": {
+        "target": 3,
+        "experimentalDisableTemplateSupport": true
+      },
     "include": [
         "resources/**/*"
     ]

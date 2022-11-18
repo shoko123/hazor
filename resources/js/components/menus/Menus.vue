@@ -6,7 +6,7 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { useStatusStore } from '../../scripts/stores/status'
-import MainMenu from './MainMenu.vue'
+import MainMenu from './main-menu/MainMenu.vue'
 import SubMenu from './SubMenu.vue'
 
 let { hasSubMenu } = storeToRefs(useStatusStore())

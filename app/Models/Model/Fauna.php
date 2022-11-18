@@ -33,13 +33,18 @@ class Fauna extends FindModel
         return [
             "message" => $this->eloquent_model_name . '.init()',
             "counts" => [ "items" => $this->count(), "media" => 777,],
+            "itemViews" => config('display_options.itemViews.Locus'),
         ];
     }
     
     function buildSqlDescription() : string {
-        return 'CONCAT(label, ", ", taxon, ", ", element) AS description';
+        return 'CONCAT(label, ", ", taxon, ", ", element) AS description'; 
     }
     function buildSqlUrlId() : string {
         return 'basket AS url_id';
+    }
+    
+    function getIdFromUrlId(string $url_id) : int {
+        return 5;
     }
 }

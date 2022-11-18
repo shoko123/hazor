@@ -9,30 +9,30 @@ import { useRoutesPlanTransitionStore } from './routesPlanTransition';
 import { useRoutesPrepareStore } from './routesPrepare';
 import { useAuthStore } from '../auth';
 import { useNotificationsStore } from '../notifications';
-import type { TUrlModule, TModule, TRouteInfo, TParsingError, TParseResponse, TPreparePlan } from '../../../types/routesTypes';
+import type { TUrlModule, TModule, TRouteInfo, TParsingError, TParseResponse, TPlanAction } from '../../../types/routesTypes';
 
 export const useRoutesMainStore = defineStore('routesMain', () => {
     const { parse } = useRoutesParserStore()
     const { planTransition } = useRoutesPlanTransitionStore()
 
     const current = ref<TRouteInfo>({
-        url_module: null,
-        url_id: null,
-        url_query_params: null,
+        url_module: undefined,
+        url_id: undefined,
+        url_query_params: undefined,
         module: 'Home',
         name: 'home',
         idParams: undefined,
-        queryParams: null
+        queryParams: undefined
     })
 
     const to = ref<TRouteInfo>({
-        url_module: null,
-        url_id: null,
-        url_query_params: null,
+        url_module: undefined,
+        url_id: undefined,
+        url_query_params: undefined,
         module: 'Home',
         name: 'home',
         idParams: undefined,
-        queryParams: null
+        queryParams: undefined
     })
 
     const isLoading = ref(false)
@@ -48,31 +48,30 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         }
 
         //parse (module, id, queryParams)
-        let res = parse(handle_to)
-        if (res.success) {
-            to.value = { ...(<TRouteInfo>res.data) }
+        let parseResponse = parse(handle_to)
+        if (parseResponse.success) {
+            to.value = { ...(<TRouteInfo>parseResponse.data) }
             console.log("parse OK")
         } else {
             //cancel navigation
-            n.showSnackbar(`Parsing error ${res.data}; redirected to Home Page`)
+            n.showSnackbar(`Parsing error ${parseResponse.data}; redirected to Home Page`)
             return { name: 'home' }
         };
 
-        //verify transitions and plan preparations needed
+        //verify that the transition is legal and prepare the plan required for a successful transition.
+        let planResponse = planTransition(to.value, current.value)
 
-        let plan = planTransition(to.value, current.value)
-
-        if (!plan.success) {
+        if (!planResponse.success) {
             console.log("plan failed...")
-            n.showSnackbar(`Routes transition error ${plan.data}; redirected to Home Page`)
+            n.showSnackbar(`Routes transition error ${planResponse.data}; redirected to Home Page`)
             return { name: 'home' }
         }
 
-        console.log(`Plan: ${JSON.stringify(plan, null, 2)}`)
+        console.log(`Plan successful: ${JSON.stringify(planResponse.data, null, 2)}`)
 
         try {
             isLoading.value = true
-            let prepare = await p.prepareForNewRoute(to.value, current.value, <TPreparePlan>plan.data)
+            let prepare = await p.prepareForNewRoute(to.value, current.value, <TPlanAction[]>planResponse.data)
             if (!prepare) {
                 return false//Promise.reject(false)
             } else {
@@ -106,9 +105,8 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     }
 
     function finalizeRouting() {
-        //copy to -> current
+        console.log('finalizing routing. copy to -> current')
         current.value = JSON.parse(JSON.stringify(to.value))
-        console.log('finalize OK')
     }
 
     return { isLoading, current, to, handleRouteChange }

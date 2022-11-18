@@ -17,7 +17,7 @@
 import { computed } from 'vue'
 import LoginOrUser from './LoginOrUser.vue'
 import { storeToRefs } from 'pinia'
-import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
+import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
 
 let { current } = storeToRefs(useRoutesMainStore())
 const name = computed(() => {

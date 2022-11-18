@@ -1,5 +1,4 @@
 import Index from '@/components/content/Index.vue'
-import ShowItem from '@/components/content/show-item/ShowItem.vue'
 import NotFound from '@/components/routes/NotFound.vue'
 
 const routes = [
@@ -57,7 +56,7 @@ const routes = [
   },
   {
     path: '/:module/:url_id',
-    component: ShowItem,
+    component: () => import('@/components/content/Show.vue'),
     name: 'show'
   },
   {
