@@ -3,12 +3,14 @@
 
 import { ref } from 'vue'
 import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
-import { defineStore, storeToRefs } from 'pinia'
+import { defineStore } from 'pinia'
 import { useRoutesParserStore } from './routesParser';
 import { useRoutesPlanTransitionStore } from './routesPlanTransition';
 import { useRoutesPrepareStore } from './routesPrepare';
 import { useAuthStore } from '../auth';
 import { useNotificationsStore } from '../notifications';
+import { useModuleStore } from '../module';
+
 import type { TUrlModule, TModule, TRouteInfo, TParsingError, TParseResponse, TPlanAction } from '../../../types/routesTypes';
 
 export const useRoutesMainStore = defineStore('routesMain', () => {
@@ -105,9 +107,29 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     }
 
     function finalizeRouting() {
+        let module = useModuleStore()
         console.log('finalizing routing. copy to -> current')
         current.value = JSON.parse(JSON.stringify(to.value))
+        
     }
 
-    return { isLoading, current, to, handleRouteChange }
+    function getRouteInfo() {
+        return current
+    }
+
+    function getToRouteInfo() {
+        return to
+    }
+
+    function getModule() {
+        return current.value.module
+    }
+
+    function getToModule() {
+        return to.value.module
+    }
+    function toAndCurrentAreTheSameModule() {
+        return to.value.module === current.value.module
+    }
+    return { isLoading, getModule, getToModule, getRouteInfo, getToRouteInfo, toAndCurrentAreTheSameModule, current, to, handleRouteChange }
 })

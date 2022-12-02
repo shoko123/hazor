@@ -10,7 +10,7 @@ import { router } from '../../setups/vue-router'
 import type { LocationQuery, RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
 import { ref } from 'vue'
 import { computed } from 'vue'
-import { defineStore, storeToRefs } from 'pinia'
+import { defineStore } from 'pinia'
 
 import { IObject, TmpGroup } from '../../../types/trioTypes'
 import { useTrioStore } from '../../../scripts/stores/trio';
@@ -35,7 +35,7 @@ const moduleConversion = {
 
 export const useRoutesParserStore = defineStore('routesParser', () => {
 
-    let { trio } = storeToRefs(useTrioStore())
+    let  trio  = useTrioStore()
 
     function parse(handle_to: RouteLocationNormalized): TParseResponse {
         to.name = <TName>handle_to.name
@@ -138,8 +138,8 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
         type TGroupCode = 'TG' | 'TM' | 'LV' | 'CV' | 'BE'
         let groupsByType: IObject = {}
         for (const [key, value] of Object.entries(qp)) {
-            if (trio.value.entities.groups.hasOwnProperty(key)) {
-                let group = trio.value.entities.groups[key]
+            if (trio.trio.entities.groups.hasOwnProperty(key)) {
+                let group = trio.trio.entities.groups[key]
                 let group_type_code = group.group_type_code
                 if (groupsByType.hasOwnProperty(group_type_code)) {
                     groupsByType[group_type_code] = [{ group_name: key, params: value }]

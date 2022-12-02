@@ -31,7 +31,7 @@ function btnClicked(f: string) {
       break
 
     case 'showItem':
-
+      router.push({ name: 'show', params: { module: current.value.url_module, url_id: 5 } })
       break
   }
 }

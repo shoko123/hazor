@@ -19,9 +19,9 @@ import LoginOrUser from './LoginOrUser.vue'
 import { storeToRefs } from 'pinia'
 import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
 
-let { current } = storeToRefs(useRoutesMainStore())
+let { getModule } = useRoutesMainStore()
 const name = computed(() => {
-    return current.value.module
+    return getModule()
 })
 </script>
 

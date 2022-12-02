@@ -11,13 +11,14 @@ import SubWelcome from './SubWelcome.vue'
 import SubIndex from './SubIndex.vue'
 import SubMenuFilter from './submenu-filter/SubMenuFilter.vue'
 import SubMenuShow from './submenu-show/SubMenuShow.vue'
+import SubMenuItem from './submenu-show/SubMenuItem.vue'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-const { current } = storeToRefs(useRoutesMainStore())
+const { getToRouteInfo } = useRoutesMainStore()
 
 const sub = computed(() => {
-    switch (current.value.name) {
+    switch (getToRouteInfo().value.name) {
         case 'welcome':
             return SubWelcome
         case 'index':
@@ -25,6 +26,7 @@ const sub = computed(() => {
         case 'filter':
             return SubMenuFilter
         case 'show':
+            return SubMenuItem
             return SubMenuShow
         default:
             return SubWelcome

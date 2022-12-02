@@ -8,7 +8,7 @@ return [
     ],
     'itemViews' => [
         'Locus' => ['Main', 'Media', 'Gallery', 'Related Finds'],
-        'Stone' => ['Main', 'Media', 'Gallery', 'Locus Finds'],
-        'Fauna' => ['Main', 'Media', 'Gallery', 'Locus Finds'],
+        'Stone' => ['Main', 'Media', 'Gallery'],
+        'Fauna' => ['Main', 'Media', 'Gallery'],
     ]
 ];

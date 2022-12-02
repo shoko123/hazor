@@ -16,11 +16,9 @@
 import { TSource, IMediaItem } from '../../types/collectionTypes'
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { storeToRefs } from 'pinia'
-
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 
-const { current } = storeToRefs(useRoutesMainStore())
+const { getRouteInfo } = useRoutesMainStore()
 const router = useRouter()
 const props = defineProps<{
   source: TSource,
@@ -48,7 +46,8 @@ function openLightBox() {
 
 function goTo(item: IMediaItem) {
   console.log(`goto item: ${JSON.stringify(item, null, 2)}`)
-  router.push({ name: 'show', params: { module: current.value.url_module, url_id: item.id } })
+  let routeInfo = getRouteInfo()
+  router.push({ name: 'show', params: { module: routeInfo.value.url_module, url_id: item.id } })
 }
 
 

@@ -64,6 +64,7 @@ const overlayText = computed(() => {
 })
 
 const overlay = computed(() => {
+  console.log(`MediaSquare.overlay`)
   switch (props.source) {
     case 'main':
       return OverlayCollectionItem

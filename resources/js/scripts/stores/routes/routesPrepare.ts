@@ -5,7 +5,7 @@
 //Here we execute the loading and other activities (e.g. clearFilters, copy current -> new, etc.).
 
 import type { TRouteInfo, TPlanAction } from '../../../types/routesTypes';
-import { defineStore, storeToRefs } from 'pinia'
+import { defineStore } from 'pinia'
 import { useXhrStore } from '../xhr';
 import { useTrioStore } from '../trio';
 import { useCollectionsStore } from '../collections';
@@ -16,7 +16,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let xhr = useXhrStore();
   let n = useNotificationsStore();
   let m = useModuleStore();
-  let c = useCollectionsStore();
+  let {reset, setCollectionElement } = useCollectionsStore();
   let t = useTrioStore();
   let i = useItemStore();
 
@@ -46,6 +46,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'clearMainCollection':
+          reset()
           break
 
         case 'clearItem':
@@ -66,6 +67,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       .then(res => {
         //console.log(`auth.response is ${JSON.stringify(res, null, 2)}`)
         m.counts = res.data.counts
+        m.itemViews = res.data.itemViews
         t.setTrio(res.data.trio)
         return true
       })
@@ -86,9 +88,9 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       .then(res => {
         console.log(`index() returned (success)`)
         //console.log(`index() returned res: ${JSON.stringify(res, null, 2)}`)
-        c.setCollectionElement('main', 'array', res.data.collection)
-        c.setCollectionElement('main', 'viewIndex', 0)
-        c.setCollectionElement('main', 'page', 1)
+        setCollectionElement('main', 'array', res.data.collection, to.module)
+        setCollectionElement('main', 'viewIndex', 0, to.module)
+        setCollectionElement('main', 'page', 1, to.module)
         console.log(`index() set array, index, page done`)
         return true
       })

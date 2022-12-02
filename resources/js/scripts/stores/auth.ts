@@ -2,7 +2,7 @@
 //handles and stores user's login and capabilities
 import { ref, computed } from 'vue'
 import axios from 'axios';
-import { defineStore, storeToRefs } from 'pinia'
+import { defineStore } from 'pinia'
 import { router } from '../setups/vue-router'
 import { useXhrStore } from './xhr';
 import { useNotificationsStore } from './notifications';

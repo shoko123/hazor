@@ -35,7 +35,6 @@
 
 import { TStoneFields } from '../../../types/itemTypes'
 import { computed } from 'vue'
-import { storeToRefs } from 'pinia'
 import { useItemStore } from '../../../scripts/stores/item'
 
 let i = useItemStore()

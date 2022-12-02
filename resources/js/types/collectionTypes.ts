@@ -62,7 +62,8 @@ type TCollectionMeta = {
         noOfPages: number,
         noOfItemsInCurrentPage: number,
         firstItemNo: number,
-        lastItemNo: number
+        lastItemNo: number,
+        length: number
 }
 
 

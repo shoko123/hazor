@@ -44,5 +44,8 @@ type TFaunaFields = {
         element_id: string
 }
 type TItemFields = TLocusFields | TFaunaFields | TStoneFields | undefined
-
+type TItemDerived = {
+        tag: string,
+        
+}
 export { TItemFields, TLocusFields, TStoneFields, TFaunaFields }

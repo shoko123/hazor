@@ -1,26 +1,20 @@
 // app.js
 //Stores data common to the whole app:
 //accessibility, bucketUrl, carousel, 
-import { defineStore, storeToRefs } from 'pinia'
+import { defineStore } from 'pinia'
 import { computed } from 'vue'
-import { useMainStore } from './main'
-import { useModuleStore } from './module'
+
 import { useRoutesMainStore } from './routes/routesMain'
-import { useCollectionsStore} from './collections'
 export const useStatusStore = defineStore('status', () => {
 
-  let routes = useRoutesMainStore()
-  let c = useCollectionsStore()
+  let { getModule } = useRoutesMainStore()
   
 
-  const isLoading = computed(() => {
-    return routes.isLoading
-  })
-
   const hasSubMenu = computed(() => {
-    return !(routes.current.module === 'Home' || routes.current.module === 'Auth')
+    let module = getModule()
+    return !(module === 'Home' || module === 'Auth')
   })
 
-  return { isLoading, hasSubMenu }
+  return { hasSubMenu }
 })
 

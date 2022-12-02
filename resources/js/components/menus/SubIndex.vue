@@ -11,12 +11,12 @@ import { storeToRefs } from 'pinia'
 import { useMainStore } from '../../scripts/stores/main'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 
-const { current } = storeToRefs(useRoutesMainStore())
+const { getRouteInfo } = useRoutesMainStore()
 const router = useRouter()
 
 const buttons = [{ text: "Welcome", routeName: "welcome" }, { text: "Filter", routeName: "filter" }]
 
 function btnClicked(routeName: string) {
-      router.push({ name: routeName, params: { module: current.value.url_module } })
+      router.push({ name: routeName, params: { module: getRouteInfo().value.url_module } })
 }
 </script>

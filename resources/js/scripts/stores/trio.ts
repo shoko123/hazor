@@ -1,7 +1,6 @@
 // stores/trio.js
-import { defineStore, storeToRefs } from 'pinia'
+import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { useRoutesMainStore } from './routes/routesMain'
 import { TGroupTag, Trio, TrioSourceName, TmpGroup } from '../../types/trioTypes'
 
 import normalizeTrio from './trioNormalizer'

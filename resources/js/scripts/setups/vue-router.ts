@@ -15,7 +15,7 @@ router.onError.bind(navigationErrorHandler)
 console.log("setups.vue-router")
 
 router.beforeEach(async (to, from) => {
-  const r = useRoutesMainStore()
+  const { handleRouteChange }= useRoutesMainStore()
   const m = useMainStore()
   if (!m.initialized) {
     console.log(`vue-router beforeEach app is not initialized calling appInit()`)
@@ -24,7 +24,7 @@ router.beforeEach(async (to, from) => {
   }
 
   try {
-    let res = await r.handleRouteChange(to, from)
+    let res = await handleRouteChange(to, from)
     //console.log(`router.beforeEach returned ${JSON.stringify(res, null, 2)}`);
     return res
   }

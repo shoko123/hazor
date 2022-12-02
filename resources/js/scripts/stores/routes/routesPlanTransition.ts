@@ -2,11 +2,11 @@
 //decide on action needed before transitioning to a new route
 
 import type { TRouteInfo, TPlanResponse, TPlanError, TPlanAction } from '../../../types/routesTypes'
-import { defineStore, storeToRefs } from 'pinia'
+import { defineStore } from 'pinia'
 import { useCollectionsStore } from '../collections'
 
 export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', () => {
-    const { main } = storeToRefs(useCollectionsStore())
+    const {collectionMeta} = useCollectionsStore()
 
     function planTransition(to: TRouteInfo, from: TRouteInfo): TPlanResponse {
         let changed = { module: false, name: false, id: false }
@@ -79,8 +79,8 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                         if (changed.module) {
                             return { success: true, data: ['loadTrio', 'loadMainCollection', 'clearItem'] }
                         } else {
-                            let toDo: TPlanAction[] = main.value.length === 0 ? ['loadMainCollection'] : [] 
-                            toDo.push('clearItem')
+                            let toDo: TPlanAction[] = collectionMeta("main").length === 0 ? ['loadMainCollection'] : [] 
+                            toDo.push('clearItem', 'loadMainCollection')
                             return { success: true, data: toDo }
                         }
 

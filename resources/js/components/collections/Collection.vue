@@ -23,9 +23,7 @@
 <script lang="ts" setup >
 
 import { computed } from 'vue'
-import { storeToRefs } from 'pinia'
 import { TSource } from '../../types/collectionTypes'
-
 import CollectionPageMedia from './CollectionPageMedia.vue'
 import CollectionPageChips from './CollectionPageChips.vue'
 import CollectionPageTable from './CollectionPageTable.vue'
@@ -36,15 +34,8 @@ const props = defineProps<{
   source: TSource
 }>()
 
-let { to } = storeToRefs(useRoutesMainStore())
+let { getModule } = useRoutesMainStore()
 let { collectionMeta, setCollectionElement } = useCollectionsStore()
-
-
-
-
-
-
-
 
 const meta = computed(() => {
   return collectionMeta(props.source)
@@ -54,27 +45,20 @@ const page = computed({
   get: () => { return paginator.value.page },
   set: val => {
     console.log(`Collection.page.set to ${val}`)
-    setCollectionElement(props.source, 'page', val)
+    setCollectionElement(props.source, 'page', val, getModule())
   }
 })
 
 
 const header = computed(() => {
-  //let dd = collections.CollectionMeta(props.source)
-  //let dd = collections.pageMain
-  return `${to.value.module} results: page(${meta.value.pageNoB1}/${meta.value.noOfPages}), items(${meta.value.firstItemNo} - ${meta.value.lastItemNo}/${meta.value.noOfItems})`
+  return `${getModule()} results: page(${meta.value.pageNoB1}/${meta.value.noOfPages}), items(${meta.value.firstItemNo} - ${meta.value.lastItemNo}/${meta.value.noOfItems})`
 })
 
 const paginator = computed(() => {
-  //let dd = collections.CollectionMeta(props.source)
-  //let dd = collections.pageMain
-  //console.log(`paginator() display: ${JSON.stringify(dd, null, 2)}`);
-
   return {
     show: meta.value.noOfPages > 1
     , page: meta.value.pageNoB1, pages: meta.value.noOfPages
   }
-  //return `${to.value.module} results. Showing page(${meta.value.pageNoB1}/${meta.value.noOfPages}), items(${meta.value.firstItemNo}- ${meta.value.lastItemNo}/${meta.value.noOfItems})`
 })
 const showPaginator = computed(() => {
   return true
@@ -119,9 +103,9 @@ const disable = computed(() => {
 
 function toggleDisplayOption() {
   //let c = collections.viewsData(props.source)
-  //console.log(`toggle display option() collection: ${JSON.stringify(c, null, 2)}\ncurrent: ${c.viewIndex}, next: ${(c.viewIndex + 1)%(c.views.length)}`);
+  //console.log(`toggle display option() collection: ${JSON.stringify(c, null, 2)}\nviewIndex: ${c.viewIndex}, next: ${(c.viewIndex + 1)%(c.views.length)}`);
   //c.viewIndex = (c.viewIndex + 1)%(c.views.length)
-  setCollectionElement(props.source, 'viewIndex', (meta.value.viewIndex + 1) % (meta.value.views.length))
+  setCollectionElement(props.source, 'viewIndex', (meta.value.viewIndex + 1) % (meta.value.views.length), getModule())
 }
 
 </script>

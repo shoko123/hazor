@@ -7,15 +7,14 @@
 <script lang="ts" setup>
 
 import { computed } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useModuleStore } from '../../scripts/stores/module'
+import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import LocusForm from '../modules/loci/LocusForm.vue'
 import StoneForm from '../modules/stones/StoneForm.vue'
 import FaunaForm from '../modules/fauna/FaunaForm.vue'
-let { name } = storeToRefs(useModuleStore())
+let { getModule } = useRoutesMainStore()
 
 const componentName = computed(() => {
-  switch (name.value) {
+  switch (getModule()) {
     case 'Locus':
       return LocusForm
     case 'Stone':

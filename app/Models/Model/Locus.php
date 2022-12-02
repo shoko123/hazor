@@ -33,6 +33,7 @@ class Locus extends DigModel
         return [
             "message" => $this->eloquent_model_name . '.init()',
             "counts" => ["items" => $this->count(), "media" => 777,],
+            "itemViews" => config('display_options.itemViews.Locus'),
         ];
     }
 
