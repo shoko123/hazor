@@ -1,5 +1,5 @@
 <template>
-    <v-app-bar :height="36" color=orange dark app>
+    <v-app-bar :height="36" dark app>
         <v-app-bar-title>
             <component :is="sub"></component>
         </v-app-bar-title>

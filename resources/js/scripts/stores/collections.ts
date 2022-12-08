@@ -10,9 +10,8 @@ import { useNotificationsStore } from './notifications'
 
 export const useCollectionsStore = defineStore('collections', () => {
     const { send } = useXhrStore()
-    const n = useNotificationsStore()
-    const m = useMediaStore()
-
+    const {showSnackbar} = useNotificationsStore()
+    const { getBucketUrl } = useMediaStore()
     const itemsPerPage = ref<TItemsPerPage>({
         Media: 0,
         Chips: 0,
@@ -54,7 +53,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     let relatedPageArray = ref<IPageItem[]>([])
     let mediaPageArray = ref<IPageItem[]>([])
 
-    function pageArrayRef(source: TSource) {
+    function getPageArray(source: TSource) {
         switch (source) {
             case 'main':
                 return mainPageArray
@@ -65,7 +64,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         }
     }
 
-    function collectionArrayRef(source: TSource) {
+    function getCollectionArray(source: TSource) {
         switch (source) {
             case 'main':
                 return mainArray
@@ -76,7 +75,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         }
     }
 
-    function collectionMetaRef(name: TSource) {
+    function getCollectionMeta(name: TSource) {
         switch (name) {
             case 'main':
                 return main
@@ -89,10 +88,10 @@ export const useCollectionsStore = defineStore('collections', () => {
 
     function collectionMeta(name: TSource): TCollectionMeta {
         console.log(`collectionMeta("${name}")`)
-        let meta = collectionMetaRef(name)
+        let meta = getCollectionMeta(name)
         let ipp = itemsPerPage.value[<TView>meta.value.views[meta.value.viewIndex]]
         let noOfPages = Math.floor(meta.value.length / ipp) + (meta.value.length % ipp === 0 ? 0 : 1)
-        let pageArr = pageArrayRef(name)
+        let pageArr = getPageArray(name)
         return {
             views: meta.value.views,
             viewIndex: meta.value.viewIndex,
@@ -122,7 +121,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     }
 
     function setViewIndex(name: TSource, vi: number,  module: TModule) {
-        let meta = collectionMetaRef(name)
+        let meta = getCollectionMeta(name)
         meta.value.viewIndex = vi
 
         //When changing views, always reset page number to 1.
@@ -131,8 +130,8 @@ export const useCollectionsStore = defineStore('collections', () => {
 
     function setArray(name: TSource, data: any) {
         //To save on array.length recalculation, in addition to setting the array, we set meta.length
-        let array = collectionArrayRef(name)
-        let meta = collectionMetaRef(name)
+        let array = getCollectionArray(name)
+        let meta = getCollectionMeta(name)
         array.value = data
         meta.value.length = data.length
     }
@@ -141,9 +140,9 @@ export const useCollectionsStore = defineStore('collections', () => {
     async function setPage(name: TSource, pageNoB1: number, module: TModule) {
         let view = main.value.views[main.value.viewIndex]
         let ipp = itemsPerPage.value[view]
-        let meta = collectionMetaRef(name)
+        let meta = getCollectionMeta(name)
         let start = (pageNoB1.valueOf() - 1) * ipp;
-        let array = collectionArrayRef(name)
+        let array = getCollectionArray(name)
         let ids = array.value.slice(start, start + ipp).map(x => x.id);
 
         console.log(`setPage() source: ${name} pageB1: ${pageNoB1} start: ${start} ipp: ${ipp} to: ${module}`);
@@ -164,7 +163,7 @@ export const useCollectionsStore = defineStore('collections', () => {
                         savePage('main', res.data.page, view, module)
                     })
                     .catch(err => {
-                        n.showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
+                        showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
                         console.log(`Navigation to new routes failed with err: ${JSON.stringify(err, null, 2)}`)
                         return false
                     })
@@ -180,21 +179,21 @@ export const useCollectionsStore = defineStore('collections', () => {
             if (urls === null) {
                
                 return {
-                    full: `${m.bucketUrl}app/filler/${module}Filler.jpg`,
-                    tn: `${m.bucketUrl}app/filler/${module}Filler-tn.jpg`
+                    full: `${bucketUrl}app/filler/${module}Filler.jpg`,
+                    tn: `${bucketUrl}app/filler/${module}Filler-tn.jpg`
                 }
             } else {
                 return {
-                    full: `${m.bucketUrl}db/${urls?.full}`,
-                    tn: `${m.bucketUrl}db/${urls?.tn}`
+                    full: `${bucketUrl}db/${urls?.full}`,
+                    tn: `${bucketUrl}db/${urls?.tn}`
                 }
             }
         }
-
+        let bucketUrl = getBucketUrl()
         console.log(`savePage module: ${module}`)
 
         let toSave = []
-        let pageRef = pageArrayRef(name)
+        let pageRef = getPageArray(name)
         switch (view) {
             case 'Media':
                 toSave = page.map(x => { return { id: x.id, tag: x.url_id, description: x.description, hasMedia: x.primaryMedia !== null, urls: getUrls(x.primaryMedia) } })
@@ -236,5 +235,5 @@ export const useCollectionsStore = defineStore('collections', () => {
         related.value.pageNoB1 = 1
 
     }
-    return { setItemsPerPage, main, collectionMeta, setCollectionElement, reset, pageArrayRef, mainArray, mainPageArray }
+    return { setItemsPerPage, main, collectionMeta, setCollectionElement, reset, getPageArray, mainArray, mainPageArray }
 })

@@ -19,9 +19,9 @@ const props = defineProps<{
   pageNoB1: number
 }>()
 
-let { pageArrayRef } = useCollectionsStore()
+let { getPageArray } = useCollectionsStore()
 const page = computed(() => {
-  return pageArrayRef(props.source).value
+  return getPageArray(props.source).value
 })
 
 function goTo(item: any) {

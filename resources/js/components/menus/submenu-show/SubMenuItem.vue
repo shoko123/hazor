@@ -1,9 +1,9 @@
 <template>
   <v-toolbar dense>
-     <Navigator />
-    <!-- <CollectionButtons />
+     
+     <CollectionButtons />
     <Navigator />
-    <Editor /> -->
+    <!--Editor /> -->
 
     <v-spacer></v-spacer> 
 

@@ -1,6 +1,6 @@
 // app.js
 //Stores data common to the whole app:
-//accessibility, bucketUrl, carousel, 
+
 import { defineStore } from 'pinia'
 import { computed } from 'vue'
 

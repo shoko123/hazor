@@ -8,6 +8,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use App\Models\Interfaces\DigModelInterface;
+use Illuminate\Database\Eloquent\Collection;
 
 abstract class DigModel extends Model implements HasMedia, DigModelInterface
 {
@@ -19,7 +20,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
     abstract function buildSqlDescription(): string;
     abstract function buildSqlUrlId(): string;
     abstract function init(): array;
-    abstract function getIdFromUrlId(string $url_id) : int;
+    abstract function getIdFromUrlId(string $url_id): int;
 
     public function __construct($eloquent_model_name = null)
     {
@@ -37,28 +38,27 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
     public function index($queryParams)
     {
-        $url_id = $this->buildSqlUrlId();
-        $builder = (object)[];
-        $builder = $this->select('id', DB::raw($url_id));
+        $builder = $this->indexSelect();
         $collection = $builder->take(5000)->get();
         return $collection;
     }
 
-    public function page($r)
+    public function page($ids, $view): Collection
     {
-        $ids = implode(',', $r["ids"]);
+        $idsAsCommaSeperatedString = implode(',', $ids);
         $desc = $this->buildSqlDescription();
         $urlId = $this->buildSqlUrlId();
 
-        $items = $this->whereIn('id', $r["ids"])
+        $items = $this->whereIn('id', $ids)
             ->select('id', DB::raw($desc), DB::raw($urlId))
-            ->orderByRaw(DB::raw("FIELD(id, $ids)"))
+            ->orderByRaw(DB::raw("FIELD(id, $idsAsCommaSeperatedString)"))
             ->get();
 
-        if ($r["view"]  === "Media") {
-            foreach ($items as $index => $item) {
+        if ($view  === "Media") {
+            $items->transform(function ($item, $key) {
                 $item["primaryMedia"] = null;
-            }
+                return $item;
+            });
         }
         return $items;
     }

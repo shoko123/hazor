@@ -5,10 +5,14 @@ import { defineStore } from 'pinia'
 
 export const useMediaStore = defineStore('media', () => {
 
-  let bucketUrl = ref('')
+  let bucketUrl = ref("")
+  
   function getBucketUrl()  {
     return bucketUrl.value
   }
-  
-  return { bucketUrl, getBucketUrl }
+
+  function setBucketUrl(burl: string)  {
+    bucketUrl.value = burl
+  }
+  return { setBucketUrl, getBucketUrl }
 })

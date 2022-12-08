@@ -30,7 +30,7 @@ class ModelController extends Controller
     public function page(Request $r, DigModelInterface $m)
     {
         return response()->json([
-            "page" => $m->page($r),
+            "page" => $m->page($r["ids"], $r["view"]),
         ], 200);
     }
 

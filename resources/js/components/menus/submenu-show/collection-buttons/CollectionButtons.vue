@@ -1,26 +1,24 @@
 <template>
   <v-container class="ma-0 pa-0 primary--text min_width">
     <v-row>
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on }">
-          <v-btn @click="toWelcome()" large outlined v-on="on" class="primary--text">
-            <v-icon left class="primary--text">home</v-icon>
-            {{ homeText }}
-          </v-btn>
-        </template>
-        <span>{{ homeTipText }}</span>
-      </v-tooltip>
-
+      <v-btn @click="toWelcome" variant="outlined">
+        Welcome
+        <v-tooltip activator="parent" location="bottom">{{ welcomeTipText }}</v-tooltip>
+      </v-btn>
       <FilterButton v-if="showFilterButton" />
 
-      <v-tooltip v-if="showCollectionLink" bottom>
+      <v-btn @click="toCollection" variant="outlined">
+        Collection
+        <v-tooltip activator="parent" location="bottom">{{ welcomeTipText }}</v-tooltip>
+      </v-btn>
+      <!--v-tooltip v-if="showCollectionLink" bottom>
         <template v-slot:activator="{ on }">
           <v-btn @click="toCollection()" large outlined v-on="on" class="primary--text">
             <v-icon left class="primary--text">menu</v-icon>{{ counterText }}
           </v-btn>
         </template>
         <span>{{ resultsTipText }}</span>
-      </v-tooltip>
+      </v-tooltip> -->
 
       <!--div v-if="showCounter">
         <v-btn large outlined class="primary--text"></v-btn>
@@ -34,15 +32,16 @@ import { computed } from 'vue'
 import { useModuleStore } from '../../../../scripts/stores/module'
 import FilterButton from './FilterButton.vue'
 
-const homeText = computed(() => {
-  return false
+const collectionTipText = computed(() => {
+  return `Go to the Collection Page`
 })
 
-const homeTipText = computed(() => {
-  return false
+const welcomeTipText = computed(() => {
+  return `Go to the Welcome Page`
 })
+
 const showFilterButton = computed(() => {
-  return false
+  return true
 })
 const resultsText = computed(() => {
   return false
@@ -60,14 +59,11 @@ const counterText = computed(() => {
   return 999
 })
 function toWelcome() {
-  //this.$store.dispatch("mgr/goToRoute", "welcome");
+  console.log(`toWelcome()`)
 }
 
 function toCollection() {
-
-
-
-  //this.$store.dispatch("mgr/goToRoute", "list");
+ console.log(`toCollection()`)
 }
 
 
