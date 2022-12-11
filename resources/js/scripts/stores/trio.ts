@@ -251,11 +251,11 @@ export const useTrioStore = defineStore('trio', () => {
   }
 
   function setTrio(res: object) {
-    resetTrio()
+    trioClear()
     trio.value = normalizeTrio(res);
   }
 
-  function resetTrio() {
+  function trioClear() {
     groupIndex.value = 0
     categoryIndex.value = 0
     trio.value.result.length = 0

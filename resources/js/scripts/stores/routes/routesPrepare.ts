@@ -16,40 +16,43 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let xhr = useXhrStore();
   let n = useNotificationsStore();
   let m = useModuleStore();
-  let {reset, setCollectionElement } = useCollectionsStore();
+  let { reset, setCollectionElement } = useCollectionsStore();
   let t = useTrioStore();
   let i = useItemStore();
 
   async function prepareForNewRoute(to: TRouteInfo, from: TRouteInfo, plan: TPlanAction[]): Promise<boolean> {
     for (const x of plan) {
       switch (x) {
-        case 'loadTrio':
+        case 'trio.load':
           await loadTrio(to, from).catch(err => {
             return false
           })
           break
 
-        case 'loadMainCollection':
+        case 'trio.clear':
+          t.clearFilters()
+          break
+
+        case 'collection.load':
           await loadMainCollection(to, from).catch(err => {
             return false
           })
           break
 
-        case 'loadItem':
+        case 'collection.clear':
+          reset()
+          break
+        case 'item.load':
           await loadItem(to, from).catch(err => {
             return false
           })
           break
 
-        case 'resetTrio':
-          t.clearFilters()
-          break
 
-        case 'clearMainCollection':
-          reset()
-          break
 
-        case 'clearItem':
+
+
+        case 'item.clear':
           break
 
         default:
@@ -84,6 +87,29 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   async function loadMainCollection(to: TRouteInfo, from: TRouteInfo) {
     n.showSpinner(`Loading ${to.url_module} ...`)
     console.log(`Navigation loading main collection...`)
+    await xhr.send('model/index', 'post', { model: to.module })
+      .then(res => {
+        console.log(`index() returned (success)`)
+        //console.log(`index() returned res: ${JSON.stringify(res, null, 2)}`)
+        setCollectionElement('main', 'array', res.data.collection, to.module)
+        //setCollectionElement('main', 'viewIndex', 0, to.module)
+        setCollectionElement('main', 'page', {pageNoB1: 1, viewIndex: 0}, to.module)
+        console.log(`index() set array, index, page done`)
+        return true
+      })
+      .catch(err => {
+        n.showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
+        console.log(`Navigation to new routes failed with err: ${JSON.stringify(err, null, 2)}`)
+        return false
+      })
+      .finally(() => {
+        n.showSpinner(false)
+      })
+  }
+
+  async function loadMainPage(to: TRouteInfo, pageB1: number) {
+    n.showSpinner(`Loading ${to.url_module} Page...`)
+    console.log(`Navigation loading page(${pageB1})...`)
     await xhr.send('model/index', 'post', { model: to.module })
       .then(res => {
         console.log(`index() returned (success)`)

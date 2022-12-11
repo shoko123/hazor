@@ -8,17 +8,18 @@ type TDbAccessError = 'UnauthorizeError' | 'ServerError' | 'ItemNotFound' | 'Emp
 
 
 type TPlanAction =
-    'loadTrio' |
-    'clearFilters' |
-    'resetTrio' |
-    'loadMainCollection' |
-    'clearMainCollection' |
-    'loadItem' |
-    'clearItem' |
-    'prepareForNew' |
-    'prepareForUpdate' |
-    'prepareForTag' |
-    'prepareForMedia'
+    'trio.load' |
+    'trio.clear' |
+    'collection.item.load'|
+    'collection.load' |
+    'collection.clear' |
+    'filters.clear' |
+    'item.load' |
+    'item.clear' |
+    'item.prepareForNew' |
+    'item.prepareForUpdate' |
+    'item.prepareForTag' |
+    'item.prepareForMedia'
 
 type TIdParams = { id: number, params: object, extra: object } | undefined
 

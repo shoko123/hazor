@@ -22,16 +22,16 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
 
         switch (to.name) {
             case 'home':
-                return { success: true, data: ['clearItem', 'clearMainCollection', 'resetTrio'] }
+                return { success: true, data: ['item.clear', 'collection.clear', 'trio.clear'] }
 
             case 'welcome':
                 switch (from.name) {
                     case 'home':
-                        return { success: true, data: ['loadTrio'] }
+                        return { success: true, data: ['trio.load'] }
 
                     case 'welcome':
                         if (changed.module) {
-                            return { success: true, data: ['loadTrio', 'clearItem', 'clearMainCollection'] }
+                            return { success: true, data: ['trio.load', 'item.clear', 'collection.clear'] }
                         } else {
                             console.log("routes - welcome -> welcome with the same module")
                             return { success: true, data: [] }
@@ -40,14 +40,14 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                     case 'filter':
                     case 'index':
                         if (changed.module) {
-                            return { success: true, data: ['loadTrio', 'clearItem', 'clearMainCollection'] }
+                            return { success: true, data: ['trio.load', 'item.clear', 'collection.clear'] }
                         } else {
                             console.log("routes - 'filter' or 'index' -> 'welcome' with the same module")
                             return { success: true, data: [] }
                         }
 
                     case 'show':
-                        return { success: true, data: ['loadItem'] }
+                        return { success: true, data: ['item.clear'] }
 
                     default:
                         return { success: false, data: 'BadTransition' }
@@ -57,15 +57,15 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
             case 'filter':
                 switch (from.name) {
                     case 'index':
-                        return { success: true, data: ['clearMainCollection', 'clearItem'] }
+                        return { success: true, data: ['collection.clear', 'item.clear'] }
 
                     case 'welcome':
                     case 'show':
                         if (changed.module) {
-                            return { success: true, data: ['loadTrio', 'clearMainCollection', 'clearItem'] }
+                            return { success: true, data: ['trio.load', 'collection.clear', 'item.clear'] }
                         } else {
                             console.log("routes - filter from the same module")
-                            return { success: true, data: ['clearMainCollection', 'clearItem'] }
+                            return { success: true, data: ['collection.clear', 'item.clear'] }
                         }
 
                     default:
@@ -75,17 +75,19 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
 
             case 'index':
                 switch (from.name) {
+                    case 'home':
+                         return { success: true, data: ['trio.load', 'collection.load'] }
                     case 'welcome':
                         if (changed.module) {
-                            return { success: true, data: ['loadTrio', 'loadMainCollection', 'clearItem'] }
+                            return { success: true, data: ['trio.load', 'collection.load', 'item.clear'] }
                         } else {
-                            let toDo: TPlanAction[] = collectionMeta("main").length === 0 ? ['loadMainCollection'] : [] 
-                            toDo.push('clearItem', 'loadMainCollection')
+                            let toDo: TPlanAction[] = collectionMeta("main").length === 0 ? ['collection.load'] : [] 
+                            toDo.push('item.clear', 'collection.load')
                             return { success: true, data: toDo }
                         }
 
                     case 'filter':
-                        return { success: true, data: ['loadMainCollection', 'clearItem'] }
+                        return { success: true, data: ['collection.load', 'item.clear'] }
 
                     case 'show':
                         return { success: true, data: [] }
@@ -98,21 +100,21 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                 switch (from.name) {
                     case 'show':
                         if (changed.module) {
-                            return { success: true, data: ['clearItem', 'clearMainCollection', 'resetTrio', 'loadMainCollection', 'loadItem'] }
+                            return { success: true, data: ['item.clear', 'collection.clear', 'trio.clear', 'collection.load', 'item.load'] }
                         }
                         if (changed.id) {
-                            return { success: true, data: ['loadItem'] }
+                            return { success: true, data: ['item.load'] }
                         }
                         return { success: false, data: 'BadTransition' }
 
                     case 'home':
-                        return { success: true, data: ['clearItem', 'clearMainCollection', 'resetTrio'] }
+                        return { success: true, data: ['item.clear', 'collection.clear', 'trio.clear'] }
 
                     case 'welcome':
-                        return { success: true, data: ['loadMainCollection', 'loadItem'] }
+                        return { success: true, data: ['collection.load', 'item.load'] }
 
                     case 'index':
-                        return { success: true, data: ['loadItem'] }
+                        return { success: true, data: ['item.load'] }
 
                     case 'create':
                         return { success: true, data: [] }

@@ -7,8 +7,8 @@
         </v-pagination>
         <!-- <v-spacer></v-spacer> -->
         <v-btn size="small" variant="outlined" @click="toggleDisplayOption()">view: {{ displayOption }} </v-btn>
-      
-    </v-toolbar>
+
+      </v-toolbar>
     </template>
 
     <v-card-text>
@@ -23,7 +23,7 @@
 <script lang="ts" setup >
 
 import { computed } from 'vue'
-import { TSource } from '../../types/collectionTypes'
+import { TSetPage, TSource, TView } from '../../types/collectionTypes'
 import CollectionPageMedia from './CollectionPageMedia.vue'
 import CollectionPageChips from './CollectionPageChips.vue'
 import CollectionPageTable from './CollectionPageTable.vue'
@@ -35,7 +35,7 @@ const props = defineProps<{
 }>()
 
 let { getModule } = useRoutesMainStore()
-let { collectionMeta, setCollectionElement } = useCollectionsStore()
+let { collectionMeta, setCollectionElement, toggleCollectionView } = useCollectionsStore()
 
 const meta = computed(() => {
   return collectionMeta(props.source)
@@ -45,7 +45,8 @@ const page = computed({
   get: () => { return paginator.value.page },
   set: val => {
     console.log(`Collection.page.set to ${val}`)
-    setCollectionElement(props.source, 'page', val, getModule())
+    let ps = { pageNoB1: val, viewIndex: meta.value.viewIndex }
+    setCollectionElement(props.source, 'page', ps, getModule())
   }
 })
 
@@ -74,38 +75,21 @@ const collectionPage = computed(() => {
     case 'Table':
       return CollectionPageTable
     default:
-      alert("Wrong view")
+      alert(`Wrong view! viewIndex: ${meta.value.viewIndex}`)
   }
 })
-
-
 
 const displayOption = computed(() => {
   return meta.value.views[meta.value.viewIndex]
 })
 
-const itemsPerPage = computed(() => {
-  return `CollectionPageMedia`
-})
 
-const pages = computed(() => {
-  return `CollectionPageMedia`
-})
 const disable = computed(() => {
   return false
 })
 
-
-
-
-
-
-
 function toggleDisplayOption() {
-  //let c = collections.viewsData(props.source)
-  //console.log(`toggle display option() collection: ${JSON.stringify(c, null, 2)}\nviewIndex: ${c.viewIndex}, next: ${(c.viewIndex + 1)%(c.views.length)}`);
-  //c.viewIndex = (c.viewIndex + 1)%(c.views.length)
-  setCollectionElement(props.source, 'viewIndex', (meta.value.viewIndex + 1) % (meta.value.views.length), getModule())
+  toggleCollectionView(props.source)
 }
 
 </script>

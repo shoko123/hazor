@@ -2,15 +2,16 @@
 //handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed, registerRuntimeCompiler } from 'vue'
-import { TCollection, TSource, TElement, TItemsPerPage, IPage, IPageItem, TView, TArrayItem, TCollectionMeta, IChipItem, IMediaItem, ITableItem } from '../../types/collectionTypes'
+import { TCollection, TSource, TElement, TItemsPerPage, IPage, IPageItem, TView, TArrayItem, TCollectionMeta, TSetPage, IMediaItem, ITableItem } from '../../types/collectionTypes'
 import { TModule } from '../../types/routesTypes'
+import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useMediaStore } from './media'
 import { useNotificationsStore } from './notifications'
 
 export const useCollectionsStore = defineStore('collections', () => {
     const { send } = useXhrStore()
-    const {showSnackbar} = useNotificationsStore()
+    const { showSnackbar } = useNotificationsStore()
     const { getBucketUrl } = useMediaStore()
     const itemsPerPage = ref<TItemsPerPage>({
         Media: 0,
@@ -22,7 +23,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         length: 0,
         index: 0,
         pageNoB1: 1,
-        views: ["Media", "Chips", "Table"],
+        views: ["Media", "Chips", "Table"] as TView[],
         viewIndex: 0,
         ready: { array: false, index: false, page: false }
     })
@@ -31,7 +32,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         length: 0,
         index: 0,
         pageNoB1: 1,
-        views: ["Media"],
+        views: ["Media"] as TView[],
         viewIndex: 0,
         ready: { array: false, index: false, page: false }
     })
@@ -40,7 +41,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         length: 0,
         index: 0,
         pageNoB1: 1,
-        views: ["Media", "Chips"],
+        views: ["Media", "Chips"] as TView[],
         viewIndex: 0,
         ready: { array: false, index: false, page: false }
     })
@@ -105,14 +106,15 @@ export const useCollectionsStore = defineStore('collections', () => {
         }
     }
 
-    async function setCollectionElement(name: TSource, element: TElement, data: number | TView | object[], module: TModule) {
-        console.log(`setCollection("${name}") Element("${element}") Module("${module}")`)
+    async function setCollectionElement(name: TSource, element: TElement, data: number | TView | TSetPage | object[], module: TModule) {
+        console.log(`setCollectionElement("${name}") Element("${element}") Module("${module}")`)
         switch (element) {
             case 'array':
                 setArray(name, data)
                 break
             case 'page':
-                setPage(name, <number>data, module)
+                let sp = <TSetPage>data
+                setPage(name, sp.pageNoB1, sp.viewIndex, module)
                 break
             case 'viewIndex':
                 setViewIndex(name, <number>data, module)
@@ -120,12 +122,36 @@ export const useCollectionsStore = defineStore('collections', () => {
         }
     }
 
-    function setViewIndex(name: TSource, vi: number,  module: TModule) {
-        let meta = getCollectionMeta(name)
-        meta.value.viewIndex = vi
+    function setViewIndex(name: TSource, vi: number, module: TModule) {
 
+
+
+
+        //let meta = getCollectionMeta(name)
+        //meta.value.viewIndex = vi
         //When changing views, always reset page number to 1.
-        setPage(name, 1, module)
+        //setPage(name, 1, 0, module)
+    }
+
+    function toggleCollectionView(name: TSource) {
+        //from Collection.vue
+        //setCollectionElement(props.source, 'viewIndex', (meta.value.viewIndex + 1) % (meta.value.views.length), getModule())
+
+
+        // let meta = getCollectionMeta(name)
+        // let currentViewIndex = meta.value.viewIndex
+
+
+        // //When changing views, always reset page number to 1.
+        // setPage(name, 1, 0, module)
+        let meta = getCollectionMeta(name)
+        let newViewIndex = (meta.value.viewIndex + 1) % meta.value.views.length
+        const rms = useRoutesMainStore()
+        let module = rms.getModule()
+        console.log(`toggleCollectionView() source: ${name}  module: ${module} views: ${meta.value.views}  current viewIndex: ${meta.value.viewIndex}  new viewIndex: ${newViewIndex}`);
+        setPage(name, 1, newViewIndex, module)
+
+
     }
 
     function setArray(name: TSource, data: any) {
@@ -137,30 +163,35 @@ export const useCollectionsStore = defineStore('collections', () => {
     }
 
 
-    async function setPage(name: TSource, pageNoB1: number, module: TModule) {
-        let view = main.value.views[main.value.viewIndex]
+    async function setPage(name: TSource, pageNoB1: number, viewIndex: number, module: TModule) {
+
+        let view = main.value.views[viewIndex]
         let ipp = itemsPerPage.value[view]
         let meta = getCollectionMeta(name)
-        let start = (pageNoB1.valueOf() - 1) * ipp;
+        let start = (pageNoB1 - 1) * ipp;
         let array = getCollectionArray(name)
         let ids = array.value.slice(start, start + ipp).map(x => x.id);
 
-        console.log(`setPage() source: ${name} pageB1: ${pageNoB1} start: ${start} ipp: ${ipp} to: ${module}`);
+        console.log(`setPage() source: ${name}  module: ${module} viewIndex: ${viewIndex} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1}`);
 
         switch (name) {
             case 'main':
                 if (view === 'Chips') {
                     savePage('main', array.value.slice(start, start + ipp), view, module)
                     meta.value.pageNoB1 = pageNoB1
+                    meta.value.viewIndex = viewIndex
                     return true
                 }
-                if(ids.length === 0){
-                    savePage('main', [], view, module) 
+
+                if (ids.length === 0) {
+                    savePage('main', [], view, module)
                 }
                 await send('model/page', 'post', { model: module, view, ids })
                     .then(res => {
                         console.log(`setPage() returned (success)`)
                         savePage('main', res.data.page, view, module)
+                        meta.value.pageNoB1 = pageNoB1
+                        meta.value.viewIndex = viewIndex
                     })
                     .catch(err => {
                         showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
@@ -169,7 +200,6 @@ export const useCollectionsStore = defineStore('collections', () => {
                     })
                     .finally(() => {
                         console.log(`setPage() finally`)
-                        meta.value.pageNoB1 = pageNoB1
                     })
         }
     }
@@ -177,7 +207,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     function savePage(name: TSource, page: IPage[], view: TView, module: TModule): void {
         function getUrls(urls: { full: string, tn: string } | null | undefined): object | null {
             if (urls === null) {
-               
+
                 return {
                     full: `${bucketUrl}app/filler/${module}Filler.jpg`,
                     tn: `${bucketUrl}app/filler/${module}Filler-tn.jpg`
@@ -189,6 +219,7 @@ export const useCollectionsStore = defineStore('collections', () => {
                 }
             }
         }
+        
         let bucketUrl = getBucketUrl()
         console.log(`savePage module: ${module}`)
 
@@ -235,5 +266,5 @@ export const useCollectionsStore = defineStore('collections', () => {
         related.value.pageNoB1 = 1
 
     }
-    return { setItemsPerPage, main, collectionMeta, setCollectionElement, reset, getPageArray, mainArray, mainPageArray }
+    return { setItemsPerPage, main, collectionMeta, setCollectionElement, toggleCollectionView, reset, getPageArray, mainArray, mainPageArray }
 })

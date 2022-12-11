@@ -10,6 +10,11 @@ type TItemsPerPage = {
         Table: number
 }
 
+type TSetPage = {
+        pageNoB1: number,
+        viewIndex: number
+}
+
 //'main' array items
 type TArrayItem = { id: number, url_id: string }
 
@@ -67,4 +72,4 @@ type TCollectionMeta = {
 }
 
 
-export { TView, TCollection, TElement, TSource, IPage, TItemsPerPage, TCollectionMeta, IPageItem, TArrayItem, IChipItem, IMediaItem, ITableItem }
+export { TView, TCollection, TElement, TSource, IPage, TItemsPerPage, TCollectionMeta, IPageItem, TArrayItem, TSetPage, IChipItem, IMediaItem, ITableItem }
