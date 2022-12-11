@@ -13,6 +13,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     const { send } = useXhrStore()
     const { showSnackbar } = useNotificationsStore()
     const { getBucketUrl } = useMediaStore()
+    
     const itemsPerPage = ref<TItemsPerPage>({
         Media: 0,
         Chips: 0,
@@ -88,7 +89,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     }
 
     function collectionMeta(name: TSource): TCollectionMeta {
-        console.log(`collectionMeta("${name}")`)
+        //console.log(`collectionMeta("${name}")`)
         let meta = getCollectionMeta(name)
         let ipp = itemsPerPage.value[<TView>meta.value.views[meta.value.viewIndex]]
         let noOfPages = Math.floor(meta.value.length / ipp) + (meta.value.length % ipp === 0 ? 0 : 1)
@@ -106,65 +107,14 @@ export const useCollectionsStore = defineStore('collections', () => {
         }
     }
 
-    async function setCollectionElement(name: TSource, element: TElement, data: number | TView | TSetPage | object[], module: TModule) {
-        console.log(`setCollectionElement("${name}") Element("${element}") Module("${module}")`)
-        switch (element) {
-            case 'array':
-                setArray(name, data)
-                break
-            case 'page':
-                let sp = <TSetPage>data
-                setPage(name, sp.pageNoB1, sp.viewIndex, module)
-                break
-            case 'viewIndex':
-                setViewIndex(name, <number>data, module)
-                break
-        }
-    }
-
-    function setViewIndex(name: TSource, vi: number, module: TModule) {
-
-
-
-
-        //let meta = getCollectionMeta(name)
-        //meta.value.viewIndex = vi
-        //When changing views, always reset page number to 1.
-        //setPage(name, 1, 0, module)
-    }
-
-    function toggleCollectionView(name: TSource) {
-        //from Collection.vue
-        //setCollectionElement(props.source, 'viewIndex', (meta.value.viewIndex + 1) % (meta.value.views.length), getModule())
-
-
-        // let meta = getCollectionMeta(name)
-        // let currentViewIndex = meta.value.viewIndex
-
-
-        // //When changing views, always reset page number to 1.
-        // setPage(name, 1, 0, module)
-        let meta = getCollectionMeta(name)
-        let newViewIndex = (meta.value.viewIndex + 1) % meta.value.views.length
-        const rms = useRoutesMainStore()
-        let module = rms.getModule()
-        console.log(`toggleCollectionView() source: ${name}  module: ${module} views: ${meta.value.views}  current viewIndex: ${meta.value.viewIndex}  new viewIndex: ${newViewIndex}`);
-        setPage(name, 1, newViewIndex, module)
-
-
-    }
-
-    function setArray(name: TSource, data: any) {
-        //To save on array.length recalculation, in addition to setting the array, we set meta.length
+    function setArray(name: TSource, data: TArrayItem[]) {
         let array = getCollectionArray(name)
         let meta = getCollectionMeta(name)
         array.value = data
         meta.value.length = data.length
     }
 
-
     async function setPage(name: TSource, pageNoB1: number, viewIndex: number, module: TModule) {
-
         let view = main.value.views[viewIndex]
         let ipp = itemsPerPage.value[view]
         let meta = getCollectionMeta(name)
@@ -221,10 +171,9 @@ export const useCollectionsStore = defineStore('collections', () => {
         }
         
         let bucketUrl = getBucketUrl()
-        console.log(`savePage module: ${module}`)
-
         let toSave = []
         let pageRef = getPageArray(name)
+
         switch (view) {
             case 'Media':
                 toSave = page.map(x => { return { id: x.id, tag: x.url_id, description: x.description, hasMedia: x.primaryMedia !== null, urls: getUrls(x.primaryMedia) } })
@@ -242,11 +191,21 @@ export const useCollectionsStore = defineStore('collections', () => {
         pageRef.value = toSave
     }
 
+    function toggleCollectionView(name: TSource) {
+        let { getModule }  = useRoutesMainStore()        
+        let module = getModule()        
+        let meta = getCollectionMeta(name)
+        let newViewIndex = (meta.value.viewIndex + 1) % meta.value.views.length
+
+        //console.log(`toggleCollectionView() source: ${name}  module: ${module} views: ${meta.value.views}  current viewIndex: ${meta.value.viewIndex}  new viewIndex: ${newViewIndex}`);
+        setPage(name, 1, newViewIndex, module)
+    }
+
     function setItemsPerPage(ipp: TItemsPerPage) {
         itemsPerPage.value = ipp
     }
 
-    function reset() {
+    function clearCollections() {
         mainArray.value = []
         mainPageArray.value = []
         main.value.index = 0
@@ -266,5 +225,5 @@ export const useCollectionsStore = defineStore('collections', () => {
         related.value.pageNoB1 = 1
 
     }
-    return { setItemsPerPage, main, collectionMeta, setCollectionElement, toggleCollectionView, reset, getPageArray, mainArray, mainPageArray }
+    return { setItemsPerPage, main, collectionMeta, setArray, setPage, toggleCollectionView, clearCollections, getPageArray, mainArray, mainPageArray }
 })

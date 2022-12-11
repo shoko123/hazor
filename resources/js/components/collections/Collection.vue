@@ -35,7 +35,7 @@ const props = defineProps<{
 }>()
 
 let { getModule } = useRoutesMainStore()
-let { collectionMeta, setCollectionElement, toggleCollectionView } = useCollectionsStore()
+let { collectionMeta, setPage, toggleCollectionView } = useCollectionsStore()
 
 const meta = computed(() => {
   return collectionMeta(props.source)
@@ -45,8 +45,7 @@ const page = computed({
   get: () => { return paginator.value.page },
   set: val => {
     console.log(`Collection.page.set to ${val}`)
-    let ps = { pageNoB1: val, viewIndex: meta.value.viewIndex }
-    setCollectionElement(props.source, 'page', ps, getModule())
+    setPage(props.source, val, meta.value.viewIndex, getModule())
   }
 })
 
@@ -57,8 +56,9 @@ const header = computed(() => {
 
 const paginator = computed(() => {
   return {
-    show: meta.value.noOfPages > 1
-    , page: meta.value.pageNoB1, pages: meta.value.noOfPages
+    show: meta.value.noOfPages > 1, 
+    page: meta.value.pageNoB1, 
+    pages: meta.value.noOfPages
   }
 })
 const showPaginator = computed(() => {

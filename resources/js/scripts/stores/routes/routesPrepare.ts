@@ -16,7 +16,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let xhr = useXhrStore();
   let n = useNotificationsStore();
   let m = useModuleStore();
-  let { reset, setCollectionElement } = useCollectionsStore();
+  let { clearCollections, setArray, setPage } = useCollectionsStore();
   let t = useTrioStore();
   let i = useItemStore();
 
@@ -33,6 +33,10 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           t.clearFilters()
           break
 
+          case 'collection.item.load':
+          loadCollectionAndItem(to, from)
+          break
+
         case 'collection.load':
           await loadMainCollection(to, from).catch(err => {
             return false
@@ -40,17 +44,14 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'collection.clear':
-          reset()
+          clearCollections()
           break
+
         case 'item.load':
           await loadItem(to, from).catch(err => {
             return false
           })
           break
-
-
-
-
 
         case 'item.clear':
           break
@@ -84,17 +85,35 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       })
   }
 
+  async function loadCollectionAndItem(to: TRouteInfo, from: TRouteInfo) {
+    n.showSpinner(`Loading ${to.url_module} ...`)
+    console.log(`Navigation loading main collection...`)
+    await xhr.send('model/index', 'post', { model: to.module })
+      .then(res => {
+        console.log(`index() returned (success)`)
+        setArray('main', res.data.collection)
+        setPage('main',1, 0, to.module)
+        console.log(`index() set array, index, page done`)
+        return true
+      })
+      .catch(err => {
+        n.showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
+        console.log(`Navigation to new routes failed with err: ${JSON.stringify(err, null, 2)}`)
+        return false
+      })
+      .finally(() => {
+        n.showSpinner(false)
+      })
+  }
+
   async function loadMainCollection(to: TRouteInfo, from: TRouteInfo) {
     n.showSpinner(`Loading ${to.url_module} ...`)
     console.log(`Navigation loading main collection...`)
     await xhr.send('model/index', 'post', { model: to.module })
       .then(res => {
         console.log(`index() returned (success)`)
-        //console.log(`index() returned res: ${JSON.stringify(res, null, 2)}`)
-        setCollectionElement('main', 'array', res.data.collection, to.module)
-        //setCollectionElement('main', 'viewIndex', 0, to.module)
-        setCollectionElement('main', 'page', {pageNoB1: 1, viewIndex: 0}, to.module)
-        console.log(`index() set array, index, page done`)
+        setArray('main', res.data.collection)
+        setPage('main',1, 0, to.module)
         return true
       })
       .catch(err => {
@@ -107,35 +126,14 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       })
   }
 
-  async function loadMainPage(to: TRouteInfo, pageB1: number) {
-    n.showSpinner(`Loading ${to.url_module} Page...`)
-    console.log(`Navigation loading page(${pageB1})...`)
-    await xhr.send('model/index', 'post', { model: to.module })
-      .then(res => {
-        console.log(`index() returned (success)`)
-        //console.log(`index() returned res: ${JSON.stringify(res, null, 2)}`)
-        setCollectionElement('main', 'array', res.data.collection, to.module)
-        setCollectionElement('main', 'viewIndex', 0, to.module)
-        setCollectionElement('main', 'page', 1, to.module)
-        console.log(`index() set array, index, page done`)
-        return true
-      })
-      .catch(err => {
-        n.showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
-        console.log(`Navigation to new routes failed with err: ${JSON.stringify(err, null, 2)}`)
-        return false
-      })
-      .finally(() => {
-        n.showSpinner(false)
-      })
-  }
-
+  
 
   async function loadItem(to: TRouteInfo, from: TRouteInfo) {
     console.log(`routesPrepare.loadItem() to: ${JSON.stringify(to, null, 2)}`)
     n.showSpinner(`Loading item ${to.url_id} ...`)
     await xhr.send('model/show', 'post', { model: to.module, url_id: to.url_id })
       .then(res => {
+        console.log(`show() returned (success)`)
         //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
         i.fields = res.data.item
         return true
