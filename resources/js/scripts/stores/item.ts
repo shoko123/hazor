@@ -11,7 +11,8 @@ export const useItemStore = defineStore('item', () => {
   let fields = ref<object | undefined>(undefined)
   let ready = true
   const itemViewIndex = ref<number>(0)
-  
+  const indexInCollection = ref<number | undefined>(undefined)
+
   const derived = computed(() => {
     return { module: 'XXX', url_id: getRouteInfo().value.url_id }
   })

@@ -13,7 +13,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     const { send } = useXhrStore()
     const { showSnackbar } = useNotificationsStore()
     const { getBucketUrl } = useMediaStore()
-    
+
     const itemsPerPage = ref<TItemsPerPage>({
         Media: 0,
         Chips: 0,
@@ -114,7 +114,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         meta.value.length = data.length
     }
 
-    async function setPage(name: TSource, pageNoB1: number, viewIndex: number, module: TModule) {
+    async function setPage(name: TSource, pageNoB1: number, viewIndex: number, module: TModule): Promise<boolean> {
         let view = main.value.views[viewIndex]
         let ipp = itemsPerPage.value[view]
         let meta = getCollectionMeta(name)
@@ -135,13 +135,15 @@ export const useCollectionsStore = defineStore('collections', () => {
 
                 if (ids.length === 0) {
                     savePage('main', [], view, module)
+                    return true
                 }
                 await send('model/page', 'post', { model: module, view, ids })
                     .then(res => {
-                        console.log(`setPage() returned (success)`)
+                        console.log(`model.page() returned (success)`)
                         savePage('main', res.data.page, view, module)
                         meta.value.pageNoB1 = pageNoB1
                         meta.value.viewIndex = viewIndex
+                        return true
                     })
                     .catch(err => {
                         showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
@@ -149,9 +151,14 @@ export const useCollectionsStore = defineStore('collections', () => {
                         return false
                     })
                     .finally(() => {
-                        console.log(`setPage() finally`)
+                        console.log(`model.page() finally`)
+                        return true
                     })
+            default:
+                return false
+
         }
+        return true
     }
 
     function savePage(name: TSource, page: IPage[], view: TView, module: TModule): void {
@@ -169,7 +176,7 @@ export const useCollectionsStore = defineStore('collections', () => {
                 }
             }
         }
-        
+
         let bucketUrl = getBucketUrl()
         let toSave = []
         let pageRef = getPageArray(name)
@@ -192,8 +199,8 @@ export const useCollectionsStore = defineStore('collections', () => {
     }
 
     function toggleCollectionView(name: TSource) {
-        let { getModule }  = useRoutesMainStore()        
-        let module = getModule()        
+        let { getModule } = useRoutesMainStore()
+        let module = getModule()
         let meta = getCollectionMeta(name)
         let newViewIndex = (meta.value.viewIndex + 1) % meta.value.views.length
 

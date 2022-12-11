@@ -108,7 +108,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                         return { success: false, data: 'BadTransition' }
 
                     case 'home':
-                        return { success: true, data: ['item.clear', 'collection.clear', 'trio.clear'] }
+                        return { success: true, data: ['trio.load', 'collection.item.load'] }
 
                     case 'welcome':
                         return { success: true, data: ['collection.load', 'item.load'] }

@@ -74,6 +74,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         try {
             isLoading.value = true
             let prepare = await p.prepareForNewRoute(to.value, current.value, <TPlanAction[]>planResponse.data)
+            console.log(`routesMain returned from prepareForNewRoute(success)`);
             if (!prepare) {
                 return false//Promise.reject(false)
             } else {

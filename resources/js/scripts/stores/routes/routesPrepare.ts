@@ -33,8 +33,8 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           t.clearFilters()
           break
 
-          case 'collection.item.load':
-          loadCollectionAndItem(to, from)
+        case 'collection.item.load':
+          await loadCollectionAndItem(to, from)
           break
 
         case 'collection.load':
@@ -61,15 +61,35 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           return false
       }
     }
+    console.log(`After executing plan`)
+    let pageNoB1 = needToLoadPage(plan)
+    if (pageNoB1) {
+      console.log(`Need to load page(${pageNoB1})`)
+      await setPage('main', pageNoB1, 0, to.module)
+    }
     return true
+  }
+
+  function needToLoadPage(plan: TPlanAction[]): false | number {
+    if (plan.includes('collection.item.load')) {
+      return 1
+    }
+    if (plan.includes('collection.load')) {
+      return 1
+    }
+    if (plan.includes('item.load')) {
+      return 1
+    }
+    return false
   }
 
   async function loadTrio(to: TRouteInfo, from: TRouteInfo) {
     t.clearFilters()
     n.showSpinner('Loading module data ...')
-    await xhr.send('model/init', 'post', { model: to.module })
+    xhr.send('model/init', 'post', { model: to.module })
       .then(res => {
         //console.log(`auth.response is ${JSON.stringify(res, null, 2)}`)
+        console.log(`model(${to.module}).init() returned (success)`)
         m.counts = res.data.counts
         m.itemViews = res.data.itemViews
         t.setTrio(res.data.trio)
@@ -87,34 +107,27 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
   async function loadCollectionAndItem(to: TRouteInfo, from: TRouteInfo) {
     n.showSpinner(`Loading ${to.url_module} ...`)
-    console.log(`Navigation loading main collection...`)
-    await xhr.send('model/index', 'post', { model: to.module })
-      .then(res => {
-        console.log(`index() returned (success)`)
-        setArray('main', res.data.collection)
-        setPage('main',1, 0, to.module)
-        console.log(`index() set array, index, page done`)
-        return true
-      })
+    console.log(`prepare.loadCollectionAndItem()`)
+
+    const [col, item] = await Promise.all([
+      loadMainCollection(to, from),
+      loadItem(to, from)
+    ])
       .catch(err => {
-        n.showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
-        console.log(`Navigation to new routes failed with err: ${JSON.stringify(err, null, 2)}`)
-        return false
-      })
-      .finally(() => {
-        n.showSpinner(false)
-      })
+        console.log(`loadCollectionAndItem() failed err: ${err}`);
+        return err;
+      });
+    console.log(`prepare.loadCollectionAndItem() returned (success)`);
+
   }
 
   async function loadMainCollection(to: TRouteInfo, from: TRouteInfo) {
     n.showSpinner(`Loading ${to.url_module} ...`)
-    console.log(`Navigation loading main collection...`)
-    await xhr.send('model/index', 'post', { model: to.module })
+    console.log(`prepare.loadMainCollection()`)
+    xhr.send('model/index', 'post', { model: to.module })
       .then(res => {
-        console.log(`index() returned (success)`)
+        console.log(`prepare.loadMainCollection() returned (success)`)
         setArray('main', res.data.collection)
-        setPage('main',1, 0, to.module)
-        return true
       })
       .catch(err => {
         n.showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
@@ -126,12 +139,11 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       })
   }
 
-  
 
   async function loadItem(to: TRouteInfo, from: TRouteInfo) {
-    console.log(`routesPrepare.loadItem() to: ${JSON.stringify(to, null, 2)}`)
+    console.log(`prepare.loadItem() to: ${JSON.stringify(to, null, 2)}`)
     n.showSpinner(`Loading item ${to.url_id} ...`)
-    await xhr.send('model/show', 'post', { model: to.module, url_id: to.url_id })
+    xhr.send('model/show', 'post', { model: to.module, url_id: to.url_id })
       .then(res => {
         console.log(`show() returned (success)`)
         //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
