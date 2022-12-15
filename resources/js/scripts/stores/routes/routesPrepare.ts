@@ -1,8 +1,10 @@
 //routesPrepare
 //At this point the new route is assured to have a correct form and all
-//relevant fields are stored in routesStore from and to In addition, actions needed
+//relevant fields are stored in routesStore.from and .to. Actions needed
 //to complete the transition to the new route are stored in TPlanAction[].
-//Here we execute the loading and other activities (e.g. clearFilters, copy current -> new, etc.).
+//Here we execute the loading of assets (collection, page, item)and other 
+//activities (e.g. clearFilters, copy current -> new,), before
+//proceeding to the new route.
 
 import type { TRouteInfo, TPlanAction } from '../../../types/routesTypes';
 import { defineStore } from 'pinia'
@@ -16,7 +18,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let xhr = useXhrStore();
   let n = useNotificationsStore();
   let m = useModuleStore();
-  let { clearCollections, setArray, setPage } = useCollectionsStore();
+  let { clearCollections, setArray, setPage, setItemIndexInMainCollection } = useCollectionsStore();
   let t = useTrioStore();
   let i = useItemStore();
 
@@ -86,7 +88,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   async function loadTrio(to: TRouteInfo, from: TRouteInfo) {
     t.clearFilters()
     n.showSpinner('Loading module data ...')
-    xhr.send('model/init', 'post', { model: to.module })
+    return xhr.send('model/init', 'post', { model: to.module })
       .then(res => {
         //console.log(`auth.response is ${JSON.stringify(res, null, 2)}`)
         console.log(`model(${to.module}).init() returned (success)`)
@@ -115,19 +117,21 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     ])
       .catch(err => {
         console.log(`loadCollectionAndItem() failed err: ${err}`);
-        return err;
+        throw err;
       });
     console.log(`prepare.loadCollectionAndItem() returned (success)`);
-
+    setItemIndexInMainCollection(i.id)
+    return true
   }
 
   async function loadMainCollection(to: TRouteInfo, from: TRouteInfo) {
     n.showSpinner(`Loading ${to.url_module} ...`)
     console.log(`prepare.loadMainCollection()`)
-    xhr.send('model/index', 'post', { model: to.module })
+    return xhr.send('model/index', 'post', { model: to.module })
       .then(res => {
-        console.log(`prepare.loadMainCollection() returned (success)`)
+       
         setArray('main', res.data.collection)
+         console.log(`mainArray was set`)
       })
       .catch(err => {
         n.showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
@@ -143,11 +147,12 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   async function loadItem(to: TRouteInfo, from: TRouteInfo) {
     console.log(`prepare.loadItem() to: ${JSON.stringify(to, null, 2)}`)
     n.showSpinner(`Loading item ${to.url_id} ...`)
-    xhr.send('model/show', 'post', { model: to.module, url_id: to.url_id })
+    return xhr.send('model/show', 'post', { model: to.module, url_id: to.url_id })
       .then(res => {
         console.log(`show() returned (success)`)
         //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
         i.fields = res.data.item
+        setItemIndexInMainCollection(res.data.item.id)
         return true
       })
       .catch(err => {

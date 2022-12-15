@@ -21,20 +21,24 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../../scripts/stores/auth';
 import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain';
+import { storeToRefs } from 'pinia'
+
+type TUserOption = 'Dashboard' | 'Logout'
 
 let auth = useAuthStore()
 const router = useRouter()
-let { getRouteInfo } = useRoutesMainStore()
-type TUserOption = 'Dashboard' | 'Logout'
+let { current } = storeToRefs(useRoutesMainStore())
+
 let options: TUserOption[] = ['Dashboard', 'Logout']
 
 const showLoginButton = computed(() => {
-  return !auth.authenticated && String(getRouteInfo().value.name) !== 'login'
+  return !auth.authenticated && current.value.name !== 'login'
 })
 
 function loginClick() {
-  router.push({ path: '/auth/login' })
+  router.push({ name: 'login', params: { module: 'auth' }})
 }
+
 function userOptionsClicked(item: TUserOption) {
   switch (item) {
     case "Logout":

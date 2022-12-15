@@ -8,7 +8,8 @@
               <v-toolbar-title>Login</v-toolbar-title>
             </v-toolbar>
             <v-card-text>
-              <v-form @submit.prevent="login">
+              <v-form @submit.prevent="loginRedirect
+              ">
                 <v-text-field prepend-icon="mdi-account" name="email" email="email" v-model="loginForm.email">
                 </v-text-field>
                 <v-text-field prepend-icon="mdi-lock" name="password" label="password" type="password"
@@ -35,10 +36,13 @@ import { useAuthStore } from '../../../scripts/stores/auth'
 import { useModuleStore } from '../../../scripts/stores/module'
 
 let auth = useAuthStore()
-let { loginForm } = storeToRefs(useAuthStore())
 let { backgroundImage } = storeToRefs(useModuleStore())
-async function login() {
-  await auth.login(loginForm.value)
+
+const loginForm = computed(() => {
+  return auth.loginForm
+})
+async function loginRedirect() {
+  auth.login()
 }
 
 </script>

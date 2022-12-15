@@ -26,7 +26,8 @@ export const useCollectionsStore = defineStore('collections', () => {
         pageNoB1: 1,
         views: ["Media", "Chips", "Table"] as TView[],
         viewIndex: 0,
-        ready: { array: false, index: false, page: false }
+        itemIndex: -1,
+        ready: { array: false, index: false, page: false },
     })
 
     const media = ref<TCollection>({
@@ -35,6 +36,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         pageNoB1: 1,
         views: ["Media"] as TView[],
         viewIndex: 0,
+        itemIndex: -1,
         ready: { array: false, index: false, page: false }
     })
 
@@ -44,6 +46,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         pageNoB1: 1,
         views: ["Media", "Chips"] as TView[],
         viewIndex: 0,
+        itemIndex: -1,    
         ready: { array: false, index: false, page: false }
     })
 
@@ -134,6 +137,7 @@ export const useCollectionsStore = defineStore('collections', () => {
                 }
 
                 if (ids.length === 0) {
+                    //console.log(`ids.length is 0 - returning`)
                     savePage('main', [], view, module)
                     return true
                 }
@@ -212,6 +216,11 @@ export const useCollectionsStore = defineStore('collections', () => {
         itemsPerPage.value = ipp
     }
 
+    function setItemIndexInMainCollection(id: number) {
+        main.value.itemIndex =  mainArray.value.findIndex(x => x.id === id)
+        console.log(`setItemIndex(id:${id}) to ${main.value.itemIndex}`)
+    }
+
     function clearCollections() {
         mainArray.value = []
         mainPageArray.value = []
@@ -232,5 +241,5 @@ export const useCollectionsStore = defineStore('collections', () => {
         related.value.pageNoB1 = 1
 
     }
-    return { setItemsPerPage, main, collectionMeta, setArray, setPage, toggleCollectionView, clearCollections, getPageArray, mainArray, mainPageArray }
+    return { setItemsPerPage, main, collectionMeta, setArray, setPage, toggleCollectionView, clearCollections, getPageArray, mainArray, mainPageArray, setItemIndexInMainCollection }
 })

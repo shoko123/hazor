@@ -50,7 +50,7 @@ class Stone extends FindModel
     }
 
     function getIdFromUrlId(string $url_id) : int {
-        return 5;
+        return $url_id;
     }
     public function indexSelect(): Builder {
         $url_id = $this->buildSqlUrlId();

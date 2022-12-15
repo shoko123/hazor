@@ -20,8 +20,8 @@ type TArrayItem = { id: number, url_id: string }
 
 //raw data received from DB (from 'main, page('media') & page('table'))
 interface IPage {
-        id: number, 
-        url_id: string, 
+        id: number,
+        url_id: string,
         description?: string,
         primaryMedia?: { full: string, tn: string } | null
 }
@@ -36,7 +36,7 @@ interface IMediaItem {
         id: number
         tag: string,
         description: string
-        hasMedia: boolean,        
+        hasMedia: boolean,
         urls: { full: string, tn: string }
 }
 
@@ -56,6 +56,7 @@ type TCollection = {
         pageNoB1: number,
         views: TView[],
         viewIndex: number,
+        itemIndex: number,
         ready: { array: boolean, index: boolean, page: boolean }
 }
 

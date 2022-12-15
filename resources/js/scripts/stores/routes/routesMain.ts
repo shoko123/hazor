@@ -3,7 +3,7 @@
 
 import { ref } from 'vue'
 import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
-import { defineStore } from 'pinia'
+import { defineStore, storeToRefs } from 'pinia'
 import { useRoutesParserStore } from './routesParser';
 import { useRoutesPlanTransitionStore } from './routesPlanTransition';
 import { useRoutesPrepareStore } from './routesPrepare';
@@ -42,8 +42,15 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     async function handleRouteChange(handle_to: RouteLocationNormalized, handle_from: RouteLocationNormalized): Promise<RouteLocationRaw | boolean> {
         let n = useNotificationsStore()
         let p = useRoutesPrepareStore()
+        let { authenticated } = storeToRefs(useAuthStore())
 
+        console.log(`handleRouteChange(${String(handle_from.name)} -> ${String(handle_to.name)})`)
         //authorize
+        if (handle_to.name === "login" && authenticated.value) {
+            console.log(`Authenticated user trying to access login route. to.name: ${handle_to.name}, authenticated: ${authenticated.value}`)
+            return( handle_from)
+        } 
+
         if (!authorize(handle_to.path)) {
             n.showSnackbar('Unauthorized; redirected to Login Page')
             return { name: 'login', params: { module: 'auth' } }
@@ -109,9 +116,8 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
     function finalizeRouting() {
         let module = useModuleStore()
-        console.log('finalizing routing. copy to -> current')
-        current.value = JSON.parse(JSON.stringify(to.value))
-        
+        console.log(`finalizing routing. copy to -> current to: ${JSON.stringify(to.value)}`)
+        current.value = JSON.parse(JSON.stringify(to.value))  
     }
 
     function getRouteInfo() {

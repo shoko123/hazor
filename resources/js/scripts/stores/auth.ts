@@ -6,9 +6,6 @@ import { defineStore } from 'pinia'
 import { router } from '../setups/vue-router'
 import { useXhrStore } from './xhr';
 import { useNotificationsStore } from './notifications';
-import { useMediaStore } from './media';
-
-
 
 type TLoginForm = {
   email: string,
@@ -27,43 +24,40 @@ type Nullable<T> = T | null
 export const useAuthStore = defineStore('auth', () => {
   let loginForm = ref<TLoginForm>({ email: "", password: "" })
   let user = ref<TUser>(null)
-  
+
   let accessibility = ref({ authenticatedUsersOnly: true, readOnly: false })
 
   const authenticated = computed(() => {
     return user.value !== null
   })
 
-  async function login(r: any) {
+  async function login() {
     let xhr = useXhrStore();
-    let notifications = useNotificationsStore()
-
+    let { showSpinner, showSnackbar } = useNotificationsStore()
     //clear user
     axios.defaults.headers.common["Authorization"] = ``
     user.value = null
+    //console.log(`auth.login() form: ${JSON.stringify(loginForm.value, null, 2)}`)
 
-    console.log(`auth.login() form: ${JSON.stringify(loginForm.value, null, 2)}`)
-    notifications.showSpinner('Logging in ...')
+    try {
+      showSpinner('Logging in ...')
+      let res = await xhr.send('auth/login', 'post', loginForm.value)
+      if (res.data.user !== null) {
+        user.value = res.data.user
+        axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.user.token}`
+        showSpinner(false)
+        showSnackbar('Successfully logged-in; redirected to home page')
+        router.push({ name: 'home' })
 
-    xhr.send('auth/login', 'post', loginForm.value)
-      .then(res => {
-        //console.log(`auth.response is ${JSON.stringify(res, null, 2)}`)
-        if (res.data.user !== null) {
-          user.value = res.data.user
-          axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.user.token}`
-          notifications.showSnackbar('Successfully logged-in; redirected to previous page')
-          router.go(-1)
-        } else {
-          notifications.showSnackbar(`Login failed. Error: ${res.data.message}. Please try again!`)
-        }
-      })
-      .catch(err => {
-        notifications.showSnackbar(`Login attempt failed. Error logged to console. Please try again later`)
-        console.log(`auth.error is ${JSON.stringify(err, null, 2)}`)
-      })
-      .finally(() => {
-        notifications.showSpinner(false)
-      })
+      } else {
+        showSnackbar('Login error! Please try again!')
+        showSpinner(false)
+      }
+    } catch (err) {
+      showSpinner(false)
+      showSnackbar('The Application encounter a problem connecting with the Server')
+      console.log(`The Application encounter a problem connecting with the Server`)
+    }
   }
 
   async function logout() {
@@ -71,7 +65,7 @@ export const useAuthStore = defineStore('auth', () => {
     let xhr = useXhrStore();
     let notifications = useNotificationsStore()
     notifications.showSpinner('Logging out ...')
-    xhr.send('auth/logout', 'post')
+    return xhr.send('auth/logout', 'post')
       .then(res => {
         notifications.showSnackbar('Successfully logged-out')
         console.log(`logout successful`)

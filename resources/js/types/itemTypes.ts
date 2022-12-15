@@ -1,17 +1,18 @@
 //itemTypes.ts
+type TItemMandatoryFields = {
+        id: number
+}
 
-type TLocusFields = {
-        id: number,
+type TLocusFields = TItemMandatoryFields & {
         name: string,
         type: string,
         stratum: string,
         square: string,
         elevation: string,
         cross_ref: string,
-}
+    }
 
-type TStoneFields = {
-        id: number,
+type TStoneFields = TItemMandatoryFields & {
         material_id: number,
         base_type_id: number,
         type: string,
@@ -24,7 +25,7 @@ type TStoneFields = {
         dimensions: string,
         details: string,
 }
-type TFaunaFields = {
+type TFaunaFields = TItemMandatoryFields & {
         id: number,
         label: string,
         area: string,
@@ -43,9 +44,9 @@ type TFaunaFields = {
         taxon_id: string
         element_id: string
 }
-type TItemFields = TLocusFields | TFaunaFields | TStoneFields | undefined
+
 type TItemDerived = {
         tag: string,
         
 }
-export { TItemFields, TLocusFields, TStoneFields, TFaunaFields }
+export { TItemMandatoryFields, TLocusFields, TStoneFields, TFaunaFields }
