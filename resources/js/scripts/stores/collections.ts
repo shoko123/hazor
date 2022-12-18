@@ -46,7 +46,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         pageNoB1: 1,
         views: ["Media", "Chips"] as TView[],
         viewIndex: 0,
-        itemIndex: -1,    
+        itemIndex: -1,
         ready: { array: false, index: false, page: false }
     })
 
@@ -216,9 +216,32 @@ export const useCollectionsStore = defineStore('collections', () => {
         itemsPerPage.value = ipp
     }
 
-    function setItemIndexInMainCollection(id: number) {
-        main.value.itemIndex =  mainArray.value.findIndex(x => x.id === id)
-        console.log(`setItemIndex(id:${id}) to ${main.value.itemIndex}`)
+    function itemClear() {
+        main.value.itemIndex = -1
+    }
+
+    function setItemIndexAndPage(id: number, module: TModule) {
+        let itemIndex = mainArray.value.findIndex(x => x.id === id)
+        console.log(`setItemIndexAndPage(id: ${id}) itemIndex: ${itemIndex}`)
+        if (itemIndex === -1) {
+            console.log(`NOT FOUND - abort, redirect to 'home'`)
+        } else {
+            //set itemIndex
+            main.value.itemIndex = itemIndex
+
+            //if page is loaded, return; else , load page
+            //set page
+            let ipp = itemsPerPage.value[main.value.views[main.value.viewIndex]]
+            let pageNoB0 = Math.floor(itemIndex / ipp)
+            console.log(`ipp: ${ipp}) pageNoB1: ${pageNoB0 + 1} module: ${module}`)
+            setPage('main', pageNoB0 + 1, main.value.viewIndex, module)
+        }
+
+    }
+
+    function itemIndexInMainCollection(id: number) {
+        return mainArray.value.findIndex(x => x.id === id)
+        //console.log(`setItemIndex(id:${id}) to ${main.value.itemIndex}`)
     }
 
     function clearCollections() {
@@ -226,20 +249,22 @@ export const useCollectionsStore = defineStore('collections', () => {
         mainPageArray.value = []
         main.value.index = 0
         main.value.viewIndex = 0
+        main.value.itemIndex = -1
         main.value.pageNoB1 = 1
 
         mediaArray.value = []
         mediaPageArray.value = []
         media.value.index = 0
         media.value.viewIndex = 0
+        media.value.itemIndex = -1
         media.value.pageNoB1 = 1
 
         relatedArray.value = []
         relatedPageArray.value = []
         related.value.index = 0
         related.value.viewIndex = 0
+        related.value.itemIndex = -1
         related.value.pageNoB1 = 1
-
     }
-    return { setItemsPerPage, main, collectionMeta, setArray, setPage, toggleCollectionView, clearCollections, getPageArray, mainArray, mainPageArray, setItemIndexInMainCollection }
+    return { setItemsPerPage, main, collectionMeta, setArray, setPage, toggleCollectionView, clearCollections, getPageArray, mainArray, mainPageArray, itemIndexInMainCollection, setItemIndexAndPage, itemClear }
 })

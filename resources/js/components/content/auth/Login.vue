@@ -33,8 +33,11 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '../../../scripts/stores/auth'
+import { useNotificationsStore } from '../../../scripts/stores/notifications';
 import { useModuleStore } from '../../../scripts/stores/module'
+import { router } from '../../../scripts/setups/vue-router'
 
+let { showSpinner, showSnackbar } = useNotificationsStore()
 let auth = useAuthStore()
 let { backgroundImage } = storeToRefs(useModuleStore())
 
@@ -42,7 +45,17 @@ const loginForm = computed(() => {
   return auth.loginForm
 })
 async function loginRedirect() {
-  auth.login()
+  showSpinner('Logging in ...')
+  let res = await auth.login()
+  showSpinner(false)
+  if (res) {
+    showSnackbar('Successfully logged-in; redirected to home page')
+    //router.back()
+    router.push({ name: 'home' })
+  } else {
+    showSnackbar('Login or server access error! Please try again!')
+  }
+  return
 }
 
 </script>

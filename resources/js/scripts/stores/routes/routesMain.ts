@@ -45,6 +45,8 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         let { authenticated } = storeToRefs(useAuthStore())
 
         console.log(`handleRouteChange(${String(handle_from.name)} -> ${String(handle_to.name)})`)
+        console.log(`handleRouteChange(${JSON.stringify(handle_to, null, 2)})`)
+
         //authorize
         if (handle_to.name === "login" && authenticated.value) {
             console.log(`Authenticated user trying to access login route. to.name: ${handle_to.name}, authenticated: ${authenticated.value}`)
@@ -132,11 +134,15 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         return current.value.module
     }
 
+    function getUrlModule() {
+        return current.value.url_module
+    }
+
     function getToModule() {
         return to.value.module
     }
     function toAndCurrentAreTheSameModule() {
         return to.value.module === current.value.module
     }
-    return { isLoading, getModule, getToModule, getRouteInfo, getToRouteInfo, toAndCurrentAreTheSameModule, current, to, handleRouteChange }
+    return { isLoading, getModule, getUrlModule,getToModule, getRouteInfo, getToRouteInfo, toAndCurrentAreTheSameModule, current, to, handleRouteChange }
 })

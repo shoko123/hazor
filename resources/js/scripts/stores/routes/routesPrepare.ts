@@ -18,7 +18,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let xhr = useXhrStore();
   let n = useNotificationsStore();
   let m = useModuleStore();
-  let { clearCollections, setArray, setPage, setItemIndexInMainCollection } = useCollectionsStore();
+  let c = useCollectionsStore()
   let t = useTrioStore();
   let i = useItemStore();
 
@@ -46,7 +46,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'collection.clear':
-          clearCollections()
+          c.clearCollections()
           break
 
         case 'item.load':
@@ -56,6 +56,8 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'item.clear':
+          c.itemClear()
+          i.fields = undefined
           break
 
         default:
@@ -63,26 +65,24 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           return false
       }
     }
-    console.log(`After executing plan`)
-    let pageNoB1 = needToLoadPage(plan)
-    if (pageNoB1) {
-      console.log(`Need to load page(${pageNoB1})`)
-      await setPage('main', pageNoB1, 0, to.module)
-    }
-    return true
-  }
 
-  function needToLoadPage(plan: TPlanAction[]): false | number {
-    if (plan.includes('collection.item.load')) {
-      return 1
+    //if item was loaded, see if it is in the collection - Yes: set itemIndex, No: remove filters and reload collection
+    if (plan.includes('collection.item.load') || plan.includes('item.load')) {
+      let itemIndex = c.itemIndexInMainCollection(i.id)
+      if (itemIndex === -1) {
+        console.log(`Item not found in mainCollection - clear filters and reload`)
+      } else {
+        console.log(`Item found in mainCollection - setting itemIndex`)
+        c.setItemIndexAndPage(i.id, to.module)
+      }
     }
+
     if (plan.includes('collection.load')) {
-      return 1
+      console.log(`plan has collectionLoad - setting page(1)`)
+      await c.setPage('main', 1, 0, to.module)
     }
-    if (plan.includes('item.load')) {
-      return 1
-    }
-    return false
+
+    return true
   }
 
   async function loadTrio(to: TRouteInfo, from: TRouteInfo) {
@@ -94,6 +94,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
         console.log(`model(${to.module}).init() returned (success)`)
         m.counts = res.data.counts
         m.itemViews = res.data.itemViews
+        c.clearCollections()
         t.setTrio(res.data.trio)
         return true
       })
@@ -120,7 +121,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
         throw err;
       });
     console.log(`prepare.loadCollectionAndItem() returned (success)`);
-    setItemIndexInMainCollection(i.id)
     return true
   }
 
@@ -129,9 +129,8 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     console.log(`prepare.loadMainCollection()`)
     return xhr.send('model/index', 'post', { model: to.module })
       .then(res => {
-       
-        setArray('main', res.data.collection)
-         console.log(`mainArray was set`)
+        c.setArray('main', res.data.collection)
+        console.log(`mainArray was set`)
       })
       .catch(err => {
         n.showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
@@ -152,7 +151,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
         console.log(`show() returned (success)`)
         //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
         i.fields = res.data.item
-        setItemIndexInMainCollection(res.data.item.id)
         return true
       })
       .catch(err => {

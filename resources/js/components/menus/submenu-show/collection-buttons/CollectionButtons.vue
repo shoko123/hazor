@@ -11,26 +11,19 @@
         Collection
         <v-tooltip activator="parent" location="bottom">{{ welcomeTipText }}</v-tooltip>
       </v-btn>
-      <!--v-tooltip v-if="showCollectionLink" bottom>
-        <template v-slot:activator="{ on }">
-          <v-btn @click="toCollection()" large outlined v-on="on" class="primary--text">
-            <v-icon left class="primary--text">menu</v-icon>{{ counterText }}
-          </v-btn>
-        </template>
-        <span>{{ resultsTipText }}</span>
-      </v-tooltip> -->
-
-      <!--div v-if="showCounter">
-        <v-btn large outlined class="primary--text"></v-btn>
-      </div-->
     </v-row>
   </v-container>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 import { useModuleStore } from '../../../../scripts/stores/module'
 import FilterButton from './FilterButton.vue'
+
+const router = useRouter()
+const { getUrlModule } = useRoutesMainStore()
 
 const collectionTipText = computed(() => {
   return `Go to the Collection Page`
@@ -60,10 +53,12 @@ const counterText = computed(() => {
 })
 function toWelcome() {
   console.log(`toWelcome()`)
+  router.push({ name: 'welcome', params: { module: getUrlModule() } })  
 }
 
 function toCollection() {
- console.log(`toCollection()`)
+  console.log(`toCollection()`)
+  router.push({ name: 'index', params: { module: getUrlModule() } })
 }
 
 
