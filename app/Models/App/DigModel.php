@@ -21,7 +21,8 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
     abstract function buildSqlUrlId(): string;
     abstract function init(): array;
     abstract function getIdFromUrlId(string $url_id): int;
-
+    abstract function getUrlIdFromId(int $id): string;
+    
     public function __construct($eloquent_model_name = null)
     {
         $this->eloquent_model_name = $eloquent_model_name;
@@ -66,5 +67,11 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
     {
         $item = self::findOrFail($id);
         return $item;
+    }
+
+    public function firstUrlId()
+    {
+        $first = self::first();
+        return $this->getUrlIdFromId($first->id);
     }
 }

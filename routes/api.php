@@ -39,6 +39,7 @@ Route::group(['middleware' => ['read.accessibility']], function () {
     Route::post('model/index', [ModelController::class, 'index']);
     Route::post('model/page', [ModelController::class, 'page']);
     Route::post('model/show', [ModelController::class, 'show']);
+    Route::post('model/firstUrlId', [ModelController::class, 'firstUrlId']);    
     Route::post('registrar/loci-for-area-season', [RegistrarController::class, 'loci-for-area-season']);
     Route::post('registrar/finds-for-locus', [RegistrarController::class, 'finds-for-locus']);
 });

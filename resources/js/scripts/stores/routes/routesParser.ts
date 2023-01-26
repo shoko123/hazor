@@ -18,7 +18,7 @@ import { useTrioStore } from '../../../scripts/stores/trio';
 const to: TRouteInfo = {
     url_module: undefined,
     url_id: undefined,
-    url_query_params: undefined,
+    url_query_string: undefined,
     name: 'home',
     module: 'Home',
     idParams: undefined,

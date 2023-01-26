@@ -9,7 +9,7 @@
 
       <v-btn @click="toCollection" variant="outlined">
         Collection
-        <v-tooltip activator="parent" location="bottom">{{ welcomeTipText }}</v-tooltip>
+        <v-tooltip activator="parent" location="bottom">{{ collectionTipText }}</v-tooltip>
       </v-btn>
     </v-row>
   </v-container>

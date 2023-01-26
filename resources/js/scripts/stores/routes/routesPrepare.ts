@@ -6,14 +6,17 @@
 //activities (e.g. clearFilters, copy current -> new,), before
 //proceeding to the new route.
 
-import type { TRouteInfo, TPlanAction } from '../../../types/routesTypes';
-import { defineStore } from 'pinia'
+import type { TRouteInfo, TPlanAction, TPrepareResponse } from '../../../types/routesTypes';
+import { defineStore, storeToRefs } from 'pinia'
 import { useXhrStore } from '../xhr';
 import { useTrioStore } from '../trio';
 import { useCollectionsStore } from '../collections';
 import { useModuleStore } from '../module';
 import { useNotificationsStore } from '../notifications';
 import { useItemStore } from '../item';
+import { useRoutesMainStore } from './routesMain';
+import { ItemNotFoundError } from '../../setups/routes/errors';
+
 export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let xhr = useXhrStore();
   let n = useNotificationsStore();
@@ -21,13 +24,16 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let c = useCollectionsStore()
   let t = useTrioStore();
   let i = useItemStore();
+  let r = useRoutesMainStore()
 
-  async function prepareForNewRoute(to: TRouteInfo, from: TRouteInfo, plan: TPlanAction[]): Promise<boolean> {
+  async function prepareForNewRoute(to: TRouteInfo, from: TRouteInfo, plan: TPlanAction[]): Promise<TPrepareResponse> {
+    let prepErr: TPrepareResponse = { success: false }
     for (const x of plan) {
       switch (x) {
         case 'trio.load':
           await loadTrio(to, from).catch(err => {
-            return false
+            prepErr.errorDetails = 'ModuleInitFailure'
+            return prepErr
           })
           break
 
@@ -36,12 +42,16 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'collection.item.load':
-          await loadCollectionAndItem(to, from)
+          await loadCollectionAndItem(to, from).catch(err => {
+            prepErr.errorDetails = 'CollectionLoadFailure'
+            return prepErr
+          })
           break
 
         case 'collection.load':
           await loadMainCollection(to, from).catch(err => {
-            return false
+            prepErr.errorDetails = 'CollectionLoadFailure'
+            return prepErr
           })
           break
 
@@ -51,7 +61,8 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
         case 'item.load':
           await loadItem(to, from).catch(err => {
-            return false
+            prepErr.errorDetails = 'ItemLoadFailure'
+            return prepErr
           })
           break
 
@@ -60,9 +71,14 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           i.fields = undefined
           break
 
+        case 'page.set':
+          await setPage()
+          break
+
         default:
           console.log(`PrepareForNewRoute() Bad Action: ${x}`)
-          return false
+          prepErr.errorDetails = 'GenericPrepareError'
+          return prepErr
       }
     }
 
@@ -72,6 +88,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       if (itemIndex === -1) {
         console.log(`Item not found in mainCollection - clear filters and reload`)
       } else {
+        
         console.log(`Item found in mainCollection - setting itemIndex`)
         c.setItemIndexAndPage(i.id, to.module)
       }
@@ -81,8 +98,8 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       console.log(`plan has collectionLoad - setting page(1)`)
       await c.setPage('main', 1, 0, to.module)
     }
-
-    return true
+    
+    return { success: true }
   }
 
   async function loadTrio(to: TRouteInfo, from: TRouteInfo) {
@@ -101,7 +118,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       .catch(err => {
         n.showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
         console.log(`Navigation to new routes failed with err: ${JSON.stringify(err, null, 2)}`)
-        return false
+        throw err;
       })
       .finally(() => {
         n.showSpinner(false)
@@ -133,9 +150,9 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
         console.log(`mainArray was set`)
       })
       .catch(err => {
-        n.showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
-        console.log(`Navigation to new routes failed with err: ${JSON.stringify(err, null, 2)}`)
-        return false
+        //n.showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
+        console.log(`loadMainCollection failed. err: ${JSON.stringify(err, null, 2)}`)
+        throw err
       })
       .finally(() => {
         n.showSpinner(false)
@@ -154,13 +171,25 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
         return true
       })
       .catch(err => {
-        console.log(`show() failed`)
-        return false
+        console.log(`loadItem() failed`)
+        throw err
       })
       .finally(() => {
         n.showSpinner(false)
       })
   }
+
+  async function setPage() {
+    console.log(`prepare.setPage()`)
+    let itemIndex = c.itemIndexInMainCollection(i.id)
+    if (itemIndex === -1) {
+      console.log(`Item not found in mainCollection - clear filters and reload`)
+    } else {
+      console.log(`Item found in mainCollection - setting itemIndex`)
+      c.setItemIndexAndPage(i.id, r.current.module)
+    }
+  }
+
 
   return { prepareForNewRoute }
 })

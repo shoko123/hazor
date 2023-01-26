@@ -236,12 +236,27 @@ export const useCollectionsStore = defineStore('collections', () => {
             console.log(`ipp: ${ipp}) pageNoB1: ${pageNoB0 + 1} module: ${module}`)
             setPage('main', pageNoB0 + 1, main.value.viewIndex, module)
         }
-
     }
 
     function itemIndexInMainCollection(id: number) {
         return mainArray.value.findIndex(x => x.id === id)
         //console.log(`setItemIndex(id:${id}) to ${main.value.itemIndex}`)
+    }
+
+    function nextUrlId(isRight: boolean) {
+        let newIndex
+        if (isRight) {
+            newIndex = (main.value.itemIndex === main.value.length - 1) ? 0 : main.value.itemIndex + 1
+        } else {
+            newIndex = (main.value.itemIndex === 0) ? main.value.length - 1 : main.value.itemIndex - 1
+        }
+
+        //console.log(`nextUrlId: ${mainArray.value[newIndex].url_id}`)
+
+        //TODO change id to url_id
+        return mainArray.value[newIndex].id
+
+        
     }
 
     function clearCollections() {
@@ -266,5 +281,28 @@ export const useCollectionsStore = defineStore('collections', () => {
         related.value.itemIndex = -1
         related.value.pageNoB1 = 1
     }
-    return { setItemsPerPage, main, collectionMeta, setArray, setPage, toggleCollectionView, clearCollections, getPageArray, mainArray, mainPageArray, itemIndexInMainCollection, setItemIndexAndPage, itemClear }
+
+    async function firstUrlId() {
+        let xhr = useXhrStore();
+        let n = useNotificationsStore();
+        let { current } = useRoutesMainStore()
+
+        console.log(`firstUrlId model: ${current.module}`)
+        n.showSpinner(`Finding first item ...`)
+        return xhr.send('model/firstUrlId', 'post', { model: current.module })
+            .then(res => {
+                console.log(`firstUrlId() returned ${res.data.url_id}`)
+                //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
+                //i.fields = res.data.item
+                return res.data.url_id
+            })
+            .catch(err => {
+                console.log(`firstUrlId() failed`)
+                return false
+            })
+            .finally(() => {
+                n.showSpinner(false)
+            })
+    }
+    return { setItemsPerPage, main, collectionMeta, setArray, setPage, toggleCollectionView, clearCollections, getPageArray, nextUrlId, mainArray, mainPageArray, itemIndexInMainCollection, setItemIndexAndPage, itemClear, firstUrlId }
 })

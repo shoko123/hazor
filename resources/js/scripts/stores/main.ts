@@ -30,6 +30,8 @@ export const useMainStore = defineStore('main', () => {
         throw ("app.init() failed")
       })
   }
+  
+
   return { initialized, appInit }
 })
 

@@ -37,6 +37,7 @@ class ModelController extends Controller
     public function show(Request $r, DigModelInterface $m)
     {
         $id = $m->getIdFromUrlId($r["url_id"]);
+        
         return response()->json([
             "msg" => "ModelControler.show()",
             "item" => $m->show($id)
@@ -47,6 +48,14 @@ class ModelController extends Controller
         return response()->json([
             "msg" => "ModelControler.destroy()",
             "model_name" => $this->model_name
+        ], 200);
+    }
+    public function firstUrlId(DigModelInterface $m)
+    {
+        $first = $m->firstUrlId();
+        return response()->json([
+            "bla" => "bla",
+            "url_id" => $first,
         ], 200);
     }
 }

@@ -4,13 +4,13 @@ type TUrlModule = 'auth' | 'admin' | 'loci' | 'fauna' | 'stones' | ''
 type TModule = 'Home' | 'Auth' | 'Admin' | 'Locus' | 'Fauna' | 'Stone'
 type TParsingError = 'BadModuleName' | 'BadIdFormat' | 'BadQueryParams'
 type TPlanError = 'MutateTransitionError' | 'BadTransition' | 'NotImplementedYet'
-type TDbAccessError = 'UnauthorizeError' | 'ServerError' | 'ItemNotFound' | 'EmptyResultSet'
+type TPrepareError = 'GenericPrepareError' | 'UnauthorizeError' | 'ServerConnectionError' | 'ModuleInitFailure' | 'ItemLoadFailure' | 'CollectionLoadFailure' | 'ItemNotFound' | 'EmptyResultSet' | 'ItemNotInResultSet'
 
 
 type TPlanAction =
     'trio.load' |
     'trio.clear' |
-    'collection.item.load'|
+    'collection.item.load' |
     'collection.load' |
     'collection.clear' |
     'filters.clear' |
@@ -19,14 +19,17 @@ type TPlanAction =
     'item.prepareForNew' |
     'item.prepareForUpdate' |
     'item.prepareForTag' |
-    'item.prepareForMedia'
+    'item.prepareForMedia' |
+    'page.set' |
+    'page.set0' |
+    'page.clear'
 
 type TIdParams = { id: number, params: object, extra: object } | undefined
 
 type TRouteInfo = {
     url_module: TUrlModule | undefined,
     url_id: string | undefined,
-    url_query_params: object | undefined,
+    url_query_string: string | undefined,
     name: TName,
     module: TModule,
     idParams: TIdParams,
@@ -43,4 +46,9 @@ type TPlanResponse = {
     success: boolean,
     data: TPlanError | TPlanAction[]
 }
-export { TName, TUrlModule, TModule, TRouteInfo, TParseResponse, TParsingError, TRouteEntityFlags, TPlanResponse, TPlanAction, TPlanError }
+
+type TPrepareResponse = {
+    success: boolean,
+    errorDetails?: TPrepareError
+}
+export { TName, TUrlModule, TModule, TRouteInfo, TParseResponse, TParsingError, TRouteEntityFlags, TPlanResponse, TPlanAction, TPlanError, TPrepareResponse, TPrepareError }

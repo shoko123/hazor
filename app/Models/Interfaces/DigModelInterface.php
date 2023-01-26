@@ -15,10 +15,10 @@ interface DigModelInterface
     public function index($queryParams);
     public function page($ids, $view): Collection;//view: "Media" | "Table"
     public function show(int $id);
-
+    public function firstUrlId();
 
     public function getIdFromUrlId(string $s) : int;
-    
+    public function getUrlIdFromId(int $id): string;    
     public function indexSelect(): Builder;//returns {id, url_id}[]
     public function indexFormat(): string;
     public function pageSelect(): string;//returns {id, url_id}[]

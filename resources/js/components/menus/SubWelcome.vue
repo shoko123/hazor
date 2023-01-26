@@ -8,7 +8,7 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { storeToRefs } from 'pinia'
-import { useMainStore } from '../../scripts/stores/main'
+import { useCollectionsStore } from '../../scripts/stores/collections'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 
 const { current } = storeToRefs(useRoutesMainStore())
@@ -21,7 +21,7 @@ const buttons = computed(() => {
   return btns;
 });
 
-function btnClicked(f: string) {
+async function btnClicked(f: string) {
   switch (f) {
     case "showAll":
       router.push({ name: 'index', params: { module: current.value.url_module } })
@@ -31,7 +31,13 @@ function btnClicked(f: string) {
       break
 
     case 'showItem':
-      router.push({ name: 'show', params: { module: current.value.url_module, url_id: 5 } })
+      const { firstUrlId } = useCollectionsStore()
+      const firstUid = await firstUrlId()
+      if (firstUid) {
+        router.push({ name: 'show', params: { module: current.value.url_module, url_id: firstUid } })
+      } else {
+        console.log(`failed to get first url_id`)
+      }
       break
   }
 }

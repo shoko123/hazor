@@ -1,67 +1,28 @@
 <template>
- 
-      <v-btn @click="stepRight(false)" icon="mdi-arrow-left" color="primary"> </v-btn>
 
-      <Picker />
+  <v-btn @click="stepRight(false)" icon="mdi-arrow-left" color="primary"> </v-btn>
 
-      <v-btn @click="stepRight(true)" icon="mdi-arrow-right" color="primary"></v-btn>
-      <!-- <v-btn fab text @click="stepRight(true)">
-        <v-icon color="primary">arrow-right</v-icon>
-      </v-btn> -->
-      <!-- <v-btn
-        v-if="isAreaSeason"
-        large
-        @click="goToArea"
-        color="info"
-        text
-        rounded
-        outlined
-        class="no-uppercase"
-        :disabled="disable"
-        >to Area</v-btn
-      >
-      <v-btn
-        v-if="isAreaSeason"
-        large
-        @click="goToSeason"
-        color="info"
-        text
-        rounded
-        outlined
-        class="no-uppercase"
-        :disabled="disable"
-        >to Season</v-btn
-      >
-      <v-btn
-        v-if="isLocus"
-        large
-        @click="goToAreaSeason"
-        color="info"
-        text
-        rounded
-        outlined
-        class="no-uppercase"
-        :disabled="disable"
-        >to Area/Season</v-btn
-      >
-      <v-btn
-        v-if="isFind"
-        large
-        @click="goToLocus"
-        color="info"
-        text
-        rounded
-        outlined
-        class="no-uppercase"
-        :disabled="disable"
-        >to Locus</v-btn
-      > -->
+  <Picker />
 
+  <v-btn @click="stepRight(true)" icon="mdi-arrow-right" color="primary"></v-btn>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import Picker from "./picker/Picker.vue";
+import { useRouter } from 'vue-router'
+
+import { storeToRefs } from 'pinia'
+import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
+import { useCollectionsStore } from '../../../scripts/stores/collections'
+import Picker from "./picker/Picker.vue"
+
+const { current } = storeToRefs(useRoutesMainStore())
+
+const router = useRouter()
+
+
+
+
 
 const disableAdjacents = computed(() => {
   return false
@@ -89,7 +50,10 @@ const header = computed(() => {
 
 
 function stepRight(isRight: boolean) {
-  console.log(`goTo ${isRight ? 'Right' : 'Left'}`)
+  let { nextUrlId } = useCollectionsStore()
+  let urlId = nextUrlId(isRight)
+  console.log(`goTo ${urlId}`)
+  router.push({ name: 'show', params: { module: current.value.url_module, url_id: urlId } })  
 }
 
 

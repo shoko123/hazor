@@ -9,11 +9,11 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
     const {collectionMeta} = useCollectionsStore()
 
     function planTransition(to: TRouteInfo, from: TRouteInfo): TPlanResponse {
-        let changed = { module: false, name: false, id: false }
+        let changed = { module: false, name: false, urlId: false }
 
         changed.module = (to.module !== from.module)
         changed.name = (to.name !== from.name)
-        changed.id = (to.idParams?.id !== from.idParams?.id)
+        changed.urlId = (to.url_id !== from.url_id)
 
         if (['Auth', 'Admin'].includes(to.module) ||
             ['Auth', 'Admin'].includes(from.module)) {
@@ -90,7 +90,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                         return { success: true, data: ['collection.load', 'item.clear'] }
 
                     case 'show':
-                        return { success: true, data: ['item.clear'] }
+                        return { success: true, data: ['page.set'] }
                     default:
                         return { success: false, data: 'BadTransition' }
                 }
@@ -102,7 +102,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                         if (changed.module) {
                             return { success: true, data: ['item.clear', 'collection.clear', 'trio.clear', 'collection.load', 'item.load'] }
                         }
-                        if (changed.id) {
+                        if (changed.urlId) {
                             return { success: true, data: ['item.load'] }
                         }
                         return { success: false, data: 'BadTransition' }
@@ -111,7 +111,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                         return { success: true, data: ['trio.load', 'collection.item.load'] }
 
                     case 'welcome':
-                        return { success: true, data: ['collection.load', 'item.load'] }
+                        return { success: true, data: ['collection.item.load'] }
 
                     case 'index':
                         return { success: true, data: ['item.load'] }

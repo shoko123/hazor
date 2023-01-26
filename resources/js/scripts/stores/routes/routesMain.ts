@@ -10,8 +10,8 @@ import { useRoutesPrepareStore } from './routesPrepare';
 import { useAuthStore } from '../auth';
 import { useNotificationsStore } from '../notifications';
 import { useModuleStore } from '../module';
-
-import type { TUrlModule, TModule, TRouteInfo, TParsingError, TParseResponse, TPlanAction } from '../../../types/routesTypes';
+import { useXhrStore } from '../xhr';
+import type { TUrlModule, TModule, TRouteInfo, TParsingError, TParseResponse, TPlanAction, TPrepareError } from '../../../types/routesTypes';
 
 export const useRoutesMainStore = defineStore('routesMain', () => {
     const { parse } = useRoutesParserStore()
@@ -20,7 +20,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     const current = ref<TRouteInfo>({
         url_module: undefined,
         url_id: undefined,
-        url_query_params: undefined,
+        url_query_string: undefined,
         module: 'Home',
         name: 'home',
         idParams: undefined,
@@ -30,7 +30,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     const to = ref<TRouteInfo>({
         url_module: undefined,
         url_id: undefined,
-        url_query_params: undefined,
+        url_query_string: undefined,
         module: 'Home',
         name: 'home',
         idParams: undefined,
@@ -45,20 +45,20 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         let { authenticated } = storeToRefs(useAuthStore())
 
         console.log(`handleRouteChange(${String(handle_from.name)} -> ${String(handle_to.name)})`)
-        console.log(`handleRouteChange(${JSON.stringify(handle_to, null, 2)})`)
+        //console.log(`handleRouteChange(${JSON.stringify(handle_to, null, 2)})`)
 
         //authorize
         if (handle_to.name === "login" && authenticated.value) {
             console.log(`Authenticated user trying to access login route. to.name: ${handle_to.name}, authenticated: ${authenticated.value}`)
-            return( handle_from)
-        } 
+            return (handle_from)
+        }
 
         if (!authorize(handle_to.path)) {
             n.showSnackbar('Unauthorized; redirected to Login Page')
             return { name: 'login', params: { module: 'auth' } }
         }
 
-        //parse (module, id, queryParams)
+        //parse (module, id, queryParams), and save to local storage (to).
         let parseResponse = parse(handle_to)
         if (parseResponse.success) {
             to.value = { ...(<TRouteInfo>parseResponse.data) }
@@ -66,7 +66,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         } else {
             //cancel navigation
             n.showSnackbar(`Parsing error ${parseResponse.data}; redirected to Home Page`)
-            return { name: 'home' }
+            return goHome()
         };
 
         //verify that the transition is legal and prepare the plan required for a successful transition.
@@ -75,17 +75,20 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         if (!planResponse.success) {
             console.log("plan failed...")
             n.showSnackbar(`Routes transition error ${planResponse.data}; redirected to Home Page`)
-            return { name: 'home' }
+            return goHome()
         }
 
         console.log(`Plan successful: ${JSON.stringify(planResponse.data, null, 2)}`)
 
-        try {
-            isLoading.value = true
+        //prepare - access server and load stuff (async)
+        isLoading.value = true
+
+        try {         
             let prepare = await p.prepareForNewRoute(to.value, current.value, <TPlanAction[]>planResponse.data)
             console.log(`routesMain returned from prepareForNewRoute(success)`);
-            if (!prepare) {
-                return false//Promise.reject(false)
+            if (!prepare.success) {
+                console.log(`known prepare() error: ${prepare.errorDetails}`)
+                return handlePrepareError(<TPrepareError>prepare.errorDetails)
             } else {
                 console.log("prepare OK")
             }
@@ -98,8 +101,8 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         }
         catch (err) {
             isLoading.value = false
-            console.log(`navigationErrorHandler error: ${JSON.stringify(err, null, 2)} to: ${handle_to.path}`);
-            return { name: 'home' }
+            console.log(`unexpected prepare() error: ${JSON.stringify(err, null, 2)} redirect to home`);
+            return goHome()
         }
     }
 
@@ -116,10 +119,20 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         }
     }
 
+    function handlePrepareError(errorDetails: TPrepareError): Promise<RouteLocationRaw | boolean> {   
+        console.log(`handlePrepareError: ${JSON.stringify(errorDetails)}`)
+        return Promise.resolve(false)
+    }
+
     function finalizeRouting() {
         let module = useModuleStore()
         console.log(`finalizing routing. copy to -> current to: ${JSON.stringify(to.value)}`)
-        current.value = JSON.parse(JSON.stringify(to.value))  
+        current.value = JSON.parse(JSON.stringify(to.value))
+    }
+    function goHome() {
+        console.log(`goHome`)
+        isLoading.value = false
+        return { name: 'home' }
     }
 
     function getRouteInfo() {
@@ -144,5 +157,8 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     function toAndCurrentAreTheSameModule() {
         return to.value.module === current.value.module
     }
-    return { isLoading, getModule, getUrlModule,getToModule, getRouteInfo, getToRouteInfo, toAndCurrentAreTheSameModule, current, to, handleRouteChange }
+
+    
+
+    return { isLoading, getModule, getUrlModule, getToModule, getRouteInfo, getToRouteInfo, toAndCurrentAreTheSameModule, current, to, handleRouteChange }
 })
