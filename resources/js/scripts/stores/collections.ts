@@ -202,14 +202,14 @@ export const useCollectionsStore = defineStore('collections', () => {
         pageRef.value = toSave
     }
 
-    function toggleCollectionView(name: TSource) {
+    async function toggleCollectionView(name: TSource) {
         let { getModule } = useRoutesMainStore()
         let module = getModule()
         let meta = getCollectionMeta(name)
         let newViewIndex = (meta.value.viewIndex + 1) % meta.value.views.length
 
         //console.log(`toggleCollectionView() source: ${name}  module: ${module} views: ${meta.value.views}  current viewIndex: ${meta.value.viewIndex}  new viewIndex: ${newViewIndex}`);
-        setPage(name, 1, newViewIndex, module)
+        await setPage(name, 1, newViewIndex, module)
     }
 
     function setItemsPerPage(ipp: TItemsPerPage) {
@@ -220,27 +220,23 @@ export const useCollectionsStore = defineStore('collections', () => {
         main.value.itemIndex = -1
     }
 
-    function setItemIndexAndPage(id: number, module: TModule) {
-        let itemIndex = mainArray.value.findIndex(x => x.id === id)
-        console.log(`setItemIndexAndPage(id: ${id}) itemIndex: ${itemIndex}`)
-        if (itemIndex === -1) {
-            console.log(`NOT FOUND - abort, redirect to 'home'`)
-        } else {
-            //set itemIndex
-            main.value.itemIndex = itemIndex
-
-            //if page is loaded, return; else , load page
-            //set page
-            let ipp = itemsPerPage.value[main.value.views[main.value.viewIndex]]
-            let pageNoB0 = Math.floor(itemIndex / ipp)
-            console.log(`ipp: ${ipp}) pageNoB1: ${pageNoB0 + 1} module: ${module}`)
-            setPage('main', pageNoB0 + 1, main.value.viewIndex, module)
-        }
+    async function loadPageByItemIndex(module: TModule) {
+        let ipp = itemsPerPage.value[main.value.views[main.value.viewIndex]]
+        let pageNoB0 = Math.floor(main.value.itemIndex / ipp)
+        console.log(`ipp: ${ipp}) pageNoB1: ${pageNoB0 + 1} module: ${module}`)
+        await setPage('main', pageNoB0 + 1, main.value.viewIndex, module)
     }
 
-    function itemIndexInMainCollection(id: number) {
-        return mainArray.value.findIndex(x => x.id === id)
-        //console.log(`setItemIndex(id:${id}) to ${main.value.itemIndex}`)
+    function getItemIndexInMainCollection(id: number) {
+        let index = mainArray.value.findIndex(x => x.id === id)
+        //console.log(`getItemIndexInMainCollection(id:${id}) index: ${index}`)
+        return index
+
+    }
+
+    function setItemIndexInMainCollection(index: number) {
+        //console.log(`setItemIndexInMainCollection to ${index}`)
+        main.value.itemIndex = index
     }
 
     function nextUrlId(isRight: boolean) {
@@ -250,13 +246,9 @@ export const useCollectionsStore = defineStore('collections', () => {
         } else {
             newIndex = (main.value.itemIndex === 0) ? main.value.length - 1 : main.value.itemIndex - 1
         }
-
         //console.log(`nextUrlId: ${mainArray.value[newIndex].url_id}`)
-
         //TODO change id to url_id
         return mainArray.value[newIndex].id
-
-        
     }
 
     function clearCollections() {
@@ -304,5 +296,23 @@ export const useCollectionsStore = defineStore('collections', () => {
                 n.showSpinner(false)
             })
     }
-    return { setItemsPerPage, main, collectionMeta, setArray, setPage, toggleCollectionView, clearCollections, getPageArray, nextUrlId, mainArray, mainPageArray, itemIndexInMainCollection, setItemIndexAndPage, itemClear, firstUrlId }
+
+    return {
+        main,
+        mainArray,
+        mainPageArray,
+        setItemsPerPage,
+        collectionMeta,
+        setArray,
+        setPage,
+        toggleCollectionView,
+        clearCollections,
+        getPageArray,
+        nextUrlId,
+        getItemIndexInMainCollection,
+        setItemIndexInMainCollection,
+        loadPageByItemIndex,
+        itemClear,
+        firstUrlId
+    }
 })

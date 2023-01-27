@@ -15,13 +15,13 @@ type TPlanAction =
     'collection.clear' |
     'filters.clear' |
     'item.load' |
+    'item.setIndexInCollection' |
     'item.clear' |
     'item.prepareForNew' |
     'item.prepareForUpdate' |
     'item.prepareForTag' |
     'item.prepareForMedia' |
-    'page.set' |
-    'page.set0' |
+    'page.load' |
     'page.clear'
 
 type TIdParams = { id: number, params: object, extra: object } | undefined

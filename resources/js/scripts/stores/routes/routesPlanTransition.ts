@@ -76,21 +76,20 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
             case 'index':
                 switch (from.name) {
                     case 'home':
-                         return { success: true, data: ['trio.load', 'collection.load'] }
+                         return { success: true, data: ['trio.load', 'collection.load', 'page.load'] }
                     case 'welcome':
                         if (changed.module) {
-                            return { success: true, data: ['trio.load', 'collection.load', 'item.clear'] }
+                            return { success: true, data: ['trio.load', 'collection.load', 'page.load'] }
                         } else {
-                            let toDo: TPlanAction[] = collectionMeta("main").length === 0 ? ['collection.load'] : [] 
-                            toDo.push('item.clear', 'collection.load')
-                            return { success: true, data: toDo }
+                            //let toDo: TPlanAction[] = collectionMeta("main").length === 0 ? ['collection.load', 'page.load'] : []
+                            return { success: true, data: ['collection.load', 'page.load'] }
                         }
 
                     case 'filter':
                         return { success: true, data: ['collection.load', 'item.clear'] }
 
                     case 'show':
-                        return { success: true, data: ['page.set'] }
+                        return { success: true, data: ['page.load', 'item.clear'] }
                     default:
                         return { success: false, data: 'BadTransition' }
                 }
@@ -100,21 +99,21 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                 switch (from.name) {
                     case 'show':
                         if (changed.module) {
-                            return { success: true, data: ['item.clear', 'collection.clear', 'trio.clear', 'collection.load', 'item.load'] }
+                            return { success: true, data: ['item.clear', 'collection.clear', 'trio.clear', 'trio.load', 'collection.item.load', 'item.setIndexInCollection'] }
                         }
                         if (changed.urlId) {
-                            return { success: true, data: ['item.load'] }
+                            return { success: true, data: ['item.load', 'item.setIndexInCollection'] }
                         }
                         return { success: false, data: 'BadTransition' }
 
                     case 'home':
-                        return { success: true, data: ['trio.load', 'collection.item.load'] }
+                        return { success: true, data: ['trio.load', 'collection.item.load', 'item.setIndexInCollection'] }
 
                     case 'welcome':
-                        return { success: true, data: ['collection.item.load'] }
+                        return { success: true, data: ['collection.item.load', 'item.setIndexInCollection'] }
 
                     case 'index':
-                        return { success: true, data: ['item.load'] }
+                        return { success: true, data: ['item.load', 'item.setIndexInCollection'] }
 
                     case 'create':
                         return { success: true, data: [] }

@@ -71,8 +71,12 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           i.fields = undefined
           break
 
-        case 'page.set':
-          await setPage()
+          case 'item.setIndexInCollection':
+            itemSetIndexInCollection()
+            break
+
+        case 'page.load':
+          await loadPage()
           break
 
         default:
@@ -80,23 +84,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           prepErr.errorDetails = 'GenericPrepareError'
           return prepErr
       }
-    }
-
-    //if item was loaded, see if it is in the collection - Yes: set itemIndex, No: remove filters and reload collection
-    if (plan.includes('collection.item.load') || plan.includes('item.load')) {
-      let itemIndex = c.itemIndexInMainCollection(i.id)
-      if (itemIndex === -1) {
-        console.log(`Item not found in mainCollection - clear filters and reload`)
-      } else {
-        
-        console.log(`Item found in mainCollection - setting itemIndex`)
-        c.setItemIndexAndPage(i.id, to.module)
-      }
-    }
-
-    if (plan.includes('collection.load')) {
-      console.log(`plan has collectionLoad - setting page(1)`)
-      await c.setPage('main', 1, 0, to.module)
     }
     
     return { success: true }
@@ -179,17 +166,30 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       })
   }
 
-  async function setPage() {
-    console.log(`prepare.setPage()`)
-    let itemIndex = c.itemIndexInMainCollection(i.id)
-    if (itemIndex === -1) {
-      console.log(`Item not found in mainCollection - clear filters and reload`)
+  async function loadPage() {
+    console.log(`prepare.loadPage()`)
+
+    if (c.main.itemIndex === -1) {
+      console.log(`itemIndex is -1 - loading pageB1(1)`)
+       await c.setPage('main', 1, 0, r.to.module)
     } else {
-      console.log(`Item found in mainCollection - setting itemIndex`)
-      c.setItemIndexAndPage(i.id, r.current.module)
+      console.log(`Loading page according to itemIndex`)
+      await c.loadPageByItemIndex(r.to.module)
     }
   }
 
+  function itemSetIndexInCollection() {
+    //console.log(`prepare.itemSetIndexInCollection()`)
+    let itemIndex = c.getItemIndexInMainCollection(i.id)
+    if (itemIndex === -1) {
+      console.log(`Item not found in mainCollection - set itemIndex to -1, clear page`)
+      c.main.itemIndex = -1
+      c.mainPageArray = []
+    } else {
+      //console.log(`Item found in mainCollection - setting itemIndex`)
+      c.setItemIndexInMainCollection(itemIndex)
+    }
+  }
 
   return { prepareForNewRoute }
 })
