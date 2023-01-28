@@ -8,8 +8,8 @@ type TPrepareError = 'GenericPrepareError' | 'UnauthorizeError' | 'ServerConnect
 
 
 type TPlanAction =
-    'trio.load' |
-    'trio.clear' |
+    'module.load' |
+    'module.clear' |
     'collection.item.load' |
     'collection.load' |
     'collection.clear' |
@@ -21,7 +21,8 @@ type TPlanAction =
     'item.prepareForUpdate' |
     'item.prepareForTag' |
     'item.prepareForMedia' |
-    'page.load' |
+    'page.load' | //load pageB1 according to current item
+    'page.load1' | //load pageB1 = 1
     'page.clear'
 
 type TIdParams = { id: number, params: object, extra: object } | undefined

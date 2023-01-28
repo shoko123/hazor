@@ -22,16 +22,16 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
 
         switch (to.name) {
             case 'home':
-                return { success: true, data: ['item.clear', 'collection.clear', 'trio.clear'] }
+                return { success: true, data: ['item.clear', 'collection.clear', 'page.clear','module.clear'] }
 
             case 'welcome':
                 switch (from.name) {
                     case 'home':
-                        return { success: true, data: ['trio.load'] }
+                        return { success: true, data: ['module.load'] }
 
                     case 'welcome':
                         if (changed.module) {
-                            return { success: true, data: ['trio.load', 'item.clear', 'collection.clear'] }
+                            return { success: true, data: ['module.load', 'item.clear', 'collection.clear'] }
                         } else {
                             console.log("routes - welcome -> welcome with the same module")
                             return { success: true, data: [] }
@@ -40,7 +40,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                     case 'filter':
                     case 'index':
                         if (changed.module) {
-                            return { success: true, data: ['trio.load', 'item.clear', 'collection.clear'] }
+                            return { success: true, data: ['module.load', 'item.clear', 'collection.clear'] }
                         } else {
                             console.log("routes - 'filter' or 'index' -> 'welcome' with the same module")
                             return { success: true, data: [] }
@@ -62,7 +62,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                     case 'welcome':
                     case 'show':
                         if (changed.module) {
-                            return { success: true, data: ['trio.load', 'collection.clear', 'item.clear'] }
+                            return { success: true, data: ['module.load', 'collection.clear', 'item.clear'] }
                         } else {
                             console.log("routes - filter from the same module")
                             return { success: true, data: ['collection.clear', 'item.clear'] }
@@ -71,22 +71,21 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                     default:
                         return { success: false, data: 'BadTransition' }
                 }
-                break
 
             case 'index':
                 switch (from.name) {
                     case 'home':
-                         return { success: true, data: ['trio.load', 'collection.load', 'page.load'] }
+                         return { success: true, data: ['module.load', 'collection.load', 'page.load1'] }
                     case 'welcome':
                         if (changed.module) {
-                            return { success: true, data: ['trio.load', 'collection.load', 'page.load'] }
+                            return { success: true, data: ['module.load', 'collection.load', 'page.load1'] }
                         } else {
                             //let toDo: TPlanAction[] = collectionMeta("main").length === 0 ? ['collection.load', 'page.load'] : []
-                            return { success: true, data: ['collection.load', 'page.load'] }
+                            return { success: true, data: ['collection.load', 'page.load1'] }
                         }
 
                     case 'filter':
-                        return { success: true, data: ['collection.load', 'item.clear'] }
+                        return { success: true, data: ['collection.load', 'page.load1'] }
 
                     case 'show':
                         return { success: true, data: ['page.load', 'item.clear'] }
@@ -99,7 +98,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                 switch (from.name) {
                     case 'show':
                         if (changed.module) {
-                            return { success: true, data: ['item.clear', 'collection.clear', 'trio.clear', 'trio.load', 'collection.item.load', 'item.setIndexInCollection'] }
+                            return { success: true, data: ['item.clear', 'collection.clear', 'module.clear', 'module.load', 'collection.item.load', 'item.setIndexInCollection'] }
                         }
                         if (changed.urlId) {
                             return { success: true, data: ['item.load', 'item.setIndexInCollection'] }
@@ -107,7 +106,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                         return { success: false, data: 'BadTransition' }
 
                     case 'home':
-                        return { success: true, data: ['trio.load', 'collection.item.load', 'item.setIndexInCollection'] }
+                        return { success: true, data: ['module.load', 'collection.item.load', 'item.setIndexInCollection'] }
 
                     case 'welcome':
                         return { success: true, data: ['collection.item.load', 'item.setIndexInCollection'] }

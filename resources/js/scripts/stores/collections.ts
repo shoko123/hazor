@@ -117,7 +117,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         meta.value.length = data.length
     }
 
-    async function setPage(name: TSource, pageNoB1: number, viewIndex: number, module: TModule): Promise<boolean> {
+    async function loadPage(name: TSource, pageNoB1: number, viewIndex: number, module: TModule): Promise<boolean> {
         let view = main.value.views[viewIndex]
         let ipp = itemsPerPage.value[view]
         let meta = getCollectionMeta(name)
@@ -125,7 +125,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         let array = getCollectionArray(name)
         let ids = array.value.slice(start, start + ipp).map(x => x.id);
 
-        console.log(`setPage() source: ${name}  module: ${module} viewIndex: ${viewIndex} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1}`);
+        console.log(`loadPage() source: ${name}  module: ${module} viewIndex: ${viewIndex} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1}`);
 
         switch (name) {
             case 'main':
@@ -209,7 +209,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         let newViewIndex = (meta.value.viewIndex + 1) % meta.value.views.length
 
         //console.log(`toggleCollectionView() source: ${name}  module: ${module} views: ${meta.value.views}  current viewIndex: ${meta.value.viewIndex}  new viewIndex: ${newViewIndex}`);
-        await setPage(name, 1, newViewIndex, module)
+        await loadPage(name, 1, newViewIndex, module)
     }
 
     function setItemsPerPage(ipp: TItemsPerPage) {
@@ -224,7 +224,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         let ipp = itemsPerPage.value[main.value.views[main.value.viewIndex]]
         let pageNoB0 = Math.floor(main.value.itemIndex / ipp)
         console.log(`ipp: ${ipp}) pageNoB1: ${pageNoB0 + 1} module: ${module}`)
-        await setPage('main', pageNoB0 + 1, main.value.viewIndex, module)
+        await loadPage('main', pageNoB0 + 1, main.value.viewIndex, module)
     }
 
     function getItemIndexInMainCollection(id: number) {
@@ -304,7 +304,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         setItemsPerPage,
         collectionMeta,
         setArray,
-        setPage,
+        loadPage,
         toggleCollectionView,
         clearCollections,
         getPageArray,

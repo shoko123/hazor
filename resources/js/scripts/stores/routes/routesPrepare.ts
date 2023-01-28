@@ -30,14 +30,14 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     let prepErr: TPrepareResponse = { success: false }
     for (const x of plan) {
       switch (x) {
-        case 'trio.load':
+        case 'module.load':
           await loadTrio(to, from).catch(err => {
             prepErr.errorDetails = 'ModuleInitFailure'
             return prepErr
           })
           break
 
-        case 'trio.clear':
+        case 'module.clear':
           t.clearFilters()
           break
 
@@ -71,13 +71,21 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           i.fields = undefined
           break
 
-          case 'item.setIndexInCollection':
-            itemSetIndexInCollection()
-            break
+        case 'item.setIndexInCollection':
+          itemSetIndexInCollection()
+          break
 
         case 'page.load':
-          await loadPage()
+          await loadPage(false)
           break
+
+        case 'page.load1':
+          await loadPage(true)
+          break
+
+          case 'page.clear':
+            clearPage()
+            break
 
         default:
           console.log(`PrepareForNewRoute() Bad Action: ${x}`)
@@ -85,7 +93,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           return prepErr
       }
     }
-    
+
     return { success: true }
   }
 
@@ -134,11 +142,11 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     return xhr.send('model/index', 'post', { model: to.module })
       .then(res => {
         c.setArray('main', res.data.collection)
-        console.log(`mainArray was set`)
+        console.log(`collection loaded successfully`)
       })
       .catch(err => {
         //n.showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
-        console.log(`loadMainCollection failed. err: ${JSON.stringify(err, null, 2)}`)
+        console.log(`collection loading failed. err: ${JSON.stringify(err, null, 2)}`)
         throw err
       })
       .finally(() => {
@@ -166,18 +174,24 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       })
   }
 
-  async function loadPage() {
+  async function loadPage(firstPage: boolean): Promise<void> {
     console.log(`prepare.loadPage()`)
 
-    if (c.main.itemIndex === -1) {
-      console.log(`itemIndex is -1 - loading pageB1(1)`)
-       await c.setPage('main', 1, 0, r.to.module)
+    if (firstPage) {
+      console.log(`loading pageB1(1)`)
+      await c.loadPage('main', 1, 0, r.to.module)
     } else {
       console.log(`Loading page according to itemIndex`)
       await c.loadPageByItemIndex(r.to.module)
     }
   }
 
+  function clearPage(): void {
+    console.log(`prepare.loadPage()`)
+    c.mainPageArray = []
+    c.main.pageNoB1 = 1
+  }
+  
   function itemSetIndexInCollection() {
     //console.log(`prepare.itemSetIndexInCollection()`)
     let itemIndex = c.getItemIndexInMainCollection(i.id)
@@ -187,7 +201,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       c.mainPageArray = []
     } else {
       //console.log(`Item found in mainCollection - setting itemIndex`)
-      c.setItemIndexInMainCollection(itemIndex)
+      c.main.itemIndex = itemIndex
     }
   }
 
