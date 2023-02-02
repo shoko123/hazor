@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts" setup >
-import { TSource, IMediaItem } from '../../../../types/collectionTypes'
+import { TCollectionName, IMediaItem } from '../../../../types/collectionTypes'
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 

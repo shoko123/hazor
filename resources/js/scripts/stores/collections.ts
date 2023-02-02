@@ -2,7 +2,7 @@
 //handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed, registerRuntimeCompiler } from 'vue'
-import { TCollection, TSource, TElement, TItemsPerPage, IPage, IPageItem, TView, TArrayItem, TCollectionMeta, TSetPage, IMediaItem, ITableItem } from '../../types/collectionTypes'
+import { TCollection, TCollectionName, TElement, TItemsPerPage, IPage, IPageItem, TView, TArrayItem, TCollectionMeta, TSetPage, IMediaItem, ITableItem } from '../../types/collectionTypes'
 import { TModule } from '../../types/routesTypes'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
@@ -58,7 +58,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     let relatedPageArray = ref<IPageItem[]>([])
     let mediaPageArray = ref<IPageItem[]>([])
 
-    function getPageArray(source: TSource) {
+    function getPageArray(source: TCollectionName) {
         switch (source) {
             case 'main':
                 return mainPageArray
@@ -69,7 +69,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         }
     }
 
-    function getCollectionArray(source: TSource) {
+    function getCollectionArray(source: TCollectionName) {
         switch (source) {
             case 'main':
                 return mainArray
@@ -80,7 +80,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         }
     }
 
-    function getCollectionMeta(name: TSource) {
+    function getCollectionMeta(name: TCollectionName) {
         switch (name) {
             case 'main':
                 return main
@@ -91,7 +91,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         }
     }
 
-    function collectionMeta(name: TSource): TCollectionMeta {
+    function collectionMeta(name: TCollectionName): TCollectionMeta {
         //console.log(`collectionMeta("${name}")`)
         let meta = getCollectionMeta(name)
         let ipp = itemsPerPage.value[<TView>meta.value.views[meta.value.viewIndex]]
@@ -110,14 +110,14 @@ export const useCollectionsStore = defineStore('collections', () => {
         }
     }
 
-    function setArray(name: TSource, data: TArrayItem[]) {
+    function setArray(name: TCollectionName, data: TArrayItem[]) {
         let array = getCollectionArray(name)
         let meta = getCollectionMeta(name)
         array.value = data
         meta.value.length = data.length
     }
 
-    async function loadPage(name: TSource, pageNoB1: number, viewIndex: number, module: TModule): Promise<boolean> {
+    async function loadPage(name: TCollectionName, pageNoB1: number, viewIndex: number, module: TModule): Promise<boolean> {
         let view = main.value.views[viewIndex]
         let ipp = itemsPerPage.value[view]
         let meta = getCollectionMeta(name)
@@ -165,7 +165,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         return true
     }
 
-    function savePage(name: TSource, page: IPage[], view: TView, module: TModule): void {
+    function savePage(name: TCollectionName, page: IPage[], view: TView, module: TModule): void {
         function getUrls(urls: { full: string, tn: string } | null | undefined): object | null {
             if (urls === null) {
 
@@ -202,7 +202,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         pageRef.value = toSave
     }
 
-    async function toggleCollectionView(name: TSource) {
+    async function toggleCollectionView(name: TCollectionName) {
         let { getModule } = useRoutesMainStore()
         let module = getModule()
         let meta = getCollectionMeta(name)
@@ -301,6 +301,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         main,
         mainArray,
         mainPageArray,
+        itemsPerPage,
         setItemsPerPage,
         collectionMeta,
         setArray,

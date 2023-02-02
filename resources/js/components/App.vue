@@ -9,11 +9,12 @@
     </v-main>
     <v-footer />
   </v-app>
+  <Modal />
 </template>
 
 <script setup lang="ts" >
 import Menus from './menus/Menus.vue'
 import Snackbar from './notifications/snackbar.vue'
 import LoadingSpinner from './notifications/loadingSpinner.vue'
-
+import Modal from './modals/Modal.vue'
 </script>

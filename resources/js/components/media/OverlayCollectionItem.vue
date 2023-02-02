@@ -3,8 +3,8 @@
     <!-- <v-card-text class="text-body-1 white--text"> {{text}}
     </v-card-text> -->
     <v-card-actions>
-      <v-btn  class="but" @click="goTo(item)">Visit</v-btn>
-      <v-btn class="but" @click="openLightBox()">Lightbox</v-btn>
+      <v-btn class="but" @click="goTo(item)">Visit</v-btn>
+      <v-btn class="but" @click="openModalCarousel()">Lightbox</v-btn>
     </v-card-actions>
   </v-card>
   <!--h5 v-if="hasMedia">{{ text }}</h5-->
@@ -13,15 +13,17 @@
     
 
 <script lang="ts" setup >
-import { TSource, IMediaItem } from '../../types/collectionTypes'
+import { TCollectionName, IMediaItem } from '../../types/collectionTypes'
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
+import { useCarouselStore } from '../../scripts/stores/modals/carousel';
 
 const { getRouteInfo } = useRoutesMainStore()
 const router = useRouter()
 const props = defineProps<{
-  source: TSource,
+  source: TCollectionName,
+  itemIndex: number,
   item: IMediaItem,
   pageNoB1?: number,
 }>()
@@ -29,6 +31,9 @@ const props = defineProps<{
 onMounted(() => {
   //console.log(`Overlay.onMounted props: ${JSON.stringify(props, null, 2)}`)
 })
+
+const { open } = useCarouselStore()
+
 const text = computed(() => {
   if (props.item.description === null) {
     return "";
@@ -37,11 +42,9 @@ const text = computed(() => {
   }
 })
 
-
-
-
-function openLightBox() {
-
+function openModalCarousel() {
+  console.log(`Open carousel clicked .....`)
+  open(props.source, props.itemIndex)
 }
 
 function goTo(item: IMediaItem) {

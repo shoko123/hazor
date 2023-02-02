@@ -4,6 +4,7 @@
       <MediaSquare
         v-bind="{
           source: source,
+          itemIndex: itemIndex(index),
           item,          
           pageNoB1: pageNoB1,
           indexInPage: index,
@@ -15,26 +16,27 @@
 </template>
 
 <script lang="ts" setup >
+import { storeToRefs } from 'pinia'
 import { useCollectionsStore } from '../../scripts/stores/collections';
 import { computed } from 'vue'
-import { TSource, IMediaItem } from '../../types/collectionTypes'
+import { TCollectionName, IMediaItem } from '../../types/collectionTypes'
 
 import MediaSquare from '../media/MediaSquare.vue'
 
 const props = defineProps<{
-  source: TSource
+  source: TCollectionName
   pageNoB1: number
 }>()
 
 let { getPageArray } = useCollectionsStore()
-
+let { itemsPerPage } = storeToRefs( useCollectionsStore())
 const page = computed(() => {
   return getPageArray(props.source).value as IMediaItem[]
 })
 
 
-function goTo(item: any) {
-  console.log("goTo")
+function itemIndex(index: number) : number{
+  return (props.pageNoB1 - 1) * itemsPerPage.value.Media + index
 }
 </script>
 

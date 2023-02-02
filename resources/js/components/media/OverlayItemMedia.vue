@@ -1,15 +1,15 @@
 <template>
   <div>
-    <v-btn v-if="showLightBoxOption" @click="openLightBox()">Lightbox</v-btn>
+    <v-btn v-if="showLightBoxOption" @click="openModalCarousel()">Lightbox</v-btn>
   </div>
 </template>  
 
 <script lang="ts" setup >
-import { TSource, IMediaItem } from '../../types/collectionTypes'
+import { TCollectionName, IMediaItem } from '../../types/collectionTypes'
 import { computed } from 'vue'
 
 const props = defineProps<{
-  source: TSource, 
+  source: TCollectionName, 
   caller: string, 
   item: IMediaItem
 }>()
@@ -20,8 +20,8 @@ const tagText = computed(() => {
 const showLightBoxOption = computed(() => {
   return true
 })
-function openLightBox() {
-  console.log(`Open lightbox clicked`)
+function openModalCarousel() {
+  console.log(`OverlayItemMedia.openModalCarousel clicked`)
 }
 
 </script>

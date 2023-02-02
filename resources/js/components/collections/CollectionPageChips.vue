@@ -11,26 +11,26 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { TSource, IChipItem } from '../../types/collectionTypes'
+import { TCollectionName, IChipItem } from '../../types/collectionTypes'
 import { useCollectionsStore } from '../../scripts/stores/collections'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 
 const props = defineProps<{
-  source: TSource
+  source: TCollectionName
   pageNoB1: number
 }>()
 
 const { getPageArray } = useCollectionsStore()
 const { getRouteInfo } = useRoutesMainStore()
-const router = useRouter()
 
 const page = computed(() => {
   return getPageArray(props.source).value as IChipItem[]
 })
 
 function goTo(item: any) {
-  console.log(`goto item: ${JSON.stringify(item, null, 2)}`)
-  let routeInfo = getRouteInfo()
+  //console.log(`goto item: ${JSON.stringify(item, null, 2)}`)
+  const router = useRouter()
+  const routeInfo = getRouteInfo()
   router.push({ name: 'show', params: { module: routeInfo.value.url_module, url_id: item.id } })
 
 }

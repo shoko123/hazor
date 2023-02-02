@@ -1,7 +1,7 @@
 // collectionTypes.ts
 
 type TView = 'Media' | 'Chips' | 'Table'
-type TSource = 'main' | 'media' | 'related'
+type TCollectionName = 'main' | 'media' | 'related'
 type TElement = 'array' | 'page' | 'viewIndex'
 
 type TItemsPerPage = {
@@ -73,4 +73,4 @@ type TCollectionMeta = {
 }
 
 
-export { TView, TCollection, TElement, TSource, IPage, TItemsPerPage, TCollectionMeta, IPageItem, TArrayItem, TSetPage, IChipItem, IMediaItem, ITableItem }
+export { TView, TCollection, TElement, TCollectionName, IPage, TItemsPerPage, TCollectionMeta, IPageItem, TArrayItem, TSetPage, IChipItem, IMediaItem, ITableItem }

@@ -5,7 +5,7 @@
     >
     <v-card-actions>
       <v-btn :disabled="!isImplemented" @click="goTo(item)">Visit</v-btn>
-      <v-btn v-if="hasMedia" @click="openLightBox()">Lightbox</v-btn>
+      <v-btn v-if="hasMedia" @click="openModalCarousel()">Lightbox</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -52,9 +52,9 @@ export default {
     },
   },
   methods: {
-    openLightBox() {
+    openModalCarousel() {
       let c = this.$store.getters["mgr/collections"]("related");
-      this.$store.commit("med/openLightBox", {
+      this.$store.commit("med/openModalCarousel", {
         value: true,
         source: "related",
         index: this.index % c.itemsPerPage,

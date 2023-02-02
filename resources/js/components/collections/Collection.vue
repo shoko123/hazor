@@ -23,7 +23,7 @@
 <script lang="ts" setup >
 
 import { computed } from 'vue'
-import { TSetPage, TSource, TView } from '../../types/collectionTypes'
+import { TSetPage, TCollectionName, TView } from '../../types/collectionTypes'
 import CollectionPageMedia from './CollectionPageMedia.vue'
 import CollectionPageChips from './CollectionPageChips.vue'
 import CollectionPageTable from './CollectionPageTable.vue'
@@ -31,7 +31,7 @@ import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain';
 import { useCollectionsStore } from '../../scripts/stores/collections'
 
 const props = defineProps<{
-  source: TSource
+  source: TCollectionName
 }>()
 
 let { getModule } = useRoutesMainStore()

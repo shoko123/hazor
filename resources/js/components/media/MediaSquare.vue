@@ -14,6 +14,7 @@
                 v-bind:is="overlay"
                 :item="item"
                 :source="source"
+                :itemIndex="itemIndex"
               ></component>
           </template>
         </v-overlay>
@@ -26,7 +27,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { TSource, IMediaItem } from '../../types/collectionTypes'
+import { TCollectionName, IMediaItem } from '../../types/collectionTypes'
 
 
 import OverlayRelated from './OverlayRelated.vue'
@@ -36,8 +37,9 @@ import OverlayCollectionItem from './OverlayCollectionItem.vue'
 import { ItemNotFoundError } from '@/js/scripts/setups/routes/errors'
 
 const props = defineProps<{
-  source: TSource,
+  source: TCollectionName,
   item: IMediaItem,
+  itemIndex: number,
   pageNoB1?: number,
   indexInPage?: number,
   size?: number
