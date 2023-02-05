@@ -5,26 +5,26 @@
     <v-card class="h-100">
 
       <v-toolbar id="toolbar" height="36">
-        <v-toolbar-title>{{ header }}</v-toolbar-title>
+        <v-toolbar-title>{{ carouselHeader }}</v-toolbar-title>
         <v-spacer />
-        <v-btn size="small" @click="arrowClicked(false)" icon="mdi-arrow-left"></v-btn>
-        <v-btn size="small" @click="arrowClicked(false)" icon="mdi-arrow-right"> </v-btn>
-        <v-btn size="small" @click="closeLightBox" icon="mdi-close"> </v-btn>
+        <v-btn size="small" @click="nextClicked(false)" icon="mdi-arrow-left"></v-btn>
+        <v-btn size="small" @click="nextClicked(true)" icon="mdi-arrow-right"> </v-btn>
+        <v-btn size="small" @click="closeCarousel" icon="mdi-close"> </v-btn>
       </v-toolbar>
 
       <v-card-text>
         <v-row>
           <v-card width="80%">
-            <v-img :src="media.urls.full" :lazy-src="media.urls.tn" aspect-ratio="1" max-height="61%" max-width="100%"
+            <v-img :src="urls.full" :lazy-src="urls.tn" aspect-ratio="1" max-height="61%" max-width="100%"
               contain class="bg-grey">
             </v-img>
           </v-card>
 
           <v-card width="20%" class="bg-purple-lighten-5">
-            <v-card-title class="ma-2 text--body-1 bold"> {{ header }}</v-card-title>
+            <v-card-title class="ma-2 text--body-1 bold"> {{ itemTag }}</v-card-title>
             <v-card-text>
               <v-row class="text-body-1">
-                {{ text }}</v-row>
+                {{ description }}</v-row>
             </v-card-text>
           </v-card>
         </v-row>
@@ -38,14 +38,13 @@
 import { computed } from 'vue'
 import { useModalStore } from '../../scripts/stores/modals/modal'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
-import LightboxImage from './LightboxImage.vue'
 import { storeToRefs } from 'pinia'
 import { isBooleanAttr } from '@vue/shared'
 const m = useModalStore()
-const lb = useCarouselStore()
+const c = useCarouselStore()
 
 const info = computed(() => {
-  return lb.carouselInfo
+  return c.carouselInfo
 })
 
 const isReady = computed(() => {
@@ -60,35 +59,32 @@ const categoryIndex = computed({
   }
 })
 
-function arrowClicked(next: boolean) {
-  return next
+async function nextClicked(next: boolean) {
+
 }
 
-const lightBox = computed(() => {
-
+const itemTag = computed(() => {
+  return c.carouselInfo.item.value.tag
 })
 
-const showArrows = computed(() => {
-  return true
+const description = computed(() => {
+  return c.carouselInfo.item.value.description
 })
-const media = computed(() => {
-  return {
-    hasMedia: true,
-    urls: {
-      full: 'https://picsum.photos/510/300?random',
-      tn: 'https://picsum.photos/510/300?random'
-    }
-  }
+
+const urls = computed(() => {
+  return c.carouselInfo.media.value.urls
 })
+
 const text = computed(() => {
   return "Text"
 })
-const header = computed(() => {
-  return "Header"
+const carouselHeader = computed(() => {
+  return info.value.carouselHeader
 })
 
-function closeLightBox() {
-  console.log(`closeLightbox`)
+function closeCarousel() {
+  console.log(`closeCarousel`)
+  c.close()
 }
 
 </script>

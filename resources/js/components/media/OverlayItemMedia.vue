@@ -15,7 +15,7 @@ const props = defineProps<{
 }>()
 
 const tagText = computed(() => {
-  return props.item.tag
+  return props.item.item.tag
 })
 const showLightBoxOption = computed(() => {
   return true

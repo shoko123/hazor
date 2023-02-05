@@ -1,7 +1,7 @@
 <template>
   <v-hover v-slot="{ isHovering, props }">
     <v-card v-bind="props" :color="isHovering ? 'blue' : undefined">
-      <v-img v-if="itemHasUrls" :src="item.urls.full" :lazy-src="item.urls.tn" contain aspect-ratio="1"
+      <v-img :src="item.media.urls.full" :lazy-src="item.media.urls.tn" contain aspect-ratio="1"
         class="grey lighten-2">
         <v-btn class="text-subtitle-1 font-weight-medium black--text" color="grey">{{ tagText }}</v-btn>
         <v-card class="mx-auto" color="transparent" flat>
@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts" setup >
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { TCollectionName, IMediaItem } from '../../types/collectionTypes'
@@ -45,24 +45,28 @@ const props = defineProps<{
   size?: number
 }>()
 
+// onMounted(() => {
+//   console.log(`MediaSquare.onMounted props: ${JSON.stringify(props, null, 2)}`)
+// })
+
 const myProps = computed(() => {
   return props
 })
 
 //Runtime verification that we indeed have IMediaItem (and not IChipItem or ITableItem)
 const itemHasUrls = computed(() => {
-  return typeof props.item.urls === 'object'
+  return typeof props.item.media.urls === 'object'
 })
 
 const show = computed(() => {
   return true
 })
 const tagText = computed(() => {
-  return props.item.tag
+  return props.item.item.tag
 })
 
 const overlayText = computed(() => {
-  return props.item.description
+  return props.item.item.description
 })
 
 const overlay = computed(() => {

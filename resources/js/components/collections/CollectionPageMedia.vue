@@ -1,6 +1,6 @@
 <template>
   <v-row wrap>
-     <v-col v-for="(item, index) in page" :key="item.id" cols="2">
+     <v-col v-for="(item, index) in page" :key="index" cols="2">
       <MediaSquare
         v-bind="{
           source: source,

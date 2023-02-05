@@ -22,7 +22,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
     abstract function init(): array;
     abstract function getIdFromUrlId(string $url_id): int;
     abstract function getUrlIdFromId(int $id): string;
-    
+
     public function __construct($eloquent_model_name = null)
     {
         $this->eloquent_model_name = $eloquent_model_name;
@@ -63,10 +63,29 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         }
         return $items;
     }
+
     public function show($id)
     {
         $item = self::findOrFail($id);
         return $item;
+    }
+
+    public function showCarouselItem($id)
+    {
+        $builder = $this->with(
+            'media',
+        )->select('description');
+
+        $item = $builder->findOrFail($id);
+        $media1 = $item->media;
+        unset($item->media);
+     
+        return [
+            "id" => $id,
+            "url_id" => $this->getUrlIdFromId($id),
+            "description" => $item->description,
+            "media1" => $media1,
+        ];
     }
 
     public function firstUrlId()

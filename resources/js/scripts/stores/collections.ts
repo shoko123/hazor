@@ -2,8 +2,11 @@
 //handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed, registerRuntimeCompiler } from 'vue'
-import { TCollection, TCollectionName, TElement, TItemsPerPage, IPage, IPageItem, TView, TArrayItem, TCollectionMeta, TSetPage, IMediaItem, ITableItem } from '../../types/collectionTypes'
+import { TCollection, TCollectionName, TElement, TItemsPerPage, IPage, IPageItem, TView, TArrayItem, TCollectionMeta, TSetPage, IMediaItem, ITableItem, IChipItem } from '../../types/collectionTypes'
+import { TMediaItem } from '../../types/mediaTypes'
+
 import { TModule } from '../../types/routesTypes'
+
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useMediaStore } from './media'
@@ -166,17 +169,22 @@ export const useCollectionsStore = defineStore('collections', () => {
     }
 
     function savePage(name: TCollectionName, page: IPage[], view: TView, module: TModule): void {
-        function getUrls(urls: { full: string, tn: string } | null | undefined): object | null {
-            if (urls === null) {
-
+        function getMedia(urls: { full: string, tn: string } | null | undefined): TMediaItem {
+            if (urls === null || urls === undefined) {
                 return {
-                    full: `${bucketUrl}app/filler/${module}Filler.jpg`,
-                    tn: `${bucketUrl}app/filler/${module}Filler-tn.jpg`
+                    hasMedia: false,
+                    urls: {
+                        full: `${bucketUrl}app/filler/${module}Filler.jpg`,
+                        tn: `${bucketUrl}app/filler/${module}Filler-tn.jpg`
+                    }
                 }
             } else {
                 return {
-                    full: `${bucketUrl}db/${urls?.full}`,
-                    tn: `${bucketUrl}db/${urls?.tn}`
+                    hasMedia: true,
+                    urls: {
+                        full: `${bucketUrl}db/${urls?.full}`,
+                        tn: `${bucketUrl}db/${urls?.tn}`
+                    }
                 }
             }
         }
@@ -187,19 +195,27 @@ export const useCollectionsStore = defineStore('collections', () => {
 
         switch (view) {
             case 'Media':
-                toSave = page.map(x => { return { id: x.id, tag: x.url_id, description: x.description, hasMedia: x.primaryMedia !== null, urls: getUrls(x.primaryMedia) } })
+
+                toSave = page.map(x => {
+                    const media1 = getMedia(x.primaryMedia)
+                    const item = { id: x.id, tag: x.url_id, description: x.description }
+                    return { item, media: media1 }
+                })
+                pageRef.value = <IMediaItem[]>toSave
                 break;
 
             case 'Chips':
                 toSave = page.map(x => { return { id: x.id, tag: x.url_id } })
+                pageRef.value = <IChipItem[]>toSave
                 break;
 
             case 'Table':
                 toSave = page.map(x => { return { id: x.id, tag: x.url_id, description: x.description } })
+                pageRef.value = <ITableItem[]>toSave
                 break;
         }
         //console.log(`Saving page: ${JSON.stringify(toSave, null, 2)}`)
-        pageRef.value = toSave
+        //pageRef.value = <IMediaItem[]>toSave
     }
 
     async function toggleCollectionView(name: TCollectionName) {
@@ -237,6 +253,18 @@ export const useCollectionsStore = defineStore('collections', () => {
     function setItemIndexInMainCollection(index: number) {
         //console.log(`setItemIndexInMainCollection to ${index}`)
         main.value.itemIndex = index
+    }
+
+    function itemIdsByIndex(name: TCollectionName, index: number) {
+        //console.log(`setItemIndexInMainCollection to ${index}`)
+        switch (name) {
+            case 'main':
+                return mainArray.value[index]
+            case 'related':
+                return relatedArray.value[index]
+            case 'media':
+                return mediaArray.value[index]
+        }
     }
 
     function nextUrlId(isRight: boolean) {
@@ -302,6 +330,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         mainArray,
         mainPageArray,
         itemsPerPage,
+        itemIdsByIndex,
         setItemsPerPage,
         collectionMeta,
         setArray,

@@ -37,10 +37,19 @@ class ModelController extends Controller
     public function show(Request $r, DigModelInterface $m)
     {
         $id = $m->getIdFromUrlId($r["url_id"]);
-        
+        $item = (object)[];
+        switch ($r["level"]) {
+            case 0:
+                $item = $m->show($id);
+                break;
+            case 1:
+                $item = $m->showCarouselItem($id);
+                break;
+        }
+
         return response()->json([
             "msg" => "ModelControler.show()",
-            "item" => $m->show($id)
+            "item" => $item
         ], 200);
     }
     public function destroy($id)

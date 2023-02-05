@@ -15,6 +15,7 @@ interface DigModelInterface
     public function index($queryParams);
     public function page($ids, $view): Collection;//view: "Media" | "Table"
     public function show(int $id);
+    public function showCarouselItem(int $id);
     public function firstUrlId();
 
     public function getIdFromUrlId(string $s) : int;

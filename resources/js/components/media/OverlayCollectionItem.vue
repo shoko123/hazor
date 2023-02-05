@@ -17,7 +17,7 @@ import { TCollectionName, IMediaItem } from '../../types/collectionTypes'
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
-import { useCarouselStore } from '../../scripts/stores/modals/carousel';
+import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 
 const { getRouteInfo } = useRoutesMainStore()
 const router = useRouter()
@@ -35,22 +35,23 @@ onMounted(() => {
 const { open } = useCarouselStore()
 
 const text = computed(() => {
-  if (props.item.description === null) {
+  if (props.item.item.description === null) {
     return "";
   } else {
-    return props.item.description.length < 101 ? props.item.description : props.item.description.substr(0, 100) + "...";
+    return props.item.item.description.length < 101 ? props.item.item.description : props.item.item.description.substr(0, 100) + "...";
   }
 })
 
 function openModalCarousel() {
   console.log(`Open carousel clicked .....`)
-  open(props.source, props.itemIndex)
+  let routeInfo = getRouteInfo()
+  open(props.source, props.itemIndex, routeInfo.value.module, )
 }
 
 function goTo(item: IMediaItem) {
   console.log(`goto item: ${JSON.stringify(item, null, 2)}`)
   let routeInfo = getRouteInfo()
-  router.push({ name: 'show', params: { module: routeInfo.value.url_module, url_id: item.id } })
+  router.push({ name: 'show', params: { module: routeInfo.value.url_module, url_id: item.item.id } })
 }
 
 

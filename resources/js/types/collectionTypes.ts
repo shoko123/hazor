@@ -33,11 +33,15 @@ interface IChipItem {
 }
 
 interface IMediaItem {
-        id: number
-        tag: string,
-        description: string
-        hasMedia: boolean,
-        urls: { full: string, tn: string }
+        item: {
+                id: number
+                tag: string,
+                description: string
+        },
+        media: {
+                hasMedia: boolean,
+                urls: { full: string, tn: string }
+        }
 }
 
 interface ITableItem {

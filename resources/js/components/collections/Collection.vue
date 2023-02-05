@@ -1,16 +1,12 @@
 <template>
   <v-card class="elevation-12">
-    <template v-slot:title density="compact">
-      <v-toolbar id="collection" density="compact">
-        <v-toolbar-title>{{ header }}</v-toolbar-title>
-        <v-pagination v-model="page" :length="paginator.pages" :total-visible="16">
-        </v-pagination>
-        <!-- <v-spacer></v-spacer> -->
-        <v-btn size="small" variant="outlined" @click="toggleDisplayOption()">view: {{ displayOption }} </v-btn>
-
-      </v-toolbar>
-    </template>
-
+    <v-toolbar id="collection" density="compact">
+      <v-toolbar-title>{{ header }}</v-toolbar-title>
+      <v-pagination v-model="page" :length="paginator.pages" :total-visible="16">
+      </v-pagination>
+      <!-- <v-spacer></v-spacer> -->
+      <v-btn size="small" variant="outlined" @click="toggleDisplayOption()">view: {{ displayOption }} </v-btn>
+    </v-toolbar>
     <v-card-text>
       <v-container fluid class="ma-0 pa-0">
         <component :is="collectionPage" :source=props.source :pageNoB1="meta.pageNoB1" />
@@ -18,7 +14,6 @@
     </v-card-text>
   </v-card>
 </template>
-
 
 <script lang="ts" setup >
 
@@ -56,8 +51,8 @@ const header = computed(() => {
 
 const paginator = computed(() => {
   return {
-    show: meta.value.noOfPages > 1, 
-    page: meta.value.pageNoB1, 
+    show: meta.value.noOfPages > 1,
+    page: meta.value.pageNoB1,
     pages: meta.value.noOfPages
   }
 })
