@@ -2,7 +2,7 @@
 //handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed, registerRuntimeCompiler } from 'vue'
-import { TCollection, TCollectionName, TElement, TItemsPerPage, IPage, IPageItem, TView, TArrayItem, TCollectionMeta, TSetPage, IMediaItem, ITableItem, IChipItem } from '../../types/collectionTypes'
+import { TCollection, TCollectionName, TElement, TItemsPerPage, TDBPage, TPageItem, TView, TArrayItem, TCollectionMeta, TSetPage, TPageItemMedia, TPageItemTable, TPageItemChip } from '../../types/collectionTypes'
 import { TMediaItem } from '../../types/mediaTypes'
 
 import { TModule } from '../../types/routesTypes'
@@ -57,9 +57,9 @@ export const useCollectionsStore = defineStore('collections', () => {
     let mediaArray = ref<TArrayItem[]>([])
     let relatedArray = ref<TArrayItem[]>([])
 
-    let mainPageArray = ref<IPageItem[]>([])
-    let relatedPageArray = ref<IPageItem[]>([])
-    let mediaPageArray = ref<IPageItem[]>([])
+    let mainPageArray = ref<TPageItem[]>([])
+    let relatedPageArray = ref<TPageItem[]>([])
+    let mediaPageArray = ref<TPageItem[]>([])
 
     function getPageArray(source: TCollectionName) {
         switch (source) {
@@ -168,7 +168,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         return true
     }
 
-    function savePage(name: TCollectionName, page: IPage[], view: TView, module: TModule): void {
+    function savePage(name: TCollectionName, page: TDBPage[], view: TView, module: TModule): void {
         function getMedia(urls: { full: string, tn: string } | null | undefined): TMediaItem {
             if (urls === null || urls === undefined) {
                 return {
@@ -198,24 +198,24 @@ export const useCollectionsStore = defineStore('collections', () => {
 
                 toSave = page.map(x => {
                     const media1 = getMedia(x.primaryMedia)
-                    const item = { id: x.id, tag: x.url_id, description: x.description }
+                    const item = { id: x.id, url_id: x.url_id, tag: x.url_id, description: x.description }
                     return { item, media: media1 }
                 })
-                pageRef.value = <IMediaItem[]>toSave
+                pageRef.value = <TPageItemMedia[]>toSave
                 break;
 
             case 'Chips':
-                toSave = page.map(x => { return { id: x.id, tag: x.url_id } })
-                pageRef.value = <IChipItem[]>toSave
+                toSave = page.map(x => { return { id: x.id, url_id: x.url_id, tag: x.url_id } })
+                pageRef.value = <TPageItemChip[]>toSave
                 break;
 
             case 'Table':
-                toSave = page.map(x => { return { id: x.id, tag: x.url_id, description: x.description } })
-                pageRef.value = <ITableItem[]>toSave
+                toSave = page.map(x => { return { id: x.id, url_id: x.url_id,  tag: x.url_id,description: x.description } })
+                pageRef.value = <TPageItemTable[]>toSave
                 break;
         }
         //console.log(`Saving page: ${JSON.stringify(toSave, null, 2)}`)
-        //pageRef.value = <IMediaItem[]>toSave
+        //pageRef.value = <TPageItemMedia[]>toSave
     }
 
     async function toggleCollectionView(name: TCollectionName) {

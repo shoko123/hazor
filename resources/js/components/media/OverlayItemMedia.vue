@@ -5,13 +5,13 @@
 </template>  
 
 <script lang="ts" setup >
-import { TCollectionName, IMediaItem } from '../../types/collectionTypes'
+import { TCollectionName, TPageItemMedia } from '../../types/collectionTypes'
 import { computed } from 'vue'
 
 const props = defineProps<{
   source: TCollectionName, 
   caller: string, 
-  item: IMediaItem
+  item: TPageItemMedia
 }>()
 
 const tagText = computed(() => {

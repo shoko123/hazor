@@ -19,7 +19,7 @@ type TSetPage = {
 type TArrayItem = { id: number, url_id: string }
 
 //raw data received from DB (from 'main, page('media') & page('table'))
-interface IPage {
+type TDBPage = {
         id: number,
         url_id: string,
         description?: string,
@@ -27,14 +27,16 @@ interface IPage {
 }
 
 //conversions ready for consumption for 'Media', 'Chip', and 'Table' views
-interface IChipItem {
-        id: number
+type TPageItemChip = {
+        id: number,
+        url_id: string,
         tag: string,
 }
 
-interface IMediaItem {
+type TPageItemMedia = {
         item: {
-                id: number
+                id: number,
+                url_id: string,
                 tag: string,
                 description: string
         },
@@ -44,13 +46,15 @@ interface IMediaItem {
         }
 }
 
-interface ITableItem {
+type TPageItemTable = {
         id: number,
+        url_id: string,        
         tag: string
         description: string
 }
+
 //union of the above
-type IPageItem = IMediaItem | IChipItem | ITableItem
+type TPageItem = TPageItemMedia | TPageItemChip | TPageItemTable
 
 
 //all the data kept in a specific collection
@@ -77,4 +81,4 @@ type TCollectionMeta = {
 }
 
 
-export { TView, TCollection, TElement, TCollectionName, IPage, TItemsPerPage, TCollectionMeta, IPageItem, TArrayItem, TSetPage, IChipItem, IMediaItem, ITableItem }
+export { TView, TCollection, TElement, TCollectionName, TDBPage, TItemsPerPage, TCollectionMeta, TPageItem, TArrayItem, TSetPage, TPageItemChip, TPageItemMedia, TPageItemTable }

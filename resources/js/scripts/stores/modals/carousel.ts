@@ -16,13 +16,15 @@ export const useCarouselStore = defineStore('carousel', () => {
   const { send } = useXhrStore()
   const { showSpinner } = useNotificationsStore()
   const { current } = storeToRefs(useRoutesMainStore())
+
+
   let isOpen = ref<boolean>(false)
 
   let collectionName = ref<TCollectionName>('main')
   let carouselIndex = ref<number>(-1)
   let carouselModule = ref<string>("")
-  let item = ref({ tag: "", description: "", id: 5, url_id: "url_id:6" })
-  const media = ref({
+  let currentItem = ref({ tag: "my tag", description: "description", id: 5, url_id: "url_id:6" })
+  const currentMedia = ref({
     hasMedia: true,
     urls: {
       full: 'https://picsum.photos/510/300?random',
@@ -35,15 +37,18 @@ export const useCarouselStore = defineStore('carousel', () => {
 
   })
 
+
+
   const carouselInfo = computed(() => {
     return {
       isOpen: isOpen.value,
       carouselHeader: carouselHeader.value,
-      length: 100,
+      length: 0,
       indexB1: carouselIndex.value + 1,
-      item,
-      media,
+      item: currentItem.value,
+      media: currentMedia.value,
     }
+
   })
 
   async function open(source: TCollectionName, index: number, module: TModule) {

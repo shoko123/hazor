@@ -13,7 +13,7 @@
     
 
 <script lang="ts" setup >
-import { TCollectionName, IMediaItem } from '../../types/collectionTypes'
+import { TCollectionName, TPageItemMedia } from '../../types/collectionTypes'
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
@@ -24,7 +24,7 @@ const router = useRouter()
 const props = defineProps<{
   source: TCollectionName,
   itemIndex: number,
-  item: IMediaItem,
+  item: TPageItemMedia,
   pageNoB1?: number,
 }>()
 
@@ -48,10 +48,10 @@ function openModalCarousel() {
   open(props.source, props.itemIndex, routeInfo.value.module, )
 }
 
-function goTo(item: IMediaItem) {
+function goTo(item: TPageItemMedia) {
   console.log(`goto item: ${JSON.stringify(item, null, 2)}`)
   let routeInfo = getRouteInfo()
-  router.push({ name: 'show', params: { module: routeInfo.value.url_module, url_id: item.item.id } })
+  router.push({ name: 'show', params: { module: routeInfo.value.url_module, url_id: item.item.url_id } })
 }
 
 

@@ -64,15 +64,15 @@ async function nextClicked(next: boolean) {
 }
 
 const itemTag = computed(() => {
-  return c.carouselInfo.item.value.tag
+  return c.carouselInfo.item.tag
 })
 
 const description = computed(() => {
-  return c.carouselInfo.item.value.description
+  return c.carouselInfo.item.description
 })
 
 const urls = computed(() => {
-  return c.carouselInfo.media.value.urls
+  return c.carouselInfo.media.urls
 })
 
 const text = computed(() => {

@@ -42,7 +42,7 @@ class Fauna extends FindModel
         return 'CONCAT(label, ", ", taxon, ", ", element) AS description'; 
     }
     function buildSqlUrlId() : string {
-        return 'basket AS url_id';
+        return 'id AS url_id';
     }
     
     function getIdFromUrlId(string $url_id) : int {

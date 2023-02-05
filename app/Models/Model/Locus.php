@@ -49,7 +49,7 @@ class Locus extends DigModel
     }
 
     function getIdFromUrlId(string $url_id) : int {
-        return $url_id;;
+        return $url_id;
     }
 
     function getUrlIdFromId(int $id) : string {

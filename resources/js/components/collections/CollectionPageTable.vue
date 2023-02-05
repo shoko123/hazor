@@ -29,7 +29,7 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-import { TCollectionName, ITableItem } from '../../types/collectionTypes'
+import { TCollectionName, TPageItemTable } from '../../types/collectionTypes'
 import { useCollectionsStore } from '../../scripts/stores/collections';
 
 const props = defineProps<{
@@ -40,7 +40,7 @@ const props = defineProps<{
 let { getPageArray } = useCollectionsStore()
 
 const page = computed(() => {
-  return getPageArray(props.source).value as ITableItem[]
+  return getPageArray(props.source).value as TPageItemTable[]
 })
 
 </script>
