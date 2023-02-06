@@ -1,14 +1,16 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-
-import { TCollectionName, } from '../../../types/collectionTypes'
-
+import { TCollectionName, TPageItemMedia, } from '../../../types/collectionTypes'
+import { TDbShow1 } from '@/js/types/dbResponseTypes'
 import { useCollectionsStore } from '../collections'
 import { useXhrStore } from '../xhr'
-import { useNotificationsStore } from '../notifications';
+import { useNotificationsStore } from '../notifications'
+import { useMediaStore } from '../media'
 import { useRoutesMainStore } from '../routes/routesMain'
+import { TCarouselDetails } from '@/js/types/modalTypes'
 import { TModule } from '@/js/types/routesTypes'
+import { TMediaItem } from '@/js/types/mediaTypes'
 
 export const useCarouselStore = defineStore('carousel', () => {
 
@@ -16,61 +18,67 @@ export const useCarouselStore = defineStore('carousel', () => {
   const { send } = useXhrStore()
   const { showSpinner } = useNotificationsStore()
   const { current } = storeToRefs(useRoutesMainStore())
-
+  const { getBucketUrl, buildMedia } = useMediaStore()
 
   let isOpen = ref<boolean>(false)
 
   let collectionName = ref<TCollectionName>('main')
-  let carouselIndex = ref<number>(-1)
-  let carouselModule = ref<string>("")
-  let currentItem = ref({ tag: "my tag", description: "description", id: 5, url_id: "url_id:6" })
-  const currentMedia = ref({
-    hasMedia: true,
-    urls: {
-      full: 'https://picsum.photos/510/300?random',
-      tn: 'https://picsum.photos/510/300?random'
-    },
-  })
+  let carouselItemIndex = ref<number>(-1)
+  let carouselItemModule = ref<TModule>('Home')
+  let carouselItem = ref<TPageItemMedia>({ item: { id: -1, url_id: "", tag: "", description: "" }, media: { hasMedia: false, urls: { full: "", tn: "" } } })
 
   const carouselHeader = computed(() => {
-    return `Carousel Header ${carouselModule.value} [${carouselIndex.value + 1}/${c.collectionMeta(collectionName.value).length}]`
+    return `Carousel Header ${carouselItemModule.value} [${carouselItemIndex.value + 1}/${c.collectionMeta(collectionName.value).length}]`
 
   })
 
-
-
-  const carouselInfo = computed(() => {
+  const carouselDetails = computed<TCarouselDetails | undefined>(() => {
+    if (!isOpen.value) { return undefined }
     return {
-      isOpen: isOpen.value,
       carouselHeader: carouselHeader.value,
-      length: 0,
-      indexB1: carouselIndex.value + 1,
-      item: currentItem.value,
-      media: currentMedia.value,
+      itemIndexB1: carouselItemIndex.value + 1,
+      itemTag: "my tag",
+      itemDescription: carouselItem.value.item.description,
+      itemUrlId: carouselItem.value.item.url_id,
+      itemModule: carouselItemModule.value,
+      media: carouselItem.value.media,
     }
 
   })
 
-  async function open(source: TCollectionName, index: number, module: TModule) {
+  async function open(source: TCollectionName, index: number, module: TModule, item: TPageItemMedia) {
     collectionName.value = source
-    carouselIndex.value = index
-    carouselModule.value = module
-    const ids = c.itemIdsByIndex(source, index)
-    console.log(`carousel.open() source: ${source} index: ${index} module: ${module} itemIds: ${JSON.stringify(ids, null, 2)}`)
+    carouselItemIndex.value = index
+    carouselItemModule.value = module
+    carouselItem.value = item
+    //const ids = c.itemIdsByIndex(source, index)
+    console.log(`carousel.open() source: ${source} index: ${index} module: ${module} items: ${JSON.stringify(item, null, 2)}`)
 
     isOpen.value = true
   }
 
+  function nextIndex(isRight: boolean) {
+    let newIndex, meta = c.collectionMeta('main')
+
+    if (isRight) {
+      newIndex = (carouselItemIndex.value === meta.length - 1) ? 0 : carouselItemIndex.value + 1
+    } else {
+      newIndex = (carouselItemIndex.value === 0) ? meta.length - 1 : carouselItemIndex.value - 1
+    }
+    return newIndex
+  }
   async function next(isRight: boolean) {
-    console.log(`next(${isRight ? "Right" : "Left"})`)
+    // console.log(`next(${isRight ? "Right" : "Left"})`)    
+    const newIndex = nextIndex(isRight)
+    const ids = c.itemIdsByIndex('main', newIndex)
+    showSpinner(`Loading next item...`)
 
-    showSpinner(`Loading...`)
-
-    await send('model/show', 'post', { model: current.value.url_module, url_id: current.value.url_id, level: 0 })
+    await send('model/show', 'post', { model: current.value.module, url_id: ids.url_id, level: 1 })
       .then(res => {
-        console.log(`show() returned (success)`)
-        console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
-
+        console.log(`show(carouselItem) returned (success). res: ${JSON.stringify(res.data, null, 2)}`)
+        let resp = res.data.item as TDbShow1
+        carouselItemIndex.value = newIndex
+        carouselItem.value = { item: { id: resp.id, url_id: resp.url_id, tag: resp.url_id, description: resp.description }, media: buildMedia(resp.media, current.value.module) }
         return true
       })
       .catch(err => {
@@ -84,5 +92,5 @@ export const useCarouselStore = defineStore('carousel', () => {
   function close() {
     isOpen.value = false
   }
-  return { carouselInfo, open, close, next }
+  return { carouselDetails, isOpen, open, close, next, carouselItem }
 })

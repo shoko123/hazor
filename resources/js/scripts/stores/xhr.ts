@@ -16,7 +16,7 @@ export const useXhrStore = defineStore('xhr', () => {
     console.log(`xhr.send() endpoint: ${baseUrl.value + endpoint}`)
     return axios({
       url: baseUrl.value + endpoint,
-      method: method,
+      method,
       data: (typeof data === undefined) ? null : data
     })
       .then(res => {

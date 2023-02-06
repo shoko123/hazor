@@ -67,7 +67,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'item.clear':
-          c.itemClear()
           i.fields = undefined
           break
 
@@ -182,7 +181,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       await c.loadPage('main', 1, 0, r.to.module)
     } else {
       console.log(`Loading page according to itemIndex`)
-      await c.loadPageByItemIndex(r.to.module)
+      await c.loadPageByItemIndex(r.to.module, i.getItemIndex)
     }
   }
 
@@ -194,14 +193,16 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   
   function itemSetIndexInCollection() {
     //console.log(`prepare.itemSetIndexInCollection()`)
-    let itemIndex = c.getItemIndexInMainCollection(i.id)
+    let itemIndex = c.itemIndexById(i.id)
     if (itemIndex === -1) {
       console.log(`Item not found in mainCollection - set itemIndex to -1, clear page`)
-      c.main.itemIndex = -1
+      //c.main.itemIndex = -1
       c.mainPageArray = []
+      i.setItemIndex(-1)
     } else {
       //console.log(`Item found in mainCollection - setting itemIndex`)
-      c.main.itemIndex = itemIndex
+      //c.main.itemIndex = itemIndex
+      i.setItemIndex(itemIndex)
     }
   }
 

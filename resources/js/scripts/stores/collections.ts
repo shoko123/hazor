@@ -2,11 +2,11 @@
 //handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed, registerRuntimeCompiler } from 'vue'
-import { TCollection, TCollectionName, TElement, TItemsPerPage, TDBPage, TPageItem, TView, TArrayItem, TCollectionMeta, TSetPage, TPageItemMedia, TPageItemTable, TPageItemChip } from '../../types/collectionTypes'
+import { TCollectionMeta, TCollectionName, TElement, TItemsPerPage, TDBPage, TPageItem, TView, TArrayItem, TGetCollectionMeta, TSetPage, TPageItemMedia, TPageItemTable, TPageItemChip } from '../../types/collectionTypes'
 import { TMediaItem } from '../../types/mediaTypes'
 
 import { TModule } from '../../types/routesTypes'
-
+import { TDbPrimaryMedia } from '@/js/types/dbResponseTypes'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useMediaStore } from './media'
@@ -15,7 +15,7 @@ import { useNotificationsStore } from './notifications'
 export const useCollectionsStore = defineStore('collections', () => {
     const { send } = useXhrStore()
     const { showSnackbar } = useNotificationsStore()
-    const { getBucketUrl } = useMediaStore()
+    const { buildMedia } = useMediaStore()
 
     const itemsPerPage = ref<TItemsPerPage>({
         Media: 0,
@@ -23,34 +23,25 @@ export const useCollectionsStore = defineStore('collections', () => {
         Table: 0,
     })
 
-    let main = ref<TCollection>({
+    let main = ref<TCollectionMeta>({
         length: 0,
-        index: 0,
         pageNoB1: 1,
         views: ["Media", "Chips", "Table"] as TView[],
         viewIndex: 0,
-        itemIndex: -1,
-        ready: { array: false, index: false, page: false },
     })
 
-    const media = ref<TCollection>({
+    const media = ref<TCollectionMeta>({
         length: 0,
-        index: 0,
         pageNoB1: 1,
         views: ["Media"] as TView[],
         viewIndex: 0,
-        itemIndex: -1,
-        ready: { array: false, index: false, page: false }
     })
 
-    const related = ref<TCollection>({
+    const related = ref<TCollectionMeta>({
         length: 0,
-        index: 0,
         pageNoB1: 1,
         views: ["Media", "Chips"] as TView[],
         viewIndex: 0,
-        itemIndex: -1,
-        ready: { array: false, index: false, page: false }
     })
 
     let mainArray = ref<TArrayItem[]>([])
@@ -94,7 +85,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         }
     }
 
-    function collectionMeta(name: TCollectionName): TCollectionMeta {
+    function collectionMeta(name: TCollectionName): TGetCollectionMeta {
         //console.log(`collectionMeta("${name}")`)
         let meta = getCollectionMeta(name)
         let ipp = itemsPerPage.value[<TView>meta.value.views[meta.value.viewIndex]]
@@ -153,8 +144,8 @@ export const useCollectionsStore = defineStore('collections', () => {
                         return true
                     })
                     .catch(err => {
-                        showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
-                        console.log(`Navigation to new routes failed with err: ${JSON.stringify(err, null, 2)}`)
+                        showSnackbar(`loadPage failed - Navigation cancelled`)
+                        console.log(`loadPage failed. err: ${JSON.stringify(err, null, 2)}`)
                         return false
                     })
                     .finally(() => {
@@ -169,37 +160,16 @@ export const useCollectionsStore = defineStore('collections', () => {
     }
 
     function savePage(name: TCollectionName, page: TDBPage[], view: TView, module: TModule): void {
-        function getMedia(urls: { full: string, tn: string } | null | undefined): TMediaItem {
-            if (urls === null || urls === undefined) {
-                return {
-                    hasMedia: false,
-                    urls: {
-                        full: `${bucketUrl}app/filler/${module}Filler.jpg`,
-                        tn: `${bucketUrl}app/filler/${module}Filler-tn.jpg`
-                    }
-                }
-            } else {
-                return {
-                    hasMedia: true,
-                    urls: {
-                        full: `${bucketUrl}db/${urls?.full}`,
-                        tn: `${bucketUrl}db/${urls?.tn}`
-                    }
-                }
-            }
-        }
-
-        let bucketUrl = getBucketUrl()
         let toSave = []
         let pageRef = getPageArray(name)
 
         switch (view) {
             case 'Media':
-
                 toSave = page.map(x => {
-                    const media1 = getMedia(x.primaryMedia)
+                    //const media1 = getMedia(x.primaryMedia)
+                    const media = buildMedia(<TDbPrimaryMedia>x.primaryMedia, module)
                     const item = { id: x.id, url_id: x.url_id, tag: x.url_id, description: x.description }
-                    return { item, media: media1 }
+                    return { item, media: media }
                 })
                 pageRef.value = <TPageItemMedia[]>toSave
                 break;
@@ -215,7 +185,6 @@ export const useCollectionsStore = defineStore('collections', () => {
                 break;
         }
         //console.log(`Saving page: ${JSON.stringify(toSave, null, 2)}`)
-        //pageRef.value = <TPageItemMedia[]>toSave
     }
 
     async function toggleCollectionView(name: TCollectionName) {
@@ -232,27 +201,18 @@ export const useCollectionsStore = defineStore('collections', () => {
         itemsPerPage.value = ipp
     }
 
-    function itemClear() {
-        main.value.itemIndex = -1
-    }
-
-    async function loadPageByItemIndex(module: TModule) {
+    async function loadPageByItemIndex(module: TModule, index: number) {
         let ipp = itemsPerPage.value[main.value.views[main.value.viewIndex]]
-        let pageNoB0 = Math.floor(main.value.itemIndex / ipp)
+        let pageNoB0 = Math.floor(index / ipp)
         console.log(`ipp: ${ipp}) pageNoB1: ${pageNoB0 + 1} module: ${module}`)
         await loadPage('main', pageNoB0 + 1, main.value.viewIndex, module)
     }
 
-    function getItemIndexInMainCollection(id: number) {
+    function itemIndexById(id: number) {
         let index = mainArray.value.findIndex(x => x.id === id)
-        //console.log(`getItemIndexInMainCollection(id:${id}) index: ${index}`)
+        //console.log(`itemIndexById(id:${id}) index: ${index}`)
         return index
 
-    }
-
-    function setItemIndexInMainCollection(index: number) {
-        //console.log(`setItemIndexInMainCollection to ${index}`)
-        main.value.itemIndex = index
     }
 
     function itemIdsByIndex(name: TCollectionName, index: number) {
@@ -267,38 +227,20 @@ export const useCollectionsStore = defineStore('collections', () => {
         }
     }
 
-    function nextUrlId(isRight: boolean) {
-        let newIndex
-        if (isRight) {
-            newIndex = (main.value.itemIndex === main.value.length - 1) ? 0 : main.value.itemIndex + 1
-        } else {
-            newIndex = (main.value.itemIndex === 0) ? main.value.length - 1 : main.value.itemIndex - 1
-        }
-        //console.log(`nextUrlId: ${mainArray.value[newIndex].url_id}`)
-        //TODO change id to url_id
-        return mainArray.value[newIndex].id
-    }
-
     function clearCollections() {
         mainArray.value = []
         mainPageArray.value = []
-        main.value.index = 0
         main.value.viewIndex = 0
-        main.value.itemIndex = -1
         main.value.pageNoB1 = 1
 
         mediaArray.value = []
         mediaPageArray.value = []
-        media.value.index = 0
         media.value.viewIndex = 0
-        media.value.itemIndex = -1
         media.value.pageNoB1 = 1
 
         relatedArray.value = []
         relatedPageArray.value = []
-        related.value.index = 0
         related.value.viewIndex = 0
-        related.value.itemIndex = -1
         related.value.pageNoB1 = 1
     }
 
@@ -338,11 +280,8 @@ export const useCollectionsStore = defineStore('collections', () => {
         toggleCollectionView,
         clearCollections,
         getPageArray,
-        nextUrlId,
-        getItemIndexInMainCollection,
-        setItemIndexInMainCollection,
+        itemIndexById,
         loadPageByItemIndex,
-        itemClear,
         firstUrlId
     }
 })

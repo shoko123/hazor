@@ -7,17 +7,17 @@ type TModalOwner = 'Carousel' | 'Picker'
 
 
 export const useModalStore = defineStore('modal', () => {
-    const { carouselInfo } = storeToRefs(useCarouselStore())
-    const { pickerInfo } = storeToRefs(usePickerStore())
+    const c = useCarouselStore()
+    const p = usePickerStore()
 
     const modalOwner = computed((): TModalOwner | undefined => {
-        if (carouselInfo.value.isOpen) { return 'Carousel' }
-        if (pickerInfo.value.isOpen) { return 'Picker' }
+        if (c.isOpen) { return 'Carousel' }
+        if (p.isOpen) { return 'Picker' }
         return undefined
     })
 
     const isOpen = computed(() => {
-        return carouselInfo.value.isOpen || pickerInfo.value.isOpen
+        return c.isOpen || p.isOpen
     })
 
     return { isOpen, modalOwner }

@@ -1,4 +1,5 @@
 // collectionTypes.ts
+import { TDbPrimaryMedia } from '@/js/types/dbResponseTypes'
 
 type TView = 'Media' | 'Chips' | 'Table'
 type TCollectionName = 'main' | 'media' | 'related'
@@ -23,7 +24,7 @@ type TDBPage = {
         id: number,
         url_id: string,
         description?: string,
-        primaryMedia?: { full: string, tn: string } | null
+        primaryMedia?: TDbPrimaryMedia
 }
 
 //conversions ready for consumption for 'Media', 'Chip', and 'Table' views
@@ -58,17 +59,16 @@ type TPageItem = TPageItemMedia | TPageItemChip | TPageItemTable
 
 
 //all the data kept in a specific collection
-type TCollection = {
+type TCollectionMeta = {
         length: number,
-        index: number,
         pageNoB1: number,
         views: TView[],
         viewIndex: number,
-        itemIndex: number,
-        ready: { array: boolean, index: boolean, page: boolean }
+        //itemIndex: number,
+        //ready: { array: boolean, index: boolean, page: boolean }
 }
 
-type TCollectionMeta = {
+type TGetCollectionMeta = {
         views: string[],
         viewIndex: number,
         pageNoB1: number,
@@ -81,4 +81,4 @@ type TCollectionMeta = {
 }
 
 
-export { TView, TCollection, TElement, TCollectionName, TDBPage, TItemsPerPage, TCollectionMeta, TPageItem, TArrayItem, TSetPage, TPageItemChip, TPageItemMedia, TPageItemTable }
+export { TView, TCollectionMeta, TElement, TCollectionName, TDBPage, TItemsPerPage, TGetCollectionMeta, TPageItem, TArrayItem, TSetPage, TPageItemChip, TPageItemMedia, TPageItemTable }

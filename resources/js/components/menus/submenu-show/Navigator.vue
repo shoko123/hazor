@@ -1,10 +1,10 @@
 <template>
 
-  <v-btn @click="stepRight(false)" icon="mdi-arrow-left" color="primary"> </v-btn>
+  <v-btn @click="next(false)" icon="mdi-arrow-left" color="primary"> </v-btn>
 
   <Picker />
 
-  <v-btn @click="stepRight(true)" icon="mdi-arrow-right" color="primary"></v-btn>
+  <v-btn @click="next(true)" icon="mdi-arrow-right" color="primary"></v-btn>
 </template>
 
 <script lang="ts" setup>
@@ -14,6 +14,7 @@ import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
 import { useCollectionsStore } from '../../../scripts/stores/collections'
+import { useItemStore } from '../../../scripts/stores/item'
 import Picker from "./picker/Picker.vue"
 
 const { current } = storeToRefs(useRoutesMainStore())
@@ -49,8 +50,8 @@ const header = computed(() => {
 })
 
 
-function stepRight(isRight: boolean) {
-  let { nextUrlId } = useCollectionsStore()
+function next(isRight: boolean) {
+  let { nextUrlId } = useItemStore()
   let urlId = nextUrlId(isRight)
   console.log(`goTo ${urlId}`)
   router.push({ name: 'show', params: { module: current.value.url_module, url_id: urlId } })  

@@ -6,12 +6,11 @@ import { useModuleStore } from '../module'
 
 export const usePickerStore = defineStore('picker', () => {
 
-  let open = ref<boolean>(false)
+  let isOpen = ref<boolean>(false)
 
 
     const pickerInfo = computed(() => {
       return {
-        isOpen: open.value,
         header: "picker header",
        
       }
@@ -19,8 +18,8 @@ export const usePickerStore = defineStore('picker', () => {
 
 
   function yy(openLB: boolean)  {
-    open.value = openLB
+    isOpen.value = openLB
   }
  
-  return { pickerInfo, yy }
+  return { isOpen, pickerInfo, yy }
 })

@@ -36,16 +36,14 @@
 <script lang="ts" setup >
 
 import { computed } from 'vue'
+import { TCarouselDetails } from '@/js/types/modalTypes'
 import { useModalStore } from '../../scripts/stores/modals/modal'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 import { storeToRefs } from 'pinia'
 import { isBooleanAttr } from '@vue/shared'
+
 const m = useModalStore()
 const c = useCarouselStore()
-
-const info = computed(() => {
-  return c.carouselInfo
-})
 
 const isReady = computed(() => {
 
@@ -59,28 +57,32 @@ const categoryIndex = computed({
   }
 })
 
-async function nextClicked(next: boolean) {
-
-}
+const carouselDetails = computed(() => {
+  return c.carouselDetails as TCarouselDetails
+})
 
 const itemTag = computed(() => {
-  return c.carouselInfo.item.tag
+  return carouselDetails.value.itemTag
 })
 
 const description = computed(() => {
-  return c.carouselInfo.item.description
+  return carouselDetails.value.itemDescription
 })
 
 const urls = computed(() => {
-  return c.carouselInfo.media.urls
+  return carouselDetails.value.media.urls
 })
 
 const text = computed(() => {
   return "Text"
 })
 const carouselHeader = computed(() => {
-  return info.value.carouselHeader
+  return carouselDetails.value.carouselHeader
 })
+
+async function nextClicked(next: boolean) {
+  c.next(next)
+}
 
 function closeCarousel() {
   console.log(`closeCarousel`)

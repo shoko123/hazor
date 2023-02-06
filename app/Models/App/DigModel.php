@@ -72,19 +72,20 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
     public function showCarouselItem($id)
     {
+        $desc = $this->buildSqlDescription();
         $builder = $this->with(
             'media',
-        )->select('description');
+        )->selectRaw($desc);
 
         $item = $builder->findOrFail($id);
         $media1 = $item->media;
         unset($item->media);
-     
+
         return [
             "id" => $id,
             "url_id" => $this->getUrlIdFromId($id),
             "description" => $item->description,
-            "media1" => $media1,
+            "media" => null,
         ];
     }
 

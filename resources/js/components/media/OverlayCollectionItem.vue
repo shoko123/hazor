@@ -45,7 +45,7 @@ const text = computed(() => {
 function openModalCarousel() {
   console.log(`Open carousel clicked .....`)
   let routeInfo = getRouteInfo()
-  open(props.source, props.itemIndex, routeInfo.value.module, )
+  open(props.source, props.itemIndex, routeInfo.value.module, props.item)
 }
 
 function goTo(item: TPageItemMedia) {
