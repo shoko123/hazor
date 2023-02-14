@@ -67,6 +67,7 @@ export const useCarouselStore = defineStore('carousel', () => {
     }
     return newIndex
   }
+
   async function next(isRight: boolean) {
     // console.log(`next(${isRight ? "Right" : "Left"})`)    
     const newIndex = nextIndex(isRight)
@@ -89,8 +90,33 @@ export const useCarouselStore = defineStore('carousel', () => {
         showSpinner(false)
       })
   }
-  function close() {
+  async function close() {
+    //if current carouselItem is in currently loaded page - close, otherwise, load relevant page
+    if (!c.itemIsInPage(carouselItem.value.item.id)) {
+      const index = c.itemIndexById(carouselItem.value.item.id)
+      await c.loadPageByItemIndex(current.value.module, index)
+        .then(res => {
+          console.log(`carousel.close() loaded a new page`)
+          return true
+        })
+        .catch(err => {
+          console.log(`loadPage() failed`)
+          throw err
+        })
+        .finally(() => {
+          showSpinner(false)
+        })
+    } else {
+      console.log(`carousel.close() no need to load a new page`)
+    }
     isOpen.value = false
   }
-  return { carouselDetails, isOpen, open, close, next, carouselItem }
+  return {
+    carouselDetails,
+    isOpen,
+    carouselItem,
+    open,
+    close,
+    next,
+  }
 })

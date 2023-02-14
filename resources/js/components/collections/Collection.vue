@@ -1,6 +1,6 @@
 <template>
   <v-card class="elevation-12">
-    <v-toolbar id="collection" density="compact">
+    <v-toolbar id="collection" density="compact" :height="50">
       <v-toolbar-title>{{ header }}</v-toolbar-title>
       <v-pagination v-model="page" :length="paginator.pages" :total-visible="16">
       </v-pagination>

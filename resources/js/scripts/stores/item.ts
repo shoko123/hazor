@@ -8,7 +8,7 @@ import { useRoutesMainStore } from './routes/routesMain'
 export const useItemStore = defineStore('item', () => {
 
   const { getRouteInfo } = useRoutesMainStore()
-  const { collectionMeta, itemIdsByIndex } = useCollectionsStore()  
+  const { collectionMeta, itemIdsByIndex } = useCollectionsStore()
   let fields = ref<TItemMandatoryFields | undefined>(undefined)
   let ready = true
   const itemViewIndex = ref<number>(0)
@@ -45,15 +45,26 @@ export const useItemStore = defineStore('item', () => {
     let newIndex
     let meta = collectionMeta('main')
     if (isRight) {
-        newIndex = (itemIndex.value === meta.length - 1 ) ? 0 : itemIndex.value + 1
+      newIndex = (itemIndex.value === meta.length - 1) ? 0 : itemIndex.value + 1
     } else {
-        newIndex = (itemIndex.value === 0) ? meta.length - 1 : itemIndex.value - 1
+      newIndex = (itemIndex.value === 0) ? meta.length - 1 : itemIndex.value - 1
     }
-    
+
     //TODO change id to url_id
     const ids = itemIdsByIndex('main', newIndex)
     console.log(`nextUrlId: ${ids.url_id}`)
     return ids.url_id
-}
-  return { ready, fields, id, derived, getItemIndex, setItemIndex , nextUrlId, itemClear, getItemViewIndex, setItemViewIndex }
+  }
+  return {
+    ready,
+    fields,
+    id,
+    derived,
+    getItemIndex,
+    setItemIndex,
+    nextUrlId,
+    itemClear,
+    getItemViewIndex,
+    setItemViewIndex
+  }
 })

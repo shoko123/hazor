@@ -1,27 +1,63 @@
 <template>
-  {{  header  }}
-  <v-btn class="primary--text" large outlined v-for="(btn, index) in buttons" :key="index"
-    @click="btnClicked(btn.routeName)">{{ btn.text }}</v-btn>
+  <WelcomeButton />
+  <FilterButton />
+  <CollectionButton />
+
+  <v-spacer />
+
+  <Navigator />
+
+  <v-spacer />
+
+  <Modifiers />
+  
+  <v-spacer />
+
+  <v-menu>
+    <template v-slot:activator="{ props }">
+      <v-btn color="primary" v-bind="props">
+        <v-icon left dark>mdi-eye</v-icon>
+        {{ itemViewText }}
+      </v-btn>
+    </template>
+    <v-list>
+      <v-list-item v-for="(item, index) in displayOptions" :key="index" :value="index" @click="setItemViewIndex(index)">
+        <v-list-item-title>{{ item }}</v-list-item-title>
+      </v-list-item>
+    </v-list>
+  </v-menu>
 </template>
 
 <script lang="ts" setup>
+
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
-
 import { storeToRefs } from 'pinia'
-import { useMainStore } from '../../../scripts/stores/main'
-import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
+import { useItemStore } from '../../../scripts/stores/item'
+import { useModuleStore } from '../../../scripts/stores/module'
 
-const { current } = storeToRefs(useRoutesMainStore())
-const router = useRouter()
+import Navigator from './Navigator.vue'
+import Modifiers from './modifiers/Modifiers.vue'
+import WelcomeButton from '../lhs_buttons/WelcomeButton.vue'
+import FilterButton from '../lhs_buttons/FilterButton.vue'
+import CollectionButton from '../lhs_buttons/CollectionButton.vue'
+const { itemViews } = storeToRefs(useModuleStore())
 
-const buttons = [{ text: "show", routeName: "welcome" }, { text: "show", routeName: "filter" }]
+let is = useItemStore()
 
-const header = computed(() => {
-  return `I am the "Show" submenu`
+const displayOptions = computed(() => {
+  return itemViews.value
 })
 
-function btnClicked(routeName: string) {
-  router.push({ name: routeName, params: { module: current.value.url_module } })
+const itemViewIndex = computed(() => {
+  return is.getItemViewIndex
+})
+
+
+const itemViewText = computed(() => {
+  return itemViews.value.length === 0 ? '' : itemViews.value[itemViewIndex.value]
+})
+
+function setItemViewIndex(index: number) {
+  is.setItemViewIndex(index)
 }
 </script>

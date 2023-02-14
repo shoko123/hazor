@@ -1,6 +1,6 @@
 <template>
   <v-card class="elevation-12">
-    <v-card-title id="title" class="grey py-0 mb-4">Selected Tags</v-card-title>
+    <v-card-title id="title" class="grey py-0 mb-4">Selected Filters</v-card-title>
     <v-card-text>
       <div v-if="!trio.length">[ No filters selected ]</div>
       <v-list v-if="trio.length">

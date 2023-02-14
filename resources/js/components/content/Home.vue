@@ -20,6 +20,7 @@ const media = computed(() => {
   let c: Array<TMediaItem> = [];
   for (let i = 1; i <= 6; i++) {
     c.push({
+      hasMedia: true,
       urls: {
         full: `${bucketUrl}app/carousel/hazor${i}.jpg`,
         tn: `${bucketUrl}app/carousel/hazor${i}-tn.jpg`

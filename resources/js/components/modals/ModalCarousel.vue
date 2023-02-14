@@ -84,9 +84,9 @@ async function nextClicked(next: boolean) {
   c.next(next)
 }
 
-function closeCarousel() {
+async function closeCarousel() {
   console.log(`closeCarousel`)
-  c.close()
+  await c.close()
 }
 
 </script>

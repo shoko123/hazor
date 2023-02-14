@@ -3,15 +3,12 @@
     <template v-slot:title>
       TEST
     </template>
-
-    <v-card-text>
-      Carousel: {{ mediaStore.carousel }}
-    </v-card-text>
+    <v-card-text> Oh well... </v-card-text>
   </v-card>
 </template>
 
 <script lang="ts" setup>
-import { useMediaStore } from '@/scripts/stores/media'
+import { useMediaStore } from '@/js/scripts/stores/media'
 const mediaStore = useMediaStore()
 const txt = 'hhh'
 </script>

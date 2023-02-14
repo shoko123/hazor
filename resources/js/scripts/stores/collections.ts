@@ -215,6 +215,10 @@ export const useCollectionsStore = defineStore('collections', () => {
 
     }
 
+    function itemIsInPage(id: number) {
+        return mainPageArray.value.some((x) => (<TPageItemMedia>x).item.id === id)
+    }
+
     function itemIdsByIndex(name: TCollectionName, index: number) {
         //console.log(`setItemIndexInMainCollection to ${index}`)
         switch (name) {
@@ -282,6 +286,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         getPageArray,
         itemIndexById,
         loadPageByItemIndex,
+        itemIsInPage,
         firstUrlId
     }
 })
