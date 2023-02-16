@@ -5,11 +5,11 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { useStatusStore } from '../../scripts/stores/status'
+import { useMenusStore } from '../../scripts/stores/menus'
 import MainMenu from './main-menu/MainMenu.vue'
 import SubMenu from './SubMenu.vue'
 
-let { hasSubMenu } = storeToRefs(useStatusStore())
+let { hasSubMenu } = storeToRefs(useMenusStore())
 
 </script>
 

@@ -27,13 +27,11 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let r = useRoutesMainStore()
 
   async function prepareForNewRoute(to: TRouteInfo, from: TRouteInfo, plan: TPlanAction[]): Promise<TPrepareResponse> {
-    let prepErr: TPrepareResponse = { success: false }
     for (const x of plan) {
       switch (x) {
         case 'module.load':
           await loadTrio(to, from).catch(err => {
-            prepErr.errorDetails = 'ModuleInitFailure'
-            return prepErr
+            throw 'ModuleInitError'
           })
           break
 
@@ -43,15 +41,13 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
         case 'collection.item.load':
           await loadCollectionAndItem(to, from).catch(err => {
-            prepErr.errorDetails = 'CollectionLoadFailure'
-            return prepErr
+            throw "LoadCollectionAndItemFError"
           })
           break
 
         case 'collection.load':
           await loadMainCollection(to, from).catch(err => {
-            prepErr.errorDetails = 'CollectionLoadFailure'
-            return prepErr
+            throw 'CollectionLoadError'
           })
           break
 
@@ -61,8 +57,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
         case 'item.load':
           await loadItem(to, from).catch(err => {
-            prepErr.errorDetails = 'ItemLoadFailure'
-            return prepErr
+            throw 'ItemLoadError'
           })
           break
 
@@ -71,7 +66,9 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'item.setIndexInCollection':
-          itemSetIndexInCollection()
+          if (!itemSetIndexInCollection()) {
+            throw 'ItemNotFoundInCollectionError'
+          }
           break
 
         case 'page.load':
@@ -82,17 +79,16 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           await loadPage(true)
           break
 
-          case 'page.clear':
-            clearPage()
-            break
+        case 'page.clear':
+          clearPage()
+          break
 
         default:
           console.log(`PrepareForNewRoute() Bad Action: ${x}`)
-          prepErr.errorDetails = 'GenericPrepareError'
-          return prepErr
+          throw 'RoutingBadActionError'
       }
     }
-
+    console.log(`PrepareForNewRoute() success after completing queue`)
     return { success: true }
   }
 
@@ -128,11 +124,8 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       loadItem(to, from)
     ])
       .catch(err => {
-        console.log(`loadCollectionAndItem() failed err: ${err}`);
         throw err;
       });
-    console.log(`prepare.loadCollectionAndItem() returned (success)`);
-    return true
   }
 
   async function loadMainCollection(to: TRouteInfo, from: TRouteInfo) {
@@ -144,8 +137,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
         console.log(`collection loaded successfully`)
       })
       .catch(err => {
-        //n.showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
-        console.log(`collection loading failed. err: ${JSON.stringify(err, null, 2)}`)
+        console.log(`loadMainCollection() failed. err: ${JSON.stringify(err, null, 2)}`)
         throw err
       })
       .finally(() => {
@@ -161,7 +153,9 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       .then(res => {
         console.log(`show() returned (success)`)
         //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
-        i.fields = res.data.item
+        i.fields = res.data.fields
+        i.url_id = res.data.url_id
+        i.tag = m.tagFromUrlId(to.module, res.data.url_id)
         return true
       })
       .catch(err => {
@@ -190,19 +184,18 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     c.mainPageArray = []
     c.main.pageNoB1 = 1
   }
-  
-  function itemSetIndexInCollection() {
+
+  function itemSetIndexInCollection(): boolean {
     //console.log(`prepare.itemSetIndexInCollection()`)
     let itemIndex = c.itemIndexById(i.id)
     if (itemIndex === -1) {
       console.log(`Item not found in mainCollection - set itemIndex to -1, clear page`)
-      //c.main.itemIndex = -1
       c.mainPageArray = []
       i.setItemIndex(-1)
+      return false
     } else {
-      //console.log(`Item found in mainCollection - setting itemIndex`)
-      //c.main.itemIndex = itemIndex
       i.setItemIndex(itemIndex)
+      return true
     }
   }
 

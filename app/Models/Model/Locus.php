@@ -45,7 +45,7 @@ class Locus extends DigModel
 
     function buildSqlUrlId(): string
     {
-        return 'name AS url_id';
+        return 'id AS url_id';
     }
 
     function getIdFromUrlId(string $url_id) : int {
@@ -60,6 +60,7 @@ class Locus extends DigModel
         $url_id = $this->buildSqlUrlId();
         return $this->select('id', DB::raw($url_id));
     }
+    
     public function pageSelect(): string {
         return 'xxx';
     }

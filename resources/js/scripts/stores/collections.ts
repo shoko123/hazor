@@ -275,6 +275,8 @@ export const useCollectionsStore = defineStore('collections', () => {
         main,
         mainArray,
         mainPageArray,
+        media,
+        mediaArray,
         itemsPerPage,
         itemIdsByIndex,
         setItemsPerPage,

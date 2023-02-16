@@ -44,9 +44,21 @@ const page = computed({
   }
 })
 
+const pageInfo = computed(() => {
+  return `page(${meta.value.pageNoB1}/${meta.value.noOfPages}), items(${meta.value.firstItemNo} - ${meta.value.lastItemNo}/${meta.value.noOfItems})`
+})
+
 
 const header = computed(() => {
-  return `${getModule()} results: page(${meta.value.pageNoB1}/${meta.value.noOfPages}), items(${meta.value.firstItemNo} - ${meta.value.lastItemNo}/${meta.value.noOfItems})`
+  const module = getModule()
+  switch (props.source) {
+    case 'main':
+      return `${module} results: ${pageInfo.value}`
+    case 'media':
+      return `${module} item's media: ${pageInfo.value}`
+    case 'related':
+      return ``
+  }
 })
 
 const paginator = computed(() => {

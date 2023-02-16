@@ -84,14 +84,15 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         isLoading.value = true
 
         try {         
-            let prepare = await p.prepareForNewRoute(to.value, current.value, <TPlanAction[]>planResponse.data)
-            console.log(`routesMain returned from prepareForNewRoute(success)`);
-            if (!prepare.success) {
-                console.log(`known prepare() error: ${prepare.errorDetails}`)
-                return handlePrepareError(<TPrepareError>prepare.errorDetails)
-            } else {
-                console.log("prepare OK")
-            }
+            await p.prepareForNewRoute(to.value, current.value, <TPlanAction[]>planResponse.data)
+            // console.log(`routesMain returned from prepareForNewRoute(no exception!) prepare: ${JSON.stringify(prepare, null, 2)}`);
+            // if (!prepare.success) {
+            //     console.log(`known prepare() error: ${prepare.errorDetails}`)
+            //     throw prepare.errorDetails
+            //     //return handlePrepareError(<TPrepareError>prepare.errorDetails)
+            // } else {
+            //     console.log("prepare OK")
+            // }
 
             finalizeRouting()
 
@@ -101,6 +102,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         }
         catch (err) {
             isLoading.value = false
+            n.showSnackbar('Unexpected Error - redirceted to Home page')
             console.log(`unexpected prepare() error: ${JSON.stringify(err, null, 2)} redirect to home`);
             return goHome()
         }

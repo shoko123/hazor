@@ -48,13 +48,8 @@ const displayOptions = computed(() => {
   return itemViews.value
 })
 
-const itemViewIndex = computed(() => {
-  return is.getItemViewIndex
-})
-
-
 const itemViewText = computed(() => {
-  return itemViews.value.length === 0 ? '' : itemViews.value[itemViewIndex.value]
+  return itemViews.value.length === 0 ? '' : itemViews.value[is.itemViewIndex]
 })
 
 function setItemViewIndex(index: number) {

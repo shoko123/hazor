@@ -10,6 +10,8 @@ export const useItemStore = defineStore('item', () => {
   const { getRouteInfo } = useRoutesMainStore()
   const { collectionMeta, itemIdsByIndex } = useCollectionsStore()
   let fields = ref<TItemMandatoryFields | undefined>(undefined)
+  let url_id = ref<string | undefined>(undefined)
+  let tag = ref<string | undefined>(undefined)
   let ready = true
   const itemViewIndex = ref<number>(0)
   const itemIndex = ref<number>(-1)
@@ -18,6 +20,7 @@ export const useItemStore = defineStore('item', () => {
     return typeof fields.value === 'undefined' ? -1 : (<TItemMandatoryFields>fields.value).id
   })
 
+  
   const getItemViewIndex = computed(() => {
     return itemViewIndex.value
   })
@@ -59,12 +62,14 @@ export const useItemStore = defineStore('item', () => {
     ready,
     fields,
     id,
+    url_id,
+    tag,
     derived,
     getItemIndex,
     setItemIndex,
     nextUrlId,
     itemClear,
-    getItemViewIndex,
+    itemViewIndex,
     setItemViewIndex
   }
 })

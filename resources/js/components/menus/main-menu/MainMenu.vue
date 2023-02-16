@@ -1,27 +1,45 @@
 <template>
-  <v-app-bar :height="36" color=primary dark app>
-    <v-app-bar-title>
-      <v-btn :to="{ name: 'home' }">** Dig ** ({{ name }})</v-btn>
-    </v-app-bar-title>
-    <v-btn :to="{ name: 'home' }">Home</v-btn>
-    <v-btn :to="{ name: 'welcome', params: { module: 'loci' } }">Loci</v-btn>
-    <v-btn :to="{ name: 'welcome', params: { module: 'stones' } }">Stone</v-btn>
-    <v-btn :to="{ name: 'welcome', params: { module: 'fauna' } }">Fauna </v-btn>
-    <v-spacer></v-spacer>
-    <LoginOrUser />
+  <v-app-bar :height="36" :color="color" dark app>
+    <component :is="menu"></component>
   </v-app-bar>
 </template>
 
 <script lang="ts" setup>
 
 import { computed } from 'vue'
-import LoginOrUser from './LoginOrUser.vue'
 import { storeToRefs } from 'pinia'
-import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
 
-let { getModule } = useRoutesMainStore()
-const name = computed(() => {
-    return getModule()
+import {useMenusStore} from '../../../scripts/stores/menus'
+import Read from './MainMenuRead.vue'
+import Modify from './MainMenuModify.vue'
+import Admin from './MainMenuAdmin.vue'
+
+const { mainMenuType } = storeToRefs(useMenusStore())
+
+const menu = computed(() => {
+    switch (mainMenuType.value) {
+        case 'Read':
+            return Read
+        case 'Modify':
+            return Modify
+        case 'Admin':
+            return Admin
+        default:
+            return undefined
+    }
+})
+
+const color = computed(() => {
+    switch (mainMenuType.value) {
+        case 'Read':
+            return 'primary'
+        case 'Modify':
+            return 'orange'
+        case 'Admin':
+            return 'red'
+        default:
+            return undefined
+    }
 })
 </script>
 
