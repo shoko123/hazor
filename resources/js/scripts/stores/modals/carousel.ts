@@ -74,7 +74,7 @@ export const useCarouselStore = defineStore('carousel', () => {
     const ids = c.itemIdsByIndex('main', newIndex)
     showSpinner(`Loading next item...`)
 
-    await send('model/show', 'post', { model: current.value.module, url_id: ids.url_id, level: 1 })
+    await send('model/show', 'post', { model: current.value.module, url_id: ids.url_id, variant: 1 })
       .then(res => {
         console.log(`show(carouselItem) returned (success). res: ${JSON.stringify(res.data, null, 2)}`)
         let resp = res.data.item as TDbShow1

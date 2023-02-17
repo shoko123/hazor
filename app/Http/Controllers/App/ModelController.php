@@ -38,20 +38,26 @@ class ModelController extends Controller
     {
         $id = $m->getIdFromUrlId($r["url_id"]);
         $fields = (object)[];
-        switch ($r["level"]) {
+        switch ($r["variant"]) {
             case 0:
-                $fields = $m->show($id);
-                break;
+                return response()->json([
+                    "msg" => "ModelControler.show(variant0)",
+                    "fields" => $m->show($id),
+                    "url_id" => $r["url_id"]
+                ], 200);
+                
             case 1:
-                $fields = $m->showCarouselItem($id);
-                break;
-        }
+                return response()->json([
+                    "msg" => "ModelControler.show(variant1)",
+                    "item" => $m->showCarouselItem($id),
+                ], 200);
 
-        return response()->json([
-            "msg" => "ModelControler.show()",
-            "fields" => $fields,
-            "url_id"=> $r["url_id"]
-        ], 200);
+
+            default:
+                return response()->json([
+                    "msg" => "ModelControler.show() Invalid variant parameter: " . $r["variant"],
+                ], 500);
+        }
     }
     public function destroy($id)
     {
