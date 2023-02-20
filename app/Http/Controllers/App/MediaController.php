@@ -3,28 +3,17 @@
 namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
-
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use App\Models\Functional\MediaModel;
 
 class MediaController extends Controller
 {
-    public function totals()
+    public function store(Request $r)
     {
-        $tables = ['loci', 'fauna'];
-        $totals = [];
-        foreach ($tables as $t) {
-            array_push($totals, [
-                'table_name' => $t,
-                'cnt' => DB::table($t)->count(),
-            ]);
-        }
+        $mediaModel = new MediaModel($r["model"]);
 
-        return response()->json([
-            "msg" => "AppController.totals",
-            "totals" => $totals,
-
-        ], 200);
     }
 }

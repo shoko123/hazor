@@ -1,11 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\App\ModelController;
+use App\Http\Controllers\App\DigModelDestroyController;
+use App\Http\Controllers\App\DigModelInitController;
+use App\Http\Controllers\App\DigModelReadController;
 use App\Http\Controllers\App\TestController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\MediaController;
-use App\Http\Controllers\AppController;
+use App\Http\Controllers\App\AppController;
 use App\Http\Controllers\RegistrarController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Dig\LocusController;
@@ -35,11 +37,11 @@ Route::post('auth/logout', [AuthController::class, 'logout'])->middleware('auth:
 //read only APIs. Accessible when config.accessibility.authenticatedUsersOnly is false, or authenticated.
 Route::group(['middleware' => ['read.accessibility']], function () {
     Route::get('app/totals', [AppController::class, 'totals']);    
-    Route::post('model/init', [ModelController::class, 'init']);
-    Route::post('model/index', [ModelController::class, 'index']);
-    Route::post('model/page', [ModelController::class, 'page']);
-    Route::post('model/show', [ModelController::class, 'show']);
-    Route::post('model/firstUrlId', [ModelController::class, 'firstUrlId']);    
+    Route::post('model/init', [DigModelInitController::class, 'init']);
+    Route::post('model/index', [DigModelReadController::class, 'index']);
+    Route::post('model/page', [DigModelReadController::class, 'page']);
+    Route::post('model/show', [DigModelReadController::class, 'show']);
+    Route::post('model/firstUrlId', [DigModelReadController::class, 'firstUrlId']);    
     Route::post('registrar/loci-for-area-season', [RegistrarController::class, 'loci-for-area-season']);
     Route::post('registrar/finds-for-locus', [RegistrarController::class, 'finds-for-locus']);
 });
@@ -50,7 +52,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('media/upload', [MediaController::class, 'upload']);
     Route::post('media/delete', [MediaController::class, 'delete']);
     Route::post('media/edit', [MediaController::class, 'edit']);
-
+    Route::post('model/delete', [DigModelDestroyController::class, 'destroy']);
     Route::post('loci/store', [LocusController::class, 'store'])->middleware('can:Locus-create');
     Route::put('loci/store', [LocusController::class, 'store'])->middleware('can:Locus-update');
     Route::post('stones/store', [StoneController::class, 'store'])->middleware('can:Stone-create');

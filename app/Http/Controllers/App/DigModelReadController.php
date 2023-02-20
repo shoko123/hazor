@@ -8,15 +8,10 @@ use Illuminate\Http\Request;
 use App\Models\Interfaces\DigModelInterface;
 use App\Models\Interfaces\ModelGroupInterface;
 
-class ModelController extends Controller
+class DigModelReadController extends Controller
 {
     protected $model_name = null;
     protected $model = null;
-
-    public function init(Request $r, DigModelInterface $m, ModelGroupInterface $mgi)
-    {
-        return response()->json(array_merge($m->init(), $mgi->trio()), 200);
-    }
 
     public function index(Request $r, DigModelInterface $m)
     {
@@ -66,6 +61,7 @@ class ModelController extends Controller
             "model_name" => $this->model_name
         ], 200);
     }
+
     public function firstUrlId(DigModelInterface $m)
     {
         $first = $m->firstUrlId();

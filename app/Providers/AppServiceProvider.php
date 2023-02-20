@@ -6,9 +6,9 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Models\Interfaces\DigModelInterface;
 use App\Models\Interfaces\ModelGroupInterface;
-use App\Models\Model\Locus;
-use App\Models\Model\Stone;
-use App\Models\Model\Fauna;
+use App\Models\DigModels\Locus;
+use App\Models\DigModels\Stone;
+use App\Models\DigModels\Fauna;
 use App\Models\ModelGroup\LocusGroup;
 use App\Models\ModelGroup\StoneGroup;
 use App\Models\ModelGroup\FaunaGroup;
@@ -52,9 +52,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Relation::morphMap([
-            'Locus' => 'App\Models\Model\Locus',
-            'Stone' => 'App\Model\Stone',
-            'Fauna' => 'App\Model\Fauna',
+            'Locus' => 'App\Models\DigModels\Locus',
+            'Stone' => 'App\Models\DigModels\Stone',
+            'Fauna' => 'App\Models\DigModels\Fauna',
         ]);
     }
 }

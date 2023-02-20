@@ -52,7 +52,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
         $items = $this->whereIn('id', $ids)
             ->select('id', DB::raw($desc), DB::raw($urlId))
-            //->orderByRaw(DB::raw("FIELD(id, $idsAsCommaSeperatedString)"))
+            ->orderByRaw("FIELD(id, $idsAsCommaSeperatedString)")
             ->get();
 
         if ($view  === "Media") {
@@ -66,7 +66,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
     public function show($id)
     {
-        $item = self::findOrFail($id);
+        $item = self::with(["media"])->findOrFail($id);
         return $item;
     }
 

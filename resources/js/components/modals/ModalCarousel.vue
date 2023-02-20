@@ -1,9 +1,8 @@
 
 
 <template>
-  <v-container fluid class="fill-height">
-    <v-card class="h-100">
-
+  <v-container fluid>
+    <v-card>
       <v-toolbar id="toolbar" height="36">
         <v-toolbar-title>{{ carouselHeader }}</v-toolbar-title>
         <v-spacer />

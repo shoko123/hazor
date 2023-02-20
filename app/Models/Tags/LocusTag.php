@@ -4,7 +4,7 @@ namespace App\Models\Tags;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Tags\LocusTagGroup;
-use App\Models\Dig\Locus;
+use App\Models\DigModels\Locus;
 
 class LocusTag extends Model
 {

@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers\App;
 
-use App\Http\Controllers\App\ModelController;
+use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Interfaces\DigModelInterface;
 
-class TestController extends ModelController
+class TestController extends Controller
 {
-    public function test(Request $r)
+    public function test(Request $r, DigModelInterface $m)
     {
-        $this->createModel($r["model"]);
-        $res = $this->model->with(['global_tags' => function ($q) {
-            $q->select('id', 'name', 'group_id');
-        }, 'model_tags'])
-            ->select('*')
-            ->where('id',1)
-            ->first();
+        $res = $m->show(1);
 
-        return response()->json(["res" => $res], 200);
+        return response()->json(
+            [
+                "message" => "Hi from test!",
+                "res" => $res
+            ],
+            200
+        );
     }
 
     public function totals()
