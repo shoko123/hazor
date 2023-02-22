@@ -6,7 +6,7 @@ import { defineStore } from 'pinia'
 import { useCollectionsStore } from '../collections'
 
 export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', () => {
-    const {collectionMeta} = useCollectionsStore()
+    const { collectionMeta } = useCollectionsStore()
 
     function planTransition(to: TRouteInfo, from: TRouteInfo): TPlanResponse {
         let changed = { module: false, name: false, urlId: false }
@@ -22,7 +22,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
 
         switch (to.name) {
             case 'home':
-                return { success: true, data: ['item.clear', 'collection.clear', 'page.clear','module.clear'] }
+                return { success: true, data: ['item.clear', 'collection.clear', 'page.clear', 'module.clear'] }
 
             case 'welcome':
                 switch (from.name) {
@@ -75,7 +75,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
             case 'index':
                 switch (from.name) {
                     case 'home':
-                         return { success: true, data: ['module.load', 'collection.load', 'page.load1'] }
+                        return { success: true, data: ['module.load', 'collection.load', 'page.load1'] }
                     case 'welcome':
                         if (changed.module) {
                             return { success: true, data: ['module.load', 'collection.load', 'page.load1'] }
@@ -134,6 +134,12 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
             case 'update':
             case 'tags':
             case 'media':
+                switch (from.name) {
+                    case 'show':
+                        return { success: true, data: ['item.prepareForMedia'] }
+                    default:
+                        return { success: false, data: 'BadTransition' }
+                }
             default:
                 return { success: false, data: 'BadTransition' }
         }

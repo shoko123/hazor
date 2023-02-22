@@ -26,7 +26,7 @@ class AppController extends Controller
         ], 200);
     }
 
-    public function totals()
+    public function status()
     {
         $tables = ['loci', 'fauna'];
         $totals = [];
@@ -40,6 +40,8 @@ class AppController extends Controller
         return response()->json([
             "msg" => "AppController.totals",
             "totals" => $totals,
+            "accessibility" => config('accessibility.accessibility'),
+            "bucketUrl" =>  bucket_url(),            
 
         ], 200);
     }

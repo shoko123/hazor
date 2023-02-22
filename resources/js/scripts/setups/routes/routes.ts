@@ -65,8 +65,8 @@ const routes = [
     name: 'update'
   },
   {
-    path: '/:module/:url_id/:media',
-    component: Index,
+    path: '/:module/:url_id/media',
+    component: () => import('@/components/media/MediaEditor.vue'),
     name: 'media'
   },
   {

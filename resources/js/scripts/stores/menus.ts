@@ -13,8 +13,16 @@ export const useMenusStore = defineStore('menus', () => {
 
 
   const hasSubMenu = computed(() => {
-    let module = rms.current.module
-    return !(module === 'Home' || module === 'Auth')
+    switch (rms.current.name) {
+      case 'home':
+      case 'login':
+      case 'media':
+        return false
+        
+      default:
+        return true
+    }
+
   })
 
   const mainMenuType = computed((): TMainMenu => {
@@ -26,6 +34,8 @@ export const useMenusStore = defineStore('menus', () => {
       case 'show':
       case 'filter':
         return 'Read'
+      case 'media':
+        return 'Modify'
       default:
         return undefined
     }

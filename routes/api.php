@@ -26,7 +26,7 @@ use App\Http\Controllers\Dig\StoneController;
 
 //open routes
 Route::get('app/init', [AppController::class, 'init']);
-Route::post('app/test', [TestController::class, 'test']);
+Route::post('test/status', [TestController::class, 'status']);
 
 //authentication routes
 Route::post('auth/login', [AuthController::class, 'login']);
@@ -36,7 +36,7 @@ Route::post('auth/logout', [AuthController::class, 'logout'])->middleware('auth:
 
 //read only APIs. Accessible when config.accessibility.authenticatedUsersOnly is false, or authenticated.
 Route::group(['middleware' => ['read.accessibility']], function () {
-    Route::get('app/totals', [AppController::class, 'totals']);    
+    Route::get('app/status', [AppController::class, 'status']);    
     Route::post('model/init', [DigModelInitController::class, 'init']);
     Route::post('model/index', [DigModelReadController::class, 'index']);
     Route::post('model/page', [DigModelReadController::class, 'page']);

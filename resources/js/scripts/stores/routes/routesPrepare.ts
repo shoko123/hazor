@@ -83,6 +83,10 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           clearPage()
           break
 
+          case 'item.prepareForMedia':
+            prepareForMedia()
+            break          
+
         default:
           console.log(`PrepareForNewRoute() Bad Action: ${x}`)
           throw 'RoutingBadActionError'
@@ -180,7 +184,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
   function clearPage(): void {
-    console.log(`prepare.loadPage()`)
+    console.log(`prepare.ClearPage()`)
     c.mainPageArray = []
     c.main.pageNoB1 = 1
   }
@@ -198,6 +202,12 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       return true
     }
   }
+
+
+  function prepareForMedia(): void {
+    console.log(`prepareForMedia()`)
+    //
+  }  
 
   return { prepareForNewRoute }
 })

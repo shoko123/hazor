@@ -23,7 +23,7 @@ class TestController extends Controller
         );
     }
 
-    public function totals()
+    public function status(Request $r)
     {
         $tables = ['loci', 'fauna'];
         $totals = [];
@@ -35,7 +35,7 @@ class TestController extends Controller
         }
 
         return response()->json([
-            "msg" => "AppController.totals",
+            "msg" => "TestController.status",
             "totals" => $totals,
 
         ], 200);

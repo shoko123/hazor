@@ -39,9 +39,11 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
 import { useModuleStore } from '../../../../scripts/stores/module'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 let { current } = storeToRefs(useRoutesMainStore())
+const router = useRouter()
 
 const module = computed(() => {
   return current.value.module
@@ -71,6 +73,7 @@ function itemUpdate() {
 
 function goToMedia() {
   console.log(`goToMedia`)
+  router.push({ name: 'media', params: { module: current.value.url_module, url_id: current.value.url_id } })    
 }
 
 function goToTagger() {
