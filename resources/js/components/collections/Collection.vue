@@ -2,10 +2,12 @@
   <v-card class="elevation-12">
     <v-toolbar id="collection" density="compact" :height="50">
       <v-toolbar-title>{{ header }}</v-toolbar-title>
-      <v-pagination v-model="page" :length="paginator.pages" :total-visible="16">
+      <v-pagination v-if="!isEmpty" v-model="page" :length="paginator.pages" :total-visible="16">
       </v-pagination>
       <!-- <v-spacer></v-spacer> -->
-      <v-btn size="small" variant="outlined" @click="toggleDisplayOption()">view: {{ displayOption }} </v-btn>
+
+        <v-btn v-if="!isEmpty" size="small" variant="outlined" @click="toggleDisplayOption()">view: {{ displayOption }} </v-btn>
+
     </v-toolbar>
     <v-card-text>
       <v-container fluid class="ma-0 pa-0">
@@ -36,6 +38,10 @@ const meta = computed(() => {
   return collectionMeta(props.source)
 })
 
+const isEmpty = computed(() => {
+  return meta.value.length === 0
+})
+
 const page = computed({
   get: () => { return paginator.value.page },
   set: val => {
@@ -44,7 +50,13 @@ const page = computed({
   }
 })
 
-const pageInfo = computed(() => {
+const pageInfoAsText = computed(() => {
+  if (meta.value.length === 0) {
+    return `[Empty]`
+  }
+  if (meta.value.noOfPages === 1) {
+    return `items(${meta.value.firstItemNo} - ${meta.value.lastItemNo}/${meta.value.noOfItems})`
+  }
   return `page(${meta.value.pageNoB1}/${meta.value.noOfPages}), items(${meta.value.firstItemNo} - ${meta.value.lastItemNo}/${meta.value.noOfItems})`
 })
 
@@ -53,9 +65,9 @@ const header = computed(() => {
   const module = getModule()
   switch (props.source) {
     case 'main':
-      return `${module} results: ${pageInfo.value}`
+      return `${module} query results: ${pageInfoAsText.value}`
     case 'media':
-      return `${module} item's media: ${pageInfo.value}`
+      return `Item media: ${pageInfoAsText.value}`
     case 'related':
       return ``
   }

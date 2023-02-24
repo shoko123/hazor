@@ -5,10 +5,10 @@ use App\Http\Controllers\App\DigModelDestroyController;
 use App\Http\Controllers\App\DigModelInitController;
 use App\Http\Controllers\App\DigModelReadController;
 use App\Http\Controllers\App\TestController;
-use App\Http\Controllers\TagController;
-use App\Http\Controllers\MediaController;
+use App\Http\Controllers\App\TagController;
+use App\Http\Controllers\App\MediaController;
 use App\Http\Controllers\App\AppController;
-use App\Http\Controllers\RegistrarController;
+use App\Http\Controllers\App\RegistrarController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Dig\LocusController;
 use App\Http\Controllers\Dig\FaunaController;
@@ -47,7 +47,7 @@ Route::group(['middleware' => ['read.accessibility']], function () {
 });
 
 //mutator APIs
-Route::group(['middleware' => ['auth:sanctum']], function () {
+//Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('tags/sync', [TagController::class, 'sync']);
     Route::post('media/upload', [MediaController::class, 'upload']);
     Route::post('media/delete', [MediaController::class, 'delete']);
@@ -59,4 +59,4 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('stones/store', [StoneController::class, 'store'])->middleware('can:Stone-update');
     Route::post('fauna/store', [FaunaController::class, 'store'])->middleware('can:Fauna-create');
     Route::put('fauna/store', [FaunaController::class, 'store'])->middleware('can:Fauna-update');
-});
+//});

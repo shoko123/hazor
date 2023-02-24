@@ -1,68 +1,167 @@
 <template>
-  <v-card height="50vh">
-    <v-card-text>
-      <v-img :src="images.length === 0 ? 'https://picsum.photos/id/11/500/300' : imagesPreview[0]"
-        lazy-src="https://picsum.photos/id/11/10/6" height="30vh"></v-img>
-      <v-file-input v-model="images" multiple accept="image/png, image/jpeg, image/bmp" placeholder="Select images"
-        prepend-icon="mdi-camera" @change="onInputChange" @click:clear="clear()" label="Image"></v-file-input>
-    </v-card-text>
-  </v-card>
+  <v-container fluid class="pa-1">
+    <v-card class="elevation-12">
+      <v-toolbar id="title" density="compact" :height="50">
+        <v-toolbar-title> {{ header }}</v-toolbar-title>
+      </v-toolbar>
+
+      <v-card-text>
+        <v-container fluid class="pa-1">
+          <v-row v-if="mediaReady">
+            <v-container fluid class="pa-1">
+              <v-card class="elevation-12">
+                <v-card-title>Upload Preview</v-card-title>
+                <v-card-text>
+                  <v-row>
+                    <v-col v-for="(item, index) in imagesAsBrowserReadable" :key="index" cols="2">
+                      <v-img :src="images.length === 0 ? 'https://picsum.photos/id/11/500/300' : item"
+                        lazy-src="https://picsum.photos/id/11/10/6" height="30vh"></v-img>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+              </v-card>
+            </v-container>
+          </v-row>
+
+          <v-row>
+            <v-file-input v-model="images" multiple :show-size="1000" accept="image/png, image/jpeg, image/bmp"
+              placeholder="Select images" prepend-icon="mdi-camera" @change="onInputChange" @click:clear="clear()"
+              :label="fileInputLabel">
+            </v-file-input>
+          </v-row>
+
+          <v-row v-if="mediaReady">
+            <v-divider inset></v-divider>
+            <v-select label="media collection type" :items="mediaCollections" item-title="label" item-value="index"
+              v-model="mediaCollection"></v-select>
+            <v-divider inset></v-divider>
+            <v-btn @click="uploadMultiple">Upload</v-btn>
+          </v-row>
+        </v-container>
+      </v-card-text>
+    </v-card>
+  </v-container>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useMediaStore } from '../../scripts/stores/media'
+import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
+import { useXhrStore } from '../../scripts/stores/xhr'
+const m = useMediaStore()
+
+//notifications
+const loadingToBrowser = ref<boolean>(false)
+const loadingToServer = ref<boolean>(false)
+
+const mediaReady = computed(() => {
+  return notEmpty.value && !loadingToBrowser.value
+})
+
+const header = computed(() => {
+  return "Media Uploader"
+})
+
+const fileInputLabel = computed(() => {
+  return images.value.length === 0 ? `Add media` : `Selected to upload`
+})
+
+const notEmpty = computed(() => {
+  return images.value.length !== 0
+})
+
+
+//load media to browser
 
 const images = ref<File[]>([])
-const imagesPreview = ref<string[]>([])
+const imagesAsBrowserReadable = ref<string[]>([])
 
-async function onInputChange(e: File[]) {
-  console.log("OnInputChange");
+
+async function onInputChange(media: File[]) {
+  console.log(`onInputChange() files:\n ${JSON.stringify(media, null, 2)}`)
+
   if (images.value.length > 6) {
     alert("Max number of files is 6 - Upload aborted!");
-    //TODO truncate to 6
-    clear();
-    return;
+    clear()
+    return
   }
   images.value.forEach((file) => {
     if (file.size > 1024 * 1024 * 2) {
       alert(
         `Size of file ${file.name} exceeds max allowed of 2MB - Upload aborted!`
       );
-      clear();
-      return;
+      clear()
+      return
     }
   });
-  //images.value.forEach((file) =>  addImage(file));
-  await Promise.all(images.value.map(async (image) => { addImage(image) }))
-}
 
-function clear() {
-  images.value = []
-  imagesPreview.value = [];
-  //media_type.value = { text: "Photo(s)", value: "photo" }
+  loadingToBrowser.value = true
+  console.log("Load files - started")
+  await Promise.all(images.value.map(async (image) => { addImage(image) })).catch(err => {
+    console.log(`Error encountered when loading files - clearing files`)
+    loadingToBrowser.value = false
+    clear()
+    return
+  })
+  loadingToBrowser.value = false
+  console.log("Load files -finished")
 }
 
 async function addImage(file: File) {
+ 
   const reader = new FileReader()
-  reader.onload = (e) => imagesPreview.value.push(e.target ? <string>e.target.result : "");
+  reader.onload = (e) => {
+    if (e.target) {
+      imagesAsBrowserReadable.value.push(<string>e.target.result)
+    }
+  }; 
+  //console.log(`addImage() file:\n ${JSON.stringify(file, null, 2)}`)
   reader.readAsDataURL(file);
 }
 
-
-
-//web example 
-//https://github.com/edu-fedorae/vuetify-components/blob/main/src/components/ImageUploadPreview.vue
-/*
-async function selectImage(e) {
-  const file = e;
-  if (!file) return;
-  const readData = (f) =>
-    new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.readAsDataURL(f);
-    });
-  const data = await readData(file);
+function clear() {
+  imagesAsBrowserReadable.value = []
 }
-*/
+
+//choose media collection
+
+const mediaCollections = computed(() => {
+  return m.getMediaCollectionsNames
+})
+
+const mediaCollection = computed({
+  get: () => { return m.getMediaCollection },
+  set: val => {
+    console.log(`mediaCollection.set(${val})`)
+    m.setMediaCollection(val as unknown as number)
+  }
+})
+
+function uploadMultiple() {
+  console.log(`uploadMultiple() images:\n ${JSON.stringify(images.value, null, 2)}`)
+  const r = useRoutesMainStore()
+
+  const { send } = useXhrStore()
+  let fd = new FormData();
+
+  images.value.forEach((file) => {
+    fd.append("media_files[]", file, file.name);
+  });
+
+  fd.append("model", r.current.module);
+  fd.append("id", <string>r.current.url_id);
+  fd.append("media_collection_name", 'photos');
+
+  console.log(`uploadMultiple() formData:\n ${JSON.stringify(fd, null, 2)}`)
+  send("media/upload", 'post', fd).finally(() => {
+    //
+  });
+}
+
 </script>
+
+<style scoped>
+#title {
+  background-color: grey;
+}
+</style>

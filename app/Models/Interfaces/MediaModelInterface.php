@@ -11,5 +11,5 @@ use stdClass;
 
 interface MediaModelInterface
 {
-    public function storeMedia(Request $r): JsonResponse;
+    public function storeMedia(Request $r);
 }

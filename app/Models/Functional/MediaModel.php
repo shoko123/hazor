@@ -11,31 +11,44 @@ use Exception;
 
 class MediaModel implements MediaModelInterface
 {
-    public function storeMedia(Request $r): JsonResponse
+    protected $model_name = null;
+    
+    public function __construct($model_name)
     {
+        $this->model_name = $model_name;
+    }
+
+    public function storeMedia(Request $r)
+    {
+        //return $r;
+
+        $model = 'App\Models\DigModels\\' . $r["model"];
         try {
-            $dm = new DigModel($r["model"]);
-            $item = $dm::findOrFail($r["id"]);
+            //$dm = new DigModel($r["model"]);
+            $item = $model::findOrFail($r["id"]);
+            // return (object)["message" => "I am the object returned from storeMedia",
+            // "item" => $item];
+
 
             //attach media to item
-            foreach ($r->media_files as $key => $media_file) {
+            foreach ($r["media_files"] as $key => $media_file) {
                 $item
                     ->addMedia($media_file)
-                    ->toMediaCollection($r["media_type"]);
+                    ->toMediaCollection($r["media_collection_name"]);
             }
 
             //reload updated media collection for item
-            $item = $dm::with('media')->findOrFail($r["id"]);
+            $item = $model::with('media')->findOrFail($r["id"]);
 
-
-            return response()->json([
-                "message" => "succesfully stored media",
-                "primary" => "I am primary media",
-                "collection" => ["1", ["2"]],
+            return (object)[
+                "message" => "I am the object returned from storeMedia",
                 "item_with_media" => $item,
-            ]);
+            ];
+
         } catch (\Exception $error) {
             return response()->json(["error" => $error->getMessage()], 500);
         }
     }
+
+    
 }

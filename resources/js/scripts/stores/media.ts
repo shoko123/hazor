@@ -1,9 +1,12 @@
 // stores/media.js
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { TMediaItem } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/routesTypes'
 import { TDbPrimaryMedia } from '@/js/types/dbResponseTypes'
+import { useRoutesMainStore } from './routes/routesMain'
+import { useXhrStore } from './xhr'
+
 export const useMediaStore = defineStore('media', () => {
 
   let bucketUrl = ref("")
@@ -35,5 +38,34 @@ export const useMediaStore = defineStore('media', () => {
       }
     }
   }
-  return { setBucketUrl, getBucketUrl, buildMedia }
+
+  //Media Collections
+
+  type TMediaCollectionName = 'photos' | 'drawings' | 'photosAndDrawings' | 'plans'
+  type TMediaCollection = { name: TMediaCollectionName, label: string }
+  type TMediaCollectionWithIndex = { index: number, name: TMediaCollectionName, label: string }
+
+  const mediaCollections = ref<TMediaCollection[]>([
+    { name: 'photos', label: 'Photo(s)' },
+    { name: 'drawings', label: 'Drawings(s)' },
+    { name: 'photosAndDrawings', label: 'Photo+Drawing(s)' },
+    { name: 'plans', label: 'Plan(s)' },
+  ])
+
+  const mediaCollectionIndex = ref<number>(0)
+
+  const getMediaCollectionsNames = computed((): TMediaCollectionWithIndex[] => {
+    return mediaCollections.value.map((x, index) => { return { ...x, index } })
+  })
+
+  const getMediaCollection = computed(() => {
+    return mediaCollections.value[mediaCollectionIndex.value].label
+  })
+
+  function setMediaCollection(index: number) {
+    mediaCollectionIndex.value = index
+    console.log(`set mediaCollection to ${index}`)
+  }
+ 
+  return { setBucketUrl, getBucketUrl, buildMedia, getMediaCollectionsNames, getMediaCollection, setMediaCollection }
 })

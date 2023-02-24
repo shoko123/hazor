@@ -11,9 +11,13 @@ use App\Models\Functional\MediaModel;
 
 class MediaController extends Controller
 {
-    public function store(Request $r)
+    public function upload(Request $r)
     {
-        $mediaModel = new MediaModel($r["model"]);
-
+        $m = new MediaModel($r["model"]);
+        $re = $m->storeMedia($r);
+        return response()->json([
+            "message" => "message from MediaController.store()",
+            "result" =>  $re,
+        ], 200);
     }
 }
