@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { TCollectionName, TPageItemMedia, } from '../../../types/collectionTypes'
-import { TDbShow1 } from '@/js/types/dbResponseTypes'
+import { TApiRespShow1 } from '@/js/types/apiTypes'
 import { useCollectionsStore } from '../collections'
 import { useXhrStore } from '../xhr'
 import { useNotificationsStore } from '../notifications'
@@ -77,7 +77,7 @@ export const useCarouselStore = defineStore('carousel', () => {
     await send('model/show', 'post', { model: current.value.module, url_id: ids.url_id, variant: 1 })
       .then(res => {
         console.log(`show(carouselItem) returned (success). res: ${JSON.stringify(res.data, null, 2)}`)
-        let resp = res.data.item as TDbShow1
+        let resp = res.data.item as TApiRespShow1
         carouselItemIndex.value = newIndex
         carouselItem.value = { item: { id: resp.id, url_id: resp.url_id, tag: resp.url_id, description: resp.description }, media: buildMedia(resp.media, current.value.module) }
         return true

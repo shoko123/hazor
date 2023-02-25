@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { TMediaItem } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/routesTypes'
-import { TDbPrimaryMedia } from '@/js/types/dbResponseTypes'
+import { TApiMedia } from '@/js/types/apiTypes'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 
@@ -19,7 +19,7 @@ export const useMediaStore = defineStore('media', () => {
     bucketUrl.value = burl
   }
 
-  function buildMedia(dbMedia: TDbPrimaryMedia, module: TModule): TMediaItem {
+  function buildMedia(dbMedia: TApiMedia, module: TModule): TMediaItem {
     if (dbMedia === null || dbMedia === undefined) {
       return {
         hasMedia: false,
@@ -66,6 +66,8 @@ export const useMediaStore = defineStore('media', () => {
     mediaCollectionIndex.value = index
     console.log(`set mediaCollection to ${index}`)
   }
+
+  const showUploader = ref<boolean>(false)
  
-  return { setBucketUrl, getBucketUrl, buildMedia, getMediaCollectionsNames, getMediaCollection, setMediaCollection }
+  return { setBucketUrl, getBucketUrl, buildMedia, showUploader, getMediaCollectionsNames, getMediaCollection, setMediaCollection }
 })

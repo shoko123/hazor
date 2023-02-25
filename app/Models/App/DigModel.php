@@ -57,7 +57,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
         if ($view  === "Media") {
             $items->transform(function ($item, $key) {
-                $item["primaryMedia"] = null;
+                $item["media"] = null;
                 return $item;
             });
         }
@@ -66,8 +66,122 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
     public function show($id)
     {
-        $item = self::with(["media"])->findOrFail($id);
-        return $item;
+        $item = self::with([
+            'media',
+            'model_tags',
+            'global_tags'/* => function ($query) {
+                $query->select('id', 'name', 'type');
+            },*/
+        ])->findOrFail($id);
+
+        $media = [];
+        $media1 = null;
+        if (!$item->media->isEmpty()) {
+            foreach ($item->media as $med) {
+                array_push($media, ['fullPath' => $med->getPath(), 'tnPath' =>  $med->getPath('tn')]);
+            }
+            $media1 = $media[0];
+        }
+        unset($item->media);
+        unset($item->global_tags);
+        unset($item->model_tags);
+
+        return (object)["fields" => $item, "media" => $media, "media1" => $media1];
+
+        $builder = $this->with(
+            [
+                'find',
+                'find.locus' => function ($query) {
+                    $query->select('id', 'locus_no', 'area_season_id');
+                },
+                'find.locus.areaSeason' => function ($query) {
+                    $query->select('id', 'dot');
+                },
+
+                'module_tags',
+                'tags' => function ($query) {
+                    $query->select('id', 'name', 'type');
+                },
+                'media',
+            ]
+        );
+
+
+
+        //format tag
+        $find = $item->find;
+        $item->dot = $find->locus->areaSeason->dot . "." . $find->locus->locus_no . "." . $find->registration_category . "." . $find->basket_no . "." . $find->artifact_no;
+        $dotWithoutArtifactNo = $find->locus->areaSeason->dot . "." . $find->locus->locus_no . "." . $find->registration_category . "." . $find->basket_no . ".";
+
+        //add fields
+        $item->locus_id = $find->locus->id;
+        $item->area_season_id = $find->locus->areaSeason->id;
+        $item->locus_id = $find->locus->id;
+
+        $find->locus_id = $find->locus->id;
+        $find->area_season_id = $find->locus->areaSeason->id;
+
+        //format tags
+        $tags = [];
+        $moduleTags = [];
+
+        foreach ($item->module_tags as $tag) {
+            array_push($moduleTags, (object) [
+                'type_id' => $tag->type_id,
+                'type' => $tag->tag_type->name,
+                'id' => $tag->pivot->tag_id,
+                'name' => $tag->name
+            ]);
+        }
+        foreach ($item->tags as $tag) {
+            array_push($tags, (object) [
+                'type' => $tag->type,
+                'id' => $tag->pivot->tag_id,
+            ]);
+        }
+
+        //format media.
+        $itemMedia = $this->allMedia($item);
+        $item["hasMedia"] = $itemMedia->primary->hasMedia;
+        $item["tnUrl"] = $itemMedia->primary->tnUrl;
+        $item["fullUrl"] = $itemMedia->primary->fullUrl;
+
+
+        //if Pottery or Fauna add related artifacts
+        $related = [];
+
+        // $l = new Locus();
+        // $related = $l->locusAllFinds($find->locus_id);
+
+        // if ($p["module"] === "Pottery" || $p["module"] === "Fauna") {
+        //     $res = Find::where('findable_type', $p["module"])
+        //         ->where('locus_id', $p["locus_id"])
+        //         ->where('basket_no', $p["basket_no"])
+        //         ->where('artifact_no', '<>', $p["artifact_no"])
+        //         ->orderBy('artifact_no')
+        //         ->get()->pluck('artifact_no');
+        //     $related = collect($res)->map(function ($item) use ($dotWithoutArtifactNo) {
+        //         return $dotWithoutArtifactNo . $item;
+        //     });
+        // }
+
+
+        unset($itemMedia->primary);
+        unset($item->find);
+        unset($item->media);
+        unset($item->tags);
+        unset($item->moduleTags);
+        unset($find->locus);
+
+        return [
+            "item" => $item,
+            "find" => $find,
+            "itemMedia" => $itemMedia,
+            "tags" => $tags,
+            "moduleTags" => $moduleTags,
+            "related" => $related,
+            //"locusFinds" => $locusFinds
+        ];
     }
 
     public function showCarouselItem($id)

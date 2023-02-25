@@ -21,7 +21,7 @@ class Stone extends FindModel
         DigModel::__construct('Stone');
     }
 
-    public function module_tags()
+    public function model_tags()
     {
         return $this->belongsToMany(StoneTag::class, 'stone-stone_tags', 'item_id', 'tag_id');
     }

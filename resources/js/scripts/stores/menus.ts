@@ -6,7 +6,7 @@ import { computed } from 'vue'
 
 import { useRoutesMainStore } from './routes/routesMain'
 
-type TMainMenu = 'Read' | 'Modify' | 'Admin' | undefined
+type TMainMenu = 'Read' | 'Media' | 'Modify' | 'Admin' | undefined
 export const useMenusStore = defineStore('menus', () => {
 
   let rms = useRoutesMainStore()
@@ -35,7 +35,7 @@ export const useMenusStore = defineStore('menus', () => {
       case 'filter':
         return 'Read'
       case 'media':
-        return 'Modify'
+        return 'Media'
       default:
         return undefined
     }

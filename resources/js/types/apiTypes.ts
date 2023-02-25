@@ -1,25 +1,25 @@
 
 import { TModule } from '@/js/types/routesTypes'
 
-type TDbPrimaryMedia = 
+type TApiMedia = 
   { full: string, tn: string } | null
 
 
-type TDbShow0 = {
+type TApiRespShow0 = {
   carouselHeader: string,
   itemIndexB1: number,
   itemTag: string,
   itemDescription: string,
   itemUrlId: string,
   itemModule: TModule,
-  media: TDbPrimaryMedia,
+  media: TApiMedia,
 }
 
-type TDbShow1 = {
+type TApiRespShow1 = {
   id: number,
   url_id: string,
   description: string,
-  media: TDbPrimaryMedia,
+  media: TApiMedia,
 }
 
-export { TDbShow0, TDbShow1, TDbPrimaryMedia }
+export { TApiRespShow0, TApiRespShow1, TApiMedia }

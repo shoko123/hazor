@@ -23,19 +23,29 @@
             </v-container>
           </v-row>
 
-          <v-row>
+          <v-row class="pt-2">
+
             <v-file-input v-model="images" multiple :show-size="1000" accept="image/png, image/jpeg, image/bmp"
               placeholder="Select images" prepend-icon="mdi-camera" @change="onInputChange" @click:clear="clear()"
               :label="fileInputLabel">
             </v-file-input>
           </v-row>
 
-          <v-row v-if="mediaReady">
-            <v-divider inset></v-divider>
-            <v-select label="media collection type" :items="mediaCollections" item-title="label" item-value="index"
-              v-model="mediaCollection"></v-select>
-            <v-divider inset></v-divider>
-            <v-btn @click="uploadMultiple">Upload</v-btn>
+
+
+
+
+          <v-row>
+
+            <v-select v-if="mediaReady" label="media collection type" :items="mediaCollections" item-title="label"
+              item-value="index" v-model="mediaCollection"></v-select>
+
+          </v-row>
+
+          <v-row class="d-flex justify-left align-baseline pt-2" style="gap: 1rem">
+            <v-btn :diable="!mediaReady" @click="upload">Upload</v-btn>
+            <v-btn :disable="!mediaReady" @click="openMultiItemSelector">Upload as multi item media</v-btn>
+            <v-btn @click="cancel">Cancel</v-btn>
           </v-row>
         </v-container>
       </v-card-text>
@@ -108,18 +118,19 @@ async function onInputChange(media: File[]) {
 }
 
 async function addImage(file: File) {
- 
+
   const reader = new FileReader()
   reader.onload = (e) => {
     if (e.target) {
       imagesAsBrowserReadable.value.push(<string>e.target.result)
     }
-  }; 
+  };
   //console.log(`addImage() file:\n ${JSON.stringify(file, null, 2)}`)
   reader.readAsDataURL(file);
 }
 
 function clear() {
+  images.value = []
   imagesAsBrowserReadable.value = []
 }
 
@@ -137,8 +148,7 @@ const mediaCollection = computed({
   }
 })
 
-function uploadMultiple() {
-  console.log(`uploadMultiple() images:\n ${JSON.stringify(images.value, null, 2)}`)
+async function upload() {
   const r = useRoutesMainStore()
 
   const { send } = useXhrStore()
@@ -152,12 +162,20 @@ function uploadMultiple() {
   fd.append("id", <string>r.current.url_id);
   fd.append("media_collection_name", 'photos');
 
-  console.log(`uploadMultiple() formData:\n ${JSON.stringify(fd, null, 2)}`)
-  send("media/upload", 'post', fd).finally(() => {
-    //
-  });
+  console.log(`upload() formData:\n ${JSON.stringify(fd, null, 2)}`)
+  await send("media/upload", 'post', fd).catch((err) => {
+    console.log(`mediaUpload failed! err:\n ${JSON.stringify(err, null, 2)}`)
+  })
 }
 
+function openMultiItemSelector() {
+
+}
+
+function cancel() {
+  clear()
+  m.showUploader = false
+}
 </script>
 
 <style scoped>

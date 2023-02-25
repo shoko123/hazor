@@ -23,7 +23,7 @@ interface DigModelInterface
     public function indexSelect(): Builder;//returns {id, url_id}[]
     public function indexFormat(): string;
     public function pageSelect(): string;//returns {id, url_id}[]
-    public function pageFormat(): string;//returns {id, url_id, description, primaryMedia (null | {tnUrl, fullUrl})}[]
+    public function pageFormat(): string;//returns {id, url_id, description, media1 (null | {tnUrl, fullUrl})}[]
     public function buildSqlDescription(): string; //used by both indexSelect and pageSelect
     public function itemSelect(): string;
 

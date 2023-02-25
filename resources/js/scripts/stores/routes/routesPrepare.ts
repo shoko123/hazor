@@ -157,7 +157,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       .then(res => {
         console.log(`show() returned (success)`)
         //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
-        i.fields = res.data.fields
+        i.fields = res.data.fields.fields
         i.url_id = res.data.url_id
         i.tag = m.tagFromUrlId(to.module, res.data.url_id)
         return true

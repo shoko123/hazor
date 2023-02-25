@@ -1,5 +1,5 @@
 // collectionTypes.ts
-import { TDbPrimaryMedia } from '@/js/types/dbResponseTypes'
+import { TApiMedia } from '@/js/types/apiTypes'
 
 type TView = 'Media' | 'Chips' | 'Table'
 type TCollectionName = 'main' | 'media' | 'related'
@@ -24,7 +24,7 @@ type TDBPage = {
         id: number,
         url_id: string,
         description?: string,
-        primaryMedia?: TDbPrimaryMedia
+        media1?: TApiMedia
 }
 
 //conversions ready for consumption for 'Media', 'Chip', and 'Table' views

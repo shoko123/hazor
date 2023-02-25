@@ -6,7 +6,7 @@ import { TCollectionMeta, TCollectionName, TElement, TItemsPerPage, TDBPage, TPa
 import { TMediaItem } from '../../types/mediaTypes'
 
 import { TModule } from '../../types/routesTypes'
-import { TDbPrimaryMedia } from '@/js/types/dbResponseTypes'
+import { TApiMedia } from '@/js/types/apiTypes'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useMediaStore } from './media'
@@ -166,8 +166,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         switch (view) {
             case 'Media':
                 toSave = page.map(x => {
-                    //const media1 = getMedia(x.primaryMedia)
-                    const media = buildMedia(<TDbPrimaryMedia>x.primaryMedia, module)
+                    const media = buildMedia(<TApiMedia>x.media1, module)
                     const item = { id: x.id, url_id: x.url_id, tag: x.url_id, description: x.description }
                     return { item, media: media }
                 })

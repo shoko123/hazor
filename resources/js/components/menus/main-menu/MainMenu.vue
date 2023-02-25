@@ -1,7 +1,7 @@
 <template>
-  <v-app-bar :height="36" :color="color" dark app>
-    <component :is="menu"></component>
-  </v-app-bar>
+    <v-app-bar :height="36" :color="color" dark app>
+        <component :is="menu"></component>
+    </v-app-bar>
 </template>
 
 <script lang="ts" setup>
@@ -9,11 +9,11 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 
-import {useMenusStore} from '../../../scripts/stores/menus'
+import { useMenusStore } from '../../../scripts/stores/menus'
 import Read from './MainMenuRead.vue'
 import Modify from './MainMenuModify.vue'
 import Admin from './MainMenuAdmin.vue'
-
+import Media from './mainmenu-media/MainMenuMedia.vue'
 const { mainMenuType } = storeToRefs(useMenusStore())
 
 const menu = computed(() => {
@@ -24,6 +24,8 @@ const menu = computed(() => {
             return Modify
         case 'Admin':
             return Admin
+        case 'Media':
+            return Media
         default:
             return undefined
     }
@@ -34,6 +36,7 @@ const color = computed(() => {
         case 'Read':
             return 'primary'
         case 'Modify':
+        case 'Media':
             return 'orange'
         case 'Admin':
             return 'red'
