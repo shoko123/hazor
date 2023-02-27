@@ -49,4 +49,5 @@ type TItemDerived = {
         tag: string,
         
 }
-export { TItemMandatoryFields, TLocusFields, TStoneFields, TFaunaFields }
+type TFields = TLocusFields | TStoneFields | TFaunaFields
+export { TItemMandatoryFields, TLocusFields, TStoneFields, TFaunaFields, TFields }

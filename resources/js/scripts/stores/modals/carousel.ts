@@ -10,7 +10,7 @@ import { useMediaStore } from '../media'
 import { useRoutesMainStore } from '../routes/routesMain'
 import { TCarouselDetails } from '@/js/types/modalTypes'
 import { TModule } from '@/js/types/routesTypes'
-import { TMediaItem } from '@/js/types/mediaTypes'
+import { TMedia } from '@/js/types/mediaTypes'
 
 export const useCarouselStore = defineStore('carousel', () => {
 

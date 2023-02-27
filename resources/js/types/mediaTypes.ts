@@ -1,8 +1,8 @@
 // mediaTypes.ts
 
-type TMediaItem = {
+type TMedia = {
         hasMedia: boolean,
         urls: { full: string, tn: string }
 }
 
-export { TMediaItem }
+export { TMedia }

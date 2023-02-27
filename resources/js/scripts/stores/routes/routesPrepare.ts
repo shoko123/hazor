@@ -7,6 +7,8 @@
 //proceeding to the new route.
 
 import type { TRouteInfo, TPlanAction, TPrepareResponse } from '../../../types/routesTypes';
+import type { TFields } from '../../../types/itemTypes';
+import type { TApiRespShow0 } from '../../../types/apiTypes';
 import { defineStore, storeToRefs } from 'pinia'
 import { useXhrStore } from '../xhr';
 import { useTrioStore } from '../trio';
@@ -155,9 +157,10 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     n.showSpinner(`Loading item ${to.url_id} ...`)
     return xhr.send('model/show', 'post', { model: to.module, url_id: to.url_id, variant: 0 })
       .then(res => {
+        let item = res as unknown as TApiRespShow0
         console.log(`show() returned (success)`)
         //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
-        i.fields = res.data.fields.fields
+        i.fields = res.data.fields
         i.url_id = res.data.url_id
         i.tag = m.tagFromUrlId(to.module, res.data.url_id)
         return true

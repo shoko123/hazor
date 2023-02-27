@@ -3,7 +3,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed, registerRuntimeCompiler } from 'vue'
 import { TCollectionMeta, TCollectionName, TElement, TItemsPerPage, TDBPage, TPageItem, TView, TArrayItem, TGetCollectionMeta, TSetPage, TPageItemMedia, TPageItemTable, TPageItemChip } from '../../types/collectionTypes'
-import { TMediaItem } from '../../types/mediaTypes'
+import { TMedia } from '../../types/mediaTypes'
 
 import { TModule } from '../../types/routesTypes'
 import { TApiMedia } from '@/js/types/apiTypes'

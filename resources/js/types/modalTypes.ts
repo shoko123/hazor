@@ -1,5 +1,5 @@
 
-import { TMediaItem } from '@/js/types/mediaTypes'
+import { TMedia } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/routesTypes'
 
 type TDBCarouselItem = {
@@ -9,7 +9,7 @@ type TDBCarouselItem = {
   itemDescription: string,
   itemUrlId: string,
   itemModule: TModule,
-  media: TMediaItem,
+  media: TMedia,
 }
 type TCarouselDetails = {
   carouselHeader: string,
@@ -18,7 +18,7 @@ type TCarouselDetails = {
   itemDescription: string,
   itemUrlId: string,
   itemModule: TModule,
-  media: TMediaItem,
+  media: TMedia,
 }
 
 export { TCarouselDetails, TDBCarouselItem }

@@ -1,7 +1,7 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { TMediaItem } from '@/js/types/mediaTypes'
+import { TMedia } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/routesTypes'
 import { TApiMedia } from '@/js/types/apiTypes'
 import { useRoutesMainStore } from './routes/routesMain'
@@ -19,7 +19,7 @@ export const useMediaStore = defineStore('media', () => {
     bucketUrl.value = burl
   }
 
-  function buildMedia(dbMedia: TApiMedia, module: TModule): TMediaItem {
+  function buildMedia(dbMedia: TApiMedia, module: TModule): TMedia {
     if (dbMedia === null || dbMedia === undefined) {
       return {
         hasMedia: false,

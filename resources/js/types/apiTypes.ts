@@ -1,18 +1,18 @@
 
 import { TModule } from '@/js/types/routesTypes'
+import {TFields}from '@/js/types/itemTypes'
 
 type TApiMedia = 
   { full: string, tn: string } | null
 
 
 type TApiRespShow0 = {
-  carouselHeader: string,
-  itemIndexB1: number,
-  itemTag: string,
-  itemDescription: string,
-  itemUrlId: string,
-  itemModule: TModule,
-  media: TApiMedia,
+  msg: string,
+  fields: TFields[],
+  media: TApiMedia[],
+  media1: TApiMedia,
+  url_id: string,
+
 }
 
 type TApiRespShow1 = {

@@ -86,7 +86,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         unset($item->global_tags);
         unset($item->model_tags);
 
-        return (object)["fields" => $item, "media" => $media, "media1" => $media1];
+        return ["fields" => $item, "media" => $media, "media1" => $media1];
 
         $builder = $this->with(
             [

@@ -35,12 +35,12 @@ class DigModelReadController extends Controller
         $fields = (object)[];
         switch ($r["variant"]) {
             case 0:
-                return response()->json([
+                $resp = array_merge($m->show($id), [
                     "msg" => "ModelControler.show(variant0)",
-                    "fields" => $m->show($id),
                     "url_id" => $r["url_id"]
-                ], 200);
-                
+                ]);
+                return response()->json($resp, 200);
+
             case 1:
                 return response()->json([
                     "msg" => "ModelControler.show(variant1)",

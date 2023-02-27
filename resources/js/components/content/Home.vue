@@ -11,13 +11,13 @@
 <script setup lang="ts" >
 import { computed } from 'vue'
 import { useMediaStore } from '../../scripts/stores/media'
-import { TMediaItem } from '../../types/mediaTypes'
+import { TMedia } from '../../types/mediaTypes'
 
 let { getBucketUrl } = useMediaStore()
 
 const media = computed(() => {
   let bucketUrl = getBucketUrl()
-  let c: Array<TMediaItem> = [];
+  let c: Array<TMedia> = [];
   for (let i = 1; i <= 6; i++) {
     c.push({
       hasMedia: true,
