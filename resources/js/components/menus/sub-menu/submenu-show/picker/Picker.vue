@@ -23,7 +23,7 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import PickerForm from './PickerForm.vue'
 //let { name } = storeToRefs(useModuleStore())
-import { useItemStore } from '../../../../scripts/stores/item'
+import { useItemStore } from '../../../../../scripts/stores/item'
 
 let i = useItemStore()
 

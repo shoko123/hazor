@@ -5,11 +5,11 @@
 </template>
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import SubWelcome from './SubWelcome.vue'
-import SubIndex from './submenu-index/SubIndex.vue'
+import SubWelcome from './submenu-welcome/SubMenuWelcome.vue'
+import SubIndex from './submenu-index/SubMenuIndex.vue'
 import SubMenuFilter from './submenu-filter/SubMenuFilter.vue'
 import SubMenuShow from './submenu-show/SubMenuShow.vue'
-import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
+import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
 
 const { getToRouteInfo } = useRoutesMainStore()
 

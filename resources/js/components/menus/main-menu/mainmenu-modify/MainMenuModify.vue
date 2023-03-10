@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
+import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 
 let rm = useRoutesMainStore()
 

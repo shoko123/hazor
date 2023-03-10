@@ -33,7 +33,7 @@ import { useTrioStore } from '../../scripts/stores/trio';
 let trio = useTrioStore()
 
 const header = computed(() => {
-  return 'Tag Selector'
+  return 'Filter Selector'
 })
 
 const cats = computed(() => {

@@ -6,11 +6,9 @@
 </template>
 
 <script lang="ts" setup>
-
 import { computed } from 'vue'
-import LoginOrUser from './LoginOrUser.vue'
 import { storeToRefs } from 'pinia'
-import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
+import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 
 let { getModule } = useRoutesMainStore()
 const name = computed(() => {

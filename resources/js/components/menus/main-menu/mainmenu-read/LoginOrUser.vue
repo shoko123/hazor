@@ -19,8 +19,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '../../../scripts/stores/auth';
-import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain';
+import { useAuthStore } from '../../../../scripts/stores/auth';
+import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain';
 import { storeToRefs } from 'pinia'
 
 type TUserOption = 'Dashboard' | 'Logout'

@@ -10,9 +10,9 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 
 import { useMenusStore } from '../../../scripts/stores/menus'
-import Read from './MainMenuRead.vue'
-import Modify from './MainMenuModify.vue'
-import Admin from './MainMenuAdmin.vue'
+import Read from './mainmenu-read/MainMenuRead.vue'
+import Modify from './mainmenu-modify/MainMenuModify.vue'
+import Admin from './mainmenu-admin/MainMenuAdmin.vue'
 import Media from './mainmenu-media/MainMenuMedia.vue'
 const { mainMenuType } = storeToRefs(useMenusStore())
 

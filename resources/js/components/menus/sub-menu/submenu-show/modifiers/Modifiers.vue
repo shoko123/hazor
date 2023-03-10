@@ -40,8 +40,8 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-import { useModuleStore } from '../../../../scripts/stores/module'
-import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
+import { useModuleStore } from '../../../../../scripts/stores/module'
+import { useRoutesMainStore } from '../../../../../scripts/stores/routes/routesMain'
 let { current } = storeToRefs(useRoutesMainStore())
 const router = useRouter()
 
