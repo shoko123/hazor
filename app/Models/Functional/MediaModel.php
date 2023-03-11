@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Models\Interfaces\MediaModelInterface;
-use App\Models\App\DigModel;
 use Exception;
 
 class MediaModel implements MediaModelInterface
@@ -38,17 +37,17 @@ class MediaModel implements MediaModelInterface
             }
 
             //reload updated media collection for item
-            $item = $model::with('media')->findOrFail($r["id"]);
-
+            //$item = $model::with('media')->findOrFail($r["id"]);
+            $item = $model::findOrFail($r["id"]);
+            $media = $item->getMedia('photos');
             return (object)[
-                "message" => "I am the object returned from storeMedia",
-                "item_with_media" => $item,
+                "message" => "I am the object returned from media.upload",
+                "item" => $item,
+                "media" => $media,
             ];
 
         } catch (\Exception $error) {
             return response()->json(["error" => $error->getMessage()], 500);
         }
-    }
-
-    
+    } 
 }

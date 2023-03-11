@@ -2,8 +2,8 @@
 
 return [
     'itemsPerPage' => [
-        'Media' => 18,
-        'Chips' => 100,
+        'Image' => 18,
+        'Chip' => 100,
         'Table' => 50
     ],
     'itemViews' => [

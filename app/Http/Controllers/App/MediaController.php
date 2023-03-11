@@ -16,7 +16,7 @@ class MediaController extends Controller
         $m = new MediaModel($r["model"]);
         $re = $m->storeMedia($r);
         return response()->json([
-            "message" => "message from MediaController.store()",
+            "message" => "message from MediaController.upload()",
             "result" =>  $re,
         ], 200);
     }

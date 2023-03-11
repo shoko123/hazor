@@ -1,15 +1,12 @@
 // collectionTypes.ts
 import { TApiMedia } from '@/js/types/apiTypes'
 
-type TView = 'Media' | 'Chips' | 'Table'
+enum ECollectionViews { Image, Chip, Table }
+// Media' | 'Chips' | 'Table'
 type TCollectionName = 'main' | 'media' | 'related'
 type TElement = 'array' | 'page' | 'viewIndex'
 
-type TItemsPerPage = {
-        Media: number,
-        Chips: number,
-        Table: number
-}
+type TItemsPerPage = number[]
 
 type TSetPage = {
         pageNoB1: number,
@@ -49,7 +46,7 @@ type TPageItemMedia = {
 
 type TPageItemTable = {
         id: number,
-        url_id: string,        
+        url_id: string,
         tag: string
         description: string
 }
@@ -62,14 +59,14 @@ type TPageItem = TPageItemMedia | TPageItemChip | TPageItemTable
 type TCollectionMeta = {
         length: number,
         pageNoB1: number,
-        views: TView[],
+        views: ECollectionViews[],
         viewIndex: number,
         //itemIndex: number,
         //ready: { array: boolean, index: boolean, page: boolean }
 }
 
 type TGetCollectionMeta = {
-        views: string[],
+        views: ECollectionViews[],
         viewIndex: number,
         pageNoB1: number,
         noOfItems: number,
@@ -81,4 +78,4 @@ type TGetCollectionMeta = {
 }
 
 
-export { TView, TCollectionMeta, TElement, TCollectionName, TDBPage, TItemsPerPage, TGetCollectionMeta, TPageItem, TArrayItem, TSetPage, TPageItemChip, TPageItemMedia, TPageItemTable }
+export { ECollectionViews, TCollectionMeta, TElement, TCollectionName, TDBPage, TItemsPerPage, TGetCollectionMeta, TPageItem, TArrayItem, TSetPage, TPageItemChip, TPageItemMedia, TPageItemTable }

@@ -20,7 +20,7 @@
 <script lang="ts" setup >
 
 import { computed } from 'vue'
-import { TSetPage, TCollectionName, TView } from '../../types/collectionTypes'
+import { TSetPage, TCollectionName, ECollectionViews } from '../../types/collectionTypes'
 import CollectionPageMedia from './CollectionPageMedia.vue'
 import CollectionPageChips from './CollectionPageChips.vue'
 import CollectionPageTable from './CollectionPageTable.vue'
@@ -87,11 +87,11 @@ const showPaginator = computed(() => {
 const collectionPage = computed(() => {
 
   switch (meta.value.views[meta.value.viewIndex]) {
-    case 'Media':
+    case ECollectionViews.Image:
       return CollectionPageMedia
-    case 'Chips':
+    case ECollectionViews.Chip:
       return CollectionPageChips
-    case 'Table':
+    case ECollectionViews.Table:
       return CollectionPageTable
     default:
       alert(`Wrong view! viewIndex: ${meta.value.viewIndex}`)
@@ -99,7 +99,7 @@ const collectionPage = computed(() => {
 })
 
 const displayOption = computed(() => {
-  return meta.value.views[meta.value.viewIndex]
+  return ECollectionViews[ meta.value.views[meta.value.viewIndex]]
 })
 
 

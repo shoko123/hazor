@@ -2,11 +2,11 @@
 //handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed, registerRuntimeCompiler } from 'vue'
-import { TCollectionMeta, TCollectionName, TElement, TItemsPerPage, TDBPage, TPageItem, TView, TArrayItem, TGetCollectionMeta, TSetPage, TPageItemMedia, TPageItemTable, TPageItemChip } from '../../types/collectionTypes'
+import { TCollectionMeta, TCollectionName, TElement, TItemsPerPage, TDBPage, TPageItem, ECollectionViews, TArrayItem, TGetCollectionMeta, TSetPage, TPageItemMedia, TPageItemTable, TPageItemChip } from '../../types/collectionTypes'
 import { TMedia } from '../../types/mediaTypes'
 
 import { TModule } from '../../types/routesTypes'
-import { TApiMedia } from '@/js/types/apiTypes'
+import { TApiMedia, TItemPerPagePerView } from '@/js/types/apiTypes'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useMediaStore } from './media'
@@ -17,30 +17,27 @@ export const useCollectionsStore = defineStore('collections', () => {
     const { showSnackbar } = useNotificationsStore()
     const { buildMedia } = useMediaStore()
 
-    const itemsPerPage = ref<TItemsPerPage>({
-        Media: 0,
-        Chips: 0,
-        Table: 0,
-    })
+    let itemsPerPage = ref([0, 0, 0])
+
 
     let main = ref<TCollectionMeta>({
         length: 0,
         pageNoB1: 1,
-        views: ["Media", "Chips", "Table"] as TView[],
+        views: [ECollectionViews.Image, ECollectionViews.Chip, ECollectionViews.Table],
         viewIndex: 0,
     })
 
     const media = ref<TCollectionMeta>({
         length: 0,
         pageNoB1: 1,
-        views: ["Media"] as TView[],
+        views: [ECollectionViews.Image],
         viewIndex: 0,
     })
 
     const related = ref<TCollectionMeta>({
         length: 0,
         pageNoB1: 1,
-        views: ["Media", "Chips"] as TView[],
+        views: [ECollectionViews.Image, ECollectionViews.Chip],
         viewIndex: 0,
     })
 
@@ -50,7 +47,7 @@ export const useCollectionsStore = defineStore('collections', () => {
 
     let mainPageArray = ref<TPageItem[]>([])
     let relatedPageArray = ref<TPageItem[]>([])
-    let mediaPageArray = ref<TPageItem[]>([])
+    let mediaPageArray = ref<TMedia[]>([])
 
     function getPageArray(source: TCollectionName) {
         switch (source) {
@@ -88,11 +85,11 @@ export const useCollectionsStore = defineStore('collections', () => {
     function collectionMeta(name: TCollectionName): TGetCollectionMeta {
         //console.log(`collectionMeta("${name}")`)
         let meta = getCollectionMeta(name)
-        let ipp = itemsPerPage.value[<TView>meta.value.views[meta.value.viewIndex]]
+        let ipp = itemsPerPage.value[meta.value.views[meta.value.viewIndex]]
         let noOfPages = Math.floor(meta.value.length / ipp) + (meta.value.length % ipp === 0 ? 0 : 1)
         let pageArr = getPageArray(name)
         return {
-            views: meta.value.views,
+            views: meta.value.views,//.map(x => ECollectionViews[x]),
             viewIndex: meta.value.viewIndex,
             pageNoB1: meta.value.pageNoB1,
             noOfItems: meta.value.length,
@@ -112,9 +109,9 @@ export const useCollectionsStore = defineStore('collections', () => {
     }
 
     async function loadPage(name: TCollectionName, pageNoB1: number, viewIndex: number, module: TModule): Promise<boolean> {
-        let view = main.value.views[viewIndex]
-        let ipp = itemsPerPage.value[view]
         let meta = getCollectionMeta(name)
+        let view = meta.value.views[viewIndex]
+        let ipp = itemsPerPage.value[view]
         let start = (pageNoB1 - 1) * ipp;
         let array = getCollectionArray(name)
         let ids = array.value.slice(start, start + ipp).map(x => x.id);
@@ -123,7 +120,7 @@ export const useCollectionsStore = defineStore('collections', () => {
 
         switch (name) {
             case 'main':
-                if (view === 'Chips') {
+                if (view === ECollectionViews.Chip) {
                     savePage('main', array.value.slice(start, start + ipp), view, module)
                     meta.value.pageNoB1 = pageNoB1
                     meta.value.viewIndex = viewIndex
@@ -135,6 +132,7 @@ export const useCollectionsStore = defineStore('collections', () => {
                     savePage('main', [], view, module)
                     return true
                 }
+
                 await send('model/page', 'post', { model: module, view, ids })
                     .then(res => {
                         console.log(`model.page() returned (success)`)
@@ -152,6 +150,10 @@ export const useCollectionsStore = defineStore('collections', () => {
                         console.log(`model.page() finally`)
                         return true
                     })
+                break
+            case 'media':
+                savePage('media', array.value.slice(start, start + ipp), view, module)
+
             default:
                 return false
 
@@ -159,29 +161,38 @@ export const useCollectionsStore = defineStore('collections', () => {
         return true
     }
 
-    function savePage(name: TCollectionName, page: TDBPage[], view: TView, module: TModule): void {
+    function savePage(name: TCollectionName, page: TDBPage[], view: ECollectionViews, module: TModule): void {
         let toSave = []
         let pageRef = getPageArray(name)
+        switch (name) {
+            case 'main':
 
-        switch (view) {
-            case 'Media':
-                toSave = page.map(x => {
-                    const media = buildMedia(<TApiMedia>x.media1, module)
-                    const item = { id: x.id, url_id: x.url_id, tag: x.url_id, description: x.description }
-                    return { item, media: media }
-                })
-                pageRef.value = <TPageItemMedia[]>toSave
-                break;
+                switch (view) {
+                    case ECollectionViews.Image:
+                        toSave = page.map(x => {
+                            const media = buildMedia(<TApiMedia>x.media1, module)
+                            const item = { id: x.id, url_id: x.url_id, tag: x.url_id, description: x.description }
+                            return { item, media: media }
+                        })
+                        pageRef.value = <TPageItemMedia[]>toSave
+                        break;
 
-            case 'Chips':
-                toSave = page.map(x => { return { id: x.id, url_id: x.url_id, tag: x.url_id } })
-                pageRef.value = <TPageItemChip[]>toSave
-                break;
+                    case ECollectionViews.Chip:
+                        toSave = page.map(x => { return { id: x.id, url_id: x.url_id, tag: x.url_id } })
+                        pageRef.value = <TPageItemChip[]>toSave
+                        break;
 
-            case 'Table':
-                toSave = page.map(x => { return { id: x.id, url_id: x.url_id,  tag: x.url_id,description: x.description } })
-                pageRef.value = <TPageItemTable[]>toSave
-                break;
+                    case ECollectionViews.Table:
+                        toSave = page.map(x => { return { id: x.id, url_id: x.url_id, tag: x.url_id, description: x.description } })
+                        pageRef.value = <TPageItemTable[]>toSave
+                        break;
+                }
+                break
+            case 'media':
+                //toSave = page.map(x => buildMedia(x, module))
+                //pageRef.value = <TPageItemMedia[]>toSave
+                break
+            case 'related':
         }
         //console.log(`Saving page: ${JSON.stringify(toSave, null, 2)}`)
     }
@@ -196,8 +207,10 @@ export const useCollectionsStore = defineStore('collections', () => {
         await loadPage(name, 1, newViewIndex, module)
     }
 
-    function setItemsPerPage(ipp: TItemsPerPage) {
-        itemsPerPage.value = ipp
+    function setItemsPerPage(ipp: TItemPerPagePerView) {
+        itemsPerPage.value[ECollectionViews.Image] = ipp.Image
+        itemsPerPage.value[ECollectionViews.Chip] = ipp.Chip
+        itemsPerPage.value[ECollectionViews.Table] = ipp.Table
     }
 
     async function loadPageByItemIndex(module: TModule, index: number) {
@@ -276,6 +289,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         mainPageArray,
         media,
         mediaArray,
+        mediaPageArray,
         itemsPerPage,
         itemIdsByIndex,
         setItemsPerPage,

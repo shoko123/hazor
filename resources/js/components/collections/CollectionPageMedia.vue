@@ -19,7 +19,7 @@
 import { storeToRefs } from 'pinia'
 import { useCollectionsStore } from '../../scripts/stores/collections';
 import { computed } from 'vue'
-import { TCollectionName, TPageItemMedia } from '../../types/collectionTypes'
+import { ECollectionViews, TCollectionName, TPageItemMedia } from '../../types/collectionTypes'
 
 import MediaSquare from '../media/MediaSquare.vue'
 
@@ -36,7 +36,7 @@ const page = computed(() => {
 
 
 function itemIndex(index: number) : number{
-  return (props.pageNoB1 - 1) * itemsPerPage.value.Media + index
+  return (props.pageNoB1 - 1) * itemsPerPage.value[ECollectionViews.Image] + index
 }
 </script>
 

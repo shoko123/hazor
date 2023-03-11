@@ -5,6 +5,8 @@ import {TFields}from '@/js/types/itemTypes'
 type TApiMedia = 
   { full: string, tn: string } | null
 
+type TItemPerPagePerView = 
+  { Image: number, Chip: number, Table: number }
 
 type TApiRespShow0 = {
   msg: string,
@@ -22,4 +24,4 @@ type TApiRespShow1 = {
   media: TApiMedia,
 }
 
-export { TApiRespShow0, TApiRespShow1, TApiMedia }
+export { TItemPerPagePerView, TApiRespShow0, TApiRespShow1, TApiMedia }
