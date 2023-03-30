@@ -50,18 +50,23 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         $desc = $this->buildSqlDescription();
         $urlId = $this->buildSqlUrlId();
 
-        $items = $this->whereIn('id', $ids)
+        $res = $this->whereIn('id', $ids)
             ->select('id', DB::raw($desc), DB::raw($urlId))
+            ->with("media")
             ->orderByRaw("FIELD(id, $idsAsCommaSeperatedString)")
             ->get();
 
-        if ($view  === "Media") {
-            $items->transform(function ($item, $key) {
-                $item["media"] = null;
-                return $item;
-            });
-        }
-        return $items;
+
+        $res->transform(function ($item, $key) {
+            $media = null;
+            if (!$item->media->isEmpty()) {
+                $media = ['full' => $item->media[0]->getPath(), 'tn' =>  $item->media[0]->getPath('tn')]; 
+            }
+            unset($item->media);
+            $item->media1 = $media;
+            return $item;
+        });
+        return $res;
     }
 
     public function show($id)
@@ -78,15 +83,17 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         $media1 = null;
         if (!$item->media->isEmpty()) {
             foreach ($item->media as $med) {
-                array_push($media, ['fullPath' => $med->getPath(), 'tnPath' =>  $med->getPath('tn')]);
+                array_push($media, ['full' => $med->getPath(), 'tn' =>  $med->getPath('tn')]);
             }
             $media1 = $media[0];
         }
+        $global_tags = $item->global_tags;
+        $model_tags = $item->model_tags;
         unset($item->media);
         unset($item->global_tags);
         unset($item->model_tags);
 
-        return ["fields" => $item, "media" => $media, "media1" => $media1];
+        return ["fields" => $item, "media" => $media, "media1" => $media1, "global_tags" => $global_tags, "model_tags" => $model_tags];
 
         $builder = $this->with(
             [

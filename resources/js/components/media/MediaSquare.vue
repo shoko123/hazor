@@ -27,7 +27,7 @@
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { TCollectionName, TPageItemMedia } from '../../types/collectionTypes'
+import { TCollectionName, TPageMainImage } from '../../types/collectionTypes'
 
 
 import OverlayRelated from './OverlayRelated.vue'
@@ -38,7 +38,7 @@ import { ItemNotFoundError } from '@/js/scripts/setups/routes/errors'
 
 const props = defineProps<{
   source: TCollectionName,
-  item: TPageItemMedia,
+  item: TPageMainImage,
   itemIndex: number,
   pageNoB1?: number,
   indexInPage?: number,
@@ -53,7 +53,7 @@ const myProps = computed(() => {
   return props
 })
 
-//Runtime verification that we indeed have TPageItemMedia (and not TPageItemChip or TPageItemTable)
+//Runtime verification that we indeed have TPageMainImage (and not TPageItemChip or TPageMainTable)
 const itemHasUrls = computed(() => {
   return typeof props.item.media.urls === 'object'
 })
@@ -62,11 +62,11 @@ const show = computed(() => {
   return true
 })
 const tagText = computed(() => {
-  return props.item.item.tag
+  return props.item.tag
 })
 
 const overlayText = computed(() => {
-  return props.item.item.description
+  return props.item.description
 })
 
 const overlay = computed(() => {

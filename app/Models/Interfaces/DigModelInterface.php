@@ -2,18 +2,14 @@
 
 namespace App\Models\Interfaces;
 
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Model;
 //use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use stdClass;
-
 interface DigModelInterface
 {
     public function init(): array;    
     public function index($queryParams);
-    public function page($ids, $view): Collection;//view: "Media" | "Table"
+    public function page($ids, $view): Collection;//some page views require gathering of data from DB (according to ids/slugs and view): "Media" | "Table"
     public function show(int $id);
     public function showCarouselItem(int $id);
     public function firstUrlId();

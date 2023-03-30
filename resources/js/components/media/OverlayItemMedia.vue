@@ -5,17 +5,17 @@
 </template>  
 
 <script lang="ts" setup >
-import { TCollectionName, TPageItemMedia } from '../../types/collectionTypes'
+import { TCollectionName, TPageMainImage } from '../../types/collectionTypes'
 import { computed } from 'vue'
 
 const props = defineProps<{
   source: TCollectionName, 
   caller: string, 
-  item: TPageItemMedia
+  item: TPageMainImage
 }>()
 
 const tagText = computed(() => {
-  return props.item.item.tag
+  return props.item.tag
 })
 const showLightBoxOption = computed(() => {
   return true

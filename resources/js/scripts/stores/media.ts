@@ -32,8 +32,8 @@ export const useMediaStore = defineStore('media', () => {
       return {
         hasMedia: true,
         urls: {
-          full: `${bucketUrl.value}db/${dbMedia.full}`,
-          tn: `${bucketUrl.value}db/${dbMedia.tn}`
+          full: `${bucketUrl.value}${dbMedia.full}`,
+          tn: `${bucketUrl.value}${dbMedia.tn}`
         }
       }
     }

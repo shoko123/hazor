@@ -163,7 +163,9 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
         i.fields = res.data.fields
         i.url_id = res.data.url_id
         i.tag = m.tagFromUrlId(to.module, res.data.url_id)
+        
         c.setArray('media', res.data.media)
+        c.loadPage('media', 1, 0, to.module)
         return true
       })
       .catch(err => {

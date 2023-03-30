@@ -13,7 +13,7 @@
     
 
 <script lang="ts" setup >
-import { TCollectionName, TPageItemMedia } from '../../types/collectionTypes'
+import { TCollectionName, TPageMainImage } from '../../types/collectionTypes'
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
@@ -24,7 +24,7 @@ const router = useRouter()
 const props = defineProps<{
   source: TCollectionName,
   itemIndex: number,
-  item: TPageItemMedia,
+  item: TPageMainImage,
   pageNoB1?: number,
 }>()
 
@@ -35,10 +35,10 @@ onMounted(() => {
 const { open } = useCarouselStore()
 
 const text = computed(() => {
-  if (props.item.item.description === null) {
+  if (props.item.description === null) {
     return "";
   } else {
-    return props.item.item.description.length < 101 ? props.item.item.description : props.item.item.description.substr(0, 100) + "...";
+    return props.item.description.length < 101 ? props.item.description : props.item.description.substr(0, 100) + "...";
   }
 })
 
@@ -48,10 +48,10 @@ function openModalCarousel() {
   open(props.source, props.itemIndex, routeInfo.value.module, props.item)
 }
 
-function goTo(item: TPageItemMedia) {
+function goTo(item: TPageMainImage) {
   console.log(`goto item: ${JSON.stringify(item, null, 2)}`)
   let routeInfo = getRouteInfo()
-  router.push({ name: 'show', params: { module: routeInfo.value.url_module, url_id: item.item.url_id } })
+  router.push({ name: 'show', params: { module: routeInfo.value.url_module, url_id: item.url_id } })
 }
 
 

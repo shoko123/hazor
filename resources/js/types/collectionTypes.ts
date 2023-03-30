@@ -1,6 +1,6 @@
 // collectionTypes.ts
 import { TApiMedia } from '@/js/types/apiTypes'
-
+import { TMedia } from '@/js/types/mediaTypes'
 enum ECollectionViews { Image, Chip, Table }
 // Media' | 'Chips' | 'Table'
 type TCollectionName = 'main' | 'media' | 'related'
@@ -13,46 +13,37 @@ type TSetPage = {
         viewIndex: number
 }
 
-//'main' array items
-type TArrayItem = { id: number, url_id: string }
-
-//raw data received from DB (from 'main, page('media') & page('table'))
-type TDBPage = {
-        id: number,
-        url_id: string,
-        description?: string,
-        media1?: TApiMedia
-}
 
 //conversions ready for consumption for 'Media', 'Chip', and 'Table' views
+
 type TPageItemChip = {
         id: number,
         url_id: string,
         tag: string,
 }
 
-type TPageItemMedia = {
-        item: {
-                id: number,
-                url_id: string,
-                tag: string,
-                description: string
-        },
-        media: {
-                hasMedia: boolean,
-                urls: { full: string, tn: string }
-        }
+type TPageMainImage = {
+        id: number,
+        url_id: string,
+        tag: string,
+        description: string
+        media: TMedia
 }
 
-type TPageItemTable = {
+type TPageMainTable = {
         id: number,
         url_id: string,
         tag: string
         description: string
 }
 
+type TPageItemMedia = {
+        media: TMedia,
+        tag: string
+        description?: string,
+}
 //union of the above
-type TPageItem = TPageItemMedia | TPageItemChip | TPageItemTable
+type TPageItem = TPageMainImage | TPageMainTable | TPageItemChip | TPageItemMedia
 
 
 //all the data kept in a specific collection
@@ -78,4 +69,4 @@ type TGetCollectionMeta = {
 }
 
 
-export { ECollectionViews, TCollectionMeta, TElement, TCollectionName, TDBPage, TItemsPerPage, TGetCollectionMeta, TPageItem, TArrayItem, TSetPage, TPageItemChip, TPageItemMedia, TPageItemTable }
+export { ECollectionViews, TCollectionMeta, TElement, TCollectionName, TItemsPerPage, TGetCollectionMeta, TPageItem, TSetPage, TPageItemChip, TPageMainImage, TPageMainTable }

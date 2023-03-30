@@ -37,12 +37,13 @@
 </template>
 
 <script lang="ts" setup >
-import { TCollectionName, TPageItemMedia } from '../../../../types/collectionTypes'
+import { TCollectionName, TPageMainImage } from '@/js/types/collectionTypes'
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 
-import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
+//import { useRoutesMainStore } from '../../../../../scripts/stores/routes/routesMain'
+import { useRoutesMainStore } from '@/js/scripts/stores/routes/routesMain'
 import FieldPicker from './FieldPicker.vue'
 
 const router = useRouter()

@@ -19,7 +19,7 @@
 import { storeToRefs } from 'pinia'
 import { useCollectionsStore } from '../../scripts/stores/collections';
 import { computed } from 'vue'
-import { ECollectionViews, TCollectionName, TPageItemMedia } from '../../types/collectionTypes'
+import { ECollectionViews, TCollectionName, TPageMainImage } from '../../types/collectionTypes'
 
 import MediaSquare from '../media/MediaSquare.vue'
 
@@ -31,7 +31,7 @@ const props = defineProps<{
 let { getPageArray } = useCollectionsStore()
 let { itemsPerPage } = storeToRefs( useCollectionsStore())
 const page = computed(() => {
-  return getPageArray(props.source).value as TPageItemMedia[]
+  return getPageArray(props.source).value as TPageMainImage[]
 })
 
 
