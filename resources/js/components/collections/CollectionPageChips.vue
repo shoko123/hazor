@@ -11,7 +11,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { TCollectionName, TPageItemChip } from '../../types/collectionTypes'
+import { TCollectionName, TPageVChip } from '../../types/collectionTypes'
 import { useCollectionsStore } from '../../scripts/stores/collections'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 
@@ -25,7 +25,7 @@ const { getRouteInfo } = useRoutesMainStore()
 const router = useRouter()
 
 const page = computed(() => {
-  return getPageArray(props.source).value as TPageItemChip[]
+  return getPageArray(props.source).value as TPageVChip[]
 })
 
 function goTo(item: any) {

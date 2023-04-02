@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts" setup >
-import { TCollectionName, TPageMainImage } from '@/js/types/collectionTypes'
+import { TCollectionName } from '@/js/types/collectionTypes'
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 

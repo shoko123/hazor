@@ -2,11 +2,11 @@
 //handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed, registerRuntimeCompiler } from 'vue'
-import { TCollectionMeta, TCollectionName, TElement, TItemsPerPage, TPageItem, ECollectionViews, TGetCollectionMeta, TSetPage, TPageMainImage, TPageMainTable, TPageItemChip } from '../../types/collectionTypes'
+import { TCollectionMeta, TCollectionName, TElement, TItemsPerPage, TPageItem, ECollectionViews, TGetCollectionMeta, TSetPage, TPageCMainVImage, TPageCMainVTable, TPageVChip } from '../../types/collectionTypes'
 import { TMedia } from '../../types/mediaTypes'
 
 import { TModule } from '../../types/routesTypes'
-import { TApiMedia, TItemPerPagePerView, TApiArrayItemMain, TApiPageItemMainViewImage, TApiPageItemMainViewTable, TApiPageItem } from '@/js/types/apiTypes'
+import { TApiMedia, TItemPerPagePerView, TApiArrayItemMain, TApiMainImage, TApiMainTable, TApiPageItem } from '@/js/types/apiTypes'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useMediaStore } from './media'
@@ -169,23 +169,23 @@ export const useCollectionsStore = defineStore('collections', () => {
                 switch (view) {
                     case ECollectionViews.Image:
                         
-                        toSave = (<TApiPageItemMainViewImage[]>page).map(x => {
+                        toSave = (<TApiMainImage[]>page).map(x => {
                             const media = buildMedia(x.media1, module)
                             const item = { id: x.id, url_id: x.url_id, tag: x.url_id, description: x.description }
                             return { ...item, media: media }
                         })
-                        pageRef.value = <TPageMainImage[]>toSave
+                        pageRef.value = <TPageCMainVImage[]>toSave
                           //pageRef.value = { id: x.id, url_id: x.url_id, tag: x.url_id, description: x.description, media }
                           break;
 
                     case ECollectionViews.Chip:
                         toSave = (<TApiArrayItemMain[]>page).map(x => { return { id: x.id, url_id: x.url_id, tag: x.url_id } })
-                        pageRef.value = <TPageItemChip[]>toSave
+                        pageRef.value = <TPageVChip[]>toSave
                         break;
 
                     case ECollectionViews.Table:
-                        toSave = (<TApiPageItemMainViewTable[]>page).map(x => { return { id: x.id, url_id: x.url_id, tag: x.url_id, description: x.description } })
-                        pageRef.value = <TPageMainTable[]>toSave
+                        toSave = (<TApiMainTable[]>page).map(x => { return { id: x.id, url_id: x.url_id, tag: x.url_id, description: x.description } })
+                        pageRef.value = <TPageCMainVTable[]>toSave
                         break;
                 }
                 break
@@ -231,7 +231,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     }
 
     function itemIsInPage(id: number) {
-        return mainPageArray.value.some((x) => (<TPageMainImage>x).id === id)
+        return mainPageArray.value.some((x) => (<TPageCMainVImage>x).id === id)
     }
 
     function itemIdsByIndex(name: TCollectionName, index: number) {

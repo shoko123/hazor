@@ -16,13 +16,13 @@ type TSetPage = {
 
 //conversions ready for consumption for 'Media', 'Chip', and 'Table' views
 
-type TPageItemChip = {
+type TPageVChip = {
         id: number,
         url_id: string,
         tag: string,
 }
 
-type TPageMainImage = {
+type TPageCMainVImage = {
         id: number,
         url_id: string,
         tag: string,
@@ -30,20 +30,21 @@ type TPageMainImage = {
         media: TMedia
 }
 
-type TPageMainTable = {
+
+type TPageCMainVTable = {
         id: number,
         url_id: string,
         tag: string
         description: string
 }
 
-type TPageItemMedia = {
+type TPageCMediaVImage = {
         media: TMedia,
         tag: string
         description?: string,
 }
 //union of the above
-type TPageItem = TPageMainImage | TPageMainTable | TPageItemChip | TPageItemMedia
+type TPageItem = TPageCMainVImage | TPageCMainVTable | TPageVChip | TPageCMediaVImage
 
 
 //all the data kept in a specific collection
@@ -69,4 +70,4 @@ type TGetCollectionMeta = {
 }
 
 
-export { ECollectionViews, TCollectionMeta, TElement, TCollectionName, TItemsPerPage, TGetCollectionMeta, TPageItem, TSetPage, TPageItemChip, TPageMainImage, TPageMainTable }
+export { ECollectionViews, TCollectionMeta, TElement, TCollectionName, TItemsPerPage, TGetCollectionMeta, TPageItem, TSetPage, TPageVChip, TPageCMainVImage, TPageCMainVTable }

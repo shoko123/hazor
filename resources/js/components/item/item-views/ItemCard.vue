@@ -4,7 +4,7 @@
     <v-card-text>
       <component :is="itemForm"></component>
     </v-card-text>
-</v-card>
+  </v-card>
 </template>
 
 <script lang="ts" setup >

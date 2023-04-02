@@ -5,9 +5,8 @@
         v-bind="{
           source: source,
           itemIndex: itemIndex(index),
-          item,          
-          pageNoB1: pageNoB1,
-          indexInPage: index,
+          media: item.media,
+          details: {id: item.id, url_id: item.url_id, tag: item.tag, description: item.description},          
           size: 250,
         }"
       ></MediaSquare>
@@ -19,7 +18,7 @@
 import { storeToRefs } from 'pinia'
 import { useCollectionsStore } from '../../scripts/stores/collections';
 import { computed } from 'vue'
-import { ECollectionViews, TCollectionName, TPageMainImage } from '../../types/collectionTypes'
+import { ECollectionViews, TCollectionName, TPageCMainVImage } from '../../types/collectionTypes'
 
 import MediaSquare from '../media/MediaSquare.vue'
 
@@ -31,7 +30,7 @@ const props = defineProps<{
 let { getPageArray } = useCollectionsStore()
 let { itemsPerPage } = storeToRefs( useCollectionsStore())
 const page = computed(() => {
-  return getPageArray(props.source).value as TPageMainImage[]
+  return getPageArray(props.source).value as TPageCMainVImage[]
 })
 
 

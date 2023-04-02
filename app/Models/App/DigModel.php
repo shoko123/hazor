@@ -60,7 +60,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         $res->transform(function ($item, $key) {
             $media = null;
             if (!$item->media->isEmpty()) {
-                $media = ['full' => $item->media[0]->getPath(), 'tn' =>  $item->media[0]->getPath('tn')]; 
+                $media = ['full' => $item->media[0]->getPath(), 'tn' =>  $item->media[0]->getPath('tn')];
             }
             unset($item->media);
             $item->media1 = $media;
@@ -194,19 +194,21 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
     public function showCarouselItem($id)
     {
         $desc = $this->buildSqlDescription();
-        $builder = $this->with(
-            'media',
-        )->selectRaw($desc);
+        $item = self::with('media')
+            ->select('id', DB::raw($desc))
+            ->findOrFail($id);
 
-        $item = $builder->findOrFail($id);
-        $media1 = $item->media;
+        $media1 = null;
+        if (!$item->media->isEmpty()) {
+            $media1 = ['full' => $item->getFirstMediaPath('photos'), 'tn' =>  $item->getFirstMediaPath('photos', 'tn'), 'id' => $item->media[0]->id];
+        }
         unset($item->media);
 
         return [
             "id" => $id,
             "url_id" => $this->getUrlIdFromId($id),
             "description" => $item->description,
-            "media" => null,
+            "media" => $media1,
         ];
     }
 

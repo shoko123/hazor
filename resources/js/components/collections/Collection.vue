@@ -21,7 +21,7 @@
 
 import { computed } from 'vue'
 import { TSetPage, TCollectionName, ECollectionViews } from '../../types/collectionTypes'
-import CollectionPageMedia from './CollectionPageMedia.vue'
+import CollectionPageImage from './CollectionPageImage.vue'
 import CollectionPageChips from './CollectionPageChips.vue'
 import CollectionPageTable from './CollectionPageTable.vue'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain';
@@ -88,7 +88,7 @@ const collectionPage = computed(() => {
 
   switch (meta.value.views[meta.value.viewIndex]) {
     case ECollectionViews.Image:
-      return CollectionPageMedia
+      return CollectionPageImage
     case ECollectionViews.Chip:
       return CollectionPageChips
     case ECollectionViews.Table:

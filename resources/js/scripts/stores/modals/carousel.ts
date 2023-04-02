@@ -1,7 +1,7 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { TCollectionName, TPageMainImage, } from '../../../types/collectionTypes'
+import { TCollectionName, TPageCMainVImage, } from '../../../types/collectionTypes'
 import { TApiRespShow1 } from '@/js/types/apiTypes'
 import { useCollectionsStore } from '../collections'
 import { useXhrStore } from '../xhr'
@@ -10,10 +10,9 @@ import { useMediaStore } from '../media'
 import { useRoutesMainStore } from '../routes/routesMain'
 import { TCarouselDetails } from '@/js/types/modalTypes'
 import { TModule } from '@/js/types/routesTypes'
-import { TMedia } from '@/js/types/mediaTypes'
+import { TMedia, TMediaProps, TMediaSquareDetailsMain } from '@/js/types/mediaTypes'
 
 export const useCarouselStore = defineStore('carousel', () => {
-
   let c = useCollectionsStore()
   const { send } = useXhrStore()
   const { showSpinner } = useNotificationsStore()
@@ -21,49 +20,41 @@ export const useCarouselStore = defineStore('carousel', () => {
   const { getBucketUrl, buildMedia } = useMediaStore()
 
   let isOpen = ref<boolean>(false)
-
-  let collectionName = ref<TCollectionName>('main')
-  let carouselItemIndex = ref<number>(-1)
-  let carouselItemModule = ref<TModule>('Home')
-  let carouselItem = ref<TPageMainImage>({ id: -1, url_id: "", tag: "", description: "" , media: { hasMedia: false, urls: { full: "", tn: "" } } })
-
+  let module = ref<TModule>('Home')
+  let carousel = ref<TMediaProps>({ source: 'main', itemIndex: -1, media: { hasMedia: false, urls: { full: "", tn: "" } }, details: { id: -1, url_id: "", tag: "", description: "" } })
+  
   const carouselHeader = computed(() => {
-    return `Carousel Header ${carouselItemModule.value} [${carouselItemIndex.value + 1}/${c.collectionMeta(collectionName.value).length}]`
-
+    return `Carousel Header ${module.value} [${carousel.value.itemIndex + 1}/${c.collectionMeta(carousel.value.source).length}]`
   })
 
   const carouselDetails = computed<TCarouselDetails | undefined>(() => {
     if (!isOpen.value) { return undefined }
+    let details = carousel.value.details as TMediaSquareDetailsMain
     return {
       carouselHeader: carouselHeader.value,
-      itemIndexB1: carouselItemIndex.value + 1,
+      itemIndexB1: carousel.value.itemIndex + 1,
       itemTag: "my tag",
-      itemDescription: carouselItem.value.description,
-      itemUrlId: carouselItem.value.url_id,
-      itemModule: carouselItemModule.value,
-      media: carouselItem.value.media,
+      itemDescription: details.description,
+      itemUrlId: details.url_id,
+      itemModule: module.value,
+      media: carousel.value.media,
     }
-
   })
 
-  async function open(source: TCollectionName, index: number, module: TModule, item: TPageMainImage) {
-    collectionName.value = source
-    carouselItemIndex.value = index
-    carouselItemModule.value = module
-    carouselItem.value = item
-    //const ids = c.itemIdsByIndex(source, index)
+  async function open(source: TCollectionName, index: number, mod: TModule, item: TMediaProps) {
+    module.value = mod
+    carousel.value = item
     console.log(`carousel.open() source: ${source} index: ${index} module: ${module} items: ${JSON.stringify(item, null, 2)}`)
-
     isOpen.value = true
   }
 
   function nextIndex(isRight: boolean) {
-    let newIndex, meta = c.collectionMeta('main')
+    let newIndex, meta = c.collectionMeta(carousel.value.source)
 
     if (isRight) {
-      newIndex = (carouselItemIndex.value === meta.length - 1) ? 0 : carouselItemIndex.value + 1
+      newIndex = (carousel.value.itemIndex === meta.length - 1) ? 0 : carousel.value.itemIndex + 1
     } else {
-      newIndex = (carouselItemIndex.value === 0) ? meta.length - 1 : carouselItemIndex.value - 1
+      newIndex = (carousel.value.itemIndex === 0) ? meta.length - 1 : carousel.value.itemIndex - 1
     }
     return newIndex
   }
@@ -71,16 +62,16 @@ export const useCarouselStore = defineStore('carousel', () => {
   async function next(isRight: boolean) {
     // console.log(`next(${isRight ? "Right" : "Left"})`)    
     const newIndex = nextIndex(isRight)
-    const ids = c.itemIdsByIndex('main', newIndex)
+    const ids = c.itemIdsByIndex(carousel.value.source, newIndex)
     showSpinner(`Loading next item...`)
 
     await send('model/show', 'post', { model: current.value.module, url_id: ids.url_id, variant: 1 })
       .then(res => {
         console.log(`show(carouselItem) returned (success). res: ${JSON.stringify(res.data, null, 2)}`)
         let resp = res.data.item as TApiRespShow1
-        carouselItemIndex.value = newIndex
-        carouselItem.value = { id: resp.id, url_id: resp.url_id, tag: resp.url_id, description: resp.description , media: buildMedia(resp.media, current.value.module) }
-        return true
+        carousel.value.itemIndex = newIndex
+        carousel.value.media = buildMedia(resp.media, current.value.module)
+        carousel.value.details = { id: resp.id, url_id: resp.url_id, tag: resp.url_id, description: resp.description }
       })
       .catch(err => {
         console.log(`loadItem() failed`)
@@ -90,14 +81,14 @@ export const useCarouselStore = defineStore('carousel', () => {
         showSpinner(false)
       })
   }
+
   async function close() {
     //if current carouselItem is in currently loaded page - close, otherwise, load relevant page
-    if (!c.itemIsInPage(carouselItem.value.id)) {
-      const index = c.itemIndexById(carouselItem.value.id)
+    if (!c.itemIsInPage(carousel.value.details.id)) {
+      const index = c.itemIndexById(carousel.value.details.id)
       await c.loadPageByItemIndex(current.value.module, index)
         .then(res => {
           console.log(`carousel.close() loaded a new page`)
-          return true
         })
         .catch(err => {
           console.log(`loadPage() failed`)
@@ -111,10 +102,10 @@ export const useCarouselStore = defineStore('carousel', () => {
     }
     isOpen.value = false
   }
+
   return {
     carouselDetails,
     isOpen,
-    carouselItem,
     open,
     close,
     next,
