@@ -3,7 +3,7 @@
     <!-- <v-card-text class="text-body-1 white--text"> {{text}}
     </v-card-text> -->
     <v-card-actions>
-      <v-btn class="but" @click="goTo(<TMediaSquareDetailsMain>details)">Visit</v-btn>
+      <v-btn class="but" @click="goTo(<TMediaDetailsCMain>details)">Visit</v-btn>
       <v-btn class="but" @click="openModalCarousel()">Lightbox</v-btn>
     </v-card-actions>
   </v-card>
@@ -14,7 +14,7 @@
 
 <script lang="ts" setup >
 import { TCollectionName } from '../../types/collectionTypes'
-import {TMedia, TMediaSquareDetailsMain, TMediaSquareDetailsMedia} from '../../types/mediaTypes'
+import {TMedia, TMediaDetailsCMain, TMediaDetailsCMedia} from '../../types/mediaTypes'
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
@@ -26,7 +26,7 @@ const props = defineProps<{
   source: TCollectionName,
   itemIndex: number,
    media: TMedia     
-     details: TMediaSquareDetailsMain | TMediaSquareDetailsMedia
+     details: TMediaDetailsCMain | TMediaDetailsCMedia
 
   pageNoB1?: number,
 }>()
@@ -58,7 +58,7 @@ function openModalCarousel() {
   open(props.source, props.itemIndex, routeInfo.value.module, props)
 }
 
-function goTo(item: TMediaSquareDetailsMain) {
+function goTo(item: TMediaDetailsCMain) {
   console.log(`goto item: ${JSON.stringify(item, null, 2)}`)
   let routeInfo = getRouteInfo()
   router.push({ name: 'show', params: { module: routeInfo.value.url_module, url_id: item.url_id } })

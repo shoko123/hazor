@@ -10,7 +10,7 @@ import { useMediaStore } from '../media'
 import { useRoutesMainStore } from '../routes/routesMain'
 import { TCarouselDetails } from '@/js/types/modalTypes'
 import { TModule } from '@/js/types/routesTypes'
-import { TMedia, TMediaProps, TMediaSquareDetailsMain } from '@/js/types/mediaTypes'
+import { TMedia, TMediaProps, TMediaDetailsCMain } from '@/js/types/mediaTypes'
 
 export const useCarouselStore = defineStore('carousel', () => {
   let c = useCollectionsStore()
@@ -29,7 +29,7 @@ export const useCarouselStore = defineStore('carousel', () => {
 
   const carouselDetails = computed<TCarouselDetails | undefined>(() => {
     if (!isOpen.value) { return undefined }
-    let details = carousel.value.details as TMediaSquareDetailsMain
+    let details = carousel.value.details as TMediaDetailsCMain
     return {
       carouselHeader: carouselHeader.value,
       itemIndexB1: carousel.value.itemIndex + 1,
@@ -43,7 +43,7 @@ export const useCarouselStore = defineStore('carousel', () => {
 
   async function open(source: TCollectionName, index: number, mod: TModule, item: TMediaProps) {
     module.value = mod
-    carousel.value = item
+    carousel.value = {...item}
     console.log(`carousel.open() source: ${source} index: ${index} module: ${module} items: ${JSON.stringify(item, null, 2)}`)
     isOpen.value = true
   }

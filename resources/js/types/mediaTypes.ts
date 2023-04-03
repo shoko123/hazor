@@ -5,14 +5,14 @@ type TMedia = {
         urls: { full: string, tn: string }
 }
 
-type TMediaSquareDetailsMain = {
+type TMediaDetailsCMain = {
         id: number,
         url_id: string,
         tag: string,
         description: string
 }
 
-type TMediaSquareDetailsMedia = {
+type TMediaDetailsCMedia = {
         id: number,
         collection_name: string,
         order_column: number,
@@ -23,10 +23,10 @@ type TMediaProps = {
         source: TCollectionName,
         itemIndex: number,
         media: TMedia        
-        details: TMediaSquareDetailsMain | TMediaSquareDetailsMedia
+        details: TMediaDetailsCMain | TMediaDetailsCMedia
         size?: number
 }
 
 
 
-export { TMedia, TMediaSquareDetailsMain, TMediaSquareDetailsMedia, TMediaProps }
+export { TMedia, TMediaDetailsCMain, TMediaDetailsCMedia, TMediaProps }
