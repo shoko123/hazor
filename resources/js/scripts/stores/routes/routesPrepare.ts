@@ -16,6 +16,7 @@ import { useCollectionsStore } from '../collections';
 import { useModuleStore } from '../module';
 import { useNotificationsStore } from '../notifications';
 import { useItemStore } from '../item';
+import { useMediaStore } from '../media';
 import { useRoutesMainStore } from './routesMain';
 import { ItemNotFoundError } from '../../setups/routes/errors';
 
@@ -27,7 +28,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let t = useTrioStore();
   let i = useItemStore();
   let r = useRoutesMainStore()
-
+let { buildMedia } = useMediaStore()
   async function prepareForNewRoute(to: TRouteInfo, from: TRouteInfo, plan: TPlanAction[]): Promise<TPrepareResponse> {
     for (const x of plan) {
       switch (x) {
@@ -163,7 +164,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
         i.fields = res.data.fields
         i.url_id = res.data.url_id
         i.tag = m.tagFromUrlId(to.module, res.data.url_id)
-        
+        i.media1 = buildMedia(res.data.media1, to.module)
         c.setArray('media', res.data.media)
         c.loadPage('media', 1, 0, to.module)
         return true

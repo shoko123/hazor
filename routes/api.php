@@ -49,6 +49,7 @@ Route::group(['middleware' => ['read.accessibility']], function () {
 //mutator APIs
 //Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('tags/sync', [TagController::class, 'sync']);
+    Route::post('media/show', [MediaController::class, 'show']);    
     Route::post('media/upload', [MediaController::class, 'upload']);
     Route::post('media/delete', [MediaController::class, 'delete']);
     Route::post('media/edit', [MediaController::class, 'edit']);

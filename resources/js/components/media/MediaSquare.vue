@@ -2,7 +2,7 @@
   <v-hover v-slot="{ isHovering, props }">
     <v-card v-bind="props" :color="isHovering ? 'blue' : undefined">
       <v-img :src="media.urls.full" :lazy-src="media.urls.tn" contain aspect-ratio="1" class="bg-grey">
-        <v-btn class="text-subtitle-1 font-weight-medium black--text" color="grey">{{ tagText }}</v-btn>
+        <v-btn v-if="showTag" class="text-subtitle-1 font-weight-medium black--text" color="grey">{{ tagText }}</v-btn>
         <v-card class="mx-auto" color="transparent" flat>
           <v-card-text class="text-body-1 white--text">
             {{ overlayText }}</v-card-text>
@@ -26,9 +26,9 @@ import { TCollectionName } from '../../types/collectionTypes'
 import { TMediaDetailsCMain, TMediaDetailsCMedia } from '../../types/mediaTypes'
 
 import OverlayRelated from './OverlayRelated.vue'
-import OverlayItemMedia from './OverlayItemMedia.vue'
+import OverlayCMedia from './OverlayCMedia.vue'
 import OverlayMediaEdit from './OverlayMediaEdit.vue'
-import OverlayCollectionItem from './OverlayCollectionItem.vue'
+import OverlayCMain from './OverlayCMain.vue'
 import { ItemNotFoundError } from '@/js/scripts/setups/routes/errors'
 import { TMedia } from '@/js/types/mediaTypes'
 
@@ -41,8 +41,8 @@ const props = defineProps<{
   size?: number
 }>()
 
-const show = computed(() => {
-  return true
+const showTag = computed(() => {
+  return props.source === 'main'
 })
 const tagText = computed(() => {
   return (<TMediaDetailsCMain>props.details).tag
@@ -56,9 +56,9 @@ const overlay = computed(() => {
   console.log(`MediaSquare.overlay`)
   switch (props.source) {
     case 'main':
-      return OverlayCollectionItem
+      return OverlayCMain
     case 'media':
-      return OverlayItemMedia
+      return OverlayCMedia
     case 'related':
       return OverlayRelated
   }

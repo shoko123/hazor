@@ -67,7 +67,7 @@ export const useMediaStore = defineStore('media', () => {
     console.log(`set mediaCollection to ${index}`)
   }
 
-  const showUploader = ref<boolean>(false)
+  const showUploader = ref<boolean>(true)
  
   return { setBucketUrl, getBucketUrl, buildMedia, showUploader, getMediaCollectionsNames, getMediaCollection, setMediaCollection }
 })

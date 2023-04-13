@@ -58,6 +58,8 @@ import { ref, computed } from 'vue'
 import { useMediaStore } from '../../scripts/stores/media'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useXhrStore } from '../../scripts/stores/xhr'
+import { useNotificationsStore } from '../../scripts/stores/notifications'
+
 const m = useMediaStore()
 
 //notifications
@@ -65,7 +67,7 @@ const loadingToBrowser = ref<boolean>(false)
 const loadingToServer = ref<boolean>(false)
 
 const mediaReady = computed(() => {
-  return notEmpty.value && !loadingToBrowser.value
+  return images.value.length !== 0 && !loadingToBrowser.value
 })
 
 const header = computed(() => {
@@ -107,7 +109,8 @@ async function onInputChange(media: File[]) {
 
   loadingToBrowser.value = true
   console.log("Load files - started")
-  await Promise.all(images.value.map(async (image) => { addImage(image) })).catch(err => {
+  await Promise.all(images.value.map(async (image) => { addImage(image) }))
+  .catch(err => {
     console.log(`Error encountered when loading files - clearing files`)
     loadingToBrowser.value = false
     clear()
@@ -150,7 +153,7 @@ const mediaCollection = computed({
 
 async function upload() {
   const r = useRoutesMainStore()
-
+  let { showSnackbar, } = useNotificationsStore()
   const { send } = useXhrStore()
   let fd = new FormData();
 
@@ -166,6 +169,8 @@ async function upload() {
   await send("media/upload", 'post', fd).catch((err) => {
     console.log(`mediaUpload failed! err:\n ${JSON.stringify(err, null, 2)}`)
   })
+  showSnackbar("Media uploaded successfully")
+  clear()
 }
 
 function openMultiItemSelector() {

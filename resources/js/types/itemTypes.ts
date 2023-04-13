@@ -53,7 +53,7 @@ type TItemDerived = {
         
 }
 type TFields = TLocusFields | TStoneFields | TFaunaFields
-type TItem = {
+type TApiItem = {
         fields: TFields,
         media: TMedia[],
         media1: TMedia,
@@ -63,4 +63,12 @@ type TItem = {
         extra: any
 }
 
-export { TItemMandatoryFields, TLocusFields, TStoneFields, TFaunaFields, TFields, TItem }
+type TItem = {
+        fields: TFields,
+        media: TMedia,
+        model_tags: any[],
+        global_tags: any[],
+        derived: TItemDerived,
+        extra: any
+}
+export { TItemMandatoryFields, TLocusFields, TStoneFields, TFaunaFields, TFields, TItem, TApiItem }

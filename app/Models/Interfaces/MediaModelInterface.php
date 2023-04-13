@@ -7,9 +7,10 @@ use Illuminate\Http\JsonResponse;
 //use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use App\Models\App\DigModel;
 use stdClass;
 
 interface MediaModelInterface
 {
-    public function storeMedia(Request $r);
+    public function storeMedia(Request $r, DigModel $dm);
 }

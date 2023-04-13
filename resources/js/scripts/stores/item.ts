@@ -1,7 +1,9 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { TItemMandatoryFields } from '../../types/itemTypes'
+import { TItem, TItemMandatoryFields } from '../../types/itemTypes'
+import { TMedia } from '@/js/types/mediaTypes'
+import { TApiMediaOrNull } from '@/js/types/apiTypes'
 import { useCollectionsStore } from './collections'
 import { useRoutesMainStore } from './routes/routesMain'
 
@@ -9,10 +11,12 @@ export const useItemStore = defineStore('item', () => {
 
   const { getRouteInfo } = useRoutesMainStore()
   const { collectionMeta, itemIdsByIndex } = useCollectionsStore()
-  let fields = ref<TItemMandatoryFields | undefined>(undefined)
+ 
+  let fields = ref<TItemMandatoryFields>({id: -1})
   let url_id = ref<string | undefined>(undefined)
   let tag = ref<string | undefined>(undefined)
-  let ready = true
+  let media1 = ref<TMedia>({hasMedia: false, urls: {full: '', tn: ''}})
+  let ready = ref<boolean>(false)
   const itemViewIndex = ref<number>(0)
   const itemIndex = ref<number>(-1)
 
@@ -41,7 +45,7 @@ export const useItemStore = defineStore('item', () => {
   }
   function itemClear(index: number) {
     itemIndex.value = -1
-    fields.value = undefined
+    fields.value = {id: -1}
   }
 
   function nextUrlId(isRight: boolean) {
@@ -65,6 +69,7 @@ export const useItemStore = defineStore('item', () => {
     url_id,
     tag,
     derived,
+    media1,
     getItemIndex,
     setItemIndex,
     nextUrlId,

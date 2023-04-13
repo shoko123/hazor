@@ -2,10 +2,12 @@
 
 namespace App\Models\Functional;
 
+use App\Models\App\DigModel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Models\Interfaces\MediaModelInterface;
+
 use Exception;
 
 class MediaModel implements MediaModelInterface
@@ -17,14 +19,14 @@ class MediaModel implements MediaModelInterface
         $this->model_name = $model_name;
     }
 
-    public function storeMedia(Request $r)
+    public function storeMedia(Request $r, DigModel $dm)
     {
         //return $r;
 
-        $model = 'App\Models\DigModels\\' . $r["model"];
+        //$model = 'App\Models\DigModels\\' . $r["model"];
         try {
             //$dm = new DigModel($r["model"]);
-            $item = $model::findOrFail($r["id"]);
+            $item = $dm::findOrFail($r["id"]);
             // return (object)["message" => "I am the object returned from storeMedia",
             // "item" => $item];
 
@@ -38,7 +40,7 @@ class MediaModel implements MediaModelInterface
 
             //reload updated media collection for item
             //$item = $model::with('media')->findOrFail($r["id"]);
-            $item = $model::findOrFail($r["id"]);
+            $item = $dm::findOrFail($r["id"]);
             $media = $item->getMedia('photos');
             return (object)[
                 "message" => "I am the object returned from media.upload",
@@ -49,5 +51,39 @@ class MediaModel implements MediaModelInterface
         } catch (\Exception $error) {
             return response()->json(["error" => $error->getMessage()], 500);
         }
-    } 
+    }
+
+    public function getMedia(Request $r, DigModel $dm)
+    {
+        //return $r;
+
+        //$model = 'App\Models\DigModels\\' . $r["model"];
+        try {
+            //$dm = new DigModel($r["model"]);
+            $item = $dm::findOrFail($r["id"]);
+            // return (object)["message" => "I am the object returned from storeMedia",
+            // "item" => $item];
+
+
+            //attach media to item
+            foreach ($r["media_files"] as $key => $media_file) {
+                $item
+                    ->addMedia($media_file)
+                    ->toMediaCollection($r["media_collection_name"]);
+            }
+
+            //reload updated media collection for item
+            //$item = $model::with('media')->findOrFail($r["id"]);
+            $item = $dm::findOrFail($r["id"]);
+            $media = $item->getMedia('photos');
+            return (object)[
+                "message" => "I am the object returned from getMedia",
+                "media" => $media,
+            ];
+
+        } catch (\Exception $error) {
+            return response()->json(["error" => $error->getMessage()], 500);
+        }
+    }
+
 }

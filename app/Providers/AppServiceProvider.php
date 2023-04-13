@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Models\Interfaces\DigModelInterface;
 use App\Models\Interfaces\ModelGroupInterface;
+use App\Models\App\DigModel;
 use App\Models\DigModels\Locus;
 use App\Models\DigModels\Stone;
 use App\Models\DigModels\Fauna;
@@ -22,6 +23,17 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(DigModelInterface::class, function ($app) {
+            switch (request()->input("model")) {
+                case "Locus":
+                    return new Locus;
+                case "Stone":
+                    return new Stone;
+                case "Fauna":
+                    return new Fauna;
+            }
+        });
+
+        $this->app->singleton(DigModel::class, function ($app) {
             switch (request()->input("model")) {
                 case "Locus":
                     return new Locus;
