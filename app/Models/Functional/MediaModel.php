@@ -7,29 +7,21 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Models\Interfaces\MediaModelInterface;
-
+use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
+use Illuminate\Database\Eloquent\Collection;
 use Exception;
 
 class MediaModel implements MediaModelInterface
 {
-    protected $model_name = null;
-    
-    public function __construct($model_name)
+    public function __construct()
     {
-        $this->model_name = $model_name;
+        //
     }
 
     public function storeMedia(Request $r, DigModel $dm)
     {
-        //return $r;
-
-        //$model = 'App\Models\DigModels\\' . $r["model"];
         try {
-            //$dm = new DigModel($r["model"]);
             $item = $dm::findOrFail($r["id"]);
-            // return (object)["message" => "I am the object returned from storeMedia",
-            // "item" => $item];
-
 
             //attach media to item
             foreach ($r["media_files"] as $key => $media_file) {
@@ -39,7 +31,6 @@ class MediaModel implements MediaModelInterface
             }
 
             //reload updated media collection for item
-            //$item = $model::with('media')->findOrFail($r["id"]);
             $item = $dm::findOrFail($r["id"]);
             $media = $item->getMedia('photos');
             return (object)[
@@ -47,43 +38,28 @@ class MediaModel implements MediaModelInterface
                 "item" => $item,
                 "media" => $media,
             ];
-
         } catch (\Exception $error) {
             return response()->json(["error" => $error->getMessage()], 500);
         }
     }
 
-    public function getMedia(Request $r, DigModel $dm)
+    //order media by collection_order, order_column.
+    //return { media1: TApiMedia, media_ids[] }
+    public function mediaForItem($item)
     {
-        //return $r;
+        $collection_order = ['drawing', 'drawing and photo', 'photos'];
+        $media =  collect([]);
 
-        //$model = 'App\Models\DigModels\\' . $r["model"];
-        try {
-            //$dm = new DigModel($r["model"]);
-            $item = $dm::findOrFail($r["id"]);
-            // return (object)["message" => "I am the object returned from storeMedia",
-            // "item" => $item];
-
-
-            //attach media to item
-            foreach ($r["media_files"] as $key => $media_file) {
-                $item
-                    ->addMedia($media_file)
-                    ->toMediaCollection($r["media_collection_name"]);
+        foreach ($collection_order as $collection_name) {
+            $by_collection = $item->getMedia($collection_name);
+            foreach ($by_collection as $med) {
+                $media->push(['full' => $med->getPath(), 'tn' =>  $med->getPath('tn'), 'id' => $med['id']]);
             }
-
-            //reload updated media collection for item
-            //$item = $model::with('media')->findOrFail($r["id"]);
-            $item = $dm::findOrFail($r["id"]);
-            $media = $item->getMedia('photos');
-            return (object)[
-                "message" => "I am the object returned from getMedia",
-                "media" => $media,
-            ];
-
-        } catch (\Exception $error) {
-            return response()->json(["error" => $error->getMessage()], 500);
         }
-    }
 
+        return [
+            'media' => $media,
+            'media1' => $media->isEmpty() ? null : $media[0]
+        ];
+    }
 }

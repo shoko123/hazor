@@ -15,11 +15,15 @@ class MediaController extends Controller
 {
     public function upload(Request $r, DigModel $dm)
     {
-        $m = new MediaModel($r["model"]);
+        //$m = new MediaModel($r["model"]);
+        $m = new MediaModel();
         $re = $m->storeMedia($r, $dm);
         return response()->json([
             "message" => "message from MediaController.upload()",
             "result" =>  $re,
         ], 200);
     }
+
+  
+
 }

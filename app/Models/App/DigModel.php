@@ -9,6 +9,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use App\Models\Interfaces\DigModelInterface;
 use Illuminate\Database\Eloquent\Collection;
+use App\Models\Functional\MediaModel;
 
 abstract class DigModel extends Model implements HasMedia, DigModelInterface
 {
@@ -79,21 +80,19 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             },*/
         ])->findOrFail($id);
 
-        $media = [];
-        $media1 = null;
-        if (!$item->media->isEmpty()) {
-            foreach ($item->media as $med) {
-                array_push($media, ['full' => $med->getPath(), 'tn' =>  $med->getPath('tn')]);
-            }
-            $media1 = $media[0];
-        }
+        //deal with media: order by collection_name, order_column (done in MediaModel)
+
+        $mm = new MediaModel();
+        $m = $mm->mediaForItem($item);
         $global_tags = $item->global_tags;
         $model_tags = $item->model_tags;
+
+        //unset
         unset($item->media);
         unset($item->global_tags);
         unset($item->model_tags);
 
-        return ["fields" => $item, "media" => $media, "media1" => $media1, "global_tags" => $global_tags, "model_tags" => $model_tags];
+        return ["fields" => $item, "media" => $m["media"], "media1" => $m["media1"], "global_tags" => $global_tags, "model_tags" => $model_tags];
 
         $builder = $this->with(
             [

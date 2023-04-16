@@ -21,8 +21,10 @@ export const useCarouselStore = defineStore('carousel', () => {
 
   let isOpen = ref<boolean>(false)
   let module = ref<TModule>('Home')
+  let collectionName = ref<TCollectionName>('main')
+
   let carousel = ref<TMediaProps>({ source: 'main', itemIndex: -1, media: { hasMedia: false, urls: { full: "", tn: "" } }, details: { id: -1, url_id: "", tag: "", description: "" } })
-  
+
   const carouselHeader = computed(() => {
     return `Carousel Header ${module.value} [${carousel.value.itemIndex + 1}/${c.collectionMeta(carousel.value.source).length}]`
   })
@@ -43,7 +45,8 @@ export const useCarouselStore = defineStore('carousel', () => {
 
   async function open(source: TCollectionName, index: number, mod: TModule, item: TMediaProps) {
     module.value = mod
-    carousel.value = {...item}
+    carousel.value = { ...item }
+    collectionName.value = source
     console.log(`carousel.open() source: ${source} index: ${index} module: ${module} items: ${JSON.stringify(item, null, 2)}`)
     isOpen.value = true
   }

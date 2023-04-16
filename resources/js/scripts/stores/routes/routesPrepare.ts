@@ -65,7 +65,7 @@ let { buildMedia } = useMediaStore()
           break
 
         case 'item.clear':
-          i.fields = undefined
+          i.fields = {id: -1}
           break
 
         case 'item.setIndexInCollection':

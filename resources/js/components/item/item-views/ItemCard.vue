@@ -84,15 +84,6 @@ const mediaDetails = computed(() => {
   }
 })
 
-type TMediaDetailsCMedia = {
-        id: number,
-        collection_name: string,
-        order_column: number,
-        description: string | null
-}
-
-
-
 </script>
 <style scoped>
 #title {
