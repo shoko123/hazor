@@ -36,13 +36,7 @@ export const useItemStore = defineStore('item', () => {
     return { module: 'XXX', url_id: getRouteInfo().value.url_id }
   })
 
-  const getItemIndex = computed(() => {
-    return itemIndex.value
-  })
-
-  function setItemIndex(index: number) {
-    itemIndex.value = index
-  }
+ 
   function itemClear(index: number) {
     itemIndex.value = -1
     fields.value = {id: -1}
@@ -70,8 +64,8 @@ export const useItemStore = defineStore('item', () => {
     tag,
     derived,
     media1,
-    getItemIndex,
-    setItemIndex,
+    itemIndex,
+
     nextUrlId,
     itemClear,
     itemViewIndex,

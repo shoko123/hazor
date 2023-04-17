@@ -89,12 +89,12 @@ export const useCarouselStore = defineStore('carousel', () => {
     //if current carouselItem is in currently loaded page - close, otherwise, load relevant page
     if (!c.itemIsInPage(carousel.value.details.id)) {
       const index = c.itemIndexById(carousel.value.details.id)
-      await c.loadPageByItemIndex(collectionName.value, current.value.module, index)
+      await c.loadPageByItemIndex(collectionName.value, 'Image', index, current.value.module)
         .then(res => {
           console.log(`carousel.close() loaded a new page`)
         })
         .catch(err => {
-          console.log(`loadPage() failed`)
+          console.log(`loadPageByItemIndex() failed`)
           throw err
         })
         .finally(() => {

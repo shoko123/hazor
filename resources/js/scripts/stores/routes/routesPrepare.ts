@@ -166,7 +166,7 @@ let { buildMedia } = useMediaStore()
         i.tag = m.tagFromUrlId(to.module, res.data.url_id)
         i.media1 = buildMedia(res.data.media1, to.module)
         c.setArray('media', res.data.media)
-        c.loadPage('media', 1, 'Image', to.module)
+        c.loadPageByItemIndex('media', 'Image', 0, to.module )
         return true
       })
       .catch(err => {
@@ -180,14 +180,7 @@ let { buildMedia } = useMediaStore()
 
   async function loadPage(firstPage: boolean): Promise<void> {
     console.log(`prepare.loadPage()`)
-
-    if (firstPage) {
-      console.log(`loading pageB1(1)`)
-      await c.loadPage('main', 1, 'Image', r.to.module)
-    } else {
-      console.log(`Loading page according to itemIndex`)
-      await c.loadPageByItemIndex('main', r.to.module, i.getItemIndex)
-    }
+    return await c.loadPageByItemIndex('main', 'Image', firstPage ? 0 : i.itemIndex, r.to.module)
   }
 
   function clearPage(): void {
@@ -202,10 +195,10 @@ let { buildMedia } = useMediaStore()
     if (itemIndex === -1) {
       console.log(`Item not found in mainCollection - set itemIndex to -1, clear page`)
       c.mainPageArray = []
-      i.setItemIndex(-1)
+      i.itemIndex = -1
       return false
     } else {
-      i.setItemIndex(itemIndex)
+      i.itemIndex = itemIndex
       return true
     }
   }

@@ -204,10 +204,6 @@ export const useCollectionsStore = defineStore('collections', () => {
                 pageRef.value = <TPageCMediaVImage[]>toSave
                 break;
 
-
-
-
-
             case 'related':
         }
         //console.log(`Saving page: ${JSON.stringify(toSave, null, 2)}`)
@@ -216,12 +212,14 @@ export const useCollectionsStore = defineStore('collections', () => {
     async function toggleCollectionView(name: TCollectionName) {
         let { getModule } = useRoutesMainStore()
         let module = getModule()
-        let meta = getCollectionMeta(name)
-        let currentView = meta.value.views[meta.value.viewIndex]
-        let newViewIndex = (meta.value.viewIndex + 1) % meta.value.views.length
-        let newView = meta.value.views[newViewIndex]
-        console.log(`toggleCollectionView() collection: ${name}  module: ${module} views: ${meta.value.views}  current view: ${currentView}  new view: ${newView}`);
-        await loadPage(name, 1, newView, module)
+        let meta = collectionMeta(name)
+        let currentView = meta.views[meta.viewIndex]
+        let newViewIndex = (meta.viewIndex + 1) % meta.views.length
+        let newView = meta.views[newViewIndex]
+        let index = meta.firstItemNo - 1
+        console.log(`toggleCollectionView() collection: ${name}  module: ${module} views: ${meta.views}  current view: ${currentView}  new view: ${newView} index: ${index}` );
+        //await loadPage(name, 1, newView, module)
+        await loadPageByItemIndex(name, newView, index, module)
     }
 
     function setItemsPerPage(ipp: TItemPerPagePerView) {
@@ -230,13 +228,12 @@ export const useCollectionsStore = defineStore('collections', () => {
         itemsPerPagePerView.value['Table'] = ipp["Table"]
     }
 
-    //(name: TCollectionName, pageNoB1: number, view: TCollectionViews, module: TModule)
-    async function loadPageByItemIndex(name: TCollectionName, module: TModule, index: number) {
-        let meta = getCollectionMeta('main')
-        let ipp = getIpp(meta.value.views[main.value.viewIndex])
+    async function loadPageByItemIndex(collectionName: TCollectionName, view: TCollectionViews,  index: number, module: TModule,) {
+        let meta = collectionMeta(collectionName)
+        let ipp = getIpp(view)
         let pageNoB0 = Math.floor(index / ipp)
-        console.log(`ipp: ${ipp}) pageNoB1: ${pageNoB0 + 1} module: ${module}`)
-        await loadPage('main', pageNoB0 + 1, main.value.views[main.value.viewIndex], module)
+        console.log(`loadPageByItemIndex() collectionName: ${collectionName} view: ${view} index: ${index} module: ${module}`)
+        await loadPage(collectionName, pageNoB0 + 1, view, module)
     }
 
     function itemIndexById(id: number) {
