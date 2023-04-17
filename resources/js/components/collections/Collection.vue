@@ -20,12 +20,12 @@
 <script lang="ts" setup >
 
 import { computed } from 'vue'
-import { TSetPage, TCollectionName, ECollectionViews } from '../../types/collectionTypes'
+import { TSetPage, TCollectionName, TCollectionViews } from '../../types/collectionTypes'
 import CollectionPageImage from './CollectionPageImage.vue'
 import CollectionPageChips from './CollectionPageChips.vue'
 import CollectionPageTable from './CollectionPageTable.vue'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain';
-import { useCollectionsStore } from '../../scripts/stores/collections'
+import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 
 const props = defineProps<{
   source: TCollectionName
@@ -46,7 +46,7 @@ const page = computed({
   get: () => { return paginator.value.page },
   set: val => {
     console.log(`Collection.page.set to ${val}`)
-    loadPage(props.source, val, meta.value.viewIndex, getModule())
+    loadPage(props.source, val, meta.value.views[meta.value.viewIndex], getModule())
   }
 })
 
@@ -87,11 +87,11 @@ const showPaginator = computed(() => {
 const collectionPage = computed(() => {
 
   switch (meta.value.views[meta.value.viewIndex]) {
-    case ECollectionViews.Image:
+    case 'Image':
       return CollectionPageImage
-    case ECollectionViews.Chip:
+    case 'Chip':
       return CollectionPageChips
-    case ECollectionViews.Table:
+    case 'Table':
       return CollectionPageTable
     default:
       alert(`Wrong view! viewIndex: ${meta.value.viewIndex}`)
@@ -99,7 +99,7 @@ const collectionPage = computed(() => {
 })
 
 const displayOption = computed(() => {
-  return ECollectionViews[ meta.value.views[meta.value.viewIndex]]
+  return meta.value.views[meta.value.viewIndex]
 })
 
 

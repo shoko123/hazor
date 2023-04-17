@@ -5,7 +5,7 @@ import { defineStore } from 'pinia'
 import { useXhrStore } from './xhr'
 import { useAuthStore } from './auth'
 import { useMediaStore } from './media'
-import { useCollectionsStore } from './collections'
+import { useCollectionsStore } from './collections/collections'
 
 export const useMainStore = defineStore('main', () => {
   const { setBucketUrl } = useMediaStore()

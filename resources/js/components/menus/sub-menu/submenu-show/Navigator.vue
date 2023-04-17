@@ -13,7 +13,7 @@ import { useRouter } from 'vue-router'
 
 import { storeToRefs } from 'pinia'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
-import { useCollectionsStore } from '../../../../scripts/stores/collections'
+import { useCollectionsStore } from '../../../../scripts/stores/collections/collections'
 import { useItemStore } from '../../../../scripts/stores/item'
 import Picker from "./picker/Picker.vue"
 

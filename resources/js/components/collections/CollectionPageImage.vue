@@ -16,9 +16,9 @@
 
 <script lang="ts" setup >
 import { storeToRefs } from 'pinia'
-import { useCollectionsStore } from '../../scripts/stores/collections';
+import { useCollectionsStore } from '../../scripts/stores/collections/collections';
 import { computed } from 'vue'
-import { ECollectionViews, TCollectionName, TPageCMainVImage } from '../../types/collectionTypes'
+import { TCollectionViews, TCollectionName, TPageCMainVImage } from '../../types/collectionTypes'
 
 import MediaSquare from '../media/MediaSquare.vue'
 
@@ -28,14 +28,14 @@ const props = defineProps<{
 }>()
 
 let { getPageArray } = useCollectionsStore()
-let { itemsPerPage } = storeToRefs( useCollectionsStore())
+let { collectionMeta } = useCollectionsStore()
 const page = computed(() => {
   return getPageArray(props.source).value as TPageCMainVImage[]
 })
 
 
 function itemIndex(index: number) : number{
-  return (props.pageNoB1 - 1) * itemsPerPage.value[ECollectionViews.Image] + index
+  return (props.pageNoB1 - 1) * collectionMeta(props.source).itemsPerPage + index
 }
 </script>
 

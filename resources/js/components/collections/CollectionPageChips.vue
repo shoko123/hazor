@@ -12,7 +12,7 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { TCollectionName, TPageVChip } from '../../types/collectionTypes'
-import { useCollectionsStore } from '../../scripts/stores/collections'
+import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 
 const props = defineProps<{

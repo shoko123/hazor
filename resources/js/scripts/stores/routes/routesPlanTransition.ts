@@ -3,7 +3,7 @@
 
 import type { TRouteInfo, TPlanResponse, TPlanError, TPlanAction } from '../../../types/routesTypes'
 import { defineStore } from 'pinia'
-import { useCollectionsStore } from '../collections'
+import { useCollectionsStore } from '../collections/collections'
 
 export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', () => {
     const { collectionMeta } = useCollectionsStore()

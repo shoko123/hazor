@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import { TItem, TItemMandatoryFields } from '../../types/itemTypes'
 import { TMedia } from '@/js/types/mediaTypes'
 import { TApiMediaOrNull } from '@/js/types/apiTypes'
-import { useCollectionsStore } from './collections'
+import { useCollectionsStore } from './collections/collections'
 import { useRoutesMainStore } from './routes/routesMain'
 
 export const useItemStore = defineStore('item', () => {

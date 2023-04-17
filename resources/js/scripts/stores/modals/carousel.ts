@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { TCollectionName, TPageCMainVImage, } from '../../../types/collectionTypes'
 import { TApiRespShow1 } from '@/js/types/apiTypes'
-import { useCollectionsStore } from '../collections'
+import { useCollectionsStore } from '../collections/collections'
 import { useXhrStore } from '../xhr'
 import { useNotificationsStore } from '../notifications'
 import { useMediaStore } from '../media'
@@ -89,7 +89,7 @@ export const useCarouselStore = defineStore('carousel', () => {
     //if current carouselItem is in currently loaded page - close, otherwise, load relevant page
     if (!c.itemIsInPage(carousel.value.details.id)) {
       const index = c.itemIndexById(carousel.value.details.id)
-      await c.loadPageByItemIndex(current.value.module, index)
+      await c.loadPageByItemIndex(collectionName.value, current.value.module, index)
         .then(res => {
           console.log(`carousel.close() loaded a new page`)
         })

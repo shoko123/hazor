@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { TLocusFields } from '../../../types/itemTypes'
-import { useCollectionsStore } from '../collections'
+import { useCollectionsStore } from '../collections/collections'
 import { useRoutesMainStore } from '../routes/routesMain'
 
 export const useLocusStore = defineStore('locus', () => {

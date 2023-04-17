@@ -12,7 +12,7 @@ import type { TApiRespShow0 } from '../../../types/apiTypes';
 import { defineStore, storeToRefs } from 'pinia'
 import { useXhrStore } from '../xhr';
 import { useTrioStore } from '../trio';
-import { useCollectionsStore } from '../collections';
+import { useCollectionsStore } from '../collections/collections';
 import { useModuleStore } from '../module';
 import { useNotificationsStore } from '../notifications';
 import { useItemStore } from '../item';
@@ -166,7 +166,7 @@ let { buildMedia } = useMediaStore()
         i.tag = m.tagFromUrlId(to.module, res.data.url_id)
         i.media1 = buildMedia(res.data.media1, to.module)
         c.setArray('media', res.data.media)
-        c.loadPage('media', 1, 0, to.module)
+        c.loadPage('media', 1, 'Image', to.module)
         return true
       })
       .catch(err => {
@@ -183,10 +183,10 @@ let { buildMedia } = useMediaStore()
 
     if (firstPage) {
       console.log(`loading pageB1(1)`)
-      await c.loadPage('main', 1, 0, r.to.module)
+      await c.loadPage('main', 1, 'Image', r.to.module)
     } else {
       console.log(`Loading page according to itemIndex`)
-      await c.loadPageByItemIndex(r.to.module, i.getItemIndex)
+      await c.loadPageByItemIndex('main', r.to.module, i.getItemIndex)
     }
   }
 

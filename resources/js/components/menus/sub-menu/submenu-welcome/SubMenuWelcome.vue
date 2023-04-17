@@ -13,7 +13,7 @@ import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import FilterButton from '../lhs-buttons/FilterButton.vue'
 import CollectionButton from '../lhs-buttons/CollectionButton.vue'
-import { useCollectionsStore } from '../../../../scripts/stores/collections'
+import { useCollectionsStore } from '../../../../scripts/stores/collections/collections'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 
 

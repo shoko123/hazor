@@ -1,8 +1,8 @@
 // collectionTypes.ts
 import { TApiMediaOrNull } from '@/js/types/apiTypes'
 import { TMedia } from '@/js/types/mediaTypes'
-enum ECollectionViews { Image, Chip, Table }
-// Media' | 'Chips' | 'Table'
+
+type TCollectionViews = 'Image' | 'Chip' | 'Table'
 type TCollectionName = 'main' | 'media' | 'related'
 type TElement = 'array' | 'page' | 'viewIndex'
 
@@ -52,15 +52,16 @@ type TPageItem = TPageCMainVImage | TPageCMainVTable | TPageVChip | TPageCMediaV
 type TCollectionMeta = {
         length: number,
         pageNoB1: number,
-        views: ECollectionViews[],
+        views: TCollectionViews[],
         viewIndex: number,
         //itemIndex: number,
         //ready: { array: boolean, index: boolean, page: boolean }
 }
 
 type TGetCollectionMeta = {
-        views: ECollectionViews[],
+        views: TCollectionViews[],
         viewIndex: number,
+        itemsPerPage: number,
         pageNoB1: number,
         noOfItems: number,
         noOfPages: number,
@@ -72,7 +73,7 @@ type TGetCollectionMeta = {
 
 
 export {
-        ECollectionViews,
+        TCollectionViews,
         TCollectionMeta,
         TElement,
         TCollectionName,
