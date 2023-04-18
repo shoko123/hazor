@@ -22,8 +22,8 @@ type TPlanAction =
     'item.prepareForTag' |
     'item.prepareForMedia' |
     'page.load' | //load pageB1 according to current item
-    'page.load1' | //load pageB1 = 1
-    'page.clear'
+    'page.load1' //load pageB1 = 1
+
 
 type TIdParams = { id: number, params: object, extra: object } | undefined
 

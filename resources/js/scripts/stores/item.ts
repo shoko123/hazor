@@ -10,7 +10,7 @@ import { useRoutesMainStore } from './routes/routesMain'
 export const useItemStore = defineStore('item', () => {
 
   const { getRouteInfo } = useRoutesMainStore()
-  const { collectionMeta, itemIdsByIndex } = useCollectionsStore()
+  const { collection, itemIdsByIndex } = useCollectionsStore()
  
   let fields = ref<TItemMandatoryFields>({id: -1})
   let url_id = ref<string | undefined>(undefined)
@@ -44,11 +44,11 @@ export const useItemStore = defineStore('item', () => {
 
   function nextUrlId(isRight: boolean) {
     let newIndex
-    let meta = collectionMeta('main')
+    let length = collection('main').value.meta.length
     if (isRight) {
-      newIndex = (itemIndex.value === meta.length - 1) ? 0 : itemIndex.value + 1
+      newIndex = (itemIndex.value === length - 1) ? 0 : itemIndex.value + 1
     } else {
-      newIndex = (itemIndex.value === 0) ? meta.length - 1 : itemIndex.value - 1
+      newIndex = (itemIndex.value === 0) ? length - 1 : itemIndex.value - 1
     }
 
     //TODO change id to url_id

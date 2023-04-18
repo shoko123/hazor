@@ -336,12 +336,17 @@ export const useCollectionsStore = defineStore('collections', () => {
         }
     }
 
+   // mainCollection, mediaCollection, main and media for debug only.
+   //Note : computed collection will only e reactive only if state (main, media) is exposed.
     return {
         getIpp,
-        collection,        
+        collection,
+        mainCollection,
+        mediaCollection,
+        main,
+        media,
         itemIdsByIndex,
         setItemsPerPage,
-        collectionMeta,
         setArray,
         loadPage,
         toggleCollectionView,

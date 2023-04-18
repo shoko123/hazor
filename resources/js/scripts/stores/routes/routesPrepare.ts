@@ -82,10 +82,6 @@ let { buildMedia } = useMediaStore()
           await loadPage(true)
           break
 
-        case 'page.clear':
-          clearPage()
-          break
-
           case 'item.prepareForMedia':
             prepareForMedia()
             break          
@@ -182,12 +178,6 @@ let { buildMedia } = useMediaStore()
     console.log(`prepare.loadPage()`)
     //return await c.loadPageByItemIndex('main', c.mainCollection.meta.view, firstPage ? 0 : i.itemIndex, r.to.module)
     return await c.loadPageByItemIndex('main', c.collection('main').value.meta.view, firstPage ? 0 : i.itemIndex, r.to.module)
-  }
-
-  function clearPage(): void {
-    console.log(`prepare.ClearPage()`)
-    //c.mainPageArray = []
-    //c.main.pageNoB1 = 1
   }
 
   function itemSetIndexInCollection(): boolean {

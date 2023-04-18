@@ -26,7 +26,7 @@ export const useCarouselStore = defineStore('carousel', () => {
   let carousel = ref<TMediaProps>({ source: 'main', itemIndex: -1, media: { hasMedia: false, urls: { full: "", tn: "" } }, details: { id: -1, url_id: "", tag: "", description: "" } })
 
   const carouselHeader = computed(() => {
-    return `Carousel Header ${module.value} [${carousel.value.itemIndex + 1}/${c.collectionMeta(carousel.value.source).length}]`
+    return `Carousel Header ${module.value} [${carousel.value.itemIndex + 1}/${c.collection(carousel.value.source).value.meta.length}]`
   })
 
   const carouselDetails = computed<TCarouselDetails | undefined>(() => {
@@ -52,12 +52,13 @@ export const useCarouselStore = defineStore('carousel', () => {
   }
 
   function nextIndex(isRight: boolean) {
-    let newIndex, meta = c.collectionMeta(carousel.value.source)
+    let length = c.collection(carousel.value.source).value.meta.length
+    let newIndex
 
     if (isRight) {
-      newIndex = (carousel.value.itemIndex === meta.length - 1) ? 0 : carousel.value.itemIndex + 1
+      newIndex = (carousel.value.itemIndex === length - 1) ? 0 : carousel.value.itemIndex + 1
     } else {
-      newIndex = (carousel.value.itemIndex === 0) ? meta.length - 1 : carousel.value.itemIndex - 1
+      newIndex = (carousel.value.itemIndex === 0) ? length - 1 : carousel.value.itemIndex - 1
     }
     return newIndex
   }
