@@ -20,7 +20,7 @@
 <script lang="ts" setup >
 
 import { computed } from 'vue'
-import { TSetPage, TCollectionName, TCollectionViews } from '../../types/collectionTypes'
+import { TSetPage, TCollectionName, TCollectionView } from '../../types/collectionTypes'
 import CollectionPageImage from './CollectionPageImage.vue'
 import CollectionPageChips from './CollectionPageChips.vue'
 import CollectionPageTable from './CollectionPageTable.vue'
@@ -32,10 +32,14 @@ const props = defineProps<{
 }>()
 
 let { getModule } = useRoutesMainStore()
-let { collectionMeta, loadPage, toggleCollectionView } = useCollectionsStore()
+let { collection, loadPage, toggleCollectionView } = useCollectionsStore()
+
+const c = computed(() => {
+  return collection(props.source).value
+})
 
 const meta = computed(() => {
-  return collectionMeta(props.source)
+  return c.value.meta
 })
 
 const isEmpty = computed(() => {
@@ -46,7 +50,7 @@ const page = computed({
   get: () => { return paginator.value.page },
   set: val => {
     console.log(`Collection.page.set to ${val}`)
-    loadPage(props.source, val, meta.value.views[meta.value.viewIndex], getModule())
+    loadPage(props.source, val, meta.value.view, getModule())
   }
 })
 
@@ -86,7 +90,7 @@ const showPaginator = computed(() => {
 
 const collectionPage = computed(() => {
 
-  switch (meta.value.views[meta.value.viewIndex]) {
+  switch (meta.value.view) {
     case 'Image':
       return CollectionPageImage
     case 'Chip':
@@ -99,7 +103,7 @@ const collectionPage = computed(() => {
 })
 
 const displayOption = computed(() => {
-  return meta.value.views[meta.value.viewIndex]
+  return meta.value.view
 })
 
 

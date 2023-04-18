@@ -180,13 +180,14 @@ let { buildMedia } = useMediaStore()
 
   async function loadPage(firstPage: boolean): Promise<void> {
     console.log(`prepare.loadPage()`)
-    return await c.loadPageByItemIndex('main', 'Image', firstPage ? 0 : i.itemIndex, r.to.module)
+    //return await c.loadPageByItemIndex('main', c.mainCollection.meta.view, firstPage ? 0 : i.itemIndex, r.to.module)
+    return await c.loadPageByItemIndex('main', c.collection('main').value.meta.view, firstPage ? 0 : i.itemIndex, r.to.module)
   }
 
   function clearPage(): void {
     console.log(`prepare.ClearPage()`)
-    c.mainPageArray = []
-    c.main.pageNoB1 = 1
+    //c.mainPageArray = []
+    //c.main.pageNoB1 = 1
   }
 
   function itemSetIndexInCollection(): boolean {
@@ -194,7 +195,7 @@ let { buildMedia } = useMediaStore()
     let itemIndex = c.itemIndexById(i.id)
     if (itemIndex === -1) {
       console.log(`Item not found in mainCollection - set itemIndex to -1, clear page`)
-      c.mainPageArray = []
+      //c.mainPageArray = []
       i.itemIndex = -1
       return false
     } else {

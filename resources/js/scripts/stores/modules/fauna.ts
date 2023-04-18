@@ -8,7 +8,7 @@ import { useRoutesMainStore } from '../routes/routesMain'
 export const useFaunaStore = defineStore('fauna', () => {
 
   const { getRouteInfo } = useRoutesMainStore()
-  const { collectionMeta, itemIdsByIndex } = useCollectionsStore()
+  const { collection } = useCollectionsStore()
 
   let newItem = ref<TLocusFields>({
     id: 0,

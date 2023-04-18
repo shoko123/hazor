@@ -3,10 +3,9 @@
 
 import type { TRouteInfo, TPlanResponse, TPlanError, TPlanAction } from '../../../types/routesTypes'
 import { defineStore } from 'pinia'
-import { useCollectionsStore } from '../collections/collections'
 
 export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', () => {
-    const { collectionMeta } = useCollectionsStore()
+
 
     function planTransition(to: TRouteInfo, from: TRouteInfo): TPlanResponse {
         let changed = { module: false, name: false, urlId: false }
@@ -22,7 +21,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
 
         switch (to.name) {
             case 'home':
-                return { success: true, data: ['item.clear', 'collection.clear', 'page.clear', 'module.clear'] }
+                return { success: true, data: ['item.clear', 'collection.clear', 'module.clear'] }
 
             case 'welcome':
                 switch (from.name) {
@@ -80,7 +79,6 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                         if (changed.module) {
                             return { success: true, data: ['module.load', 'collection.load', 'page.load1'] }
                         } else {
-                            //let toDo: TPlanAction[] = collectionMeta("main").length === 0 ? ['collection.load', 'page.load'] : []
                             return { success: true, data: ['collection.load', 'page.load1'] }
                         }
 

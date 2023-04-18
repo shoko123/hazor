@@ -37,11 +37,16 @@ const props = defineProps<{
   pageNoB1: number
 }>()
 
-let { getPageArray } = useCollectionsStore()
+let { collection } = useCollectionsStore()
+
+const c = computed(() => {
+  return collection(props.source).value
+})
 
 const page = computed(() => {
-  return getPageArray(props.source).value as TPageCMainVTable[]
+  return c.value.page as TPageCMainVTable[]
 })
+
 
 </script>
 

@@ -2,7 +2,7 @@
 import { TApiMediaOrNull } from '@/js/types/apiTypes'
 import { TMedia } from '@/js/types/mediaTypes'
 
-type TCollectionViews = 'Image' | 'Chip' | 'Table'
+type TCollectionView = 'Image' | 'Chip' | 'Table'
 type TCollectionName = 'main' | 'media' | 'related'
 type TElement = 'array' | 'page' | 'viewIndex'
 
@@ -49,18 +49,19 @@ type TPageItem = TPageCMainVImage | TPageCMainVTable | TPageVChip | TPageCMediaV
 
 
 //all the data kept in a specific collection
-type TCollectionMeta = {
+type TCollectionExtra = {
         length: number,
         pageNoB1: number,
-        views: TCollectionViews[],
+        views: TCollectionView[],
         viewIndex: number,
         //itemIndex: number,
         //ready: { array: boolean, index: boolean, page: boolean }
 }
 
-type TGetCollectionMeta = {
-        views: TCollectionViews[],
+type TCollectionMeta = {
+        views: TCollectionView[],
         viewIndex: number,
+        view: TCollectionView,
         itemsPerPage: number,
         pageNoB1: number,
         noOfItems: number,
@@ -73,12 +74,12 @@ type TGetCollectionMeta = {
 
 
 export {
-        TCollectionViews,
-        TCollectionMeta,
+        TCollectionView,
+        TCollectionExtra,
         TElement,
         TCollectionName,
         TItemsPerPage,
-        TGetCollectionMeta,
+        TCollectionMeta,
         TPageItem,
         TSetPage,
         TPageVChip,

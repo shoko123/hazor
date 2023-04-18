@@ -2,7 +2,7 @@
 //handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed, registerRuntimeCompiler } from 'vue'
-import { TCollectionMeta, TCollectionName, TElement, TItemsPerPage, TPageItem, TCollectionViews, TGetCollectionMeta, TPageCMediaVImage, TPageCMainVImage, TPageCMainVTable, TPageVChip } from '../../../types/collectionTypes'
+import { TCollectionExtra, TCollectionName, TElement, TItemsPerPage, TPageItem, TCollectionView, TCollectionMeta, TPageCMediaVImage, TPageCMainVImage, TPageCMainVTable, TPageVChip } from '../../../types/collectionTypes'
 import { TMedia } from '../../../types/mediaTypes'
 
 import { TModule } from '../../../types/routesTypes'
@@ -23,21 +23,21 @@ export const useCollectionsStore = defineStore('collections', () => {
         Table: 0
     })
 
-    let main = ref<TCollectionMeta>({
+    let main = ref<TCollectionExtra>({
         length: 0,
         pageNoB1: 1,
         views: ['Image', 'Chip', 'Table'],
         viewIndex: 0,
     })
 
-    const media = ref<TCollectionMeta>({
+    const media = ref<TCollectionExtra>({
         length: 0,
         pageNoB1: 1,
         views: ['Image'],
         viewIndex: 0,
     })
 
-    const related = ref<TCollectionMeta>({
+    const related = ref<TCollectionExtra>({
         length: 0,
         pageNoB1: 1,
         views: ['Image', 'Chip'],
@@ -52,7 +52,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     let relatedPageArray = ref<TPageItem[]>([])
     let mediaPageArray = ref<TPageCMediaVImage[]>([])
 
-    function getIpp(view: TCollectionViews): number {
+    function getIpp(view: TCollectionView): number {
         return itemsPerPagePerView.value[view]
     }
 
@@ -89,15 +89,17 @@ export const useCollectionsStore = defineStore('collections', () => {
         }
     }
 
-    function collectionMeta(name: TCollectionName): TGetCollectionMeta {
+    function collectionMeta(name: TCollectionName): TCollectionMeta {
         //console.log(`collectionMeta("${name}")`)
         let meta = getCollectionMeta(name)
-        let ipp = getIpp(meta.value.views[meta.value.viewIndex])
+        let view = meta.value.views[meta.value.viewIndex]
+        let ipp = getIpp(view)
         let noOfPages = Math.floor(meta.value.length / ipp) + (meta.value.length % ipp === 0 ? 0 : 1)
         let pageArr = getPageArray(name)
         return {
             views: meta.value.views,//.map(x => ECollectionViews[x]),
             viewIndex: meta.value.viewIndex,
+            view: view,
             itemsPerPage: ipp,
             pageNoB1: meta.value.pageNoB1,
             noOfItems: meta.value.length,
@@ -116,7 +118,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         meta.value.length = data.length
     }
 
-    async function loadPage(name: TCollectionName, pageNoB1: number, view: TCollectionViews, module: TModule): Promise<boolean> {
+    async function loadPage(name: TCollectionName, pageNoB1: number, view: TCollectionView, module: TModule): Promise<boolean> {
         let meta = getCollectionMeta(name)
         let ipp = getIpp(view)
         let start = (pageNoB1 - 1) * ipp;
@@ -142,7 +144,7 @@ export const useCollectionsStore = defineStore('collections', () => {
 
                 await send('model/page', 'post', { model: module, view: view, ids })
                     .then(res => {
-                        console.log(`model.page() returned (success)`)
+                        console.log(`model.page() returned (success) setting page[] and pageNoB1(${pageNoB1})`)
                         savePage('main', res.data.page, view, module)
                         meta.value.pageNoB1 = pageNoB1
                         meta.value.viewIndex = meta.value.views.indexOf(view)
@@ -168,7 +170,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         return true
     }
 
-    function savePage(name: TCollectionName, page: TApiPageItem[], view: TCollectionViews, module: TModule): void {
+    function savePage(name: TCollectionName, page: TApiPageItem[], view: TCollectionView, module: TModule): void {
         let toSave = []
         let pageRef = getPageArray(name)
         switch (name) {
@@ -228,7 +230,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         itemsPerPagePerView.value['Table'] = ipp["Table"]
     }
 
-    async function loadPageByItemIndex(collectionName: TCollectionName, view: TCollectionViews,  index: number, module: TModule,) {
+    async function loadPageByItemIndex(collectionName: TCollectionName, view: TCollectionView,  index: number, module: TModule,) {
         let meta = collectionMeta(collectionName)
         let ipp = getIpp(view)
         let pageNoB0 = Math.floor(index / ipp)
@@ -299,13 +301,44 @@ export const useCollectionsStore = defineStore('collections', () => {
             })
     }
 
+    const mainCollection = computed(() => {
+        return {
+            array: mainArray.value,
+            page: mainPageArray.value,
+            meta: collectionMeta('main')
+        }
+    }) 
+
+    const mediaCollection = computed(() => {
+        return {
+            array: mediaArray.value,
+            page: mediaPageArray.value,
+            meta: collectionMeta('media')
+        }
+    }) 
+
+    const relatedCollection = computed(() => {
+        return {
+            array: relatedArray.value,
+            page: relatedPageArray.value,
+            meta: collectionMeta('related')
+        }
+    }) 
+    
+    function collection(name: TCollectionName) {
+        switch (name) {
+            case 'main':
+                return mainCollection
+            case 'related':
+                return relatedCollection
+            case 'media':
+                return mediaCollection
+        }
+    }
+
     return {
-        main,
-        mainArray,
-        mainPageArray,
-        media,
-        mediaArray,
-        mediaPageArray,
+        getIpp,
+        collection,        
         itemIdsByIndex,
         setItemsPerPage,
         collectionMeta,
@@ -313,7 +346,6 @@ export const useCollectionsStore = defineStore('collections', () => {
         loadPage,
         toggleCollectionView,
         clearCollections,
-        getPageArray,
         itemIndexById,
         loadPageByItemIndex,
         itemIsInPage,

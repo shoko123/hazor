@@ -20,12 +20,16 @@ const props = defineProps<{
   pageNoB1: number
 }>()
 
-const { getPageArray } = useCollectionsStore()
+const { collection } = useCollectionsStore()
 const { getRouteInfo } = useRoutesMainStore()
 const router = useRouter()
 
+const c = computed(() => {
+  return collection(props.source).value
+})
+
 const page = computed(() => {
-  return getPageArray(props.source).value as TPageVChip[]
+  return c.value.page as TPageVChip[]
 })
 
 function goTo(item: any) {
