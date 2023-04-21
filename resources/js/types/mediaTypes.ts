@@ -2,7 +2,9 @@
 import { TCollectionName } from '@/js/types/collectionTypes'
 type TMedia = {
         hasMedia: boolean,
-        urls: { full: string, tn: string }
+        urls: { full: string, tn: string },
+        id: number,
+        description: string
 }
 
 type TMediaDetailsCMain = {

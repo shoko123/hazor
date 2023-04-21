@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { TItem, TItemMandatoryFields } from '../../types/itemTypes'
 import { TMedia } from '@/js/types/mediaTypes'
-import { TApiMediaOrNull } from '@/js/types/apiTypes'
+import { TApiArrayMedia } from '@/js/types/apiTypes'
 import { useCollectionsStore } from './collections/collections'
 import { useRoutesMainStore } from './routes/routesMain'
 
@@ -15,7 +15,7 @@ export const useItemStore = defineStore('item', () => {
   let fields = ref<TItemMandatoryFields>({id: -1})
   let url_id = ref<string | undefined>(undefined)
   let tag = ref<string | undefined>(undefined)
-  let media1 = ref<TMedia>({hasMedia: false, urls: {full: '', tn: ''}})
+  let media1 = ref<TMedia>({hasMedia: false, urls: {full: '', tn: ''}, id: -1, description: ""})
   let ready = ref<boolean>(false)
   const itemViewIndex = ref<number>(0)
   const itemIndex = ref<number>(-1)

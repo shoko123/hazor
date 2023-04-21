@@ -4,12 +4,13 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { TCollectionName, TCollectionView, TCollectionMeta, } from '../../../types/collectionTypes'
 import { TModule } from '../../../types/routesTypes'
-import { TItemPerPagePerView, TApiArrayItemMain, } from '@/js/types/apiTypes'
+import { TItemPerPagePerView, TApiArray, TPage} from '@/js/types/apiTypes'
 import { useRoutesMainStore } from '../routes/routesMain'
 import { useXhrStore } from '../xhr'
 import { useNotificationsStore } from '../notifications'
 import { useCollectionMainStore } from './collectionMain'
-
+import { useCollectionMediaStore } from './collectionMedia'
+import { useCollectionRelatedStore } from './collectionRelated'
 export const useCollectionsStore = defineStore('collections', () => {
 
 
@@ -33,10 +34,11 @@ export const useCollectionsStore = defineStore('collections', () => {
         switch (source) {
             case 'main':
                 return useCollectionMainStore()
-            case 'related':
-                return useCollectionMainStore()
+           
             case 'media':
-                return useCollectionMainStore()
+                return useCollectionMediaStore()
+                case 'related':
+                    return useCollectionRelatedStore()                
         }
     }
 
@@ -65,7 +67,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         }
     }
 
-    function setArray(name: TCollectionName, data: TApiArrayItemMain[]) {
+    function setArray(name: TCollectionName, data: TApiArray[]) {
         let c = getCollection(name)
         c.setArray(data)
     }
@@ -113,8 +115,9 @@ export const useCollectionsStore = defineStore('collections', () => {
         return c.itemIsInPage(id)
     }
 
-    function itemIdsByIndex(name: TCollectionName, index: number) {
+    function itemIdsByIndex(name: TCollectionName, index: number){
         let c = getCollection(name)
+        //return c.array[index]
         return c.itemByIndex(index)
     }
 

@@ -1,5 +1,5 @@
 // collectionTypes.ts
-import { TApiMediaOrNull } from '@/js/types/apiTypes'
+import { TApiArrayMedia } from '@/js/types/apiTypes'
 import { TMedia } from '@/js/types/mediaTypes'
 
 type TCollectionView = 'Image' | 'Chip' | 'Table'

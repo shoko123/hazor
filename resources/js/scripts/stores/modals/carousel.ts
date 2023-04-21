@@ -23,7 +23,7 @@ export const useCarouselStore = defineStore('carousel', () => {
   let module = ref<TModule>('Home')
   let collectionName = ref<TCollectionName>('main')
 
-  let carousel = ref<TMediaProps>({ source: 'main', itemIndex: -1, media: { hasMedia: false, urls: { full: "", tn: "" } }, details: { id: -1, url_id: "", tag: "", description: "" } })
+  let carousel = ref<TMediaProps>({ source: 'main', itemIndex: -1, media: { hasMedia: false, urls: { full: "", tn: "" }, id: -1, description: "" }, details: { id: -1, url_id: "", tag: "", description: "" } })
 
   const carouselHeader = computed(() => {
     return `Carousel Header ${module.value} [${carousel.value.itemIndex + 1}/${c.collection(carousel.value.source).value.meta.length}]`

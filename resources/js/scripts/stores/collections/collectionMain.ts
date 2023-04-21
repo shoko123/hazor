@@ -6,7 +6,7 @@ import { TCollectionExtra, TCollectionName, TElement, TItemsPerPage, TPageItem, 
 import { TMedia } from '../../../types/mediaTypes'
 
 import { TModule } from '../../../types/routesTypes'
-import { TApiMedia, TApiMediaOrNull, TItemPerPagePerView, TApiArrayItemMain, TApiMainImage, TApiMainTable, TApiPageItem } from '@/js/types/apiTypes'
+import { TApiMedia, TApiArrayMedia, TItemPerPagePerView, TApiArray, TApiArrayMain, TApiPageMainImage, TApiPageMainTable, TApiPage } from '@/js/types/apiTypes'
 import { useCollectionsStore } from './collections'
 import { useRoutesMainStore } from '../routes/routesMain'
 import { useXhrStore } from '../xhr'
@@ -26,9 +26,9 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         viewIndex: 0,
     })
 
-    let array = ref<TApiArrayItemMain[]>([])
+    let array = ref<TApiArrayMain[]>([])
 
-    let page = ref<TApiPageItem[]>([])
+    let page = ref<TApiPage[]>([])
 
     const collection = computed(() => {
         return {
@@ -38,8 +38,8 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         }
     })
 
-    function setArray(data: TApiArrayItemMain[]) {
-        array.value = data
+    function setArray(data: TApiArray[]) {
+        array.value = <TApiArrayMain[]>data
         extra.value.length = data.length
     }
 
@@ -95,14 +95,14 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         }
     }
 
-    function savePage(apiPage: TApiPageItem[], view: TCollectionView, module: TModule): void {
+    function savePage(apiPage: TApiPage[], view: TCollectionView, module: TModule): void {
         let toSave = []
         let pageRef = <TPageItem[]>([])
 
         switch (view) {
             case 'Image':
 
-                toSave = (<TApiMainImage[]>apiPage).map(x => {
+                toSave = (<TApiPageMainImage[]>apiPage).map(x => {
                     const media = buildMedia(x.media1, module)
                     const item = { id: x.id, url_id: x.url_id, tag: x.url_id, description: x.description }
                     return { ...item, media: media }
@@ -113,7 +113,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
 
 
             case 'Table':
-                toSave = (<TApiMainTable[]>apiPage).map(x => { return { id: x.id, url_id: x.url_id, tag: x.url_id, description: x.description } })
+                toSave = (<TApiPageMainTable[]>apiPage).map(x => { return { id: x.id, url_id: x.url_id, tag: x.url_id, description: x.description } })
                 page.value = <TPageCMainVTable[]>toSave
                 break;
 
@@ -135,8 +135,9 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     // }
 
     function itemIndexById(id: number) {
+
         let index = array.value.findIndex(x => x.id === id)
-        //console.log(`itemIndexById(id:${id}) index: ${index}`)
+        console.log(`collectionMain.itemIndexById(id:${id}) array: $${JSON.stringify(array.value.slice(0,5), null, 2)} index: ${index}`)
         return index
 
     }
