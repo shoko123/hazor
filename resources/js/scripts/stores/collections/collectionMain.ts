@@ -30,32 +30,10 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
 
     let page = ref<TApiPageItem[]>([])
 
-    const computedChipPage = computed(() => {
-
-        let ex = extra.value
-        if (ex.length === 0) {
-            return []
-        }
-        let ipp = c.getIpp('Chip')
-        let start = (ex.pageNoB1 - 1) * ipp
-
-
-        let slice = array.value.slice(start, start + ipp)
-        return slice.map(x => {
-            let m = { ...x }
-            return { ...m, tag: x.url_id }
-        })
-
-
-    })
-    const computedPage = computed(() => {
-        return extra.value.views[extra.value.viewIndex] === 'Chip' ? computedChipPage.value : page.value
-    })
-
     const collection = computed(() => {
         return {
             array: array.value,
-            page: computedPage.value,
+            page: page.value,//computedPage.value,
             extra: extra.value
         }
     })
@@ -64,9 +42,6 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         array.value = data
         extra.value.length = data.length
     }
-
-
-
 
     async function loadPage(pageNoB1: number, view: TCollectionView, module: TModule): Promise<boolean> {
         let ipp = c.getIpp(view)
@@ -80,7 +55,9 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
                 //savePage(array.value.slice(start, start + ipp), view, module)
                 extra.value.pageNoB1 = pageNoB1
                 extra.value.viewIndex = extra.value.views.indexOf(view)
-                page.value = []
+                let slice = array.value.slice(start, start + ipp)
+               
+                savePage(slice, view, module)              
                 return true
 
             case 'Image':
@@ -139,6 +116,13 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
                 toSave = (<TApiMainTable[]>apiPage).map(x => { return { id: x.id, url_id: x.url_id, tag: x.url_id, description: x.description } })
                 page.value = <TPageCMainVTable[]>toSave
                 break;
+
+                case 'Chip':
+
+                
+                    toSave = (<TPageVChip[]>apiPage).map(x => { return { id: x.id, url_id: x.url_id, tag: x.url_id } })
+                    page.value = <TPageVChip[]>toSave
+                    break;                
         }
         //console.log(`Saving page: ${JSON.stringify(toSave, null, 2)}`)
     }
@@ -185,6 +169,5 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         itemIsInPage,
         itemByIndex,
         clear,
-        computedChipPage
     }
 })
