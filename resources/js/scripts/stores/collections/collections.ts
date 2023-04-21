@@ -11,6 +11,7 @@ import { useRoutesMainStore } from '../routes/routesMain'
 import { useXhrStore } from '../xhr'
 import { useMediaStore } from '../media'
 import { useNotificationsStore } from '../notifications'
+import { useCollectionMainStore } from './collectionMain'
 
 export const useCollectionsStore = defineStore('collections', () => {
     const { send } = useXhrStore()
@@ -56,7 +57,19 @@ export const useCollectionsStore = defineStore('collections', () => {
         return itemsPerPagePerView.value[view]
     }
 
+    function getCollection(source: TCollectionName) {
+        switch (source) {
+            case 'main':
+                return useCollectionMainStore()
+            case 'related':
+                return useCollectionMainStore()
+            case 'media':
+                return useCollectionMainStore()
+        }
+    }
+
     function getPageArray(source: TCollectionName) {
+         
         switch (source) {
             case 'main':
                 return mainPageArray
@@ -68,6 +81,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     }
 
     function getCollectionArray(source: TCollectionName) {
+        
         switch (source) {
             case 'main':
                 return mainArray
@@ -112,10 +126,14 @@ export const useCollectionsStore = defineStore('collections', () => {
     }
 
     function setArray(name: TCollectionName, data: TApiArrayItemMain[]) {
+        let c = getCollection(name)
+
+
         let array = getCollectionArray(name)
         let meta = getCollectionMeta(name)
         array.value = data
         meta.value.length = data.length
+        c.setArray(data)
     }
 
     async function loadPage(name: TCollectionName, pageNoB1: number, view: TCollectionView, module: TModule): Promise<boolean> {
@@ -167,6 +185,9 @@ export const useCollectionsStore = defineStore('collections', () => {
                 return false
 
         }
+
+        let c = getCollection(name)
+        c.loadPage(pageNoB1, view, module)
         return true
     }
 
@@ -219,7 +240,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         let newViewIndex = (meta.viewIndex + 1) % meta.views.length
         let newView = meta.views[newViewIndex]
         let index = meta.firstItemNo - 1
-        console.log(`toggleCollectionView() collection: ${name}  module: ${module} views: ${meta.views}  current view: ${currentView}  new view: ${newView} index: ${index}` );
+        console.log(`toggleCollectionView() collection: ${name}  module: ${module} views: ${meta.views}  current view: ${currentView}  new view: ${newView} index: ${index}`);
         //await loadPage(name, 1, newView, module)
         await loadPageByItemIndex(name, newView, index, module)
     }
@@ -230,15 +251,21 @@ export const useCollectionsStore = defineStore('collections', () => {
         itemsPerPagePerView.value['Table'] = ipp["Table"]
     }
 
-    async function loadPageByItemIndex(collectionName: TCollectionName, view: TCollectionView,  index: number, module: TModule,) {
-        let meta = collectionMeta(collectionName)
+    async function loadPageByItemIndex(collectionName: TCollectionName, view: TCollectionView, index: number, module: TModule,) {
         let ipp = getIpp(view)
         let pageNoB0 = Math.floor(index / ipp)
         console.log(`loadPageByItemIndex() collectionName: ${collectionName} view: ${view} index: ${index} module: ${module}`)
         await loadPage(collectionName, pageNoB0 + 1, view, module)
+
+        let c = getCollection(collectionName)
+        await c.loadPage(pageNoB0 + 1, view, module)
     }
 
     function itemIndexById(id: number) {
+        let c = getCollection('main')
+        return c.itemIndexById(id)
+        
+        
         let index = mainArray.value.findIndex(x => x.id === id)
         //console.log(`itemIndexById(id:${id}) index: ${index}`)
         return index
@@ -246,10 +273,25 @@ export const useCollectionsStore = defineStore('collections', () => {
     }
 
     function itemIsInPage(id: number) {
+        let c = getCollection('main')
+        return c.itemIsInPage(id)
+        
+        /////////////////////////
         return mainPageArray.value.some((x) => (<TPageCMainVImage>x).id === id)
     }
 
     function itemIdsByIndex(name: TCollectionName, index: number) {
+        let c = getCollection(name)
+        return c.itemByIndex(index)
+
+
+
+
+
+
+
+
+
         //console.log(`setItemIndexInMainCollection to ${index}`)
         switch (name) {
             case 'main':
@@ -307,7 +349,7 @@ export const useCollectionsStore = defineStore('collections', () => {
             page: mainPageArray.value,
             meta: collectionMeta('main')
         }
-    }) 
+    })
 
     const mediaCollection = computed(() => {
         return {
@@ -315,7 +357,7 @@ export const useCollectionsStore = defineStore('collections', () => {
             page: mediaPageArray.value,
             meta: collectionMeta('media')
         }
-    }) 
+    })
 
     const relatedCollection = computed(() => {
         return {
@@ -323,8 +365,8 @@ export const useCollectionsStore = defineStore('collections', () => {
             page: relatedPageArray.value,
             meta: collectionMeta('related')
         }
-    }) 
-    
+    })
+
     function collection(name: TCollectionName) {
         switch (name) {
             case 'main':
@@ -336,8 +378,8 @@ export const useCollectionsStore = defineStore('collections', () => {
         }
     }
 
-   // mainCollection, mediaCollection, main and media for debug only.
-   //Note : computed collection will only e reactive only if state (main, media) is exposed.
+    // mainCollection, mediaCollection, main and media for debug only.
+    //Note : computed collection will only e reactive only if state (main, media) is exposed.
     return {
         getIpp,
         collection,
