@@ -6,7 +6,8 @@
       </v-pagination>
       <!-- <v-spacer></v-spacer> -->
 
-        <v-btn v-if="!isEmpty" size="small" variant="outlined" @click="toggleDisplayOption()">view: {{ displayOption }} </v-btn>
+      <v-btn v-if="!isEmpty" size="small" variant="outlined" @click="toggleDisplayOption()">view: {{ displayOption }}
+      </v-btn>
 
     </v-toolbar>
     <v-card-text>
@@ -20,7 +21,7 @@
 <script lang="ts" setup >
 
 import { computed } from 'vue'
-import { TSetPage, TCollectionName, TCollectionView } from '../../types/collectionTypes'
+import { TCollectionName } from '../../types/collectionTypes'
 import CollectionPageImage from './CollectionPageImage.vue'
 import CollectionPageChips from './CollectionPageChips.vue'
 import CollectionPageTable from './CollectionPageTable.vue'

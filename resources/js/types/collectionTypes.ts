@@ -1,18 +1,41 @@
 // collectionTypes.ts
-import { TApiArrayMedia } from '@/js/types/apiTypes'
+
+import { TFields } from '@/js/types/itemTypes'
 import { TMedia } from '@/js/types/mediaTypes'
+import { TModule } from '@/js/types/routesTypes'
 
 type TCollectionView = 'Image' | 'Chip' | 'Table'
 type TCollectionName = 'main' | 'media' | 'related'
-type TElement = 'array' | 'page' | 'viewIndex'
 
-type TItemsPerPage = number[]
+type TItemPerPagePerView = { Image: number, Chip: number, Table: number }
 
-type TSetPage = {
-        pageNoB1: number,
-        viewIndex: number
+type TApiMedia = { full: string, tn: string, id: number, description: string }
+
+//array types
+type TApiArrayMain = { id: number, url_id: string }
+type TApiArrayMedia = TApiMedia | null
+type TApiArrayRelated = { module: TModule, id: number, url_id: string }
+
+type TApiArray = TApiArrayMain | TApiArrayMedia | TApiArrayRelated
+
+//page types (divided into ApiPageX and PageX groups)
+
+//Api page types
+type TApiPageMainImage = {
+        id: number,
+        url_id: string,
+        description: string,
+        media1: TApiMedia
 }
 
+type TApiPageMainTable = {
+        id: number,
+        url_id: string,
+        description: string,
+}
+
+type TApiPageMedia = TApiMedia
+type TApiPage = TApiPageMainImage | TApiPageMainTable | TApiPageMedia | TApiArrayMain
 
 //conversions ready for consumption for 'Media', 'Chip', and 'Table' views
 
@@ -48,14 +71,30 @@ type TPageCMediaVImage = {
 type TPageItem = TPageCMainVImage | TPageCMainVTable | TPageVChip | TPageCMediaVImage
 
 
-//all the data kept in a specific collection
+
+type TApiRespShow0 = {
+        msg: string,
+        fields: TFields,
+        media: TApiMedia[],
+        media1: TApiMedia,
+        global_tags: any,
+        model_tags: any,
+        url_id: string,
+}
+
+type TApiRespShow1 = {
+        id: number,
+        url_id: string,
+        description: string,
+        media: TApiMedia,
+}
+
+//internal collection data
 type TCollectionExtra = {
         length: number,
         pageNoB1: number,
         views: TCollectionView[],
         viewIndex: number,
-        //itemIndex: number,
-        //ready: { array: boolean, index: boolean, page: boolean }
 }
 
 type TCollectionMeta = {
@@ -74,16 +113,25 @@ type TCollectionMeta = {
 
 
 export {
-        TCollectionView,
-        TCollectionExtra,
-        TElement,
         TCollectionName,
-        TItemsPerPage,
+        TCollectionView,
+        TItemPerPagePerView,
+        TCollectionExtra,
         TCollectionMeta,
-        TPageItem,
-        TSetPage,
+        TApiArrayMain,
+        TApiArrayMedia,
+        TApiArrayRelated,
+        TApiArray,
+        TApiPageMainImage,
+        TApiPageMainTable,
+        TApiPageMedia,
+        TApiPage,
         TPageVChip,
         TPageCMainVImage,
         TPageCMainVTable,
-        TPageCMediaVImage
+        TPageCMediaVImage,
+        TPageItem,
+        TApiMedia,
+        TApiRespShow0,
+        TApiRespShow1,
 }

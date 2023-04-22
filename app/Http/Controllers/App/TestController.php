@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Interfaces\DigModelInterface;
+use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
 
 class TestController extends Controller
 {
@@ -25,19 +26,19 @@ class TestController extends Controller
 
     public function status(Request $r)
     {
+        $media = SpatieMedia::whereIn('id', array(1, 2, 3))->get();
         $tables = ['loci', 'fauna'];
         $totals = [];
-        foreach ($tables as $t) {
-            array_push($totals, [
-                'table_name' => $t,
-                'cnt' => DB::table($t)->count(),
-            ]);
-        }
+       
 
+        $m = collect([]);
+        foreach ($media as $med) {
+            $m->push(['full' => $med->getPath(), 'tn' =>  $med->getPath('tn'), 'id' => $med['id']]);
+        }
         return response()->json([
             "msg" => "TestController.status",
             "totals" => $totals,
-
+            "media" => $m
         ], 200);
     }
 }

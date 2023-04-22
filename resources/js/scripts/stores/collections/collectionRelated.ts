@@ -2,11 +2,8 @@
 //handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { TCollectionExtra, TCollectionName, TElement, TItemsPerPage, TPageItem, TCollectionView, TPageCMainVImage, TPageCMainVTable, TPageVChip } from '../../../types/collectionTypes'
-import { TMedia } from '../../../types/mediaTypes'
-
 import { TModule } from '../../../types/routesTypes'
-import { TApiPageMedia, TItemPerPagePerView, TApiArrayMedia, TApiPageMainImage, TApiPageMainTable, TApiArray, TApiPage } from '@/js/types/apiTypes'
+import { TApiPageMedia, TCollectionExtra, TPageItem, TCollectionView, TPageCMainVImage, TApiArrayMedia, TApiPageMainImage, TApiPageMainTable, TApiArray, TApiPage } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections'
 import { useRoutesMainStore } from '../routes/routesMain'
 import { useXhrStore } from '../xhr'
@@ -90,9 +87,8 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
         return page.value.some((x) => (<TPageCMainVImage>x).id === id)
     }
 
-    function itemByIndex(index: number) {
+    function itemByIndex(index: number) : TApiArray {
         return array.value[index]
-
     }
 
     function clear() {

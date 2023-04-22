@@ -6,19 +6,18 @@
 //activities (e.g. clearFilters, copy current -> new,), before
 //proceeding to the new route.
 
-import type { TRouteInfo, TPlanAction, TPrepareResponse } from '../../../types/routesTypes';
-import type { TFields } from '../../../types/itemTypes';
-import type { TApiRespShow0 } from '../../../types/apiTypes';
+import type { TRouteInfo, TPlanAction, TPrepareResponse } from '@/js/types/routesTypes'
+import type { TApiRespShow0 } from '@/js/types/collectionTypes'
 import { defineStore, storeToRefs } from 'pinia'
-import { useXhrStore } from '../xhr';
-import { useTrioStore } from '../trio';
-import { useCollectionsStore } from '../collections/collections';
-import { useModuleStore } from '../module';
-import { useNotificationsStore } from '../notifications';
-import { useItemStore } from '../item';
-import { useMediaStore } from '../media';
-import { useRoutesMainStore } from './routesMain';
-import { ItemNotFoundError } from '../../setups/routes/errors';
+import { useXhrStore } from '../xhr'
+import { useTrioStore } from '../trio'
+import { useCollectionsStore } from '../collections/collections'
+import { useModuleStore } from '../module'
+import { useNotificationsStore } from '../notifications'
+import { useItemStore } from '../item'
+import { useMediaStore } from '../media'
+import { useRoutesMainStore } from './routesMain'
+
 
 export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let xhr = useXhrStore();

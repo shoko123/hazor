@@ -1,16 +1,16 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { TItem, TItemMandatoryFields } from '../../types/itemTypes'
+import { TItem, TItemMandatoryFields } from '@/js/types/itemTypes'
 import { TMedia } from '@/js/types/mediaTypes'
-import { TApiArrayMedia } from '@/js/types/apiTypes'
+import { TApiArrayMedia, TApiArrayMain } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections/collections'
 import { useRoutesMainStore } from './routes/routesMain'
 
 export const useItemStore = defineStore('item', () => {
 
   const { getRouteInfo } = useRoutesMainStore()
-  const { collection, itemIdsByIndex } = useCollectionsStore()
+  const { collection, itemByIndex } = useCollectionsStore()
  
   let fields = ref<TItemMandatoryFields>({id: -1})
   let url_id = ref<string | undefined>(undefined)
@@ -52,9 +52,9 @@ export const useItemStore = defineStore('item', () => {
     }
 
     //TODO change id to url_id
-    const ids = itemIdsByIndex('main', newIndex)
-    console.log(`nextUrlId: ${ids.url_id}`)
-    return ids.url_id
+    const mainArrayItem = <TApiArrayMain>itemByIndex('main', newIndex)
+    console.log(`nextUrlId: ${mainArrayItem.url_id}`)
+    return mainArrayItem.url_id
   }
   return {
     ready,

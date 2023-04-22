@@ -2,9 +2,8 @@
 //handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { TCollectionName, TCollectionView, TCollectionMeta, } from '../../../types/collectionTypes'
+import { TCollectionName, TCollectionView, TCollectionMeta, TItemPerPagePerView, TApiArray} from '@/js/types/collectionTypes'
 import { TModule } from '../../../types/routesTypes'
-import { TItemPerPagePerView, TApiArray, TPage} from '@/js/types/apiTypes'
 import { useRoutesMainStore } from '../routes/routesMain'
 import { useXhrStore } from '../xhr'
 import { useNotificationsStore } from '../notifications'
@@ -34,11 +33,11 @@ export const useCollectionsStore = defineStore('collections', () => {
         switch (source) {
             case 'main':
                 return useCollectionMainStore()
-           
+
             case 'media':
                 return useCollectionMediaStore()
-                case 'related':
-                    return useCollectionRelatedStore()                
+            case 'related':
+                return useCollectionRelatedStore()
         }
     }
 
@@ -115,10 +114,22 @@ export const useCollectionsStore = defineStore('collections', () => {
         return c.itemIsInPage(id)
     }
 
-    function itemIdsByIndex(name: TCollectionName, index: number){
+    function itemByIndex(name: TCollectionName, index: number): TApiArray {
         let c = getCollection(name)
-        //return c.array[index]
         return c.itemByIndex(index)
+    }
+
+    function next(name: TCollectionName, index: number, isRight: boolean): {item: TApiArray, index: number} {
+        let c = getCollection(name)
+        let length = c.collection.extra.length
+        let newIndex
+
+        if (isRight) {
+            newIndex = (index === length - 1) ? 0 : index + 1
+        } else {
+            newIndex = (index === 0) ? length - 1 : index - 1
+        }
+        return {item: c.array[newIndex], index: newIndex}
     }
 
     function clearCollections() {
@@ -178,7 +189,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         }
     })
 
-    function collection(name: TCollectionName) {
+    function collection(name: TCollectionName) { 
         switch (name) {
             case 'main':
                 return mainCollection
@@ -187,6 +198,13 @@ export const useCollectionsStore = defineStore('collections', () => {
             case 'media':
                 return mediaCollection
         }
+
+        // let c = getCollection(name)
+        // return {
+        //     array: c.array,
+        //     page: c.page,
+        //     meta: collectionMeta(name)
+        // }
     }
 
     // mainCollection, mediaCollection, main and media for debug only.
@@ -196,7 +214,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         collection,
         mainCollection,
         mediaCollection,
-        itemIdsByIndex,
+        itemByIndex,
         setItemsPerPage,
         setArray,
         loadPage,
@@ -205,6 +223,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         itemIndexById,
         loadPageByItemIndex,
         itemIsInPage,
+        next,
         firstUrlId
     }
 })

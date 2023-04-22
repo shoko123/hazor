@@ -1,8 +1,7 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { TCollectionName, TPageCMainVImage, } from '../../../types/collectionTypes'
-import { TApiRespShow1 } from '@/js/types/apiTypes'
+import { TCollectionName, TApiArrayMain, TApiRespShow1} from '@/js/types/collectionTypes'
 import { useCollectionsStore } from '../collections/collections'
 import { useXhrStore } from '../xhr'
 import { useNotificationsStore } from '../notifications'
@@ -51,29 +50,15 @@ export const useCarouselStore = defineStore('carousel', () => {
     isOpen.value = true
   }
 
-  function nextIndex(isRight: boolean) {
-    let length = c.collection(carousel.value.source).value.meta.length
-    let newIndex
-
-    if (isRight) {
-      newIndex = (carousel.value.itemIndex === length - 1) ? 0 : carousel.value.itemIndex + 1
-    } else {
-      newIndex = (carousel.value.itemIndex === 0) ? length - 1 : carousel.value.itemIndex - 1
-    }
-    return newIndex
-  }
-
   async function next(isRight: boolean) {
-    // console.log(`next(${isRight ? "Right" : "Left"})`)    
-    const newIndex = nextIndex(isRight)
-    const ids = c.itemIdsByIndex(carousel.value.source, newIndex)
+  const next  = c.next(collectionName.value,carousel.value.itemIndex, isRight )
+    console.log(`next(newItem ${JSON.stringify(next, null, 2)}})`)    
     showSpinner(`Loading next item...`)
-
-    await send('model/show', 'post', { model: current.value.module, url_id: ids.url_id, variant: 1 })
+    await send('model/show', 'post', { model: current.value.module, url_id: (<TApiArrayMain>next.item).id, variant: 1 })
       .then(res => {
         console.log(`show(carouselItem) returned (success). res: ${JSON.stringify(res.data, null, 2)}`)
         let resp = res.data.item as TApiRespShow1
-        carousel.value.itemIndex = newIndex
+        carousel.value.itemIndex = next.index
         carousel.value.media = buildMedia(resp.media, current.value.module)
         carousel.value.details = { id: resp.id, url_id: resp.url_id, tag: resp.url_id, description: resp.description }
       })

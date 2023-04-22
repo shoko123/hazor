@@ -2,11 +2,8 @@
 //handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { TCollectionExtra, TCollectionName, TElement, TItemsPerPage, TPageItem, TCollectionView, TPageCMainVImage, TPageCMainVTable, TPageVChip } from '../../../types/collectionTypes'
-import { TMedia } from '../../../types/mediaTypes'
-
+import { TCollectionExtra, TApiArray, TApiArrayMain, TApiPageMainImage, TApiPageMainTable, TApiPage, TPageItem, TCollectionView, TPageCMainVImage, TPageCMainVTable, TPageVChip } from '@/js/types/collectionTypes'
 import { TModule } from '../../../types/routesTypes'
-import { TApiMedia, TApiArrayMedia, TItemPerPagePerView, TApiArray, TApiArrayMain, TApiPageMainImage, TApiPageMainTable, TApiPage } from '@/js/types/apiTypes'
 import { useCollectionsStore } from './collections'
 import { useRoutesMainStore } from '../routes/routesMain'
 import { useXhrStore } from '../xhr'
@@ -127,17 +124,9 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         //console.log(`Saving page: ${JSON.stringify(toSave, null, 2)}`)
     }
 
-    // async function loadPageByItemIndex(view: TCollectionView, index: number, module: TModule,) {
-    //     let ipp = c.getIpp(view)
-    //     let pageNoB0 = Math.floor(index / ipp)
-    //     console.log(`main.loadPageByItemIndex() view: ${view} index: ${index} module: ${module}`)
-    //     await loadPage(pageNoB0 + 1, view, module)
-    // }
-
     function itemIndexById(id: number) {
-
         let index = array.value.findIndex(x => x.id === id)
-        console.log(`collectionMain.itemIndexById(id:${id}) array: $${JSON.stringify(array.value.slice(0,5), null, 2)} index: ${index}`)
+        //console.log(`collectionMain.itemIndexById(id:${id}) array: $${JSON.stringify(array.value.slice(0,5), null, 2)} index: ${index}`)
         return index
 
     }
@@ -146,7 +135,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         return page.value.some((x) => (<TPageCMainVImage>x).id === id)
     }
 
-    function itemByIndex(index: number) {
+    function itemByIndex(index: number) : TApiArray {
         return array.value[index]
 
     }
