@@ -1,7 +1,7 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { TLocusFields } from '../../../types/itemTypes'
+import { TLocusFields } from '@/js/types/moduleFieldsTypes'
 import { useCollectionsStore } from '../collections/collections'
 import { useRoutesMainStore } from '../routes/routesMain'
 

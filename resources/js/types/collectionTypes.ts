@@ -1,6 +1,6 @@
 // collectionTypes.ts
 
-import { TFields } from '@/js/types/itemTypes'
+import { TFields } from '@/js/types/moduleFieldsTypes'
 import { TMedia } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/routesTypes'
 
@@ -70,25 +70,6 @@ type TPageCMediaVImage = {
 //union of the above
 type TPageItem = TPageCMainVImage | TPageCMainVTable | TPageVChip | TPageCMediaVImage
 
-
-
-type TApiRespShow0 = {
-        msg: string,
-        fields: TFields,
-        media: TApiMedia[],
-        media1: TApiMedia,
-        global_tags: any,
-        model_tags: any,
-        url_id: string,
-}
-
-type TApiRespShow1 = {
-        id: number,
-        url_id: string,
-        description: string,
-        media: TApiMedia,
-}
-
 //internal collection data
 type TCollectionExtra = {
         length: number,
@@ -111,7 +92,6 @@ type TCollectionMeta = {
         length: number
 }
 
-
 export {
         TCollectionName,
         TCollectionView,
@@ -132,6 +112,4 @@ export {
         TPageCMediaVImage,
         TPageItem,
         TApiMedia,
-        TApiRespShow0,
-        TApiRespShow1,
 }

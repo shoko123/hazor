@@ -29,8 +29,8 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-import { TCollectionName, TPageCMainVTable } from '../../types/collectionTypes'
-import { useCollectionsStore } from '../../scripts/stores/collections/collections';
+import { TCollectionName, TPageCMainVTable } from '@/js/types/collectionTypes'
+import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 
 const props = defineProps<{
   source: TCollectionName

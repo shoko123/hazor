@@ -1,7 +1,7 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { TLocusFields } from '../../../types/itemTypes'
+import { TStoneFields } from '@/js/types/moduleFieldsTypes'
 import { useCollectionsStore } from '../collections/collections'
 import { useRoutesMainStore } from '../routes/routesMain'
 
@@ -10,15 +10,9 @@ export const useStoneStore = defineStore('stone', () => {
   const { getRouteInfo } = useRoutesMainStore()
   const { collection } = useCollectionsStore()
 
-  let newItem = ref<TLocusFields>({
-    id: 0,
-    name: "",
-    type: "",
-    stratum: "",
-    square: "",
-    elevation: "",
-    cross_ref: "",
-  })
+  // let newItem = ref<TStoneFields>({
+  //   id: 0,
+  // })
 
   const id = computed(() => {
     return 4
@@ -28,7 +22,7 @@ export const useStoneStore = defineStore('stone', () => {
     return url_id
   }
 
-  function prepareForUpdate(item: TLocusFields): void {
+  function prepareForUpdate(item: TStoneFields): void {
 
   }
 
@@ -37,7 +31,7 @@ export const useStoneStore = defineStore('stone', () => {
   }
 
   return {
-    newItem,
+    //newItem,
     tagFromUrlId,
     prepareForCreate,
     prepareForUpdate

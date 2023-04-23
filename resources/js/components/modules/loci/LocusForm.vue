@@ -22,9 +22,8 @@
 </template>
 
 <script lang="ts" setup >
-
-import { TLocusFields } from '../../../types/itemTypes'
 import { computed } from 'vue'
+import { TLocusFields } from '@/js/types/moduleFieldsTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 
 let i = useItemStore()

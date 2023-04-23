@@ -1,7 +1,7 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { TLocusFields } from '../../../types/itemTypes'
+import { TFaunaFields } from '@/js/types/moduleFieldsTypes'
 import { useCollectionsStore } from '../collections/collections'
 import { useRoutesMainStore } from '../routes/routesMain'
 
@@ -10,15 +10,9 @@ export const useFaunaStore = defineStore('fauna', () => {
   const { getRouteInfo } = useRoutesMainStore()
   const { collection } = useCollectionsStore()
 
-  let newItem = ref<TLocusFields>({
-    id: 0,
-    name: "",
-    type: "",
-    stratum: "",
-    square: "",
-    elevation: "",
-    cross_ref: "",
-  })
+  // let newItem = ref<TFaunaFields>({
+  //   id: 0,
+  // })
 
 
   const id = computed(() => {
@@ -29,7 +23,7 @@ export const useFaunaStore = defineStore('fauna', () => {
     return url_id
   }
 
-  function prepareForUpdate(item: TLocusFields): void {
+  function prepareForUpdate(item: TFaunaFields): void {
 
   }
 
@@ -38,7 +32,6 @@ export const useFaunaStore = defineStore('fauna', () => {
   }
 
   return {
-    newItem,
     tagFromUrlId,
     prepareForCreate,
     prepareForUpdate

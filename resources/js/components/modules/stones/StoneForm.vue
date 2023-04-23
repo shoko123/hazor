@@ -33,7 +33,7 @@
 
 <script lang="ts" setup >
 
-import { TStoneFields } from '../../../types/itemTypes'
+import { TStoneFields } from '@/js/types/moduleFieldsTypes'
 import { computed } from 'vue'
 import { useItemStore } from '../../../scripts/stores/item'
 

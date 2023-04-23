@@ -1,7 +1,8 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { TCollectionName, TApiArrayMain, TApiRespShow1} from '@/js/types/collectionTypes'
+import { TCollectionName, TApiArrayMain} from '@/js/types/collectionTypes'
+import { TApiShowCarousel} from '@/js/types/showTypes'
 import { useCollectionsStore } from '../collections/collections'
 import { useXhrStore } from '../xhr'
 import { useNotificationsStore } from '../notifications'
@@ -52,12 +53,12 @@ export const useCarouselStore = defineStore('carousel', () => {
 
   async function next(isRight: boolean) {
   const next  = c.next(collectionName.value,carousel.value.itemIndex, isRight )
-    console.log(`next(newItem ${JSON.stringify(next, null, 2)}})`)    
+    console.log(`next.newItem: ${JSON.stringify(next, null, 2)}})`)    
     showSpinner(`Loading next item...`)
     await send('model/show', 'post', { model: current.value.module, url_id: (<TApiArrayMain>next.item).id, variant: 1 })
       .then(res => {
         console.log(`show(carouselItem) returned (success). res: ${JSON.stringify(res.data, null, 2)}`)
-        let resp = res.data.item as TApiRespShow1
+        let resp = res.data.item as TApiShowCarousel
         carousel.value.itemIndex = next.index
         carousel.value.media = buildMedia(resp.media, current.value.module)
         carousel.value.details = { id: resp.id, url_id: resp.url_id, tag: resp.url_id, description: resp.description }

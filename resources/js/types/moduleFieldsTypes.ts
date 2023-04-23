@@ -1,6 +1,3 @@
-import { TMedia } from "./mediaTypes"
-
-//itemTypes.ts
 type TItemMandatoryFields = {
         id: number
 }
@@ -47,28 +44,6 @@ type TFaunaFields = TItemMandatoryFields & {
         element_id: string
 }
 
-type TItemDerived = {
-        tag: string,
-        url_id: string
-        
-}
 type TFields = TLocusFields | TStoneFields | TFaunaFields
-type TApiItem = {
-        fields: TFields,
-        media: TMedia[],
-        media1: TMedia,
-        model_tags: any[],
-        global_tags: any[],
-        derived: TItemDerived,
-        extra: any
-}
 
-type TItem = {
-        fields: TFields,
-        media: TMedia,
-        model_tags: any[],
-        global_tags: any[],
-        derived: TItemDerived,
-        extra: any
-}
-export { TItemMandatoryFields, TLocusFields, TStoneFields, TFaunaFields, TFields, TItem, TApiItem }
+export { TItemMandatoryFields, TLocusFields, TStoneFields, TFaunaFields, TFields }

@@ -21,7 +21,7 @@
 <script lang="ts" setup >
 
 import { computed } from 'vue'
-import { TCollectionName } from '../../types/collectionTypes'
+import { TCollectionName } from '@/js/types/collectionTypes'
 import CollectionPageImage from './CollectionPageImage.vue'
 import CollectionPageChips from './CollectionPageChips.vue'
 import CollectionPageTable from './CollectionPageTable.vue'

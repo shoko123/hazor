@@ -7,7 +7,7 @@
 //proceeding to the new route.
 
 import type { TRouteInfo, TPlanAction, TPrepareResponse } from '@/js/types/routesTypes'
-import type { TApiRespShow0 } from '@/js/types/collectionTypes'
+import type { TApiShowItem } from '@/js/types/showTypes'
 import { defineStore, storeToRefs } from 'pinia'
 import { useXhrStore } from '../xhr'
 import { useTrioStore } from '../trio'
@@ -153,7 +153,7 @@ let { buildMedia } = useMediaStore()
     n.showSpinner(`Loading item ${to.url_id} ...`)
     return xhr.send('model/show', 'post', { model: to.module, url_id: to.url_id, variant: 0 })
       .then(res => {
-        let item = res as unknown as TApiRespShow0
+        let item = res as unknown as TApiShowItem
         console.log(`show() returned (success)`)
         //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
         i.fields = res.data.fields

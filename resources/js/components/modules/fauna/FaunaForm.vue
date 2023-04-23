@@ -27,7 +27,7 @@
 
 <script lang="ts" setup >
 
-import { TFaunaFields } from '../../../types/itemTypes'
+import { TFaunaFields } from '@/js/types/moduleFieldsTypes'
 import { computed } from 'vue'
 import { useItemStore } from '../../../scripts/stores/item'
 
