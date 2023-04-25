@@ -7,13 +7,12 @@
     </v-card-actions>
   </v-card>
   <!--h5 v-if="hasMedia">{{ text }}</h5-->
-
 </template>
     
 
 <script lang="ts" setup >
 import { TCollectionName } from '../../types/collectionTypes'
-import {TMedia, TMediaDetailsCMain, TMediaDetailsCMedia} from '../../types/mediaTypes'
+import { TMedia, TMediaDetailsCMain, TMediaDetailsCMedia } from '../../types/mediaTypes'
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
@@ -24,16 +23,14 @@ const router = useRouter()
 const props = defineProps<{
   source: TCollectionName,
   itemIndex: number,
-   media: TMedia     
-     details: TMediaDetailsCMain | TMediaDetailsCMedia
-  pageNoB1?: number,
+  details: TMediaDetailsCMedia
 }>()
 
 
 type TMediaProps = {
   source: TCollectionName,
   itemIndex: number,
-    
+
   size?: number
 }
 onMounted(() => {
@@ -45,7 +42,7 @@ const { open } = useCarouselStore()
 function openModalCarousel() {
   console.log(`Open carousel clicked .....`)
   let routeInfo = getRouteInfo()
-  open(props.source, props.itemIndex, routeInfo.value.module, props)
+  open(props.source, props.itemIndex)
 }
 
 </script>

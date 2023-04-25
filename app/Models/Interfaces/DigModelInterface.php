@@ -11,7 +11,7 @@ interface DigModelInterface
     public function index($queryParams);
     public function page($ids, $view): Collection;//some page views require gathering of data from DB (according to ids/slugs and view): "Media" | "Table"
     public function show(int $id);
-    public function showCarouselItem(int $id);
+    public function carousel(int $id);
     public function firstUrlId();
 
     public function getIdFromUrlId(string $s) : int;

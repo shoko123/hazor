@@ -41,9 +41,10 @@ Route::group(['middleware' => ['read.accessibility']], function () {
     Route::post('model/index', [DigModelReadController::class, 'index']);
     Route::post('model/page', [DigModelReadController::class, 'page']);
     Route::post('model/show', [DigModelReadController::class, 'show']);
+    Route::post('model/carousel', [DigModelReadController::class, 'carousel']);
     Route::post('model/firstUrlId', [DigModelReadController::class, 'firstUrlId']);    
     Route::post('registrar/loci-for-area-season', [RegistrarController::class, 'loci-for-area-season']);
-    Route::post('media/show', [MediaController::class, 'show']);    
+    Route::post('media/carousel', [MediaController::class, 'carousel']);    
     Route::post('media/page', [MediaController::class, 'page']);     
     Route::post('registrar/finds-for-locus', [RegistrarController::class, 'finds-for-locus']);
 });

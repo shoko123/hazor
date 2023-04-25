@@ -1,7 +1,7 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { TCollectionName, TApiArrayMain } from '@/js/types/collectionTypes'
+import { TCollectionName, TApiArrayMain, TApiArrayMedia } from '@/js/types/collectionTypes'
 import { TApiShowCarousel } from '@/js/types/showTypes'
 import { useCollectionsStore } from '../collections/collections'
 import { useXhrStore } from '../xhr'
@@ -23,10 +23,16 @@ export const useCarouselStore = defineStore('carousel', () => {
   let module = ref<TModule>('Home')
   let collectionName = ref<TCollectionName>('main')
 
-  let carousel = ref<TMediaProps>({ source: 'main', itemIndex: -1, media: { hasMedia: false, urls: { full: "", tn: "" }, id: -1, description: "" }, details: { id: -1, url_id: "", tag: "", description: "" } })
+  let carousel = ref<TMediaProps>({
+    source: 'main',
+    itemIndex: -1,
+    media: { hasMedia: false, urls: { full: "", tn: "" }, id: -1, description: "" },
+    details: { id: -1, url_id: "", tag: "", description: "" }
+  })
 
   const carouselHeader = computed(() => {
-    return `Carousel Header ${module.value} [${carousel.value.itemIndex + 1}/${c.collection(carousel.value.source).value.meta.length}]`
+    let collection = c.collection(collectionName.value)
+    return `Carousel Header ${module.value} [${carousel.value.itemIndex + 1}/${collection.value.array.length}]`
   })
 
   const carouselDetails = computed<TCarouselDetails | undefined>(() => {
@@ -43,27 +49,72 @@ export const useCarouselStore = defineStore('carousel', () => {
     }
   })
 
-  async function open(source: TCollectionName, index: number, mod: TModule, item: TMediaProps) {
-    module.value = mod
-    carousel.value = { ...item }
+  async function open(source: TCollectionName, index: number) {
+    module.value = current.value.module
+    //carousel.value = { ...item }
     collectionName.value = source
-    console.log(`carousel.open() source: ${source} index: ${index} module: ${module} items: ${JSON.stringify(item, null, 2)}`)
-    isOpen.value = true
+    console.log(`carousel.open() source: ${source} index: ${index} module: ${module}`)
+
+
+
+    switch (source) {
+      case 'main':
+        let url_id = (<TApiArrayMain>c.itemByIndex(source, index)).url_id
+        await send('model/carousel', 'post', { model: current.value.module, url_id: url_id })
+          .then(res => {
+            console.log(`model.carousel()) returned (success). res: ${JSON.stringify(res.data, null, 2)}`)
+            let resp = res.data.item as TApiShowCarousel
+            carousel.value.itemIndex = index
+            carousel.value.media = buildMedia(resp.media, current.value.module)
+            carousel.value.details = { id: resp.id, url_id: resp.url_id, tag: resp.url_id, description: resp.description }
+            isOpen.value = true
+          })
+          .catch(err => {
+            console.log(`loadItem() failed`)
+            throw err
+          })
+          .finally(() => {
+            showSpinner(false)
+          })
+        break
+
+      case 'media':
+
+        let id = (<TApiArrayMedia>c.itemByIndex(source, index)).id
+        await send('media/carousel', 'post', { id })
+          .then(res => {
+            console.log(`media.carousel() returned (success). res: ${JSON.stringify(res.data, null, 2)}`)
+
+            carousel.value.itemIndex = index
+            carousel.value.media = buildMedia(res.data.res, module.value)
+            carousel.value.details = { id: -1, url_id: "url id", tag: "tag", description: "description" }
+            isOpen.value = true
+          })
+          .catch(err => {
+            console.log(`media.carousel() failed`)
+            throw err
+          })
+          .finally(() => {
+            showSpinner(false)
+          })
+
+    }
+
   }
 
   async function next(isRight: boolean) {
     const next = c.next(collectionName.value, carousel.value.itemIndex, isRight)
-    
+
     console.log(`next.newItem: ${JSON.stringify(next, null, 2)}})`)
 
-    switch (carousel.value.source) {
+    switch (collectionName.value) {
       case 'main':
 
-        
+
         showSpinner(`Loading next item...`)
-        await send('model/show', 'post', { model: current.value.module, url_id: (<TApiArrayMain>next.item).id, variant: 1 })
+        await send('model/carousel', 'post', { model: current.value.module, url_id: (<TApiArrayMain>next.item).id })
           .then(res => {
-            console.log(`show(carouselItem) returned (success). res: ${JSON.stringify(res.data, null, 2)}`)
+            console.log(`main.carousel() returned (success). res: ${JSON.stringify(res.data, null, 2)}`)
             let resp = res.data.item as TApiShowCarousel
             carousel.value.itemIndex = next.index
             carousel.value.media = buildMedia(resp.media, current.value.module)
@@ -79,8 +130,22 @@ export const useCarouselStore = defineStore('carousel', () => {
         break
 
       case 'media':
-
-
+        showSpinner(`Loading next item...`)
+        await send('media/carousel', 'post', { id: next.item.id })
+          .then(res => {
+            console.log(`main.carousel() returned (success). res: ${JSON.stringify(res.data, null, 2)}`)
+            carousel.value.itemIndex = next.index
+            carousel.value.media = buildMedia(res.data.res, current.value.module)
+            carousel.value.details = { id: -1, url_id: "url id", tag: "tag", description: "description" }
+          })
+          .catch(err => {
+            console.log(`loadItem() failed`)
+            throw err
+          })
+          .finally(() => {
+            showSpinner(false)
+          })
+        break
 
     }
   }
@@ -88,21 +153,27 @@ export const useCarouselStore = defineStore('carousel', () => {
 
   async function close() {
     //if current carouselItem is in currently loaded page - close, otherwise, load relevant page
-    if (!c.itemIsInPage(carousel.value.details.id)) {
-      const index = c.itemIndexById(carousel.value.details.id)
-      await c.loadPageByItemIndex(collectionName.value, 'Image', index, current.value.module)
-        .then(res => {
-          console.log(`carousel.close() loaded a new page`)
-        })
-        .catch(err => {
-          console.log(`loadPageByItemIndex() failed`)
-          throw err
-        })
-        .finally(() => {
-          showSpinner(false)
-        })
-    } else {
-      console.log(`carousel.close() no need to load a new page`)
+    switch (collectionName.value) {
+      case 'main':
+        if (!c.itemIsInPage(carousel.value.details.id)) {
+          const index = c.itemIndexById(carousel.value.details.id)
+          await c.loadPageByItemIndex(collectionName.value, 'Image', index, current.value.module)
+            .then(res => {
+              console.log(`carousel.close() loaded a new page`)
+            })
+            .catch(err => {
+              console.log(`loadPageByItemIndex() failed`)
+              throw err
+            })
+            .finally(() => {
+              showSpinner(false)
+            })
+        } else {
+          console.log(`carousel.close() no need to load a new page`)
+        }
+        break;
+      case 'media':
+        console.log(`carousel.close() media not loading new page (YET)`)
     }
     isOpen.value = false
   }

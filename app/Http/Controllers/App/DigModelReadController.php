@@ -32,28 +32,23 @@ class DigModelReadController extends Controller
     public function show(Request $r, DigModelInterface $m)
     {
         $id = $m->getIdFromUrlId($r["url_id"]);
-        $fields = (object)[];
-        switch ($r["variant"]) {
-            case 0:
-                $resp = array_merge($m->show($id), [
-                    "msg" => "ModelControler.show(variant0)",
-                    "url_id" => $r["url_id"]
-                ]);
-                return response()->json($resp, 200);
 
-            case 1:
-                return response()->json([
-                    "msg" => "ModelControler.show(variant1)",
-                    "item" => $m->showCarouselItem($id),
-                ], 200);
-
-
-            default:
-                return response()->json([
-                    "msg" => "ModelControler.show() Invalid variant parameter: " . $r["variant"],
-                ], 500);
-        }
+        $resp = array_merge($m->show($id), [
+            "msg" => "ModelControler.show(",
+            "url_id" => $r["url_id"]
+        ]);
+        return response()->json($resp, 200);
     }
+
+    public function carousel(Request $r, DigModelInterface $m)
+    {
+        $id = $m->getIdFromUrlId($r["url_id"]);
+        return response()->json([
+            "msg" => "ModelControler.carousel()",
+            "item" => $m->carousel($id),
+        ], 200);
+    }
+
     public function destroy($id)
     {
         return response()->json([

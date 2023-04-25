@@ -34,12 +34,12 @@ class MediaController extends Controller
         ], 200);
     }
   
-    public function show(Request $r, DigModel $dm)
+    public function carousel(Request $r)
     {
-        $res = MediaModel::show($r["id"]);
+        $res = MediaModel::carousel($r["id"]);
         
         return response()->json([
-            "message" => "message from MediaController.page()",
+            "message" => "message from MediaController.carousel()",
             "res" =>  $res,
         ], 200);
     }

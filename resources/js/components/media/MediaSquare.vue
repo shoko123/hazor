@@ -9,7 +9,7 @@
         </v-card>
         <v-overlay v-if="isHovering">
           <template #activator="{ isActive, props }">
-            <component v-bind:is="overlay" :source="source" :itemIndex="itemIndex" :media="media" :details="details"></component>
+            <component v-bind:is="overlay" :source="source" :itemIndex="itemIndex" :details="details"></component>
           </template>
         </v-overlay>
       </v-img>

@@ -155,7 +155,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     console.log(`prepare.loadItem() to: ${JSON.stringify(to, null, 2)}`)
     n.showSpinner(`Loading item ${to.url_id} ...`)
     try {
-      let res = await xhr.send('model/show', 'post', { model: to.module, url_id: to.url_id, variant: 0 })
+      let res = await xhr.send('model/show', 'post', { model: to.module, url_id: to.url_id })
       //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
       i.fields = res.data.fields
       i.url_id = res.data.url_id

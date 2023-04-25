@@ -102,7 +102,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         return ["fields" => $item, "media" => $media, "media1" => $media1, "global_tags" => $global_tags, "model_tags" => $model_tags];
     }
 
-    public function showCarouselItem($id)
+    public function carousel($id)
     {
         $desc = $this->buildSqlDescription();
         $item = self::with('media')
