@@ -87,9 +87,6 @@ export const useCollectionsStore = defineStore('collections', () => {
         let pageNoB0 = Math.floor(index / ipp)
         console.log(`loadPageByItemIndex() collectionName: ${collectionName} view: ${view} index: ${index} module: ${module}`)
         await loadPage(collectionName, pageNoB0 + 1, view, module)
-
-        let c = getCollection(collectionName)
-        await c.loadPage(pageNoB0 + 1, view, module)
     }
 
     async function toggleCollectionView(name: TCollectionName) {
@@ -132,8 +129,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         return {item: c.array[newIndex], index: newIndex}
     }
 
-    function clearCollections() {
-        let collections = ['main', 'media', 'related']
+    function clear(collections : TCollectionName[]) {
         collections.forEach(x => {
             let c = getCollection(<TCollectionName>x)
             return c.clear()
@@ -219,7 +215,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         setArray,
         loadPage,
         toggleCollectionView,
-        clearCollections,
+        clear,
         itemIndexById,
         loadPageByItemIndex,
         itemIsInPage,

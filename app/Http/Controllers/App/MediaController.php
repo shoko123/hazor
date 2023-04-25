@@ -24,6 +24,24 @@ class MediaController extends Controller
         ], 200);
     }
 
+    public function page(Request $r)
+    {
+        $res = MediaModel::page($r["ids"], "regular");
+        
+        return response()->json([
+            "message" => "message from MediaController.page()",
+            "res" =>  $res,
+        ], 200);
+    }
   
+    public function show(Request $r, DigModel $dm)
+    {
+        $res = MediaModel::show($r["id"]);
+        
+        return response()->json([
+            "message" => "message from MediaController.page()",
+            "res" =>  $res,
+        ], 200);
+    }
 
 }

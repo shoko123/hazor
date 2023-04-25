@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Models\Interfaces\MediaModelInterface;
 use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 use Illuminate\Database\Eloquent\Collection;
+
 use Exception;
 
 class MediaModel implements MediaModelInterface
@@ -16,6 +18,42 @@ class MediaModel implements MediaModelInterface
     public function __construct()
     {
         //
+    }
+
+    public static function page($ids, $view): Collection
+    {
+        $idsAsCommaSeperatedString = implode(',', $ids);
+
+        $res = SpatieMedia::whereIn('id', $ids)
+            ->orderByRaw("FIELD(id, $idsAsCommaSeperatedString)")
+            ->get();
+
+
+        $m = new Collection([]);
+        foreach ($res as $med) {
+            $m->push(['full' => $med->getPath(), 'tn' =>  $med->getPath('tn'), 'id' => $med['id']]);
+        }
+        return $m;
+        ///////
+
+
+
+
+        $res->transform(function ($item, $key) {
+            $media = null;
+            if (!$item->media->isEmpty()) {
+                $media = ['full' => $item->media[0]->getPath(), 'tn' =>  $item->media[0]->getPath('tn')];
+            }
+            unset($item->media);
+            $item->media1 = $media;
+            return $item;
+        });
+        return $res;
+    }
+
+    public static function show($id)
+    {
+        return SpatieMedia::findOrFail($id);
     }
 
     public function storeMedia(Request $r, DigModel $dm)
@@ -32,7 +70,8 @@ class MediaModel implements MediaModelInterface
 
             //reload updated media collection for item
             $item = $dm::findOrFail($r["id"]);
-            $media = $item->getMedia('photos');
+            //$media = $item->getMedia('photos');
+            $media = $item->getMedia();
             return (object)[
                 "message" => "I am the object returned from media.upload",
                 "item" => $item,
@@ -42,24 +81,19 @@ class MediaModel implements MediaModelInterface
             return response()->json(["error" => $error->getMessage()], 500);
         }
     }
-
-    //order media by collection_order, order_column.
-    //return { media1: TApiMedia, media_ids[] }
-    public function mediaForItem($item)
+    public static function orderMedia(MediaCollection $mc)
     {
         $collection_order = ['drawing', 'drawing and photo', 'photos'];
         $media =  collect([]);
 
         foreach ($collection_order as $collection_name) {
-            $by_collection = $item->getMedia($collection_name);
-            foreach ($by_collection as $med) {
-                $media->push(['full' => $med->getPath(), 'tn' =>  $med->getPath('tn'), 'id' => $med['id']]);
+            foreach ($mc as $med) {
+                if($med->collection_name === $collection_name) {
+                    $media->push(['full' => $med->getPath(), 'tn' =>  $med->getPath('tn'), 'id' => $med['id']]);
+                }
             }
         }
 
-        return [
-            'media' => $media,
-            'media1' => $media->isEmpty() ? null : $media[0]
-        ];
+        return $media;
     }
 }

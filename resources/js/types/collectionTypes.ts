@@ -13,7 +13,7 @@ type TApiMedia = { full: string, tn: string, id: number, description: string }
 
 //array types
 type TApiArrayMain = { id: number, url_id: string }
-type TApiArrayMedia = TApiMedia | null
+type TApiArrayMedia = TApiMedia
 type TApiArrayRelated = { module: TModule, id: number, url_id: string }
 
 type TApiArray = TApiArrayMain | TApiArrayMedia | TApiArrayRelated

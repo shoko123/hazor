@@ -43,13 +43,14 @@ Route::group(['middleware' => ['read.accessibility']], function () {
     Route::post('model/show', [DigModelReadController::class, 'show']);
     Route::post('model/firstUrlId', [DigModelReadController::class, 'firstUrlId']);    
     Route::post('registrar/loci-for-area-season', [RegistrarController::class, 'loci-for-area-season']);
+    Route::post('media/show', [MediaController::class, 'show']);    
+    Route::post('media/page', [MediaController::class, 'page']);     
     Route::post('registrar/finds-for-locus', [RegistrarController::class, 'finds-for-locus']);
 });
 
 //mutator APIs
 //Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::post('tags/sync', [TagController::class, 'sync']);
-    Route::post('media/show', [MediaController::class, 'show']);    
+    Route::post('tags/sync', [TagController::class, 'sync']);   
     Route::post('media/upload', [MediaController::class, 'upload']);
     Route::post('media/delete', [MediaController::class, 'delete']);
     Route::post('media/edit', [MediaController::class, 'edit']);

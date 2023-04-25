@@ -121,7 +121,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
                     page.value = <TPageVChip[]>toSave
                     break;                
         }
-        //console.log(`Saving page: ${JSON.stringify(toSave, null, 2)}`)
+        //console.log(`main.savePage() length: ${toSave.length}`)
     }
 
     function itemIndexById(id: number) {

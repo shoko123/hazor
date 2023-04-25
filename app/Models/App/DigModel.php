@@ -10,6 +10,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use App\Models\Interfaces\DigModelInterface;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\Functional\MediaModel;
+use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 
 abstract class DigModel extends Model implements HasMedia, DigModelInterface
 {
@@ -82,8 +83,14 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
         //deal with media: order by collection_name, order_column (done in MediaModel)
 
-        $mm = new MediaModel();
-        $m = $mm->mediaForItem($item);
+        $media = collect([]);
+        $media1 = null;
+
+        if(!$item->media->isEmpty()){
+            $media = MediaModel::orderMedia($item->media);
+            $media1 = $media[0];
+        }
+
         $global_tags = $item->global_tags;
         $model_tags = $item->model_tags;
 
@@ -92,102 +99,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         unset($item->global_tags);
         unset($item->model_tags);
 
-        return ["fields" => $item, "media" => $m["media"], "media1" => $m["media1"], "global_tags" => $global_tags, "model_tags" => $model_tags];
-
-        $builder = $this->with(
-            [
-                'find',
-                'find.locus' => function ($query) {
-                    $query->select('id', 'locus_no', 'area_season_id');
-                },
-                'find.locus.areaSeason' => function ($query) {
-                    $query->select('id', 'dot');
-                },
-
-                'module_tags',
-                'tags' => function ($query) {
-                    $query->select('id', 'name', 'type');
-                },
-                'media',
-            ]
-        );
-
-
-
-        //format tag
-        $find = $item->find;
-        $item->dot = $find->locus->areaSeason->dot . "." . $find->locus->locus_no . "." . $find->registration_category . "." . $find->basket_no . "." . $find->artifact_no;
-        $dotWithoutArtifactNo = $find->locus->areaSeason->dot . "." . $find->locus->locus_no . "." . $find->registration_category . "." . $find->basket_no . ".";
-
-        //add fields
-        $item->locus_id = $find->locus->id;
-        $item->area_season_id = $find->locus->areaSeason->id;
-        $item->locus_id = $find->locus->id;
-
-        $find->locus_id = $find->locus->id;
-        $find->area_season_id = $find->locus->areaSeason->id;
-
-        //format tags
-        $tags = [];
-        $moduleTags = [];
-
-        foreach ($item->module_tags as $tag) {
-            array_push($moduleTags, (object) [
-                'type_id' => $tag->type_id,
-                'type' => $tag->tag_type->name,
-                'id' => $tag->pivot->tag_id,
-                'name' => $tag->name
-            ]);
-        }
-        foreach ($item->tags as $tag) {
-            array_push($tags, (object) [
-                'type' => $tag->type,
-                'id' => $tag->pivot->tag_id,
-            ]);
-        }
-
-        //format media.
-        $itemMedia = $this->allMedia($item);
-        $item["hasMedia"] = $itemMedia->primary->hasMedia;
-        $item["tnUrl"] = $itemMedia->primary->tnUrl;
-        $item["fullUrl"] = $itemMedia->primary->fullUrl;
-
-
-        //if Pottery or Fauna add related artifacts
-        $related = [];
-
-        // $l = new Locus();
-        // $related = $l->locusAllFinds($find->locus_id);
-
-        // if ($p["module"] === "Pottery" || $p["module"] === "Fauna") {
-        //     $res = Find::where('findable_type', $p["module"])
-        //         ->where('locus_id', $p["locus_id"])
-        //         ->where('basket_no', $p["basket_no"])
-        //         ->where('artifact_no', '<>', $p["artifact_no"])
-        //         ->orderBy('artifact_no')
-        //         ->get()->pluck('artifact_no');
-        //     $related = collect($res)->map(function ($item) use ($dotWithoutArtifactNo) {
-        //         return $dotWithoutArtifactNo . $item;
-        //     });
-        // }
-
-
-        unset($itemMedia->primary);
-        unset($item->find);
-        unset($item->media);
-        unset($item->tags);
-        unset($item->moduleTags);
-        unset($find->locus);
-
-        return [
-            "item" => $item,
-            "find" => $find,
-            "itemMedia" => $itemMedia,
-            "tags" => $tags,
-            "moduleTags" => $moduleTags,
-            "related" => $related,
-            //"locusFinds" => $locusFinds
-        ];
+        return ["fields" => $item, "media" => $media, "media1" => $media1, "global_tags" => $global_tags, "model_tags" => $model_tags];
     }
 
     public function showCarouselItem($id)

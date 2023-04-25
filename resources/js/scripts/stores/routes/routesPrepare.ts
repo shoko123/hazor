@@ -27,7 +27,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let t = useTrioStore();
   let i = useItemStore();
   let r = useRoutesMainStore()
-let { buildMedia } = useMediaStore()
+  let { buildMedia } = useMediaStore()
   async function prepareForNewRoute(to: TRouteInfo, from: TRouteInfo, plan: TPlanAction[]): Promise<TPrepareResponse> {
     for (const x of plan) {
       switch (x) {
@@ -54,7 +54,7 @@ let { buildMedia } = useMediaStore()
           break
 
         case 'collection.clear':
-          c.clearCollections()
+          c.clear(['main', 'media', 'related'])
           break
 
         case 'item.load':
@@ -64,7 +64,8 @@ let { buildMedia } = useMediaStore()
           break
 
         case 'item.clear':
-          i.fields = {id: -1}
+          i.fields = { id: -1 }
+          c.clear(['media', 'related'])
           break
 
         case 'item.setIndexInCollection':
@@ -81,9 +82,9 @@ let { buildMedia } = useMediaStore()
           await loadPage(true)
           break
 
-          case 'item.prepareForMedia':
-            prepareForMedia()
-            break          
+        case 'item.prepareForMedia':
+          prepareForMedia()
+          break
 
         default:
           console.log(`PrepareForNewRoute() Bad Action: ${x}`)
@@ -103,7 +104,7 @@ let { buildMedia } = useMediaStore()
         console.log(`model(${to.module}).init() returned (success)`)
         m.counts = res.data.counts
         m.itemViews = res.data.itemViews
-        c.clearCollections()
+        c.clear(['main', 'media', 'related'])
         t.setTrio(res.data.trio)
         return true
       })
@@ -128,6 +129,8 @@ let { buildMedia } = useMediaStore()
       .catch(err => {
         throw err;
       });
+    console.log(`loadCollectionAndItem done!`)
+
   }
 
   async function loadMainCollection(to: TRouteInfo, from: TRouteInfo) {
@@ -151,26 +154,28 @@ let { buildMedia } = useMediaStore()
   async function loadItem(to: TRouteInfo, from: TRouteInfo) {
     console.log(`prepare.loadItem() to: ${JSON.stringify(to, null, 2)}`)
     n.showSpinner(`Loading item ${to.url_id} ...`)
-    return xhr.send('model/show', 'post', { model: to.module, url_id: to.url_id, variant: 0 })
-      .then(res => {
-        let item = res as unknown as TApiShowItem
-        console.log(`show() returned (success)`)
-        //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
-        i.fields = res.data.fields
-        i.url_id = res.data.url_id
-        i.tag = m.tagFromUrlId(to.module, res.data.url_id)
-        i.media1 = buildMedia(res.data.media1, to.module)
-        c.setArray('media', res.data.media)
-        c.loadPageByItemIndex('media', 'Image', 0, to.module )
-        return true
-      })
-      .catch(err => {
-        console.log(`loadItem() failed`)
-        throw err
-      })
-      .finally(() => {
-        n.showSpinner(false)
-      })
+    try {
+      let res = await xhr.send('model/show', 'post', { model: to.module, url_id: to.url_id, variant: 0 })
+      //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
+      i.fields = res.data.fields
+      i.url_id = res.data.url_id
+      i.tag = m.tagFromUrlId(to.module, res.data.url_id)
+      i.media1 = buildMedia(res.data.media1, to.module)
+      c.setArray('media', res.data.media)
+      if (res.data.media.length > 0) {
+        await c.loadPageByItemIndex('media', 'Image', 0, to.module)
+      } else {
+        c.clear(['media'])
+      }
+
+      n.showSpinner(false)
+      return true
+
+    } catch (err) {
+      console.log(`loadItem() failed`)
+      n.showSpinner(false)
+      throw err
+    }
   }
 
   async function loadPage(firstPage: boolean): Promise<void> {
@@ -179,7 +184,7 @@ let { buildMedia } = useMediaStore()
     return await c.loadPageByItemIndex('main', c.collection('main').value.meta.view, firstPage ? 0 : i.itemIndex, r.to.module)
   }
 
-  function itemSetIndexInCollection(): boolean {
+  async function itemSetIndexInCollection(): Promise<boolean> {
     //console.log(`prepare.itemSetIndexInCollection()`)
     let itemIndex = c.itemIndexById(i.id)
     if (itemIndex === -1) {
@@ -197,7 +202,7 @@ let { buildMedia } = useMediaStore()
   function prepareForMedia(): void {
     console.log(`prepareForMedia()`)
     //
-  }  
+  }
 
   return { prepareForNewRoute }
 })
