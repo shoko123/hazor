@@ -33,20 +33,38 @@ type TApiCarouselMedia = {
         description: string,
         media: TMedia,
         collection_name: string,
-        order_column: number,        
+        order_column: number,
 }
 
 type TApiCarousel = TApiCarouselMedia | TApiCarouselMain
 
-type TCarousel = {
-        carouselHeader: string,
-        itemIndexB1: number,
-        itemTag: string,
-        itemDescription: string,
-        itemUrlId: string,
-        itemModule: TModule,
-        media: TMedia,
-      }
+type TCarouselMain = {
+        id: number,
+        url_id: string,
+        description: string,
+        module: TModule
+}
+
+type TCarouselMedia = {
+        id: number,
+        description: string,
+        collection_name: string,
+        order_column: number,
+}
+
+type TCarousel = TCarouselMain | TCarouselMedia
 
 
-export { TMedia, TImageableDetailsMain, TImageableDetailsMedia, TImageableDetails, TCarousel, TApiCarousel, TApiCarouselMedia, TApiCarouselMain }
+
+export {
+        TMedia,
+        TImageableDetailsMain,
+        TImageableDetailsMedia,
+        TImageableDetails,
+        TApiCarousel,
+        TApiCarouselMedia,
+        TApiCarouselMain,
+        TCarouselMain,
+        TCarouselMedia,
+        TCarousel,
+}

@@ -54,7 +54,7 @@ class MediaModel implements MediaModelInterface
     public static function carousel($id)
     {
         $media = SpatieMedia::findOrFail($id);
-        $res = ['full' => $media->getPath(), 'tn' =>  $media->getPath('tn'), 'id' => $id];
+        $res = ['full' => $media->getPath(), 'tn' =>  $media->getPath('tn'), 'id' => $id, 'description' => $media->description, 'collection_name' => $media->collection_name];
         return $res;
     }
 

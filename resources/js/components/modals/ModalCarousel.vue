@@ -20,7 +20,7 @@
           </v-card>
 
           <v-card width="20%" class="bg-purple-lighten-5">
-            <v-card-title class="ma-2 text--body-1 bold"> {{ itemTag }}</v-card-title>
+            <v-card-title class="ma-2 text--body-1 bold"> {{ description }}</v-card-title>
             <v-card-text>
               <v-row class="text-body-1">
                 {{ description }}</v-row>
@@ -56,27 +56,25 @@ const categoryIndex = computed({
   }
 })
 
-const carouselDetails = computed(() => {
-  return c.carouselDetails as TCarousel
+const itemDetails = computed(() => {
+  return c.carouselItemDetails
 })
 
-const itemTag = computed(() => {
-  return carouselDetails.value.itemTag
-})
+
 
 const description = computed(() => {
-  return carouselDetails.value.itemDescription
+  return itemDetails.value?.description === null ? '[no description]' : itemDetails.value?.description
 })
 
 const urls = computed(() => {
-  return carouselDetails.value.media.urls
+  return c.media.urls
 })
 
 const text = computed(() => {
   return "Text"
 })
 const carouselHeader = computed(() => {
-  return carouselDetails.value.carouselHeader
+  return c.carouselHeader
 })
 
 async function nextClicked(next: boolean) {

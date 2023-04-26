@@ -7,7 +7,6 @@
 //proceeding to the new route.
 
 import type { TRouteInfo, TPlanAction, TPrepareResponse } from '@/js/types/routesTypes'
-import type { TApiShowItem } from '@/js/types/showTypes'
 import { defineStore, storeToRefs } from 'pinia'
 import { useXhrStore } from '../xhr'
 import { useTrioStore } from '../trio'
