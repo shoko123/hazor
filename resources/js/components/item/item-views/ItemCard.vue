@@ -34,7 +34,6 @@
 import { computed } from 'vue'
 import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
 import { storeToRefs } from 'pinia'
-import { TMedia, TMediaDetailsCMedia } from '@/js/types/mediaTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 import { useMediaStore } from  '../../../scripts/stores/media'
 

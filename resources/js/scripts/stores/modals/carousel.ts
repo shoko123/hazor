@@ -3,27 +3,28 @@ import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { TCollectionName, TApiArrayMain, TApiArrayMedia } from '@/js/types/collectionTypes'
 import { TApiShowCarousel } from '@/js/types/showTypes'
+import { TModule } from '@/js/types/routesTypes'
+import { TCarousel, TMediaDetailsMain } from '@/js/types/mediaTypes'
+
 import { useCollectionsStore } from '../collections/collections'
 import { useXhrStore } from '../xhr'
 import { useNotificationsStore } from '../notifications'
 import { useMediaStore } from '../media'
 import { useRoutesMainStore } from '../routes/routesMain'
-import { TCarouselDetails } from '@/js/types/modalTypes'
-import { TModule } from '@/js/types/routesTypes'
-import { TMedia, TMediaProps, TMediaDetailsCMain } from '@/js/types/mediaTypes'
+
 
 export const useCarouselStore = defineStore('carousel', () => {
   let c = useCollectionsStore()
   const { send } = useXhrStore()
   const { showSpinner } = useNotificationsStore()
   const { current } = storeToRefs(useRoutesMainStore())
-  const { getBucketUrl, buildMedia } = useMediaStore()
+  const { buildMedia } = useMediaStore()
 
   let isOpen = ref<boolean>(false)
   let module = ref<TModule>('Home')
   let collectionName = ref<TCollectionName>('main')
 
-  let carousel = ref<TMediaProps>({
+  let carousel = ref({
     source: 'main',
     itemIndex: -1,
     media: { hasMedia: false, urls: { full: "", tn: "" }, id: -1, description: "" },
@@ -35,9 +36,9 @@ export const useCarouselStore = defineStore('carousel', () => {
     return `Carousel Header ${module.value} [${carousel.value.itemIndex + 1}/${collection.value.array.length}]`
   })
 
-  const carouselDetails = computed<TCarouselDetails | undefined>(() => {
+  const carouselDetails = computed<TCarousel | undefined>(() => {
     if (!isOpen.value) { return undefined }
-    let details = carousel.value.details as TMediaDetailsCMain
+    let details = carousel.value.details as TMediaDetailsMain
     return {
       carouselHeader: carouselHeader.value,
       itemIndexB1: carousel.value.itemIndex + 1,

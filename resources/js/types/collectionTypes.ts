@@ -1,6 +1,5 @@
 // collectionTypes.ts
 
-import { TFields } from '@/js/types/moduleFieldsTypes'
 import { TMedia } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/routesTypes'
 

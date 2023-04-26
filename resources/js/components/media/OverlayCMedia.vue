@@ -12,7 +12,7 @@
 
 <script lang="ts" setup >
 import { TCollectionName } from '../../types/collectionTypes'
-import { TMedia, TMediaDetailsCMain, TMediaDetailsCMedia } from '../../types/mediaTypes'
+import { TMediaDetailsMedia } from '../../types/mediaTypes'
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
@@ -23,16 +23,9 @@ const router = useRouter()
 const props = defineProps<{
   source: TCollectionName,
   itemIndex: number,
-  details: TMediaDetailsCMedia
+  details: TMediaDetailsMedia
 }>()
 
-
-type TMediaProps = {
-  source: TCollectionName,
-  itemIndex: number,
-
-  size?: number
-}
 onMounted(() => {
   console.log(`Overlay.onMounted props: ${JSON.stringify(props, null, 2)}`)
 })

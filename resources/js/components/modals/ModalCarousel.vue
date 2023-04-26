@@ -35,7 +35,7 @@
 <script lang="ts" setup >
 
 import { computed } from 'vue'
-import { TCarouselDetails } from '@/js/types/modalTypes'
+import { TCarousel } from '@/js/types/mediaTypes'
 import { useModalStore } from '../../scripts/stores/modals/modal'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 import { storeToRefs } from 'pinia'
@@ -57,7 +57,7 @@ const categoryIndex = computed({
 })
 
 const carouselDetails = computed(() => {
-  return c.carouselDetails as TCarouselDetails
+  return c.carouselDetails as TCarousel
 })
 
 const itemTag = computed(() => {

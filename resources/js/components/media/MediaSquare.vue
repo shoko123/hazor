@@ -23,7 +23,7 @@ import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { TCollectionName } from '../../types/collectionTypes'
-import { TMediaDetailsCMain, TMediaDetailsCMedia } from '../../types/mediaTypes'
+import { TMediaDetailsMain, TMediaDetailsMedia } from '../../types/mediaTypes'
 
 import OverlayRelated from './OverlayRelated.vue'
 import OverlayCMedia from './OverlayCMedia.vue'
@@ -37,7 +37,7 @@ const props = defineProps<{
   source: TCollectionName,
   itemIndex: number,
   media: TMedia
-  details: TMediaDetailsCMain | TMediaDetailsCMedia
+  details: TMediaDetailsMain | TMediaDetailsMedia
   size?: number
 }>()
 
@@ -45,7 +45,7 @@ const showTag = computed(() => {
   return props.source === 'main'
 })
 const tagText = computed(() => {
-  return (<TMediaDetailsCMain>props.details).tag
+  return (<TMediaDetailsMain>props.details).tag
 })
 
 const overlayText = computed(() => {
