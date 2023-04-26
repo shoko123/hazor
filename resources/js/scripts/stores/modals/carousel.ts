@@ -3,8 +3,9 @@ import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { TCollectionName, TApiArrayMain, TApiArrayMedia } from '@/js/types/collectionTypes'
 import { TApiShowCarousel } from '@/js/types/showTypes'
+import { TApiCarousel, TApiCarouselMedia, TApiCarouselMain } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/routesTypes'
-import { TCarousel, TMediaDetailsMain } from '@/js/types/mediaTypes'
+import { TCarousel, TImageableDetailsMain } from '@/js/types/mediaTypes'
 
 import { useCollectionsStore } from '../collections/collections'
 import { useXhrStore } from '../xhr'
@@ -24,10 +25,11 @@ export const useCarouselStore = defineStore('carousel', () => {
   let module = ref<TModule>('Home')
   let collectionName = ref<TCollectionName>('main')
 
+
   let carousel = ref({
     source: 'main',
     itemIndex: -1,
-    media: { hasMedia: false, urls: { full: "", tn: "" }, id: -1, description: "" },
+    media: { hasMedia: false, urls: { full: "", tn: "" } },
     details: { id: -1, url_id: "", tag: "", description: "" }
   })
 
@@ -38,7 +40,7 @@ export const useCarouselStore = defineStore('carousel', () => {
 
   const carouselDetails = computed<TCarousel | undefined>(() => {
     if (!isOpen.value) { return undefined }
-    let details = carousel.value.details as TMediaDetailsMain
+    let details = carousel.value.details as TImageableDetailsMain
     return {
       carouselHeader: carouselHeader.value,
       itemIndexB1: carousel.value.itemIndex + 1,
@@ -52,21 +54,18 @@ export const useCarouselStore = defineStore('carousel', () => {
 
   async function open(source: TCollectionName, index: number) {
     module.value = current.value.module
-    //carousel.value = { ...item }
     collectionName.value = source
-    console.log(`carousel.open() source: ${source} index: ${index} module: ${module}`)
-
-
+    console.log(`carousel.open() source: ${source} index: ${index} module: ${module.value}`)
 
     switch (source) {
       case 'main':
         let url_id = (<TApiArrayMain>c.itemByIndex(source, index)).url_id
-        await send('model/carousel', 'post', { model: current.value.module, url_id: url_id })
+        await send('model/carousel', 'post', { model: module.value, url_id: url_id })
           .then(res => {
             console.log(`model.carousel()) returned (success). res: ${JSON.stringify(res.data, null, 2)}`)
             let resp = res.data.item as TApiShowCarousel
             carousel.value.itemIndex = index
-            carousel.value.media = buildMedia(resp.media, current.value.module)
+            carousel.value.media = buildMedia(resp.media, module.value)
             carousel.value.details = { id: resp.id, url_id: resp.url_id, tag: resp.url_id, description: resp.description }
             isOpen.value = true
           })
@@ -80,9 +79,11 @@ export const useCarouselStore = defineStore('carousel', () => {
         break
 
       case 'media':
+        let item = (<TApiArrayMedia>c.itemByIndex(source, index))
+        console.log(`media.item (from array): ${JSON.stringify(item, null, 2)}`)
+        //let id = (<TApiArrayMedia>c.itemByIndex(source, index)).id
 
-        let id = (<TApiArrayMedia>c.itemByIndex(source, index)).id
-        await send('media/carousel', 'post', { id })
+        await send('media/carousel', 'post', { id: item })
           .then(res => {
             console.log(`media.carousel() returned (success). res: ${JSON.stringify(res.data, null, 2)}`)
 
@@ -132,7 +133,7 @@ export const useCarouselStore = defineStore('carousel', () => {
 
       case 'media':
         showSpinner(`Loading next item...`)
-        await send('media/carousel', 'post', { id: next.item.id })
+        await send('media/carousel', 'post', { id: next.item })
           .then(res => {
             console.log(`main.carousel() returned (success). res: ${JSON.stringify(res.data, null, 2)}`)
             carousel.value.itemIndex = next.index
@@ -151,7 +152,13 @@ export const useCarouselStore = defineStore('carousel', () => {
     }
   }
 
+  async function load() {
 
+  }
+  async function save() {
+
+  }
+  
   async function close() {
     //if current carouselItem is in currently loaded page - close, otherwise, load relevant page
     switch (collectionName.value) {

@@ -5,23 +5,38 @@ import { TModule } from '@/js/types/routesTypes'
 type TMedia = {
         hasMedia: boolean,
         urls: { full: string, tn: string },
-        id: number,
-        description: string
 }
 
-type TMediaDetailsMain = {
+type TImageableDetailsMain = {
         id: number,
         url_id: string,
         tag: string,
         description: string
 }
 
-type TMediaDetailsMedia = {
+type TImageableDetailsMedia = {
         id: number,
-        collection_name: string,
-        order_column: number,
         description: string | null
 }
+type TImageableDetails = TImageableDetailsMain | TImageableDetailsMedia
+
+type TApiCarouselMain = {
+        id: number,
+        url_id: string,
+        description: string,
+        media: TMedia,
+        module: TModule
+}
+
+type TApiCarouselMedia = {
+        id: number,
+        description: string,
+        media: TMedia,
+        collection_name: string,
+        order_column: number,        
+}
+
+type TApiCarousel = TApiCarouselMedia | TApiCarouselMain
 
 type TCarousel = {
         carouselHeader: string,
@@ -34,4 +49,4 @@ type TCarousel = {
       }
 
 
-export { TMedia, TMediaDetailsMain, TMediaDetailsMedia, TCarousel }
+export { TMedia, TImageableDetailsMain, TImageableDetailsMedia, TImageableDetails, TCarousel, TApiCarousel, TApiCarouselMedia, TApiCarouselMain }

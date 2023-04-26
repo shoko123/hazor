@@ -86,16 +86,24 @@ class MediaModel implements MediaModelInterface
     public static function orderMedia(MediaCollection $mc)
     {
         $collection_order = ['drawing', 'drawing and photo', 'photos'];
-        $media =  collect([]);
+        $ordered =  collect([]);
 
         foreach ($collection_order as $collection_name) {
             foreach ($mc as $med) {
                 if($med->collection_name === $collection_name) {
-                    $media->push(['full' => $med->getPath(), 'tn' =>  $med->getPath('tn'), 'id' => $med['id']]);
+                    $ordered->push(['full' => $med->getPath(), 'tn' =>  $med->getPath('tn'), 'id' => $med['id'], 'description' => $med['description']]);
                 }
             }
         }
 
-        return $media;
+        $page  = $ordered->take(18);
+        $page->all();
+        $media1 = $page[0];
+
+        $ordered->transform(function ($item, $key) { 
+            return $item['id'];
+        });
+
+        return ['media1' => $media1, 'mediaPage' => $page, 'mediaArray' => $ordered];
     }
 }

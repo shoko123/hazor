@@ -12,7 +12,7 @@
 
 <script lang="ts" setup >
 import { TCollectionName } from '../../types/collectionTypes'
-import { TMediaDetailsMedia } from '../../types/mediaTypes'
+import { TImageableDetailsMedia } from '../../types/mediaTypes'
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
@@ -23,11 +23,11 @@ const router = useRouter()
 const props = defineProps<{
   source: TCollectionName,
   itemIndex: number,
-  details: TMediaDetailsMedia
+  details: TImageableDetailsMedia
 }>()
 
 onMounted(() => {
-  console.log(`Overlay.onMounted props: ${JSON.stringify(props, null, 2)}`)
+  //console.log(`Overlay.onMounted props: ${JSON.stringify(props, null, 2)}`)
 })
 
 const { open } = useCarouselStore()

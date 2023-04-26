@@ -23,7 +23,7 @@ import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { TCollectionName } from '../../types/collectionTypes'
-import { TMediaDetailsMain, TMediaDetailsMedia } from '../../types/mediaTypes'
+import { TImageableDetailsMain, TImageableDetailsMedia, TImageableDetails } from '../../types/mediaTypes'
 
 import OverlayRelated from './OverlayRelated.vue'
 import OverlayCMedia from './OverlayCMedia.vue'
@@ -37,19 +37,36 @@ const props = defineProps<{
   source: TCollectionName,
   itemIndex: number,
   media: TMedia
-  details: TMediaDetailsMain | TMediaDetailsMedia
+  details: TImageableDetails
   size?: number
 }>()
+
+onMounted(() => {
+  console.log(`MediaSquare.onMounted props: ${JSON.stringify(props, null, 2)}`)
+})
 
 const showTag = computed(() => {
   return props.source === 'main'
 })
 const tagText = computed(() => {
-  return (<TMediaDetailsMain>props.details).tag
+  switch (props.source) {
+    case 'main':
+      return (<TImageableDetailsMain>props.details).tag
+
+    case 'media':
+      return ""
+  }
+
 })
 
 const overlayText = computed(() => {
-  return props.details.description
+  switch (props.source) {
+    case 'main':
+      return (<TImageableDetailsMain>props.details).description
+
+    case 'media':
+      return `MediaSquare overlaytext`
+  }
 })
 
 const overlay = computed(() => {

@@ -83,12 +83,15 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
         //deal with media: order by collection_name, order_column (done in MediaModel)
 
-        $media = collect([]);
+        $mediaPage = collect([]);
         $media1 = null;
+        $mediaArray = [];
 
-        if(!$item->media->isEmpty()){
-            $media = MediaModel::orderMedia($item->media);
-            $media1 = $media[0];
+        if (!$item->media->isEmpty()) {
+            $res = MediaModel::orderMedia($item->media);
+            $mediaPage = $res['mediaPage'];
+            $mediaArray = $res['mediaArray'];
+            $media1 = $res['media1'];
         }
 
         $global_tags = $item->global_tags;
@@ -99,7 +102,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         unset($item->global_tags);
         unset($item->model_tags);
 
-        return ["fields" => $item, "media" => $media, "media1" => $media1, "global_tags" => $global_tags, "model_tags" => $model_tags];
+        return ["fields" => $item, "media1" => $media1, "mediaPage" => $mediaPage, "mediaArray" => $mediaArray,  "global_tags" => $global_tags, "model_tags" => $model_tags];
     }
 
     public function carousel($id)

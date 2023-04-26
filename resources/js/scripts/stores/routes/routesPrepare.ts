@@ -12,6 +12,7 @@ import { defineStore, storeToRefs } from 'pinia'
 import { useXhrStore } from '../xhr'
 import { useTrioStore } from '../trio'
 import { useCollectionsStore } from '../collections/collections'
+import { useCollectionMediaStore } from '../collections/collectionMedia'
 import { useModuleStore } from '../module'
 import { useNotificationsStore } from '../notifications'
 import { useItemStore } from '../item'
@@ -24,6 +25,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let n = useNotificationsStore();
   let m = useModuleStore();
   let c = useCollectionsStore()
+  let {savePage} = useCollectionMediaStore()
   let t = useTrioStore();
   let i = useItemStore();
   let r = useRoutesMainStore()
@@ -161,9 +163,10 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       i.url_id = res.data.url_id
       i.tag = m.tagFromUrlId(to.module, res.data.url_id)
       i.media1 = buildMedia(res.data.media1, to.module)
-      c.setArray('media', res.data.media)
-      if (res.data.media.length > 0) {
-        await c.loadPageByItemIndex('media', 'Image', 0, to.module)
+      c.setArray('media', res.data.mediaArray)
+      if (res.data.mediaArray.length > 0) {
+        savePage(res.data.mediaPage, true)
+        //await c.loadPageByItemIndex('media', 'Image', 0, to.module)
       } else {
         c.clear(['media'])
       }

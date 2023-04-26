@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { TMedia } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/routesTypes'
-import { TApiArrayMedia } from '@/js/types/collectionTypes'
+import { TApiPageMedia } from '@/js/types/collectionTypes'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 
@@ -19,26 +19,22 @@ export const useMediaStore = defineStore('media', () => {
     bucketUrl.value = burl
   }
 
-  function buildMedia(dbMedia: TApiArrayMedia, module: TModule): TMedia {
-    if (dbMedia === null || dbMedia === undefined) {
+  function buildMedia(apiMedia: TApiPageMedia, module?: TModule): TMedia {
+    if (apiMedia === null || apiMedia === undefined) {
       return {
         hasMedia: false,
         urls: {
           full: `${bucketUrl.value}app/filler/${module}Filler.jpg`,
           tn: `${bucketUrl.value}app/filler/${module}Filler-tn.jpg`
         },
-        id: -1,
-        description: ""
       }
     } else {
       return {
         hasMedia: true,
         urls: {
-          full: `${bucketUrl.value}${dbMedia.full}`,
-          tn: `${bucketUrl.value}${dbMedia.tn}`
+          full: `${bucketUrl.value}${apiMedia.full}`,
+          tn: `${bucketUrl.value}${apiMedia.tn}`
         },
-        id: dbMedia.id,
-        description: dbMedia.description
       }
     }
   }

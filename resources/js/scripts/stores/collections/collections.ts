@@ -2,7 +2,7 @@
 //handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { TCollectionName, TCollectionView, TCollectionMeta, TItemPerPagePerView, TApiArray} from '@/js/types/collectionTypes'
+import { TCollectionName, TCollectionView, TCollectionMeta, TItemPerPagePerView, TApiArray, TApiPage} from '@/js/types/collectionTypes'
 import { TModule } from '../../../types/routesTypes'
 import { useRoutesMainStore } from '../routes/routesMain'
 import { useXhrStore } from '../xhr'

@@ -12,7 +12,7 @@ type TApiMedia = { full: string, tn: string, id: number, description: string }
 
 //array types
 type TApiArrayMain = { id: number, url_id: string }
-type TApiArrayMedia = TApiMedia
+type TApiArrayMedia = { id: number }
 type TApiArrayRelated = { module: TModule, id: number, url_id: string }
 
 type TApiArray = TApiArrayMain | TApiArrayMedia | TApiArrayRelated
@@ -34,6 +34,7 @@ type TApiPageMainTable = {
 }
 
 type TApiPageMedia = TApiMedia
+
 type TApiPage = TApiPageMainImage | TApiPageMainTable | TApiPageMedia | TApiArrayMain
 
 //conversions ready for consumption for 'Media', 'Chip', and 'Table' views
@@ -52,7 +53,6 @@ type TPageCMainVImage = {
         media: TMedia
 }
 
-
 type TPageCMainVTable = {
         id: number,
         url_id: string,
@@ -61,9 +61,10 @@ type TPageCMainVTable = {
 }
 
 type TPageCMediaVImage = {
+        id: number,        
         media: TMedia,
-        tag: string
-        description?: string,
+        tag: string,
+        description: string
 }
 
 //union of the above

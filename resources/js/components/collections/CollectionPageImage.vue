@@ -1,15 +1,13 @@
 <template>
   <v-row wrap>
-     <v-col v-for="(item, index) in page" :key="index" cols="2">
-      <MediaSquare
-        v-bind="{
+    <v-col v-for="(item, index) in page" :key="index" cols="2">
+      <MediaSquare v-bind="{
           source: source,
           itemIndex: itemIndex(index),
           media: item.media,
-          details: {id: item.id, url_id: item.url_id, tag: item.tag, description: item.description},          
+          details: { id: item.id, url_id: item.url_id, tag: item.tag, description: item.description },
           size: 250,
-        }"
-      ></MediaSquare>
+        }"></MediaSquare>
     </v-col>
   </v-row>
 </template>
@@ -18,7 +16,7 @@
 import { storeToRefs } from 'pinia'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections';
 import { computed } from 'vue'
-import { TCollectionView, TCollectionName, TPageCMainVImage } from '../../types/collectionTypes'
+import { TCollectionView, TCollectionName, TPageCMainVImage, TPageCMediaVImage } from '../../types/collectionTypes'
 
 import MediaSquare from '../media/MediaSquare.vue'
 
@@ -39,8 +37,28 @@ const page = computed(() => {
 })
 
 
-function itemIndex(index: number) : number{
+function itemIndex(index: number): number {
   return (props.pageNoB1 - 1) * c.value.meta.itemsPerPage + index
+}
+
+function details(item: TPageCMainVImage | TPageCMediaVImage) {
+
+  switch (props.source) {
+    case 'main':
+
+      return {
+        id: (<TPageCMainVImage>item).id,
+        url_id: (<TPageCMainVImage>item).url_id,
+        tag: (<TPageCMainVImage>item).tag,
+        description: (<TPageCMainVImage>item).description
+      }
+    case 'media':
+      return {
+        tag: (<TPageCMediaVImage>item).tag,
+        description: "stam",
+      }
+  }
+
 }
 </script>
 

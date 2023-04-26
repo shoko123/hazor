@@ -42,12 +42,8 @@ import LocusForm from '../../modules/loci/LocusForm.vue'
 import StoneForm from '../../modules/stones/StoneForm.vue'
 import FaunaForm from '../../modules/fauna/FaunaForm.vue'
 
-const { buildMedia } = useMediaStore()
+
 let i = useItemStore()
-
-
-
-
 let { tag } = storeToRefs(useItemStore())
 let { getModule } = useRoutesMainStore()
 
