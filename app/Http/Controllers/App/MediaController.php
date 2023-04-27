@@ -38,10 +38,7 @@ class MediaController extends Controller
     {
         $res = MediaModel::carousel($r["id"]);
         
-        return response()->json([
-            "message" => "message from MediaController.carousel()",
-            "res" =>  $res,
-        ], 200);
+        return response()->json($res, 200);
     }
 
 }

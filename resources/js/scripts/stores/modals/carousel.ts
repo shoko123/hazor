@@ -1,8 +1,8 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { TCollectionName, TApiArrayMain, TApiArrayMedia } from '@/js/types/collectionTypes'
-import { TCarousel, TCarouselMedia, TCarouselMain, TImageableDetailsMain, TMedia } from '@/js/types/mediaTypes'
+import { TCollectionName, TApiArrayMain, TApiArrayMedia, TApiArray } from '@/js/types/collectionTypes'
+import { TCarousel, TCarouselMedia, TCarouselMain, TApiCarouselMain, TApiCarouselMedia, TMedia } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/routesTypes'
 
 
@@ -79,131 +79,76 @@ export const useCarouselStore = defineStore('carousel', () => {
 
   async function open(source: TCollectionName, openIndex: number) {
     collectionName.value = source
-
-
     console.log(`carousel.open() source: ${collectionName.value} index: ${openIndex}`)
-
-    switch (source) {
-      
-      case 'main':
-        let url_id = (<TApiArrayMain>c.itemByIndex(source, openIndex)).url_id
-        await send('model/carousel', 'post', { model: current.value.module, url_id: url_id })
-          .then(res => {
-            console.log(`model.carousel()) returned (success). res: ${JSON.stringify(res.data, null, 2)}`)
-            media.value = buildMedia(res.data.item.media, current.value.module)
-            mainDetails.value.description = res.data.item.description
-            mainDetails.value.id = res.data.item.id
-            mainDetails.value.module = current.value.module
-            mainDetails.value.url_id = res.data.item.url_id
-            index.value = openIndex
-            isOpen.value = true
-          })
-          .catch(err => {
-            console.log(`loadItem() failed`)
-            throw err
-          })
-          .finally(() => {
-            showSpinner(false)
-          })
-        break
-
-      case 'media':
-        let item = (<TApiArrayMedia>c.itemByIndex(source, openIndex))
-        console.log(`media.item (from array): ${JSON.stringify(item, null, 2)}`)
-        //let id = (<TApiArrayMedia>c.itemByIndex(source, index)).id
-
-        await send('media/carousel', 'post', { id: item })
-          .then(res => {
-            console.log(`media.carousel() returned (success). res: ${JSON.stringify(res.data, null, 2)}`)
-
-
-            media.value = buildMedia(res.data.res)
-            mediaDetails.value.description = res.data.res.description
-            mediaDetails.value.id = res.data.res.id
-            mediaDetails.value.collection_name = res.data.res.collection_name
-            index.value = openIndex
-            isOpen.value = true
-          })
-          .catch(err => {
-            console.log(`media.carousel() failed`)
-            throw err
-          })
-          .finally(() => {
-            showSpinner(false)
-          })
-
-    }
-
+    let item = c.itemByIndex(source, openIndex)
+    console.log(`model.open() item: ${JSON.stringify(item, null, 2)}`)
+    await load(c.itemByIndex(source, openIndex))
+    index.value = openIndex
+    isOpen.value = true
   }
 
   async function next(isRight: boolean) {
     const next = c.next(collectionName.value, index.value, isRight)
+    await load(c.itemByIndex(collectionName.value, next.index))
+    index.value = next.index
+  }
 
-    console.log(`next.newItem: ${JSON.stringify(next, null, 2)}})`)
+  async function load(item: TApiArray) {
+
+    let url = ""
+    let data = { model: "", url_id: "", id: 0 }
+    switch (collectionName.value) {
+      case 'main':
+        url = 'model/carousel'
+        data["model"] = current.value.module
+        data["url_id"] = (<TApiArrayMain>item).url_id
+        break
+      case 'media':
+        url = 'media/carousel'
+        data["id"] = <TApiArrayMedia>item
+        break
+    }
+
+    console.log(`carousel.load() url: ${url}. data: ${JSON.stringify(data, null, 2)}`)
+    let res = await send(url, 'post', data)
 
     switch (collectionName.value) {
       case 'main':
-        showSpinner(`Loading next item...`)
-        await send('model/carousel', 'post', { model: current.value.module, url_id: (<TApiArrayMain>next.item).id })
-          .then(res => {
-            console.log(`main.carousel() returned (success). res: ${JSON.stringify(res.data, null, 2)}`)
-            media.value = buildMedia(res.data.item.media, current.value.module)
-            mainDetails.value.description = res.data.item.description
-            mainDetails.value.id = res.data.item.id
-            mainDetails.value.url_id = res.data.item.url_id
-            mainDetails.value.module = current.value.module          
-            index.value = next.index
-          })
-          .catch(err => {
-            console.log(`loadItem() failed`)
-            throw err
-          })
-          .finally(() => {
-            showSpinner(false)
-          })
+        saveMain(res.data)
         break
-
       case 'media':
-        showSpinner(`Loading next item...`)
-        await send('media/carousel', 'post', { id: next.item })
-          .then(res => {
-            console.log(`main.carousel() returned (success). res: ${JSON.stringify(res.data, null, 2)}`)
-            media.value = buildMedia(res.data.res, current.value.module)
-            mediaDetails.value.description = res.data.res.description
-            mediaDetails.value.id = res.data.res.id
-            index.value = next.index
-          })
-          .catch(err => {
-            console.log(`loadItem() failed`)
-            throw err
-          })
-          .finally(() => {
-            showSpinner(false)
-          })
+        saveMedia(res.data)
         break
-
     }
+    showSpinner(false)
   }
 
-  async function load() {
+  function saveMain(data: TApiCarouselMain) {
+    media.value = buildMedia(data.media, current.value.module)
+    mainDetails.value.id = data.id
+    mainDetails.value.url_id = data.url_id
+    mainDetails.value.module = data.module
+    mainDetails.value.description = data.description
 
   }
-  async function save() {
-
+  function saveMedia(data: TApiCarouselMedia) {
+    media.value = buildMedia({ full: data.full, tn: data.tn }, current.value.module)
+    mediaDetails.value.description = data.description
+    mediaDetails.value.id = data.id
   }
 
   async function close() {
     //if current carouselItem is in currently loaded page - close, otherwise, load relevant page
     switch (collectionName.value) {
       case 'main':
-        if (!c.itemIsInPage(mainDetails.value.id)) {
+        if (!c.itemIsInPage(mainDetails.value.id)) {        
           const index = c.itemIndexById(mainDetails.value.id)
           await c.loadPageByItemIndex(collectionName.value, 'Image', index, current.value.module)
             .then(res => {
               console.log(`carousel.close() loaded a new page`)
             })
             .catch(err => {
-              console.log(`loadPageByItemIndex() failed`)
+              console.log(`carousel.close() loaded a new page failed`)
               throw err
             })
             .finally(() => {

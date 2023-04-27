@@ -5,12 +5,10 @@ namespace App\Models\Functional;
 use App\Models\App\DigModel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use App\Models\Interfaces\MediaModelInterface;
 use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 use Illuminate\Database\Eloquent\Collection;
-
 use Exception;
 
 class MediaModel implements MediaModelInterface
@@ -54,8 +52,13 @@ class MediaModel implements MediaModelInterface
     public static function carousel($id)
     {
         $media = SpatieMedia::findOrFail($id);
-        $res = ['full' => $media->getPath(), 'tn' =>  $media->getPath('tn'), 'id' => $id, 'description' => $media->description, 'collection_name' => $media->collection_name];
-        return $res;
+        return [
+            'id' => $id,
+            'full' => $media->getPath(),
+            'tn' =>  $media->getPath('tn'),
+            'description' => $media->description,
+            'collection_name' => $media->collection_name
+        ];
     }
 
     public function storeMedia(Request $r, DigModel $dm)
@@ -79,7 +82,7 @@ class MediaModel implements MediaModelInterface
                 "item" => $item,
                 "media" => $media,
             ];
-        } catch (\Exception $error) {
+        } catch (Exception $error) {
             return response()->json(["error" => $error->getMessage()], 500);
         }
     }
@@ -90,7 +93,7 @@ class MediaModel implements MediaModelInterface
 
         foreach ($collection_order as $collection_name) {
             foreach ($mc as $med) {
-                if($med->collection_name === $collection_name) {
+                if ($med->collection_name === $collection_name) {
                     $ordered->push(['full' => $med->getPath(), 'tn' =>  $med->getPath('tn'), 'id' => $med['id'], 'description' => $med['description']]);
                 }
             }
@@ -100,7 +103,7 @@ class MediaModel implements MediaModelInterface
         $page->all();
         $media1 = $page[0];
 
-        $ordered->transform(function ($item, $key) { 
+        $ordered->transform(function ($item, $key) {
             return $item['id'];
         });
 

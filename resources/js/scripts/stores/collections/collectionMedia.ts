@@ -52,7 +52,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
         let slice = array.value.slice(start, start + ipp)
 
         //////////////
-        return await send('media/page', 'post', { ids: slice.map(x => x.id) })
+        return await send('media/page', 'post', { ids: slice.map(x => x) })
             .then(res => {
                 console.log(`media.page() returned (success)`)
                 savePage(res.data.res, false)
@@ -88,7 +88,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
 
 
     function itemIndexById(id: number) {
-        let index = array.value.findIndex(x => x?.id === id)
+        let index = array.value.findIndex(x => x === id)
         //console.log(`itemIndexById(id:${id}) index: ${index}`)
         return index
 

@@ -8,11 +8,11 @@ type TCollectionName = 'main' | 'media' | 'related'
 
 type TItemPerPagePerView = { Image: number, Chip: number, Table: number }
 
-type TApiMedia = { full: string, tn: string, id: number, description: string }
+type TApiMedia = { full: string, tn: string, id?: number, description?: string }
 
 //array types
 type TApiArrayMain = { id: number, url_id: string }
-type TApiArrayMedia = { id: number }
+type TApiArrayMedia = number
 type TApiArrayRelated = { module: TModule, id: number, url_id: string }
 
 type TApiArray = TApiArrayMain | TApiArrayMedia | TApiArrayRelated

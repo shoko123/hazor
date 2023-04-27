@@ -1,5 +1,5 @@
 // mediaTypes.ts
-import { TCollectionName } from '@/js/types/collectionTypes'
+import { TApiMedia } from '@/js/types/collectionTypes'
 import { TModule } from '@/js/types/routesTypes'
 
 type TMedia = {
@@ -24,14 +24,15 @@ type TApiCarouselMain = {
         id: number,
         url_id: string,
         description: string,
-        media: TMedia,
+        media: TApiMedia,
         module: TModule
 }
 
 type TApiCarouselMedia = {
         id: number,
         description: string,
-        media: TMedia,
+        full: string,
+        tn: string,
         collection_name: string,
         order_column: number,
 }

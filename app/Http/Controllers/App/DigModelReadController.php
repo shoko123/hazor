@@ -43,10 +43,7 @@ class DigModelReadController extends Controller
     public function carousel(Request $r, DigModelInterface $m)
     {
         $id = $m->getIdFromUrlId($r["url_id"]);
-        return response()->json([
-            "msg" => "ModelControler.carousel()",
-            "item" => $m->carousel($id),
-        ], 200);
+        return response()->json($m->carousel($id), 200);
     }
 
     public function destroy($id)
