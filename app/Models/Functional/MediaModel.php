@@ -57,7 +57,8 @@ class MediaModel implements MediaModelInterface
             'full' => $media->getPath(),
             'tn' =>  $media->getPath('tn'),
             'description' => $media->description,
-            'collection_name' => $media->collection_name
+            'collection_name' => $media->collection_name,
+            'order_column' => $media->order_column
         ];
     }
 

@@ -1,6 +1,8 @@
 // mediaTypes.ts
-import { TApiMedia } from '@/js/types/collectionTypes'
 import { TModule } from '@/js/types/routesTypes'
+
+type TApiMedia = { full: string, tn: string }
+type TApiMediaOrNull = TApiMedia | null
 
 type TMedia = {
         hasMedia: boolean,
@@ -24,7 +26,7 @@ type TApiCarouselMain = {
         id: number,
         url_id: string,
         description: string,
-        media: TApiMedia,
+        media: TApiMediaOrNull,
         module: TModule
 }
 
@@ -43,7 +45,7 @@ type TCarouselMain = {
         id: number,
         url_id: string,
         description: string,
-        module: TModule
+        module: TModule | undefined
 }
 
 type TCarouselMedia = {
@@ -58,6 +60,8 @@ type TCarousel = TCarouselMain | TCarouselMedia
 
 
 export {
+        TApiMedia,
+        TApiMediaOrNull,
         TMedia,
         TImageableDetailsMain,
         TImageableDetailsMedia,

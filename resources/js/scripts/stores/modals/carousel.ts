@@ -29,7 +29,7 @@ export const useCarouselStore = defineStore('carousel', () => {
     id: 0,
     url_id: "",
     description: "",
-    module: 'Locus'
+    module: undefined
   })
 
   let mediaDetails = ref<TCarouselMedia>({
@@ -38,8 +38,6 @@ export const useCarouselStore = defineStore('carousel', () => {
     collection_name: "",
     order_column: 0
   })
-
-
 
   const carouselHeader = computed(() => {
     if (!isOpen.value) { return undefined }
@@ -129,12 +127,23 @@ export const useCarouselStore = defineStore('carousel', () => {
     mainDetails.value.url_id = data.url_id
     mainDetails.value.module = data.module
     mainDetails.value.description = data.description
-
+    
+    mediaDetails.value.description = ""
+    mediaDetails.value.id = 0
+    mediaDetails.value.collection_name = ""
+    mediaDetails.value.order_column= 0
   }
   function saveMedia(data: TApiCarouselMedia) {
-    media.value = buildMedia({ full: data.full, tn: data.tn }, current.value.module)
+    media.value = buildMedia({ full: data.full, tn: data.tn })
     mediaDetails.value.description = data.description
     mediaDetails.value.id = data.id
+    mediaDetails.value.collection_name = data.collection_name
+    mediaDetails.value.order_column= data.order_column
+
+    mainDetails.value.id = 0
+    mainDetails.value.url_id = ""
+    mainDetails.value.module = undefined
+    mainDetails.value.description = ""
   }
 
   async function close() {
