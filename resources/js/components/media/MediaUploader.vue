@@ -14,8 +14,7 @@
                 <v-card-text>
                   <v-row>
                     <v-col v-for="(item, index) in imagesAsBrowserReadable" :key="index" cols="2">
-                      <v-img :src="images.length === 0 ? 'https://picsum.photos/id/11/500/300' : item"
-                        lazy-src="https://picsum.photos/id/11/10/6" height="30vh"></v-img>
+                      <v-img :src="item" height="30vh"></v-img>
                     </v-col>
                   </v-row>
                 </v-card-text>
@@ -49,17 +48,12 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useMediaStore } from '../../scripts/stores/media'
-import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
-import { useXhrStore } from '../../scripts/stores/xhr'
-import { useNotificationsStore } from '../../scripts/stores/notifications'
-import { useCollectionsStore } from '../../scripts/stores/collections/collections'
-import { useCollectionMediaStore } from '../../scripts/stores/collections/collectionMedia'
-import { useItemStore } from '../../scripts/stores/item'
+
 const m = useMediaStore()
 
 //notifications
 const loadingToBrowser = ref<boolean>(false)
-const loadingToServer = ref<boolean>(false)
+
 
 const mediaReady = computed(() => {
   return images.value.length !== 0 && !loadingToBrowser.value
@@ -85,8 +79,6 @@ const imagesAsBrowserReadable = ref<string[]>([])
 
 
 async function onInputChange(media: File[]) {
-  console.log(`onInputChange() files:\n ${JSON.stringify(media, null, 2)}`)
-
   if (images.value.length > 6) {
     alert("Max number of files is 6 - Upload aborted!");
     clear()
@@ -116,14 +108,13 @@ async function onInputChange(media: File[]) {
 }
 
 async function addImage(file: File) {
-
   const reader = new FileReader()
   reader.onload = (e) => {
     if (e.target) {
+      console.log(`uploader.push image`)
       imagesAsBrowserReadable.value.push(<string>e.target.result)
     }
   };
-  //console.log(`addImage() file:\n ${JSON.stringify(file, null, 2)}`)
   reader.readAsDataURL(file);
 }
 
@@ -133,7 +124,6 @@ function clear() {
 }
 
 //choose media collection
-
 const mediaCollections = computed(() => {
   return m.getMediaCollectionsNames
 })
@@ -147,46 +137,7 @@ const mediaCollection = computed({
 })
 
 async function upload() {
-  const r = useRoutesMainStore()
-  let { showSnackbar, } = useNotificationsStore()
-  const { send } = useXhrStore()
-  let fd = new FormData();
-
-  images.value.forEach((file) => {
-    fd.append("media_files[]", file, file.name);
-  });
-
-  fd.append("model", r.current.module);
-  fd.append("id", <string>r.current.url_id);
-  fd.append("media_collection_name", 'photos');
-
-  console.log(`upload() formData:\n ${JSON.stringify(fd, null, 2)}`)
-  send("media/upload", 'post', fd)
-    .then((res) => {
-      m.showUploader = false
-      showSnackbar("Media uploaded successfully")
-      clear()
-
-      console.log(`res: ${JSON.stringify(res.data, null, 2)}`)
-
-      let i = useItemStore()
-      let c = useCollectionsStore()
-      let cm = useCollectionMediaStore()
-
-      i.media1 = m.buildMedia(res.data.media1)
-
-      c.setArray('media', res.data.mediaArray)
-      if (res.data.mediaArray.length > 0) {
-        cm.savePage(res.data.mediaPage, true)
-      } else {
-        c.clear(['media'])
-      }
-    })
-    .catch((err) => {
-      console.log(`mediaUpload failed! err:\n ${JSON.stringify(err, null, 2)}`)
-    })
-
-
+  await m.upload(images.value)
 }
 
 function openMultiItemSelector() {
