@@ -13,7 +13,7 @@
                 <v-card-title>Upload Preview</v-card-title>
                 <v-card-text>
                   <v-row>
-                    <v-col v-for="(item, index) in imagesAsBrowserReadable" :key="index" cols="2">
+                    <v-col v-for="(item, index) in mediaReadable" :key="index" cols="2">
                       <v-img :src="item" height="30vh"></v-img>
                     </v-col>
                   </v-row>
@@ -23,7 +23,7 @@
           </v-row>
 
           <v-row class="pt-2">
-            <v-file-input v-model="images" multiple :show-size="1000" accept="image/png, image/jpeg, image/bmp"
+            <v-file-input v-model="mediaImages" multiple :show-size="1000" accept="image/png, image/jpeg, image/bmp"
               placeholder="Select images" prepend-icon="mdi-camera" @change="onInputChange" @click:clear="clear()"
               :label="fileInputLabel">
             </v-file-input>
@@ -54,9 +54,8 @@ const m = useMediaStore()
 //notifications
 const loadingToBrowser = ref<boolean>(false)
 
-
 const mediaReady = computed(() => {
-  return images.value.length !== 0 && !loadingToBrowser.value
+  return m.mediaReady
 })
 
 const header = computed(() => {
@@ -67,56 +66,59 @@ const fileInputLabel = computed(() => {
   return images.value.length === 0 ? `Add media` : `Selected to upload`
 })
 
-const notEmpty = computed(() => {
-  return images.value.length !== 0
-})
-
-
 //load media to browser
 
 const images = ref<File[]>([])
 const imagesAsBrowserReadable = ref<string[]>([])
 
-
-async function onInputChange(media: File[]) {
-  if (images.value.length > 6) {
-    alert("Max number of files is 6 - Upload aborted!");
-    clear()
-    return
+const mediaReadable = computed(() => {
+  return m.imagesAsBrowserReadable
+})
+const mediaImages = computed({
+  get: () => { return m.images },
+  set: val => {
+    console.log(`mediaImages.set(${val})`)
+    m.images = val as unknown as File[]
   }
-  images.value.forEach((file) => {
-    if (file.size > 1024 * 1024 * 2) {
-      alert(
-        `Size of file ${file.name} exceeds max allowed of 2MB - Upload aborted!`
-      );
-      clear()
-      return
-    }
-  });
+})
+async function onInputChange(media: File[]) {
+  m.onInputChange(media) 
+  // if (images.value.length > 6) {
+  //   alert("Max number of files is 6 - Upload aborted!");
+  //   clear()
+  //   return
+  // }
+  // images.value.forEach((file) => {
+  //   if (file.size > 1024 * 1024 * 2) {
+  //     alert(`File ${file.name} exceeds max allowed 2MB - Upload aborted!`);
+  //     clear()
+  //     return
+  //   }
+  // });
 
-  loadingToBrowser.value = true
-  console.log("Load files - started")
-  await Promise.all(images.value.map(async (image) => { addImage(image) }))
-    .catch(err => {
-      console.log(`Error encountered when loading files - clearing files`)
-      loadingToBrowser.value = false
-      clear()
-      return
-    })
-  loadingToBrowser.value = false
-  console.log("Load files -finished")
+  // loadingToBrowser.value = true
+  // console.log("Load files - started")
+  // await Promise.all(images.value.map(async (image) => { addImage(image) }))
+  //   .catch(err => {
+  //     console.log(`Error encountered when loading files - clearing files`)
+  //     loadingToBrowser.value = false
+  //     clear()
+  //     return
+  //   })
+  // loadingToBrowser.value = false
+  // console.log("Load files -finished")
 }
 
-async function addImage(file: File) {
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    if (e.target) {
-      console.log(`uploader.push image`)
-      imagesAsBrowserReadable.value.push(<string>e.target.result)
-    }
-  };
-  reader.readAsDataURL(file);
-}
+// async function addImage(file: File) {
+//   const reader = new FileReader()
+//   reader.onload = (e) => {
+//     if (e.target) {
+//       console.log(`uploader.push image`)
+//       imagesAsBrowserReadable.value.push(<string>e.target.result)
+//     }
+//   };
+//   reader.readAsDataURL(file);
+// }
 
 function clear() {
   images.value = []
@@ -137,7 +139,7 @@ const mediaCollection = computed({
 })
 
 async function upload() {
-  await m.upload(images.value)
+  await m.upload()
 }
 
 function openMultiItemSelector() {

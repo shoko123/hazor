@@ -77,64 +77,62 @@ export const useMediaStore = defineStore('media', () => {
   //////////////////
   //upload
 
-  const imagesAsBrowserReadable = ref<string[]>([])
   const images = ref<File[]>([])
-
-
-  function clear() {
-    images.value = []
-    imagesAsBrowserReadable.value = []
+const imagesAsBrowserReadable = ref<string[]>([])
+const loadingToBrowser = ref<boolean>(false)
+const mediaReady = computed(() => {
+  return images.value.length !== 0 && !loadingToBrowser.value
+})
+async function onInputChange(media: File[]) {
+  if (images.value.length > 6) {
+    alert("Max number of files is 6 - Upload aborted!");
+    clear()
+    return
   }
-
-  async function onInputChange(media: File[]) {
-    console.log(`media.store onInputChange() files:\n ${JSON.stringify(media, null, 2)}`)
-
-    if (images.value.length > 6) {
-      alert("Max number of files is 6 - Upload aborted!");
+  images.value.forEach((file) => {
+    if (file.size > 1024 * 1024 * 2) {
+      alert(`File ${file.name} exceeds max allowed 2MB - Upload aborted!`);
       clear()
       return
     }
-    images.value.forEach((file) => {
-      if (file.size > 1024 * 1024 * 2) {
-        alert(
-          `Size of file ${file.name} exceeds max allowed of 2MB - Upload aborted!`
-        );
-        clear()
-        return
-      }
-    });
+  });
 
-    //loadingToBrowser.value = true
-    console.log("Load files - started")
-    await Promise.all(images.value.map(async (image) => { addImage(image) }))
-      .catch(err => {
-        console.log(`Error encountered when loading files - clearing files`)
-        //loadingToBrowser.value = false
-        clear()
-        return
-      })
-    //loadingToBrowser.value = false
-    console.log("Load files -finished")
-  }
+  loadingToBrowser.value = true
+  console.log("Load files - started")
+  await Promise.all(images.value.map(async (image) => { addImage(image) }))
+    .catch(err => {
+      console.log(`Error encountered when loading files - clearing files`)
+      loadingToBrowser.value = false
+      clear()
+      return
+    })
+  loadingToBrowser.value = false
+  console.log("Load files -finished")
+}
 
-  async function addImage(file: File) {
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      if (e.target) {
-        console.log(`media.store Pushing to imagesAsBrowserReadable`)
-        imagesAsBrowserReadable.value.push(<string>e.target.result)
-      }
-    };
-    reader.readAsDataURL(file);
-  }
+async function addImage(file: File) {
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    if (e.target) {
+      console.log(`media.push image`)
+      imagesAsBrowserReadable.value.push(<string>e.target.result)
+    }
+  };
+  reader.readAsDataURL(file);
+}
 
-  async function upload(images: File[]) {
+function clear() {
+  images.value = []
+  imagesAsBrowserReadable.value = []
+}
+
+  async function upload() {
     const r = useRoutesMainStore()
     let { showSnackbar, } = useNotificationsStore()
     const { send } = useXhrStore()
     let fd = new FormData();
 
-    images.forEach((file) => {
+    images.value.forEach((file) => {
       fd.append("media_files[]", file, file.name);
     });
 
@@ -179,7 +177,9 @@ export const useMediaStore = defineStore('media', () => {
     getMediaCollection,
     setMediaCollection,
     upload,
+    images    ,
     imagesAsBrowserReadable,
-    onInputChange
+    onInputChange,
+    mediaReady
   }
 })
