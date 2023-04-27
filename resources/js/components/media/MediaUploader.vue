@@ -24,27 +24,20 @@
           </v-row>
 
           <v-row class="pt-2">
-
             <v-file-input v-model="images" multiple :show-size="1000" accept="image/png, image/jpeg, image/bmp"
               placeholder="Select images" prepend-icon="mdi-camera" @change="onInputChange" @click:clear="clear()"
               :label="fileInputLabel">
             </v-file-input>
           </v-row>
 
-
-
-
-
           <v-row>
-
             <v-select v-if="mediaReady" label="media collection type" :items="mediaCollections" item-title="label"
               item-value="index" v-model="mediaCollection"></v-select>
-
           </v-row>
 
           <v-row class="d-flex justify-left align-baseline pt-2" style="gap: 1rem">
-            <v-btn :diable="!mediaReady" @click="upload">Upload</v-btn>
-            <v-btn :disable="!mediaReady" @click="openMultiItemSelector">Upload as multi item media</v-btn>
+            <v-btn :disabled="!mediaReady" @click="upload">Upload</v-btn>
+            <v-btn :disabled="!mediaReady" @click="openMultiItemSelector">Upload as multi item media</v-btn>
             <v-btn @click="cancel">Cancel</v-btn>
           </v-row>
         </v-container>
@@ -59,7 +52,9 @@ import { useMediaStore } from '../../scripts/stores/media'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useXhrStore } from '../../scripts/stores/xhr'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
-
+import { useCollectionsStore } from '../../scripts/stores/collections/collections'
+import { useCollectionMediaStore } from '../../scripts/stores/collections/collectionMedia'
+import { useItemStore } from '../../scripts/stores/item'
 const m = useMediaStore()
 
 //notifications
@@ -110,12 +105,12 @@ async function onInputChange(media: File[]) {
   loadingToBrowser.value = true
   console.log("Load files - started")
   await Promise.all(images.value.map(async (image) => { addImage(image) }))
-  .catch(err => {
-    console.log(`Error encountered when loading files - clearing files`)
-    loadingToBrowser.value = false
-    clear()
-    return
-  })
+    .catch(err => {
+      console.log(`Error encountered when loading files - clearing files`)
+      loadingToBrowser.value = false
+      clear()
+      return
+    })
   loadingToBrowser.value = false
   console.log("Load files -finished")
 }
@@ -166,11 +161,32 @@ async function upload() {
   fd.append("media_collection_name", 'photos');
 
   console.log(`upload() formData:\n ${JSON.stringify(fd, null, 2)}`)
-  await send("media/upload", 'post', fd).catch((err) => {
-    console.log(`mediaUpload failed! err:\n ${JSON.stringify(err, null, 2)}`)
-  })
-  showSnackbar("Media uploaded successfully")
-  clear()
+  send("media/upload", 'post', fd)
+    .then((res) => {
+      m.showUploader = false
+      showSnackbar("Media uploaded successfully")
+      clear()
+
+      console.log(`res: ${JSON.stringify(res.data, null, 2)}`)
+
+      let i = useItemStore()
+      let c = useCollectionsStore()
+      let cm = useCollectionMediaStore()
+
+      i.media1 = m.buildMedia(res.data.media1)
+
+      c.setArray('media', res.data.mediaArray)
+      if (res.data.mediaArray.length > 0) {
+        cm.savePage(res.data.mediaPage, true)
+      } else {
+        c.clear(['media'])
+      }
+    })
+    .catch((err) => {
+      console.log(`mediaUpload failed! err:\n ${JSON.stringify(err, null, 2)}`)
+    })
+
+
 }
 
 function openMultiItemSelector() {

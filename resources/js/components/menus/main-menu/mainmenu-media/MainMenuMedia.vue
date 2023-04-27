@@ -1,7 +1,7 @@
 <template>
   <v-app-bar-title>
     {{ header }}
-    <v-btn @click="upload" variant="outlined">Upload files</v-btn>
+    <v-btn :disabled="disableShowUploaderButton" @click="showUploader1" variant="outlined">Upload files</v-btn>
     <v-btn @click="back" variant="outlined">Back to Item</v-btn>
   </v-app-bar-title>
 </template>
@@ -14,7 +14,7 @@ import { useMediaStore } from '../../../../scripts/stores/media'
 import { useRouter } from 'vue-router'
 
 let { current } = storeToRefs(useRoutesMainStore())
-const { getUrlModule } = useRoutesMainStore()
+
 const { showUploader } = storeToRefs(useMediaStore())
 const router = useRouter()
 
@@ -22,13 +22,17 @@ const header = computed(() => {
   return `** Dig ** : Media Editor for ${current.value.module} ${current.value.url_id}`
 })
 
-function upload() {
+const disableShowUploaderButton = computed(() => {
+  return showUploader.value
+})
+
+
+function showUploader1() {
   showUploader.value = true
 }
 function back() {
-
-  router.push({ name: 'index', params: { module: getUrlModule() } })
-  showUploader.value = true
+  router.push({ name: 'show', params: { module: current.value.url_module, url_id: current.value.url_id } })
+  showUploader.value = false
 }
 </script>
 

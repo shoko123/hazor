@@ -6,11 +6,12 @@ import { TModule } from '@/js/types/routesTypes'
 import { TApiMediaOrNull } from '@/js/types/collectionTypes'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
-
+import { useNotificationsStore } from '@/js/scripts/stores/notifications'
 export const useMediaStore = defineStore('media', () => {
 
   let bucketUrl = ref("")
-
+  const showUploader = ref<boolean>(false)
+  
   function getBucketUrl() {
     return bucketUrl.value
   }
@@ -44,6 +45,7 @@ export const useMediaStore = defineStore('media', () => {
   type TMediaCollectionName = 'photos' | 'drawings' | 'photosAndDrawings' | 'plans'
   type TMediaCollection = { name: TMediaCollectionName, label: string }
   type TMediaCollectionWithIndex = { index: number, name: TMediaCollectionName, label: string }
+ 
 
   const mediaCollections = ref<TMediaCollection[]>([
     { name: 'photos', label: 'Photo(s)' },
@@ -66,8 +68,6 @@ export const useMediaStore = defineStore('media', () => {
     mediaCollectionIndex.value = index
     console.log(`set mediaCollection to ${index}`)
   }
-
-  const showUploader = ref<boolean>(true)
  
   return { setBucketUrl, getBucketUrl, buildMedia, showUploader, getMediaCollectionsNames, getMediaCollection, setMediaCollection }
 })

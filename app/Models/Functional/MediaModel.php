@@ -75,14 +75,10 @@ class MediaModel implements MediaModelInterface
             }
 
             //reload updated media collection for item
-            $item = $dm::findOrFail($r["id"]);
+            $item = $dm::with('media')->findOrFail($r["id"]);
             //$media = $item->getMedia('photos');
-            $media = $item->getMedia();
-            return (object)[
-                "message" => "I am the object returned from media.upload",
-                "item" => $item,
-                "media" => $media,
-            ];
+            //$media = $item->media->getMedia();
+            return self::orderMedia($item->media);
         } catch (Exception $error) {
             return response()->json(["error" => $error->getMessage()], 500);
         }
