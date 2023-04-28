@@ -1,23 +1,11 @@
 <template>
-  <h1>View0</h1>
   <ItemCard />
+  <Collection source="media" />  
 </template>
 
 <script lang="ts" setup >
-import { computed } from 'vue'
 import ItemCard from '../item-views/ItemCard.vue'
-
-const trio = computed(() => {
-  return "xxx"
-})
-
-
-
-
+import Collection from '../../collections/Collection.vue'
 
 </script>
-<style scoped>
-#title {
-  background-color: grey;
-}
-</style>
+

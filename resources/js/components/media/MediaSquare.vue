@@ -42,7 +42,7 @@ const props = defineProps<{
 }>()
 
 onMounted(() => {
-  console.log(`MediaSquare.onMounted props: ${JSON.stringify(props, null, 2)}`)
+  //console.log(`MediaSquare.onMounted props: ${JSON.stringify(props, null, 2)}`)
 })
 
 const showTag = computed(() => {

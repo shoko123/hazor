@@ -8,15 +8,13 @@
             <component :is="itemForm"></component>
           </v-col>
           <v-col lg="3" class="px-1">
-            <MediaSquare
-        v-bind="{
-          source: 'media',
-          itemIndex: 0,
-          media: media,
-          details: mediaDetails,        
-          size: 250,
-        }"
-      ></MediaSquare>
+            <MediaSquare v-bind="{
+                source: 'media',
+                itemIndex: 0,
+                media: media,
+                details: mediaDetails,
+                size: 250,
+              }"></MediaSquare>
           </v-col>
         </v-row>
       </div>
@@ -29,13 +27,12 @@
 </template>
 
 <script lang="ts" setup >
-// {id: i.fields.id, url_id: i.url_id, tag: i.tag, description: "fake description"},  
-
+import type { Component } from 'vue'
 import { computed } from 'vue'
 import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
 import { storeToRefs } from 'pinia'
 import { useItemStore } from '../../../scripts/stores/item'
-import { useMediaStore } from  '../../../scripts/stores/media'
+import { useMediaStore } from '../../../scripts/stores/media'
 
 import MediaSquare from '../../media/MediaSquare.vue'
 import LocusForm from '../../modules/loci/LocusForm.vue'
@@ -47,7 +44,7 @@ let i = useItemStore()
 let { tag } = storeToRefs(useItemStore())
 let { getModule } = useRoutesMainStore()
 
-const itemForm = computed(() => {
+const itemForm = computed<Component>(() => {
   switch (getModule()) {
     case 'Locus':
       return LocusForm
@@ -55,6 +52,9 @@ const itemForm = computed(() => {
       return StoneForm
     case 'Fauna':
       return FaunaForm
+    default:
+      console.log(`ItemCard.vue invalid Module`)
+      return LocusForm
   }
 })
 
@@ -72,10 +72,10 @@ const media = computed(() => {
 
 const mediaDetails = computed(() => {
   return {
-        id: 5,
-        collection_name: "photos",
-        order_column: 1,
-        description: null
+    id: 5,
+    collection_name: "photos",
+    order_column: 1,
+    description: null
   }
 })
 

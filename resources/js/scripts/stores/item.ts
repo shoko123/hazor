@@ -15,7 +15,7 @@ export const useItemStore = defineStore('item', () => {
   let fields = ref<TItemMandatoryFields>({id: -1})
   let url_id = ref<string | undefined>(undefined)
   let tag = ref<string | undefined>(undefined)
-  let media1 = ref<TMedia>({hasMedia: false, urls: {full: '', tn: ''}, id: -1, description: ""})
+  let media1 = ref<TMedia>({hasMedia: false, urls: {full: '', tn: ''}})
   let ready = ref<boolean>(false)
   const itemViewIndex = ref<number>(0)
   const itemIndex = ref<number>(-1)
@@ -65,7 +65,6 @@ export const useItemStore = defineStore('item', () => {
     derived,
     media1,
     itemIndex,
-
     nextUrlId,
     itemClear,
     itemViewIndex,

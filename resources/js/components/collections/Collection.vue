@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts" setup >
-
+import type { Component } from 'vue'
 import { computed } from 'vue'
 import { TCollectionName } from '@/js/types/collectionTypes'
 import CollectionPageImage from './CollectionPageImage.vue'
@@ -89,8 +89,7 @@ const showPaginator = computed(() => {
   return true
 })
 
-const collectionPage = computed(() => {
-
+const collectionPage = computed<Component>(() => {
   switch (meta.value.view) {
     case 'Image':
       return CollectionPageImage
@@ -99,7 +98,8 @@ const collectionPage = computed(() => {
     case 'Table':
       return CollectionPageTable
     default:
-      alert(`Wrong view! viewIndex: ${meta.value.viewIndex}`)
+      console.log(`Collection.vue invalid collectionPage: ${meta.value.viewIndex}`)
+      return CollectionPageImage
   }
 })
 

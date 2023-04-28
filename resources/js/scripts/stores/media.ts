@@ -180,6 +180,7 @@ function clear() {
     images    ,
     imagesAsBrowserReadable,
     onInputChange,
-    mediaReady
+    mediaReady,
+    clear
   }
 })

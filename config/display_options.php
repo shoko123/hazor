@@ -7,8 +7,8 @@ return [
         'Table' => 50
     ],
     'itemViews' => [
-        'Locus' => ['Main', 'Media', 'Gallery', 'Related Finds'],
-        'Stone' => ['Main', 'Media', 'Gallery'],
-        'Fauna' => ['Main', 'Media', 'Gallery'],
+        'Locus' => ['Main', 'Media', 'Card', 'Related Finds'],
+        'Stone' => ['Main', 'Media', 'Card'],
+        'Fauna' => ['Main', 'Media', 'Card'],
     ]
 ];
