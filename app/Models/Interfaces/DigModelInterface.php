@@ -25,6 +25,5 @@ interface DigModelInterface
 
   
     public function itemFormat(): string;
-
-
+    public function destroyItem(int $id);
 }

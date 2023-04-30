@@ -10,11 +10,11 @@ use App\Models\Interfaces\ModelGroupInterface;
 
 class DigModelDestroyController extends Controller
 {
-    public function destroy($id, DigModelInterface $m)
+    public function destroy(Request $r, DigModelInterface $m)
     {
+        $m->destroyItem($r["id"]);
         return response()->json([
-            "msg" => "ModelControler.destroy()",
-            "model_name" => $m->model_name
+            "message" => 'item with id' . $r[" id"] . " deleted successfully",
         ], 200);
     }
 }

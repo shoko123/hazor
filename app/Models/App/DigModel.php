@@ -42,7 +42,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
     public function index($queryParams)
     {
         $builder = $this->indexSelect();
-        $collection = $builder->take(5000)->get();
+        $collection = $builder->get();
         return $collection;
     }
 
@@ -130,5 +130,11 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
     {
         $first = self::first();
         return $this->getUrlIdFromId($first->id);
+    }
+
+    public function destroyItem(int $id)
+    {
+        $toDelete = self::findOrFail($id);
+        $toDelete->delete();
     }
 }

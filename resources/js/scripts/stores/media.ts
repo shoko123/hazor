@@ -100,7 +100,7 @@ export const useMediaStore = defineStore('media', () => {
     });
 
     loadingToBrowser.value = true
-    console.log("Load files - started")
+    //console.log("Load files - started")
     await Promise.all(images.value.map(async (image) => { addImage(image) }))
       .catch(err => {
         console.log(`Error encountered when loading files - clearing files`)
@@ -109,7 +109,7 @@ export const useMediaStore = defineStore('media', () => {
         return
       })
     loadingToBrowser.value = false
-    console.log("Load files -finished")
+    //console.log("Load files -finished")
   }
 
   async function addImage(file: File) {
@@ -140,7 +140,7 @@ export const useMediaStore = defineStore('media', () => {
     fd.append("id", <string>r.current.url_id);
     fd.append("media_collection_name", (mediaCollections.value[mediaCollectionIndex.value]).name);
 
-    send("media/upload", 'post', fd)
+    return send("media/upload", 'post', fd)
       .then((res) => {
         showUploader.value = false
         setItemMedia(res.data.mediaArray, res.data.mediaPage, res.data.media1)
@@ -148,6 +148,7 @@ export const useMediaStore = defineStore('media', () => {
         showSnackbar("Media uploaded successfully")
       })
       .catch((err) => {
+        showSnackbar("Media upload failed. Please try later!", 'red')        
         console.log(`mediaUpload failed! err:\n ${JSON.stringify(err, null, 2)}`)
       })
   }
@@ -158,7 +159,7 @@ export const useMediaStore = defineStore('media', () => {
     const i = useItemStore()
 
     console.log(`destroy() media_id: ${media_id}, model_type: ${r.current.module}, model_id: ${i.fields.id}`)
-    send("media/destroy", 'post', { media_id, model_type: r.current.module, model_id: i.fields.id })
+    return send("media/destroy", 'post', { media_id, model_type: r.current.module, model_id: i.fields.id })
       .then((res) => {
         showUploader.value = false
         showSnackbar("Media deleted successfully")

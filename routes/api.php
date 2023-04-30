@@ -55,7 +55,7 @@ Route::group(['middleware' => ['read.accessibility']], function () {
     Route::post('media/upload', [MediaController::class, 'upload']);
     Route::post('media/destroy', [MediaController::class, 'destroy']);
     Route::post('media/edit', [MediaController::class, 'edit']);
-    Route::post('model/delete', [DigModelDestroyController::class, 'destroy']);
+    Route::post('model/destroy', [DigModelDestroyController::class, 'destroy']);
     Route::post('loci/store', [LocusController::class, 'store'])->middleware('can:Locus-create');
     Route::put('loci/store', [LocusController::class, 'store'])->middleware('can:Locus-update');
     Route::post('stones/store', [StoneController::class, 'store'])->middleware('can:Stone-create');

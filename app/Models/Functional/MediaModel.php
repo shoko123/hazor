@@ -32,21 +32,6 @@ class MediaModel implements MediaModelInterface
             $m->push(['full' => $med->getPath(), 'tn' =>  $med->getPath('tn'), 'id' => $med['id']]);
         }
         return $m;
-        ///////
-
-
-
-
-        $res->transform(function ($item, $key) {
-            $media = null;
-            if (!$item->media->isEmpty()) {
-                $media = ['full' => $item->media[0]->getPath(), 'tn' =>  $item->media[0]->getPath('tn')];
-            }
-            unset($item->media);
-            $item->media1 = $media;
-            return $item;
-        });
-        return $res;
     }
 
     public static function carousel($id)
@@ -81,6 +66,7 @@ class MediaModel implements MediaModelInterface
             throw new Exception('Failed to upload media. error: ' . $error);
         }
     }
+
     public static function getMedia(MediaCollection $mc)
     {
         $collection_order = ['plans', 'drawings', 'photos+drawings', 'photos'];
@@ -96,7 +82,7 @@ class MediaModel implements MediaModelInterface
 
         $page  = $ordered->take(18);
         $page->all();
-        $media1 = $page[0];
+        $media1 = count($mc) === 0 ? null : $page[0];
 
         $ordered->transform(function ($item, $key) {
             return $item['id'];

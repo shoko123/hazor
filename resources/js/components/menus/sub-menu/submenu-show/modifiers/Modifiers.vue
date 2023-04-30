@@ -13,14 +13,14 @@
     </v-tooltip>
   </v-btn>
 
-  <v-btn v-if="isAllowed('tag')" @click="itemDelete()" icon size="small">
+  <v-btn v-if="isAllowed('tag')" @click="goToTagger()" icon size="small">
     <v-icon>mdi-tag</v-icon>
     <v-tooltip activator="parent" location="bottom">
       Manage {{ module }} tags
     </v-tooltip>
   </v-btn>
 
-  <v-btn v-if="isAllowed('delete')" @click="goToTagger()" icon size="small">
+  <v-btn v-if="isAllowed('delete')" @click="itemDelete()" icon size="small">
     <v-icon>mdi-delete</v-icon>
     <v-tooltip activator="parent" location="bottom">
       Delete {{ module }}
@@ -42,6 +42,7 @@ import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useModuleStore } from '../../../../../scripts/stores/module'
 import { useRoutesMainStore } from '../../../../../scripts/stores/routes/routesMain'
+import { useItemStore } from '../../../../../scripts/stores/item'
 let { current } = storeToRefs(useRoutesMainStore())
 const router = useRouter()
 
@@ -73,7 +74,7 @@ function itemUpdate() {
 
 function goToMedia() {
   console.log(`goToMedia`)
-  router.push({ name: 'media', params: { module: current.value.url_module, url_id: current.value.url_id } })    
+  router.push({ name: 'media', params: { module: current.value.url_module, url_id: current.value.url_id } })
 }
 
 function goToTagger() {
@@ -81,8 +82,29 @@ function goToTagger() {
 }
 
 
-function itemDelete() {
-  console.log(`itemDelete`)
+async function itemDelete() {
+  const i = useItemStore()
+  if (i.media1.hasMedia) {
+    alert(`Delete aborted. Please delete related media!`)
+    return
+  }
+
+  if (!confirm("Are you sure you want to delete this item?")) { return }
+  
+  let urlId = null;
+  try {
+    urlId = await i.destroy()
+  } catch (error) {
+      console.log(`Delete item failed error: ${error}`)
+      return
+  }
+
+  if (urlId !== null) {
+    router.push({ name: 'show', params: { module: current.value.url_module, url_id: <string>urlId } })
+  } else {
+    console.log(`Last item in array deleted - goto Welcome page`)    
+    router.push({ name: 'welcome', params: { module: current.value.url_module } })
+  }
 }
 
 </script>

@@ -1,21 +1,23 @@
 // stores/media.js
 import { ref, computed } from 'vue'
-import { defineStore } from 'pinia'
-import {  TItemMandatoryFields } from '@/js/types/moduleFieldsTypes'
+import { defineStore, storeToRefs } from 'pinia'
+import { TItemMandatoryFields } from '@/js/types/moduleFieldsTypes'
 import { TMedia } from '@/js/types/mediaTypes'
 import { TApiArrayMedia, TApiArrayMain } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections/collections'
+import { useCollectionMainStore } from './collections/collectionMain'
 import { useRoutesMainStore } from './routes/routesMain'
-
+import { useXhrStore } from './xhr'
+import { useNotificationsStore } from './notifications'
 export const useItemStore = defineStore('item', () => {
 
-  const { getRouteInfo } = useRoutesMainStore()
-  const { collection, itemByIndex } = useCollectionsStore()
- 
-  let fields = ref<TItemMandatoryFields>({id: -1})
+  const { current } = storeToRefs(useRoutesMainStore())
+  const { collection, itemByIndex, itemIndexById, next } = useCollectionsStore()
+
+  let fields = ref<TItemMandatoryFields>({ id: -1 })
   let url_id = ref<string | undefined>(undefined)
   let tag = ref<string | undefined>(undefined)
-  let media1 = ref<TMedia>({hasMedia: false, urls: {full: '', tn: ''}})
+  let media1 = ref<TMedia>({ hasMedia: false, urls: { full: '', tn: '' } })
   let ready = ref<boolean>(false)
   const itemViewIndex = ref<number>(0)
   const itemIndex = ref<number>(-1)
@@ -24,7 +26,7 @@ export const useItemStore = defineStore('item', () => {
     return typeof fields.value === 'undefined' ? -1 : (<TItemMandatoryFields>fields.value).id
   })
 
-  
+
   const getItemViewIndex = computed(() => {
     return itemViewIndex.value
   })
@@ -33,13 +35,13 @@ export const useItemStore = defineStore('item', () => {
     itemViewIndex.value = index
   }
   const derived = computed(() => {
-    return { module: 'XXX', url_id: getRouteInfo().value.url_id }
+    return { module: 'XXX', url_id: current.value.url_id }
   })
 
- 
+
   function itemClear(index: number) {
     itemIndex.value = -1
-    fields.value = {id: -1}
+    fields.value = { id: -1 }
   }
 
   function nextUrlId(isRight: boolean) {
@@ -56,6 +58,35 @@ export const useItemStore = defineStore('item', () => {
     console.log(`nextUrlId: ${mainArrayItem.url_id}`)
     return mainArrayItem.url_id
   }
+
+  async function destroy(): Promise<string | null> {
+    const xhr = useXhrStore()
+    let { showSnackbar, showSpinner } = useNotificationsStore()
+    const { removeItemFromArrayById } = useCollectionMainStore()
+    const prev = next('main', itemIndexById(fields.value.id), false)
+
+    showSpinner('Accessing DB to delete record')
+    await xhr.send("model/destroy", 'post', { model: current.value.module, id: fields.value.id })
+      .catch((err) => {
+        showSnackbar("Failed to delete item!", 'red')
+        showSpinner(false)
+        console.log(`media.dstroy failed! err:\n ${JSON.stringify(err, null, 2)}`)
+        throw (`Media upload failed err: ${JSON.stringify(err, null, 2)}`)
+      })
+
+    showSnackbar("Item deleted successfully")
+    showSpinner(false)
+    console.log(`item.destroy() success!`)
+    const newLength = removeItemFromArrayById(fields.value.id)
+
+    //go to 'previous' url_id or to module.home (if array.length is 1)
+    if (newLength === 0) {
+      return null
+    } else {
+      return (<TApiArrayMain>prev.item).url_id
+    }
+  }
+
   return {
     ready,
     fields,
@@ -68,6 +99,7 @@ export const useItemStore = defineStore('item', () => {
     nextUrlId,
     itemClear,
     itemViewIndex,
-    setItemViewIndex
+    setItemViewIndex,
+    destroy
   }
 })

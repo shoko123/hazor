@@ -139,7 +139,11 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         return array.value[index]
 
     }
-
+    function removeItemFromArrayById(id: number) : number {
+            const newArray = array.value.filter(x => x.id !== id)
+            array.value = newArray
+            return newArray.length
+    }
     function clear() {
         array.value = []
         page.value = []
@@ -158,6 +162,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         collection,
         itemIsInPage,
         itemByIndex,
+        removeItemFromArrayById,
         clear,
     }
 })
