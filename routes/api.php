@@ -53,7 +53,7 @@ Route::group(['middleware' => ['read.accessibility']], function () {
 //Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('tags/sync', [TagController::class, 'sync']);   
     Route::post('media/upload', [MediaController::class, 'upload']);
-    Route::post('media/delete', [MediaController::class, 'delete']);
+    Route::post('media/destroy', [MediaController::class, 'destroy']);
     Route::post('media/edit', [MediaController::class, 'edit']);
     Route::post('model/delete', [DigModelDestroyController::class, 'destroy']);
     Route::post('loci/store', [LocusController::class, 'store'])->middleware('can:Locus-create');

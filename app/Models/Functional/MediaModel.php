@@ -62,7 +62,7 @@ class MediaModel implements MediaModelInterface
         ];
     }
 
-    public function storeMedia(Request $r, DigModel $dm)
+    public function upload(Request $r, DigModel $dm)
     {
         try {
             $item = $dm::findOrFail($r["id"]);
@@ -74,18 +74,16 @@ class MediaModel implements MediaModelInterface
                     ->toMediaCollection($r["media_collection_name"]);
             }
 
-            //reload updated media collection for item
             $item = $dm::with('media')->findOrFail($r["id"]);
-            //$media = $item->getMedia('photos');
-            //$media = $item->media->getMedia();
-            return self::orderMedia($item->media);
+
+            return self::getMedia($item->media);
         } catch (Exception $error) {
-            return response()->json(["error" => $error->getMessage()], 500);
+            throw new Exception('Failed to upload media. error: ' . $error);
         }
     }
-    public static function orderMedia(MediaCollection $mc)
+    public static function getMedia(MediaCollection $mc)
     {
-        $collection_order = ['drawing', 'drawing and photo', 'photos'];
+        $collection_order = ['plans', 'drawings', 'photos+drawings', 'photos'];
         $ordered =  collect([]);
 
         foreach ($collection_order as $collection_name) {
@@ -105,5 +103,24 @@ class MediaModel implements MediaModelInterface
         });
 
         return ['media1' => $media1, 'mediaPage' => $page, 'mediaArray' => $ordered];
+    }
+
+    public static function destroy(Request $r)
+    {
+        //Get media record by media_id
+        $mediaToDelete = SpatieMedia::findOrFail($r["media_id"]);
+
+        //verify that this media record matches item sent (by model_type and model_id)
+        if (($mediaToDelete['model_type'] !== $r["model_type"]) || $mediaToDelete['model_id'] !== $r["model_id"]) {
+            throw new Exception('Media/Model mismatch');
+        }
+
+        //delete
+        $mediaToDelete->delete();
+
+        //get updated media for item
+        $mediaCollection = SpatieMedia::where('model_id', '=', $r["model_id"])->where('model_type', '=', $r["model_type"])->get();
+
+        return self::getMedia($mediaCollection);
     }
 }

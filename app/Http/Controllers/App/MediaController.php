@@ -16,7 +16,7 @@ class MediaController extends Controller
     public function upload(Request $r, DigModel $dm)
     {
         $m = new MediaModel();
-        return response()->json($m->storeMedia($r, $dm), 200);
+        return response()->json($m->upload($r, $dm), 200);
     }
 
     public function page(Request $r)
@@ -31,9 +31,14 @@ class MediaController extends Controller
   
     public function carousel(Request $r)
     {
-        $res = MediaModel::carousel($r["id"]);
-        
+        $res = MediaModel::carousel($r["id"]);      
         return response()->json($res, 200);
+    }
+
+    public function destroy(Request $r)
+    {
+        $m = new MediaModel();
+        return response()->json($m->destroy($r), 200);
     }
 
 }

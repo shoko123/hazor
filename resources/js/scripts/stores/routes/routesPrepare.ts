@@ -24,11 +24,11 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let n = useNotificationsStore();
   let m = useModuleStore();
   let c = useCollectionsStore()
-  let {savePage} = useCollectionMediaStore()
   let t = useTrioStore();
   let i = useItemStore();
   let r = useRoutesMainStore()
-  let { buildMedia } = useMediaStore()
+  let { setItemMedia } = useMediaStore()
+  
   async function prepareForNewRoute(to: TRouteInfo, from: TRouteInfo, plan: TPlanAction[]): Promise<TPrepareResponse> {
     for (const x of plan) {
       switch (x) {
@@ -160,16 +160,8 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
       i.fields = res.data.fields
       i.url_id = res.data.url_id
-      i.tag = m.tagFromUrlId(to.module, res.data.url_id)
-      i.media1 = buildMedia(res.data.media1, to.module)
-      c.setArray('media', res.data.mediaArray)
-      if (res.data.mediaArray.length > 0) {
-        savePage(res.data.mediaPage, true)
-        //await c.loadPageByItemIndex('media', 'Image', 0, to.module)
-      } else {
-        c.clear(['media'])
-      }
-
+      i.tag = m.tagFromUrlId(to.module, res.data.url_id)     
+      setItemMedia(res.data.mediaArray, res.data.mediaPage, res.data.media1)
       n.showSpinner(false)
       return true
 

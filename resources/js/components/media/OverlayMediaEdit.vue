@@ -1,29 +1,32 @@
 <template>
-  <div>
-    <v-btn @click="deleteMedia">delete</v-btn>
-  </div>
-</template>  
+  <v-card class="mx-auto" color="transparent" flat>
+    <v-card-actions>
+      <v-btn class="but" @click="deleteMedia()">Delete</v-btn>
+    </v-card-actions>
+  </v-card>
+</template>
 
-<script>
-export default {
-  props: {
-    item: { type: Object }
-  },
+<script lang="ts" setup >
+import { TCollectionName } from '../../types/collectionTypes'
+import { TImageableDetailsMedia } from '../../types/mediaTypes'
+import { useMediaStore } from '../../scripts/stores/media'
 
-  methods: {
-    deleteMedia() {
-      if (!confirm("Are you sure you want to delete this media item?")) {
-        return;
-      }
+const props = defineProps<{
+  source: TCollectionName,
+  itemIndex: number,
+  details: TImageableDetailsMedia
+}>()
 
-      console.log("deleteMedia: " + JSON.stringify(this.item, null, 2));
-      this.$store.dispatch("med/delete", {
-        item_type: this.$store.getters["mgr/module"],
-        id: this.$store.getters["mgr/item"].id,
-        media_id: this.item.media_id
-      });
-    }
-  }
-};
+const m = useMediaStore()
+
+function deleteMedia() {
+  if (!confirm("Are you sure you want to delete this media item?")) { return }
+  m.destroy(props.details.id)
+}
 </script>
 
+<style scoped>
+.but {
+  background-color: rgb(118, 127, 123);
+}
+</style>

@@ -88,7 +88,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         $mediaArray = [];
 
         if (!$item->media->isEmpty()) {
-            $res = MediaModel::orderMedia($item->media);
+            $res = MediaModel::getMedia($item->media);
             $mediaPage = $res['mediaPage'];
             $mediaArray = $res['mediaArray'];
             $media1 = $res['media1'];

@@ -31,8 +31,10 @@ import OverlayMediaEdit from './OverlayMediaEdit.vue'
 import OverlayCMain from './OverlayCMain.vue'
 import { ItemNotFoundError } from '@/js/scripts/setups/routes/errors'
 import { TMedia } from '@/js/types/mediaTypes'
+import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 
 
+let { current } = storeToRefs(useRoutesMainStore())
 const props = defineProps<{
   source: TCollectionName,
   itemIndex: number,
@@ -70,12 +72,11 @@ const overlayText = computed(() => {
 })
 
 const overlay = computed(() => {
-  console.log(`MediaSquare.overlay`)
   switch (props.source) {
     case 'main':
       return OverlayCMain
     case 'media':
-      return OverlayCMedia
+      return current.value.name === 'media' ? OverlayMediaEdit : OverlayCMedia
     case 'related':
       return OverlayRelated
   }
