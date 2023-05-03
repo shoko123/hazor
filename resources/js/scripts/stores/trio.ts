@@ -281,5 +281,18 @@ export const useTrioStore = defineStore('trio', () => {
     selectedFilterParams.value = []
   }
 
-  return { clearFilters, paramClicked, setTrio, selectedTrio, visibleCategories, visibleGroups, visibleParams, trio, categoryIndex, groupIndex, selectedParamGroups }
+  return {
+    clearFilters,
+    paramClicked,
+    setTrio,
+    selectedTrio,
+    visibleCategories,
+    visibleGroups,
+    visibleParams,
+    trio,
+    categoryIndex,
+    groupIndex,
+    selectedParamGroups,
+    selectedFilterParams
+  }
 })

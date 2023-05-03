@@ -116,7 +116,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                         return { success: true, data: [] }
 
                     case 'update':
-                        return { success: true, data: [] }
+                        return { success: true, data: ['item.prepareForUpdate'] }
 
                     case 'tags':
                         return { success: true, data: [] }

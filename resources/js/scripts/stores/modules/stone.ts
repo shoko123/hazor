@@ -10,20 +10,37 @@ export const useStoneStore = defineStore('stone', () => {
   const { getRouteInfo } = useRoutesMainStore()
   const { collection } = useCollectionsStore()
 
-  // let newItem = ref<TStoneFields>({
-  //   id: 0,
-  // })
+  let ns = ref<TStoneFields>({
+    id: 0,
+    material_id: 1,
+    base_type_id: 1,
+    type: "",
+    area: "XX",
+    date: "",
+    basket: "",
+    locus: "",
+    prov_notes: "",
+    material: "",
+    dimensions: "",
+    details: ""
+  })
+  type TField = keyof TStoneFields
 
-  const id = computed(() => {
-    return 4
+  const getNewItem = computed(() => {
+    return ns.value
   })
 
   function tagFromUrlId(url_id: string): string {
     return url_id
   }
 
-  function prepareForUpdate(item: TStoneFields): void {
+  function setArea() {
 
+  }
+
+  function prepareForUpdate(current: TStoneFields): void {
+    console.log(`stone.prepareForUpdate:  ${JSON.stringify(current, null, 2)}`)
+    ns.value = { ...current }
   }
 
   function prepareForCreate(): void {
@@ -31,7 +48,7 @@ export const useStoneStore = defineStore('stone', () => {
   }
 
   return {
-    //newItem,
+    ns,
     tagFromUrlId,
     prepareForCreate,
     prepareForUpdate

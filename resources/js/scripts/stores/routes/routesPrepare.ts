@@ -6,7 +6,8 @@
 //activities (e.g. clearFilters, copy current -> new,), before
 //proceeding to the new route.
 
-import type { TRouteInfo, TPlanAction, TPrepareResponse } from '@/js/types/routesTypes'
+import type { TRouteInfo, TPlanAction, TPrepareResponse, TModule } from '@/js/types/routesTypes'
+import { TLocusFields, TStoneFields, TFaunaFields, } from '@/js/types/moduleFieldsTypes'
 import { defineStore, storeToRefs } from 'pinia'
 import { useXhrStore } from '../xhr'
 import { useTrioStore } from '../trio'
@@ -16,6 +17,9 @@ import { useNotificationsStore } from '../notifications'
 import { useItemStore } from '../item'
 import { useMediaStore } from '../media'
 import { useRoutesMainStore } from './routesMain'
+import { useLocusStore } from '../modules/locus'
+import { useFaunaStore } from '../modules/fauna'
+import { useStoneStore } from '../modules/stone'
 
 export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let xhr = useXhrStore();
@@ -26,7 +30,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let i = useItemStore();
   let r = useRoutesMainStore()
   let { setItemMedia } = useMediaStore()
-  
+
   async function prepareForNewRoute(to: TRouteInfo, from: TRouteInfo, plan: TPlanAction[]): Promise<TPrepareResponse> {
     for (const x of plan) {
       switch (x) {
@@ -85,6 +89,9 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           prepareForMedia()
           break
 
+        case 'item.prepareForUpdate':
+          prepareForUpdate(to.module)
+          break
         default:
           console.log(`PrepareForNewRoute() Bad Action: ${x}`)
           throw 'RoutingBadActionError'
@@ -158,7 +165,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
       i.fields = res.data.fields
       i.url_id = res.data.url_id
-      i.tag = m.tagFromUrlId(to.module, res.data.url_id)     
+      i.tag = m.tagFromUrlId(to.module, res.data.url_id)
       setItemMedia(res.data.mediaArray, res.data.mediaPage, res.data.media1)
       n.showSpinner(false)
       return true
@@ -196,5 +203,23 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     //
   }
 
+  function prepareForUpdate(module: TModule): void {
+    let store = null
+    console.log(`routesPrepare.prepareForUpdate(module: ${module})`)
+    switch (module) {
+      case 'Locus':
+        store = useStoneStore()
+        store.prepareForUpdate(<TStoneFields>i.fields)
+        break
+      case 'Stone':
+        store = useLocusStore()
+        store.prepareForUpdate(<TLocusFields>i.fields)
+        break
+      case 'Fauna':
+        store = useFaunaStore()
+        store.prepareForUpdate(<TFaunaFields>i.fields)
+        break
+    }
+  }
   return { prepareForNewRoute }
 })

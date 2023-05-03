@@ -17,8 +17,9 @@ export const useMenusStore = defineStore('menus', () => {
       case 'home':
       case 'login':
       case 'media':
+      case 'update':
         return false
-        
+
       default:
         return true
     }
@@ -36,6 +37,9 @@ export const useMenusStore = defineStore('menus', () => {
         return 'Read'
       case 'media':
         return 'Media'
+      case 'create':
+      case 'update':
+        return 'Modify'
       default:
         return undefined
     }

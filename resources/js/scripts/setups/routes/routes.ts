@@ -61,7 +61,7 @@ const routes = [
   },
   {
     path: '/:module/:url_id/update',
-    component: Index,
+    component:  () => import('@/components/content/Update.vue'),
     name: 'update'
   },
   {

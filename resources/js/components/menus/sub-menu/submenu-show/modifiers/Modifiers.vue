@@ -70,6 +70,7 @@ function itemCreate() {
 
 function itemUpdate() {
   console.log(`itemUpdate`)
+  router.push({ name: 'update', params: { module: current.value.url_module, url_id:current.value.url_id } })  
 }
 
 function goToMedia() {
