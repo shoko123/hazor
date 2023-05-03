@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
-use App\Models\Interfaces\DigModelInterface;
+use App\Models\App\DigModel;
 use App\Models\Interfaces\ModelGroupInterface;
 
 class DigModelInitController extends Controller
 {
-    public function init(DigModelInterface $m, ModelGroupInterface $mgi)
+    public function init(DigModel $m, ModelGroupInterface $mgi)
     {
         return response()->json(array_merge($m->init(), $mgi->trio()), 200);
     }

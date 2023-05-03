@@ -5,12 +5,12 @@ namespace App\Http\Controllers\App;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
-use App\Models\Interfaces\DigModelInterface;
+use App\Models\App\DigModel;
 use App\Models\Interfaces\ModelGroupInterface;
 
 class DigModelDestroyController extends Controller
 {
-    public function destroy(Request $r, DigModelInterface $m)
+    public function destroy(Request $r, DigModel $m)
     {
         $m->destroyItem($r["id"]);
         return response()->json([

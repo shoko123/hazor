@@ -10,7 +10,7 @@ use App\Http\Controllers\App\MediaController;
 use App\Http\Controllers\App\AppController;
 use App\Http\Controllers\App\RegistrarController;
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Dig\LocusController;
+use App\Http\Controllers\App\DigModelStoreController;
 use App\Http\Controllers\Dig\FaunaController;
 use App\Http\Controllers\Dig\StoneController;
 /*
@@ -55,6 +55,8 @@ Route::group(['middleware' => ['read.accessibility']], function () {
     Route::post('media/upload', [MediaController::class, 'upload']);
     Route::post('media/destroy', [MediaController::class, 'destroy']);
     Route::post('media/edit', [MediaController::class, 'edit']);
+    Route::post('model/store', [DigModelStoreController::class, 'store']);
+    Route::put('model/store', [DigModelStoreController::class, 'store']);
     Route::post('model/destroy', [DigModelDestroyController::class, 'destroy']);
     Route::post('loci/store', [LocusController::class, 'store'])->middleware('can:Locus-create');
     Route::put('loci/store', [LocusController::class, 'store'])->middleware('can:Locus-update');

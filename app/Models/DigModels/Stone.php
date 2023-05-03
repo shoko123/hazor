@@ -8,6 +8,7 @@ use App\Models\App\DigModel;
 use App\Models\App\FindModel;
 use App\Models\Tags\StoneTag;
 use App\Models\Tags\Tag;
+
 use Illuminate\Database\Eloquent\Builder;
 
 class Stone extends FindModel
@@ -49,32 +50,72 @@ class Stone extends FindModel
         return 'id AS url_id';
     }
 
-    function getIdFromUrlId(string $url_id) : int {
+    function getIdFromUrlId(string $url_id): int
+    {
         return $url_id;
     }
 
-    function getUrlIdFromId(int $id) : string {
+    function getUrlIdFromId(int $id): string
+    {
         return $id;
     }
-    
-    public function indexSelect(): Builder {
+
+    public function indexSelect(): Builder
+    {
         $url_id = $this->buildSqlUrlId();
         return $this->select('id', DB::raw($url_id));
     }
-    public function pageSelect(): string {
+
+    public function store($id, $new_item, $methodIsPut)
+    {
+        //$validator = new StoneStoreRequest;
+
+        //return $r["item"];        
+    
+        //return ["req item" => $r["item"], "req id" => $id];      
+        //$validated = $r->validated();
+
+        if ($methodIsPut) {
+            //authorize & validate
+            //$this->authorize('update', $this->model);
+
+            //load current stone
+            $item = Stone::findOrFail($id);
+            $old = clone $item;
+        } else {
+            //$this->authorize('create', $this->model);
+            $item = new Stone;
+        }
+        //copy the validated data from the validated array to the 'item' and 'find' objects.
+        //$item["details"] = "XXXXX";//$r["item.details"];
+        foreach ($new_item as $key => $value) {
+            $item[$key] = $value;
+        }
+
+
+        $item->save();
+        return ["old" => $old, "new" => $item, "req.item" => $new_item];
+    }
+
+    public function pageSelect(): string
+    {
         return 'xxx';
     }
 
-    public function itemSelect(): string {
+    public function itemSelect(): string
+    {
         return 'xxx';
     }
-    public function indexFormat(): string  {
+    public function indexFormat(): string
+    {
         return 'xxx';
     }
-    public function pageFormat(): string  {
+    public function pageFormat(): string
+    {
         return 'xxx';
     }
-    public function itemFormat(): string {
+    public function itemFormat(): string
+    {
         return 'xxx';
     }
 }

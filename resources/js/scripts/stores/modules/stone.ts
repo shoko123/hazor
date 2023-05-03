@@ -34,7 +34,8 @@ export const useStoneStore = defineStore('stone', () => {
     return url_id
   }
 
-  function setArea() {
+  function upload(fields: object) {
+    console.log(`stone.upload() fields:  ${JSON.stringify(fields, null, 2)}`)
 
   }
 
@@ -49,6 +50,7 @@ export const useStoneStore = defineStore('stone', () => {
 
   return {
     ns,
+    upload,
     tagFromUrlId,
     prepareForCreate,
     prepareForUpdate

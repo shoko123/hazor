@@ -35,12 +35,10 @@ import { required, between, minLength, sameAs } from "@vuelidate/validators";
 import { ref, reactive, computed } from "vue";
 import { TStoneFields } from '@/js/types/moduleFieldsTypes'
 import { useRouter } from 'vue-router'
-
+import { useItemNewStore } from '../../../scripts/stores/itemNew'
 let router = useRouter()
-let ns = reactive<TStoneFields>({
-  id: 0,
-  material_id: 1,
-  base_type_id: 1,
+let ns = reactive({
+  id: 2,
   type: "",
   area: "XX",
   date: "",
@@ -56,17 +54,15 @@ let ns = reactive<TStoneFields>({
 const rules = computed(() => {
   return {
     id: { required, between: between(1, 100000) },
-    material_id: { required },
-    base_type_id: { required },
-    type: { required },
+    type: { },
     area: { required },
     date: {  },
-    basket: { required },
+    basket: {  },
     locus: { required, between: between(1, 3) },
-    prov_notes: { required },
-    material: { required },
-    dimensions: { required },
-    details: { required },
+    prov_notes: {  },
+    material: {  },
+    dimensions: {  },
+    details: {  },
   }
 })
 const v$ = useVuelidate(rules, ns);
@@ -110,7 +106,9 @@ const submit = () => {
 
   // if success
   if (!v$.value.$error) {
-    alert("Form Successfully Submitted!");
+    //alert("Form Successfully Submitted!")
+    const store = useItemNewStore()
+    store.upload(ns)
   } else {
     console.log(`validation errors: ${JSON.stringify(v$.value.$errors, null, 2)}`)
   }

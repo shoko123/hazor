@@ -4,10 +4,7 @@ namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
 use App\Models\App\DigModel;
-use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Interfaces\DigModelInterface;
 use App\Models\Functional\MediaModel;
 
 

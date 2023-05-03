@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\Interfaces\DigModelInterface;
+use App\Models\App\DigModel;
 use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
 
 class TestController extends Controller
 {
-    public function test(Request $r, DigModelInterface $m)
+    public function test(Request $r, DigModel $m)
     {
         $res = $m->show(1);
 

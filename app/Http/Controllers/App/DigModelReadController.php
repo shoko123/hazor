@@ -5,7 +5,7 @@ namespace App\Http\Controllers\App;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
-use App\Models\Interfaces\DigModelInterface;
+use App\Models\App\DigModel;
 use App\Models\Interfaces\ModelGroupInterface;
 
 class DigModelReadController extends Controller
@@ -13,7 +13,7 @@ class DigModelReadController extends Controller
     protected $model_name = null;
     protected $model = null;
 
-    public function index(Request $r, DigModelInterface $m)
+    public function index(Request $r, DigModel $m)
     {
         $collection = $m->index($r["queryParams"]);
         return response()->json([
@@ -22,14 +22,14 @@ class DigModelReadController extends Controller
         ], 200);
     }
 
-    public function page(Request $r, DigModelInterface $m)
+    public function page(Request $r, DigModel $m)
     {
         return response()->json([
             "page" => $m->page($r["ids"], $r["view"]),
         ], 200);
     }
 
-    public function show(Request $r, DigModelInterface $m)
+    public function show(Request $r, DigModel $m)
     {
         $id = $m->getIdFromUrlId($r["url_id"]);
 
@@ -40,7 +40,7 @@ class DigModelReadController extends Controller
         return response()->json($resp, 200);
     }
 
-    public function carousel(Request $r, DigModelInterface $m)
+    public function carousel(Request $r, DigModel $m)
     {
         $id = $m->getIdFromUrlId($r["url_id"]);
         return response()->json($m->carousel($id), 200);
@@ -54,7 +54,7 @@ class DigModelReadController extends Controller
         ], 200);
     }
 
-    public function firstUrlId(DigModelInterface $m)
+    public function firstUrlId(DigModel $m)
     {
         $first = $m->firstUrlId();
         return response()->json([
