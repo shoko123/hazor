@@ -8,9 +8,6 @@ use App\Http\Requests\DigModelStoreRequest;
 
 class DigModelStoreController extends Controller
 {
-    protected $model_name = null;
-    protected $model = null;
-
     public function store(DigModelStoreRequest $r, DigModel $m)
     {
         $validated = $r->validated();
@@ -18,7 +15,7 @@ class DigModelStoreController extends Controller
 
         return response()->json([
             "msg" => "ModelStoreController.store()",
-            "request" => $res,
+            "res" => $res,
         ], 200);
     }
 }

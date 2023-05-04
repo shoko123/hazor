@@ -69,25 +69,6 @@ class Stone extends FindModel
         return $this->select('id', DB::raw($url_id));
     }
 
-    public function store(int $id, array $new_item, bool $methodIsPut)
-    {
-        if ($methodIsPut) { 
-            $item = Stone::findOrFail($id);
-            $old = clone $item;
-        } else {
-            //$this->authorize('create', $this->model);
-            $item = new Stone;
-        }
-
-        //copy the validated data from the validated array to the 'item' object.
-        foreach ($new_item as $key => $value) {
-            $item[$key] = $value;
-        }
-
-        $item->save();
-        return ["old" => $old, "new" => $item, "req.item" => $new_item];
-    }
-
     public function pageSelect(): string
     {
         return 'xxx';

@@ -2,14 +2,8 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { TStoneFields, TStoneFieldsToStore } from '@/js/types/moduleFieldsTypes'
-import { useCollectionsStore } from '../collections/collections'
-import { useRoutesMainStore } from '../routes/routesMain'
 
 export const useStoneStore = defineStore('stone', () => {
-
-  const { getRouteInfo } = useRoutesMainStore()
-  const { collection } = useCollectionsStore()
-
   let all = ref<TStoneFields>({
     id: 0,
     base_type_id: 0,
@@ -43,11 +37,6 @@ export const useStoneStore = defineStore('stone', () => {
     return url_id
   }
 
-  function upload(fields: object) {
-    console.log(`stone.upload() fields:  ${JSON.stringify(fields, null, 2)}`)
-
-  }
-
   function prepareForUpdate(current: TStoneFields): void {
     console.log(`stone.prepareForUpdate:  ${JSON.stringify(current, null, 2)}`)
     all.value = { ...current }
@@ -60,7 +49,6 @@ export const useStoneStore = defineStore('stone', () => {
   return {
     all,
     storeFields,
-    upload,
     tagFromUrlId,
     prepareForCreate,
     prepareForUpdate

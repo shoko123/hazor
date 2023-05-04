@@ -33,6 +33,11 @@ class StoneStoreRequest extends DigModelStoreRequest
             'item.locus' => 'max:500',
             'item.basket' => 'string|nullable',
             'item.date' => 'string|max:10|nullable',
+            'item.prov_notes' => 'max:500',
+            'item.material' => 'max:500',
+            'item.type' => 'max:500',
+            'item.details' => 'max:500',
+            'item.dimensions' => 'max:500',
         ];
     }
 }
