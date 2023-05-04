@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use App\Models\Interfaces\DigModelInterface;
 use App\Models\Interfaces\ModelGroupInterface;
 use App\Models\App\DigModel;
 use App\Models\DigModels\Locus;
@@ -13,6 +12,10 @@ use App\Models\DigModels\Fauna;
 use App\Models\ModelGroup\LocusGroup;
 use App\Models\ModelGroup\StoneGroup;
 use App\Models\ModelGroup\FaunaGroup;
+use App\Http\Requests\DigModelStoreRequest;
+use App\Http\Requests\LocusStoreRequest;
+use App\Http\Requests\StoneStoreRequest;
+use App\Http\Requests\FaunaStoreRequest;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -43,6 +46,16 @@ class AppServiceProvider extends ServiceProvider
                     return new FaunaGroup;
             }
         });        
+        $this->app->singleton(DigModelStoreRequest::class, function ($app) {
+            switch (request()->input("model")) {
+                case "Locus":
+                    return new LocusStoreRequest;
+                case "Stone":
+                    return new StoneStoreRequest;
+                case "Fauna":
+                    return new FaunaStoreRequest;
+            }
+        });             
     }
 
     /**

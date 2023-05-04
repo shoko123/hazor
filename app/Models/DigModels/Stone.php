@@ -8,7 +8,7 @@ use App\Models\App\DigModel;
 use App\Models\App\FindModel;
 use App\Models\Tags\StoneTag;
 use App\Models\Tags\Tag;
-
+use App\Http\Requests\DigModelStoreRequest;
 use Illuminate\Database\Eloquent\Builder;
 
 class Stone extends FindModel
@@ -36,9 +36,12 @@ class Stone extends FindModel
     {
         return [
             "message" => $this->eloquent_model_name . '.init()',
-            "counts" => ["items" => $this->count(), "media" => 777,],
+            "counts" => ["items" => $this->count(), "media" => DB::table('media')->where('model_type', 'Stone')->count(),],
             "itemViews" => config('display_options.itemViews.Stone'),
         ];
+
+        //DB::table('media')->where('model_type', self::$moduleName)->count();
+
     }
 
     function buildSqlDescription(): string
@@ -66,32 +69,20 @@ class Stone extends FindModel
         return $this->select('id', DB::raw($url_id));
     }
 
-    public function store($id, $new_item, $methodIsPut)
+    public function store(int $id, array $new_item, bool $methodIsPut)
     {
-        //$validator = new StoneStoreRequest;
-
-        //return $r["item"];        
-
-        //return ["req item" => $r["item"], "req id" => $id];      
-        //$validated = $r->validated();
-
-        if ($methodIsPut) {
-            //authorize & validate
-            //$this->authorize('update', $this->model);
-
-            //load current stone
+        if ($methodIsPut) { 
             $item = Stone::findOrFail($id);
             $old = clone $item;
         } else {
             //$this->authorize('create', $this->model);
             $item = new Stone;
         }
-        //copy the validated data from the validated array to the 'item' and 'find' objects.
-        //$item["details"] = "XXXXX";//$r["item.details"];
+
+        //copy the validated data from the validated array to the 'item' object.
         foreach ($new_item as $key => $value) {
             $item[$key] = $value;
         }
-
 
         $item->save();
         return ["old" => $old, "new" => $item, "req.item" => $new_item];

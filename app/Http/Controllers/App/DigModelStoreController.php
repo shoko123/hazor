@@ -3,23 +3,22 @@
 namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\App\DigModel;
-use App\Http\Requests\StoneStoreRequest;
+use App\Http\Requests\DigModelStoreRequest;
 
 class DigModelStoreController extends Controller
 {
     protected $model_name = null;
     protected $model = null;
 
-    public function store(Request $r, DigModel $m)
+    public function store(DigModelStoreRequest $r, DigModel $m)
     {
-        $res = $m->store($r["id"], $r["item"], $r->isMethod('put'));
+        $validated = $r->validated();
+        $res = $m->store($validated["id"], $validated["item"], $r->isMethod('put'));
+
         return response()->json([
             "msg" => "ModelStoreController.store()",
             "request" => $res,
         ], 200);
     }
-
- 
 }

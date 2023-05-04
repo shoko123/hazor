@@ -22,9 +22,9 @@ export const useItemNewStore = defineStore('itemNew', () => {
   async function upload(isUpdate: boolean, fields: TFieldsToStore, id?: number) {
     let res = await send('model/store', isUpdate ? 'put' : 'post', { model: current.value.module, item: fields, id })
       .catch(err => {
-        showSnackbar(`model.store failed`)
+        showSnackbar(`model.store failed! Please try later!`)
         console.log(`model.store  failed. err: ${JSON.stringify(err, null, 2)}`)
-        return false
+        throw err
       })
 
     console.log(`model.store() returned (success) ${JSON.stringify(res, null, 2)}`)
