@@ -17,7 +17,7 @@ type TPlanAction =
     'item.load' |
     'item.setIndexInCollection' |
     'item.clear' |
-    'item.prepareForNew' |
+    'item.prepareForCreate' |
     'item.prepareForUpdate' |
     'item.prepareForTag' |
     'item.prepareForMedia' |

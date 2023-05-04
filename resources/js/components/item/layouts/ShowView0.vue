@@ -1,5 +1,5 @@
 <template>
-  <ItemCard />
+  <ItemCard class="mb-2"/>
   <Collection source="media" />  
 </template>
 

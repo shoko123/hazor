@@ -4,22 +4,20 @@
       <v-text-field label="Area" v-model="item.area" class="mr-1" filled> </v-text-field>
       <v-text-field label="Locus" v-model="item.locus" class="mr-1" filled> </v-text-field>
       <v-text-field label="Basket" v-model="item.basket" class="mr-1" filled> </v-text-field>
-    </v-row>
-
-    <v-row wrap no-gutters>
-      <v-textarea v-model="item.details" label="Details" rows="1" class="mr-1 mt-1" auto-grow readonly filled>
-      </v-textarea>
-    </v-row>
-
-    <v-row wrap no-gutters>
-      <v-textarea v-model="item.dimensions" label="Dimensions" rows="1" auto-grow readonly filled></v-textarea>
-    </v-row>
-
-    <v-row wrap no-gutters>
-      <v-text-field label="Type" v-model="item.type" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Material" v-model="item.material" v-show="item.material" class="mr-1" filled> </v-text-field>
       <v-text-field label="Date" v-model="item.date" v-show="item.date" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Notes" v-model="item.prov_notes" v-show="item.prov_notes" class="mr-1" filled></v-text-field>
+    </v-row>
+
+    <v-row wrap no-gutters>
+      <v-text-field label="Provenience Notes" v-model="item.prov_notes" v-show="item.prov_notes" class="mr-1"
+        filled></v-text-field>
+      <v-text-field label="Material" v-model="item.material" v-show="item.material" class="mr-1" filled> </v-text-field>
+      <v-text-field label="Type" v-model="item.type" class="mr-1" filled> </v-text-field>
+    </v-row>
+
+    <v-row wrap no-gutters>
+      <v-textarea v-model="item.details" label="Details" rows="1" class="mr-1" auto-grow readonly filled>
+      </v-textarea>
+      <v-textarea v-model="item.dimensions" label="Dimensions" rows="1" auto-grow readonly filled></v-textarea>
     </v-row>
   </v-container>
 </template>

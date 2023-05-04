@@ -25,7 +25,7 @@ class StoneStoreRequest extends FormRequest
             'item.area' => 'min:1|max:3',
             'item.locus' => 'max:500',
             'item.basket' => 'numeric|min:1|max:50000|nullable',
-            'item.date' => 'numeric|min:1|max:50000|nullable',
+            'item.date' => 'string|nullable',
         ];
     }
 }

@@ -113,10 +113,10 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                         return { success: true, data: ['item.load', 'item.setIndexInCollection'] }
 
                     case 'create':
-                        return { success: true, data: [] }
+                        return { success: true, data: ['item.load'] }
 
                     case 'update':
-                        return { success: true, data: ['item.prepareForUpdate'] }
+                        return { success: true, data: ['item.load'] }
 
                     case 'tags':
                         return { success: true, data: [] }
@@ -129,7 +129,19 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                 break
 
             case 'create':
+                 switch (from.name) {
+                    case 'show':
+                        return { success: true, data: ['item.prepareForCreate'] }
+                    default:
+                        return { success: false, data: 'BadTransition' }
+                }
             case 'update':
+                switch (from.name) {
+                    case 'show':
+                        return { success: true, data: ['item.prepareForUpdate'] }
+                    default:
+                        return { success: false, data: 'BadTransition' }
+                }
             case 'tags':
             case 'media':
                 switch (from.name) {

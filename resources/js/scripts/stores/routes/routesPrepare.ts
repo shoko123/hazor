@@ -208,13 +208,15 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     console.log(`routesPrepare.prepareForUpdate(module: ${module})`)
     switch (module) {
       case 'Locus':
-        store = useStoneStore()
-        store.prepareForUpdate(<TStoneFields>i.fields)
-        break
-      case 'Stone':
         store = useLocusStore()
         store.prepareForUpdate(<TLocusFields>i.fields)
         break
+
+      case 'Stone':
+        store = useStoneStore()
+        store.prepareForUpdate(<TStoneFields>i.fields)
+        break
+
       case 'Fauna':
         store = useFaunaStore()
         store.prepareForUpdate(<TFaunaFields>i.fields)

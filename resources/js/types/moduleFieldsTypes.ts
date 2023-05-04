@@ -11,6 +11,15 @@ type TLocusFields = TItemMandatoryFields & {
         cross_ref: string,
     }
 
+    type TLocusFieldsToStore = TItemMandatoryFields & {
+        name: string,
+        type: string,
+        stratum: string,
+        square: string,
+        elevation: string,
+        cross_ref: string,
+    }
+
 type TStoneFields = TItemMandatoryFields & {
         material_id: number,
         base_type_id: number,
@@ -24,8 +33,20 @@ type TStoneFields = TItemMandatoryFields & {
         dimensions: string,
         details: string,
 }
+
+type TStoneFieldsToStore = {
+        type: string,
+        area: string,
+        date: string,
+        basket: string,
+        locus: string,
+        prov_notes: string,
+        material: string,
+        dimensions: string,
+        details: string,
+}
+
 type TFaunaFields = TItemMandatoryFields & {
-        id: number,
         label: string,
         area: string,
         locus: string,
@@ -44,6 +65,23 @@ type TFaunaFields = TItemMandatoryFields & {
         element_id: string
 }
 
-type TFields = TLocusFields | TStoneFields | TFaunaFields
+type TFaunaFieldsToStore = {
+        label: string,
+        area: string,
+        locus: string,
+        basket: string,
+        item_category: string,
+        biological_taxonomy: string,
+        has_taxonomic_identifier: string,
+        has_anatomical_identifier: string,
+        stratum: string,
+        taxon: string,
+        element: string,
+        fragment_present: string,
+        bone_number: string,
+        snippet: string
+}
 
-export { TItemMandatoryFields, TLocusFields, TStoneFields, TFaunaFields, TFields }
+type TFields = TLocusFields | TStoneFields | TFaunaFields
+type TFieldsToStore = TStoneFieldsToStore | TLocusFieldsToStore | TFaunaFieldsToStore
+export { TItemMandatoryFields, TLocusFields, TStoneFields, TStoneFieldsToStore, TFaunaFields, TFields, TFieldsToStore }

@@ -71,7 +71,7 @@ class Stone extends FindModel
         //$validator = new StoneStoreRequest;
 
         //return $r["item"];        
-    
+
         //return ["req item" => $r["item"], "req id" => $id];      
         //$validated = $r->validated();
 

@@ -2,25 +2,25 @@
   <v-container fluid class="pa-1 ma-0">
 
     <v-row wrap no-gutters>
-      <v-text-field label="Area" v-model="ns.area" :error-messages="areaErrors" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Locus" v-model="ns.locus" :error-messages="locusErrors" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Basket" v-model="ns.basket" :error-messages="basketErrors" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Date" v-model="ns.date" :error-messages="dateErrors" type="date" min="1990-01-01" max="2018-12-31"></v-text-field>
+      <v-text-field label="Area" v-model="area" :error-messages="areaErrors" class="mr-1" filled> </v-text-field>
+      <v-text-field label="Locus" v-model="locus" :error-messages="locusErrors" class="mr-1" filled> </v-text-field>
+      <v-text-field label="Basket" v-model="basket" :error-messages="basketErrors" class="mr-1" filled> </v-text-field>
+      <v-text-field label="Date" v-model="date" :error-messages="dateErrors" type="date" min="1990-01-01"
+        max="2018-12-31"></v-text-field>
     </v-row>
 
     <v-row wrap no-gutters>
-      <v-textarea label="Prove notes" v-model="ns.prov_notes" :error-messages="provErrors" rows="1" class="mr-1" auto-grow>
+      <v-text-field label="Provenience notes" v-model="prov_notes" :error-messages="provErrors" rows="1" class="mr-1" auto-grow>
+      </v-text-field>
+      <v-text-field label="Material" v-model="material" class="mr-1" filled> </v-text-field>
+      <v-text-field label="Type" v-model="type" class="mr-1" filled> </v-text-field>
+    </v-row>
+
+    <v-row wrap no-gutters>
+      <v-textarea label="Details" v-model="details" :error-messages="detailsErrors" rows="1" class="mr-1" auto-grow>
       </v-textarea>
-      <v-textarea label="Details" v-model="ns.details" :error-messages="detailsErrors" rows="1" class="mr-1" auto-grow>
-      </v-textarea>
-      <v-textarea label="Dimensions" v-model="ns.dimensions" :error-messages="dimensionsErrors" rows="1" class="mr-1"
+      <v-textarea label="Dimensions" v-model="dimensions" :error-messages="dimensionsErrors" rows="1" class="mr-1"
         auto-grow></v-textarea>
-    </v-row>
-
-    <v-row wrap no-gutters>
-      <v-text-field label="Type" v-model="ns.type" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Material" v-model="ns.material" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Notes" v-model="ns.prov_notes" class="mr-1" filled></v-text-field>
     </v-row>
     <v-row>
       <v-btn @click="submit" variant="outlined">Submit</v-btn>
@@ -33,10 +33,15 @@
 import { useVuelidate } from "@vuelidate/core";
 import { required, between, minLength, sameAs } from "@vuelidate/validators";
 import { ref, reactive, computed } from "vue";
-import { TStoneFields } from '@/js/types/moduleFieldsTypes'
+import { storeToRefs } from 'pinia'
+import { TStoneFields, TStoneFieldsToStore } from '@/js/types/moduleFieldsTypes'
 import { useRouter } from 'vue-router'
 import { useItemNewStore } from '../../../scripts/stores/itemNew'
+import { useStoneStore } from '../../../scripts/stores/modules/stone'
+
 let router = useRouter()
+let { storeFields, all } = storeToRefs(useStoneStore())
+
 let ns = reactive({
   id: 2,
   type: "",
@@ -53,19 +58,64 @@ let ns = reactive({
 
 const rules = computed(() => {
   return {
-    id: { required, between: between(1, 100000) },
-    type: { },
     area: { required },
-    date: {  },
-    basket: {  },
-    locus: { required, between: between(1, 3) },
-    prov_notes: {  },
-    material: {  },
-    dimensions: {  },
-    details: {  },
+    locus: { required },
+    basket: { required },
+    date: {},
+    prov_notes: {},
+    material: {},
+    type: {},
+    details: {},
+    dimensions: {},
   }
 })
-const v$ = useVuelidate(rules, ns);
+const v$ = useVuelidate(rules, storeFields.value);
+
+const area = computed({
+  get: () => { return storeFields.value.area },
+  set: val => { all.value.area = val }
+})
+
+const locus = computed({
+  get: () => { return storeFields.value.locus },
+  set: val => { all.value.locus = val }
+})
+
+const basket = computed({
+  get: () => { return storeFields.value.basket },
+  set: val => { all.value.basket = val }
+})
+
+const date = computed({
+  get: () => { return storeFields.value.date },
+  set: val => { all.value.date = val }
+})
+
+const prov_notes = computed({
+  get: () => { return storeFields.value.prov_notes },
+  set: val => { all.value.prov_notes = val }
+})
+
+const material = computed({
+  get: () => { return storeFields.value.material },
+  set: val => { all.value.material = val }
+})
+
+const type = computed({
+  get: () => { return storeFields.value.type },
+  set: val => { all.value.type = val }
+})
+
+const details = computed({
+  get: () => { return storeFields.value.details },
+  set: val => { all.value.details = val }
+})
+
+const dimensions = computed({
+  get: () => { return storeFields.value.dimensions },
+  set: val => { all.value.dimensions = val }
+})
+
 
 const areaErrors = computed(() => {
   return <string[]>v$.value.area.$errors.map(x => x.$message)
@@ -99,7 +149,7 @@ const dimensionsErrors = computed(() => {
   return <string[]>v$.value.dimensions.$errors.map(x => x.$message)
 });
 
-const submit = () => {
+ async function submit() {
   // vuelidate validation
   v$.value.$validate();
 
@@ -108,7 +158,8 @@ const submit = () => {
   if (!v$.value.$error) {
     //alert("Form Successfully Submitted!")
     const store = useItemNewStore()
-    store.upload(ns)
+    await store.upload(true, storeFields.value, all.value.id)
+    router.go(-1)
   } else {
     console.log(`validation errors: ${JSON.stringify(v$.value.$errors, null, 2)}`)
   }

@@ -12,7 +12,7 @@ class DigModelStoreController extends Controller
     protected $model_name = null;
     protected $model = null;
 
-    public function store(StoneStoreRequest $ss, Request $r, DigModel $m)
+    public function store(Request $r, DigModel $m)
     {
         $res = $m->store($r["id"], $r["item"], $r->isMethod('put'));
         return response()->json([

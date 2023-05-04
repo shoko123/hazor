@@ -1,7 +1,7 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { TStoneFields } from '@/js/types/moduleFieldsTypes'
+import { TStoneFields, TStoneFieldsToStore } from '@/js/types/moduleFieldsTypes'
 import { useCollectionsStore } from '../collections/collections'
 import { useRoutesMainStore } from '../routes/routesMain'
 
@@ -10,24 +10,33 @@ export const useStoneStore = defineStore('stone', () => {
   const { getRouteInfo } = useRoutesMainStore()
   const { collection } = useCollectionsStore()
 
-  let ns = ref<TStoneFields>({
+  let all = ref<TStoneFields>({
     id: 0,
-    material_id: 1,
-    base_type_id: 1,
-    type: "",
+    base_type_id: 0,
+    material_id: 0,
     area: "XX",
-    date: "",
-    basket: "",
     locus: "",
+    basket: "",
+    date: "",
     prov_notes: "",
+    type: "",
     material: "",
+    details: "",
     dimensions: "",
-    details: ""
   })
-  type TField = keyof TStoneFields
 
-  const getNewItem = computed(() => {
-    return ns.value
+  const storeFields = computed<TStoneFieldsToStore>(() => {
+    return {
+      area: all.value.area,
+      locus: all.value.locus,
+      basket: all.value.basket,
+      date: all.value.date,
+      prov_notes: all.value.prov_notes,
+      material: all.value.material,
+      type: all.value.type,
+      dimensions: all.value.dimensions,
+      details: all.value.details
+    }
   })
 
   function tagFromUrlId(url_id: string): string {
@@ -41,7 +50,7 @@ export const useStoneStore = defineStore('stone', () => {
 
   function prepareForUpdate(current: TStoneFields): void {
     console.log(`stone.prepareForUpdate:  ${JSON.stringify(current, null, 2)}`)
-    ns.value = { ...current }
+    all.value = { ...current }
   }
 
   function prepareForCreate(): void {
@@ -49,7 +58,8 @@ export const useStoneStore = defineStore('stone', () => {
   }
 
   return {
-    ns,
+    all,
+    storeFields,
     upload,
     tagFromUrlId,
     prepareForCreate,
