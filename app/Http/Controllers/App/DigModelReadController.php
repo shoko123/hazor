@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Models\App\DigModel;
-use App\Models\Interfaces\ModelGroupInterface;
 
 class DigModelReadController extends Controller
 {

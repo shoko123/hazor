@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use App\Models\Interfaces\ModelGroupInterface;
+use App\Models\ModelGroup\ModelGroup;
 use App\Models\App\DigModel;
 use App\Models\DigModels\Locus;
 use App\Models\DigModels\Stone;
@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        $this->app->singleton(ModelGroupInterface::class, function ($app) {
+        $this->app->singleton(ModelGroup::class, function ($app) {
             switch (request()->input("model")) {
                 case "Locus":
                     return new LocusGroup;

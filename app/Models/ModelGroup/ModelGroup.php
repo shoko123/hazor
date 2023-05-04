@@ -3,25 +3,20 @@
 namespace App\Models\ModelGroup;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Model;
-use Exception;
-use App\Models\Interfaces\ModelGroupInterface;
 use App\Models\Tags\TagGroup;
-
-
-
+use Exception;
 
 abstract class ModelGroup
 {
     abstract public static function getModelGroups(): array;
     abstract public static function getModelGroupNames(): array;
-
+    abstract public  function trio(): array;
     protected $eloquent_model_name;
     protected static $groups;
 
     public function __construct($eloquent_model_name = null)
     {
-        $this->eloquent_model_name = $eloquent_model_name;     
+        $this->eloquent_model_name = $eloquent_model_name;
     }
 
     public function getModelGroup(string $group_name): array
