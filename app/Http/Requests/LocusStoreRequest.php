@@ -19,7 +19,7 @@ class LocusStoreRequest extends DigModelStoreRequest
         return [
             'model' => 'in:Locus,Stone,Fauna',
             'id' => 'required|numeric',            
-            'item.area' => 'min:1|max:3',
+            'item.area' => 'required|size:2',
             'item.name' => 'max:100',
             'item.square' => 'max:100',
             'item.elevation' => 'max:100',

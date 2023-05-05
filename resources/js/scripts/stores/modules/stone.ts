@@ -1,13 +1,10 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { TStoneFields, TStoneFieldsToStore } from '@/js/types/moduleFieldsTypes'
+import { TStoneFields } from '@/js/types/moduleFieldsTypes'
 
 export const useStoneStore = defineStore('stone', () => {
-
   const base: TStoneFields = {
     id: 0,
-    base_type_id: 0,
-    material_id: 0,
     area: "XX",
     locus: "",
     basket: "",
@@ -17,39 +14,32 @@ export const useStoneStore = defineStore('stone', () => {
     material: "",
     details: "",
     dimensions: "",
+    base_type_id: 0,
+    material_id: 0,
   }
 
-  let all = ref<TStoneFields>(base)
-
-  const storeFields = computed<TStoneFieldsToStore>(() => {
-    return {
-      area: all.value.area,
-      locus: all.value.locus,
-      basket: all.value.basket,
-      date: all.value.date,
-      prov_notes: all.value.prov_notes,
-      material: all.value.material,
-      type: all.value.type,
-      dimensions: all.value.dimensions,
-      details: all.value.details
-    }
-  })
+  let fields = ref<TStoneFields>(base)
 
   function tagFromUrlId(url_id: string): string {
     return url_id
   }
 
+  function clear() {
+    fields.value = base
+  }
+
   function prepareForNew(isCreate: boolean, current: TStoneFields): void {
     console.log(`stone.prepareForNew() isCreate: ${isCreate}  current${JSON.stringify(current, null, 2)}`)
     if (isCreate) {
-      all.value = { ...base }
+      fields.value = base
     } else {
-      all.value = { ...current }
+      fields.value = current
     }
   }
+
   return {
-    all,
-    storeFields,
+    fields,
+    clear,
     tagFromUrlId,
     prepareForNew
   }

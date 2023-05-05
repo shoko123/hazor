@@ -23,29 +23,29 @@ type TLocusFieldsToStore = {
 }
 
 type TStoneFields = TItemMandatoryFields & {
+        area: string,
+        locus: string,
+        basket: string,
+        date: string,
+        prov_notes: string,
+        type: string,
+        material: string,
+        details: string,
+        dimensions: string,
         material_id: number,
         base_type_id: number,
-        type: string,
-        area: string,
-        date: string,
-        basket: string,
-        locus: string,
-        prov_notes: string,
-        material: string,
-        dimensions: string,
-        details: string,
 }
 
 type TStoneFieldsToStore = {
-        type: string,
         area: string,
-        date: string,
-        basket: string,
         locus: string,
+        basket: string,
+        date: string,
         prov_notes: string,
+        type: string,
         material: string,
-        dimensions: string,
         details: string,
+        dimensions: string,
 }
 
 type TFaunaFields = TItemMandatoryFields & {
