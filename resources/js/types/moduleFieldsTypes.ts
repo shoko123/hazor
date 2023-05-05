@@ -3,22 +3,24 @@ type TItemMandatoryFields = {
 }
 
 type TLocusFields = TItemMandatoryFields & {
+        area: string
         name: string,
-        type: string,
-        stratum: string,
         square: string,
         elevation: string,
+        type: string,
+        stratum: string,
         cross_ref: string,
-    }
+}
 
-    type TLocusFieldsToStore = TItemMandatoryFields & {
+type TLocusFieldsToStore = {
+        area: string,
         name: string,
-        type: string,
-        stratum: string,
         square: string,
         elevation: string,
+        type: string,
+        stratum: string,
         cross_ref: string,
-    }
+}
 
 type TStoneFields = TItemMandatoryFields & {
         material_id: number,
@@ -84,4 +86,14 @@ type TFaunaFieldsToStore = {
 
 type TFields = TLocusFields | TStoneFields | TFaunaFields
 type TFieldsToStore = TStoneFieldsToStore | TLocusFieldsToStore | TFaunaFieldsToStore
-export { TItemMandatoryFields, TLocusFields, TStoneFields, TStoneFieldsToStore, TFaunaFields, TFields, TFieldsToStore }
+export {
+        TItemMandatoryFields,
+        TLocusFields,
+        TLocusFieldsToStore,
+        TStoneFields,
+        TStoneFieldsToStore,
+        TFaunaFields,
+        TFaunaFieldsToStore,
+        TFields,
+        TFieldsToStore
+}

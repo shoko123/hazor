@@ -7,17 +7,7 @@ use App\Http\Requests\DigModelStoreRequest;
 
 class StoneStoreRequest extends DigModelStoreRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        if (!auth('api')->check()) {
-            return false;
-        }
-        $p = $this->input("model") . "-" . (($this->method() == 'POST')  ?  "create" : "update");
-        return $this->user('sanctum')->can($p);
-    }
+    //authorization done at DigModelStoreRequest.php
 
     /**
      * Get the validation rules that apply to the request.

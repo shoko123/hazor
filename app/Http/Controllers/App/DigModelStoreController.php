@@ -11,11 +11,11 @@ class DigModelStoreController extends Controller
     public function store(DigModelStoreRequest $r, DigModel $m)
     {
         $validated = $r->validated();
-        $res = $m->store($validated["id"], $validated["item"], $r->isMethod('put'));
+        $item = $m->store($validated["id"], $validated["item"], $r->isMethod('put'));
 
         return response()->json([
             "msg" => "ModelStoreController.store()",
-            "res" => $res,
+            "item" => $item,
         ], 200);
     }
 }

@@ -66,6 +66,7 @@ function isAllowed(module: string) {
 
 function itemCreate() {
   console.log(`itemCreate`)
+  router.push({ name: 'create', params: { module: current.value.url_module } })
 }
 
 function itemUpdate() {

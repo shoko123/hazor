@@ -51,8 +51,9 @@ const routes = [
 
   {
     path: '/:module/create',
-    component: Index,
-    name: 'create'
+    component:  () => import('@/components/content/CreateUpdate.vue'),
+    name: 'create',
+    props: { isCreate: true }
   },
   {
     path: '/:module/:url_id',
@@ -61,8 +62,9 @@ const routes = [
   },
   {
     path: '/:module/:url_id/update',
-    component:  () => import('@/components/content/Update.vue'),
-    name: 'update'
+    component:  () => import('@/components/content/CreateUpdate.vue'),
+    name: 'update',
+    props: { isCreate: false }    
   },
   {
     path: '/:module/:url_id/media',

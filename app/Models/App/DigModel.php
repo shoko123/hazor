@@ -140,9 +140,9 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
     public function store(int $id, array $new_item, bool $methodIsPut)
     {
+
         if ($methodIsPut) { 
             $item = self::findOrFail($id);
-            $old = clone $item;
         } else {
             $modelName = "App\Models\DigModels\\" . $this->eloquent_model_name;
             $item = new $modelName;
@@ -154,6 +154,6 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         }
 
         $item->save();
-        return ["old" => $old, "new" => $item, "req.item" => $new_item];
+        return $item;
     }    
 }

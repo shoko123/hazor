@@ -7,14 +7,7 @@ use App\Http\Requests\DigModelStoreRequest;
 
 class LocusStoreRequest extends DigModelStoreRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        $permission = $this->input("Model") . "-" . $this->isMethod('put') ? "Update" : "Create";
-        return $this->user()->can($permission);
-    }
+   //authorization done at DigModelStoreRequest.php
 
     /**
      * Get the validation rules that apply to the request.
@@ -24,10 +17,15 @@ class LocusStoreRequest extends DigModelStoreRequest
     public function rules(): array
     {
         return [
+            'model' => 'in:Locus,Stone,Fauna',
+            'id' => 'required|numeric',            
             'item.area' => 'min:1|max:3',
-            'item.locus' => 'max:500',
-            'item.basket' => 'numeric|min:1|max:50000|nullable',
-            'item.date' => 'string|nullable',
+            'item.name' => 'max:100',
+            'item.square' => 'max:100',
+            'item.elevation' => 'max:100',
+            'item.type' => 'max:100',
+            'item.stratum' => 'max:100',
+            'item.cross_ref' => 'max:100',            
         ];
     }
 }

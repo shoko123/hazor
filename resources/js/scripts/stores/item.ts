@@ -70,13 +70,13 @@ export const useItemStore = defineStore('item', () => {
       .catch((err) => {
         showSnackbar("Failed to delete item!", 'red')
         showSpinner(false)
-        console.log(`media.dstroy failed! err:\n ${JSON.stringify(err, null, 2)}`)
-        throw (`Media upload failed err: ${JSON.stringify(err, null, 2)}`)
+        console.log(`Destroy failed! err:\n ${JSON.stringify(err, null, 2)}`)
+        throw (`${current.value.module} item.destroy() failed`)
       })
 
     showSnackbar("Item deleted successfully")
     showSpinner(false)
-    console.log(`item.destroy() success!`)
+    console.log(`${current.value.module}item.destroy() success!`)
     const newLength = removeItemFromArrayById(fields.value.id)
 
     //go to 'previous' url_id or to module.home (if array.length is 1)

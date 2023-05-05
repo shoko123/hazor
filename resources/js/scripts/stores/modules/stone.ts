@@ -1,10 +1,10 @@
-// stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { TStoneFields, TStoneFieldsToStore } from '@/js/types/moduleFieldsTypes'
 
 export const useStoneStore = defineStore('stone', () => {
-  let all = ref<TStoneFields>({
+
+  const base: TStoneFields = {
     id: 0,
     base_type_id: 0,
     material_id: 0,
@@ -17,7 +17,9 @@ export const useStoneStore = defineStore('stone', () => {
     material: "",
     details: "",
     dimensions: "",
-  })
+  }
+
+  let all = ref<TStoneFields>(base)
 
   const storeFields = computed<TStoneFieldsToStore>(() => {
     return {
@@ -37,20 +39,18 @@ export const useStoneStore = defineStore('stone', () => {
     return url_id
   }
 
-  function prepareForUpdate(current: TStoneFields): void {
-    console.log(`stone.prepareForUpdate:  ${JSON.stringify(current, null, 2)}`)
-    all.value = { ...current }
+  function prepareForNew(isCreate: boolean, current: TStoneFields): void {
+    console.log(`stone.prepareForNew() isCreate: ${isCreate}  current${JSON.stringify(current, null, 2)}`)
+    if (isCreate) {
+      all.value = { ...base }
+    } else {
+      all.value = { ...current }
+    }
   }
-
-  function prepareForCreate(): void {
-
-  }
-
   return {
     all,
     storeFields,
     tagFromUrlId,
-    prepareForCreate,
-    prepareForUpdate
+    prepareForNew
   }
 })

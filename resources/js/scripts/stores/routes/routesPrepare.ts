@@ -92,6 +92,11 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
         case 'item.prepareForUpdate':
           prepareForUpdate(to.module)
           break
+
+          case 'item.prepareForCreate':
+            prepareForCreate(to.module)
+            break  
+                    
         default:
           console.log(`PrepareForNewRoute() Bad Action: ${x}`)
           throw 'RoutingBadActionError'
@@ -204,22 +209,66 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
   function prepareForUpdate(module: TModule): void {
+    prepareForNew(false, module)
+    // let store = null
+    // console.log(`routesPrepare.prepareForUpdate(module: ${module})`)
+    // switch (module) {
+    //   case 'Locus':
+    //     store = useLocusStore()
+    //     store.prepareForUpdate(<TLocusFields>i.fields)
+    //     break
+
+    //   case 'Stone':
+    //     store = useStoneStore()
+    //     store.prepareForUpdate(<TStoneFields>i.fields)
+    //     break
+
+    //   case 'Fauna':
+    //     store = useFaunaStore()
+    //     store.prepareForUpdate(<TFaunaFields>i.fields)
+    //     break
+    // }
+  }
+
+  function prepareForCreate(module: TModule): void {
+    prepareForNew(true, module)
+    // let store = null
+    // console.log(`routesPrepare.prepareForCreate(module: ${module})`)
+    // switch (module) {
+    //   case 'Locus':
+    //     store = useLocusStore()
+    //     store.prepareForCreate()
+    //     break
+
+    //   case 'Stone':
+    //     store = useStoneStore()
+    //     store.prepareForCreate()
+    //     break
+
+    //   case 'Fauna':
+    //     store = useFaunaStore()
+    //     store.prepareForCreate()
+    //     break
+    // }
+  }
+
+  function prepareForNew(isCreate: boolean, module: TModule): void {
     let store = null
-    console.log(`routesPrepare.prepareForUpdate(module: ${module})`)
+    console.log(`routesPrepare.prepareForCreate(module: ${module})`)
     switch (module) {
       case 'Locus':
         store = useLocusStore()
-        store.prepareForUpdate(<TLocusFields>i.fields)
+        store.prepareForNew(isCreate, <TLocusFields>i.fields)
         break
 
       case 'Stone':
         store = useStoneStore()
-        store.prepareForUpdate(<TStoneFields>i.fields)
+        store.prepareForNew(isCreate, <TStoneFields>i.fields)
         break
 
       case 'Fauna':
         store = useFaunaStore()
-        store.prepareForUpdate(<TFaunaFields>i.fields)
+        store.prepareForNew(isCreate, <TFaunaFields>i.fields)
         break
     }
   }

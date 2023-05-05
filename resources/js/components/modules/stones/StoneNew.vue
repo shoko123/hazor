@@ -10,7 +10,8 @@
     </v-row>
 
     <v-row wrap no-gutters>
-      <v-text-field label="Provenience notes" v-model="prov_notes" :error-messages="provErrors" rows="1" class="mr-1" auto-grow>
+      <v-text-field label="Provenience notes" v-model="prov_notes" :error-messages="provErrors" rows="1" class="mr-1"
+        auto-grow>
       </v-text-field>
       <v-text-field label="Material" v-model="material" class="mr-1" filled> </v-text-field>
       <v-text-field label="Type" v-model="type" class="mr-1" filled> </v-text-field>
@@ -39,22 +40,13 @@ import { useRouter } from 'vue-router'
 import { useItemNewStore } from '../../../scripts/stores/itemNew'
 import { useStoneStore } from '../../../scripts/stores/modules/stone'
 
+const props = defineProps<{
+  isCreate: boolean
+}>()
+
+
 let router = useRouter()
 let { storeFields, all } = storeToRefs(useStoneStore())
-
-let ns = reactive({
-  id: 2,
-  type: "",
-  area: "XX",
-  date: "",
-  basket: "",
-  locus: "",
-  prov_notes: "",
-  material: "",
-  dimensions: "",
-  details: ""
-})
-
 
 const rules = computed(() => {
   return {
@@ -69,7 +61,7 @@ const rules = computed(() => {
     dimensions: {},
   }
 })
-const v$ = useVuelidate(rules, storeFields.value);
+const v$ = useVuelidate(rules, all.value);
 
 const area = computed({
   get: () => { return storeFields.value.area },
@@ -149,21 +141,24 @@ const dimensionsErrors = computed(() => {
   return <string[]>v$.value.dimensions.$errors.map(x => x.$message)
 });
 
- async function submit() {
+async function submit() {
   // vuelidate validation
   v$.value.$validate();
 
-
-  // if success
-  if (!v$.value.$error) {
-    //alert("Form Successfully Submitted!")
-    const store = useItemNewStore()
-    await store.upload(true, storeFields.value, all.value.id)
-    router.go(-1)
-  } else {
+  if (v$.value.$error) {
     console.log(`validation errors: ${JSON.stringify(v$.value.$errors, null, 2)}`)
+    return
   }
-};
+
+  //alert("Form Successfully Submitted!")
+  const store = useItemNewStore()
+  const res = await store.upload(props.isCreate, storeFields.value, all.value.id)
+  if (props.isCreate) {
+    router.push({ name: 'show', params: { module: 'stones', url_id: res.id } })
+  } else {
+    router.go(-1)
+  }
+}
 
 const cancel = () => {
   console.log(`cancel`)
