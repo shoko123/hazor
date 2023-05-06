@@ -32,39 +32,23 @@ export const useFaunaStore = defineStore('fauna', () => {
     element_id: ""
   }
 
-  let all = ref<TFaunaFields>(base)
-
-  const storeFields = computed<TFaunaFieldsToStore>(() => {
-    return {
-    label: all.value.label,
-    area: all.value.area,
-    locus: all.value.locus,
-    basket: all.value.basket,
-    item_category: all.value.item_category,
-    biological_taxonomy: all.value.biological_taxonomy,
-    has_taxonomic_identifier: all.value.has_taxonomic_identifier,
-    has_anatomical_identifier: all.value.has_anatomical_identifier,
-    stratum: all.value.stratum,
-    taxon: all.value.taxon,
-    element: all.value.element,
-    fragment_present: all.value.fragment_present,
-    bone_number: all.value.bone_number,
-    snippet: all.value.snippet,
-    }
-  })
+  let fields = ref<TFaunaFields>(base)
 
   function prepareForNew(isCreate: boolean, current: TFaunaFields): void {
     console.log(`locus.prepareForNew() isCreate: ${isCreate}  current${JSON.stringify(current, null, 2)}`)
     if (isCreate) {
-      all.value = { ...base }
+      fields.value = base
     } else {
-      all.value = { ...current }
+      fields.value = current 
     }
   }
-
+  
+  function clear(){
+    fields.value = base
+  }
   return {
-    all,
-    storeFields,
+    fields,
+    clear,
     tagFromUrlId,
     prepareForNew
   }

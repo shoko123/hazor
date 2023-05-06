@@ -3,31 +3,42 @@
     <v-card class="elevation-12">
       <v-card-title id="title" class="grey py-0 mb-4">{{ title }}</v-card-title>
       <v-card-text>
-        <component :is="module" :isCreate=props.isCreate></component>
+        <component :is="module" :isCreate=props.isCreate>
+          <template #data="{ v$, data, id }">
+            <v-btn @click="submit(v$, data, id)" variant="outlined">Submit</v-btn>
+            <v-btn @click="cancel" variant="outlined" class="'ml-2">Cancel</v-btn>
+          </template>
+        </component>
       </v-card-text>
     </v-card>
   </v-container>
 </template>
 
 <script lang="ts" setup>
+
 import type { Component } from 'vue'
-import { computed, onMounted } from 'vue'
+import type { Validation } from "@vuelidate/core"
+import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
+import { useItemNewStore } from '../../scripts/stores/itemNew'
+import { TFieldsToStore } from '@/js/types/moduleFieldsTypes'
+import { useNotificationsStore } from '../../scripts/stores/notifications'
 import StoneNew from '../modules/stones/StoneNew.vue'
 import FaunaNew from '../modules/fauna/FaunaNew.vue'
 import LocusNew from '../modules/loci/LocusNew.vue'
+
+
+let router = useRouter()
+
+let { showSnackbar } = useNotificationsStore()
 
 const props = defineProps<{
   isCreate: boolean
 }>()
 
-
 let { current } = storeToRefs(useRoutesMainStore())
-
-onMounted(() => {
-  //console.log(`CreateUpdate.props: ${JSON.stringify(props, null, 2)}`)
-})
 
 const title = computed(() => {
   return props.isCreate ? "Create" : "Update"
@@ -46,6 +57,34 @@ const module = computed<Component>(() => {
   }
 })
 
+
+async function submit(v$: Validation, data: TFieldsToStore, id?: number) {
+  console.log(`CreateUpdate.submit() data: ${JSON.stringify(data, null, 2)}`)
+
+  // vuelidate validation
+  await v$.$validate();
+
+  if (v$.$error || v$.$silentErrors.length > 0) {
+    showSnackbar("Please correct the marked errors!", "orange")
+    console.log(`validation errors: ${JSON.stringify(v$.$errors, null, 2)}`)
+    console.log(`validation silent errors: ${JSON.stringify(v$.$silentErrors, null, 2)}`)    
+    return
+  }
+
+  //alert("Form Successfully Submitted!")
+  const store = useItemNewStore()
+  const res = await store.upload(props.isCreate, data, id)
+  if (props.isCreate) {
+    router.push({ name: 'show', params: { module: current.value.url_module, url_id: res.id } })
+  } else {
+    router.go(-1)
+  }
+}
+
+const cancel = () => {
+  console.log(`cancel`)
+  router.go(-1)
+}
 
 </script>
 <style scoped>

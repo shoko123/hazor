@@ -19,44 +19,31 @@
       </v-text-field>
     </v-row>
 
-    <v-row>
-      <v-btn @click="submit" variant="outlined">Submit</v-btn>
-      <v-btn @click="cancel" variant="outlined">Cancel</v-btn>
-    </v-row>
+    <slot name="data" v-bind:v$=v$ v-bind:data=data v-bind:id=fields.id></slot>
   </v-container>
 </template>
 
 <script lang="ts" setup>
-import { useVuelidate } from "@vuelidate/core";
-import { required, between, minLength, sameAs, maxLength } from "@vuelidate/validators";
 import { onMounted, reactive, computed } from "vue";
 import { storeToRefs } from 'pinia'
-import { TLocusFieldsToStore } from '@/js/types/moduleFieldsTypes'
-import { useRouter } from 'vue-router'
-import { useItemNewStore } from '../../../scripts/stores/itemNew'
-import { useLocusStore } from '../../../scripts/stores/modules/locus'
-import { useNotificationsStore } from '../../../scripts/stores/notifications'
+import { useVuelidate } from "@vuelidate/core";
+import { required, minLength, maxLength } from "@vuelidate/validators";
 
-const props = defineProps<{
-  isCreate: boolean
-}>()
+import { TLocusFieldsToStore } from '@/js/types/moduleFieldsTypes'
+import { useLocusStore } from '../../../scripts/stores/modules/locus'
 
 onMounted(() => {
-  if (!props.isCreate) {
-    data.area = fields.value.area
-    data.name = fields.value.name
-    data.square = fields.value.square
-    data.elevation = fields.value.elevation
-    data.type = fields.value.type
-    data.stratum = fields.value.stratum
-    data.cross_ref = fields.value.cross_ref
-  }
+  data.area = fields.value.area
+  data.name = fields.value.name
+  data.square = fields.value.square
+  data.elevation = fields.value.elevation
+  data.type = fields.value.type
+  data.stratum = fields.value.stratum
+  data.cross_ref = fields.value.cross_ref
   console.log(`LocusNew.Mount fields: ${JSON.stringify(data, null, 2)}`)
 })
 
-let router = useRouter()
 let { fields } = storeToRefs(useLocusStore())
-let { showSnackbar } = useNotificationsStore()
 
 const data: TLocusFieldsToStore = reactive({
   area: "",
@@ -109,29 +96,4 @@ const stratumErrors = computed(() => {
 const cross_refErrors = computed(() => {
   return <string>(v$.value.cross_ref.$error ? v$.value.cross_ref.$errors[0].$message : undefined)
 })
-
-async function submit() {
-  // vuelidate validation
-  v$.value.$validate();
-
-  if (v$.value.$error) {
-    showSnackbar("Please correct the marked errors!", "orange")
-    console.log(`validation errors: ${JSON.stringify(v$.value.$errors, null, 2)}`)
-    return
-  }
-
-  //alert("Form Successfully Submitted!")
-  const store = useItemNewStore()
-  const res = await store.upload(props.isCreate, data, fields.value.id)
-  if (props.isCreate) {
-    router.push({ name: 'show', params: { module: 'loci', url_id: res.id } })
-  } else {
-    router.go(-1)
-  }
-}
-
-const cancel = () => {
-  console.log(`cancel`)
-  router.go(-1)
-}
 </script>

@@ -1,19 +1,19 @@
 <template>
   <v-container v-if="item" fluid class="pa-1 ma-0">
     <v-row wrap no-gutters>
-      <v-text-field v-model="item.id" label="ID" rows="1" class="mr-1 mt-1" auto-grow readonly filled>
+      <v-text-field label="ID" v-model="item.id" class="mr-1 mt-1" readonly filled>
       </v-text-field>
 
-      <v-text-field label="Label" v-model="item.label" v-show="item.label" class="mr-1" auto-grow readonly filled>
+      <v-text-field label="Label" v-model="item.label" class="mr-1" readonly filled>
       </v-text-field>
 
-      <v-text-field label="Area" v-model="item.area" v-show="item.area" class="mr-1" filled>
+      <v-text-field label="Area" v-model="item.area" class="mr-1" readonly filled>
       </v-text-field>
 
-      <v-text-field label="Locus" v-model="item.locus" v-show="item.locus" class="mr-1" filled>
+      <v-text-field label="Locus" v-model="item.locus" class="mr-1" readonly filled>
       </v-text-field>
 
-      <v-text-field label="Basket" v-model="item.basket" v-show="item.basket" class="mr-1" filled>
+      <v-text-field label="Basket" v-model="item.basket" class="mr-1" readonly filled>
       </v-text-field>
 
     </v-row>
