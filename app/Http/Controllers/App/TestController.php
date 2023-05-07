@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\App\DigModel;
+use App\Models\DigModels\Stone;
 use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
 
 class TestController extends Controller
@@ -26,6 +27,23 @@ class TestController extends Controller
 
     public function status(Request $r)
     {
+
+        $stones = Stone::all();
+
+        foreach ($stones as $r) {
+            if (true) {   
+                    //do something
+                }
+            } 
+
+        return response()->json([
+            "msg" => "Date done!",
+        ], 200);
+
+
+
+
+
         $media = SpatieMedia::whereIn('id', array(1, 2, 3))->get();
         $tables = ['loci', 'fauna'];
         $totals = [];
