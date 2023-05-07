@@ -25,19 +25,23 @@ return new class extends Migration
 
         Schema::create('stones', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('area_orig', 50)->nullable();
+            $table->string('area', 50)->nullable();
+            $table->string('locus_orig', 50)->nullable();
+            $table->string('locus', 50)->nullable();
+            $table->string('basket_orig', 50)->nullable();
+            $table->string('basket', 50)->nullable();
+            $table->string('date_orig', 50)->nullable();
+            $table->string('date', 50)->nullable();
+            $table->unsignedInteger('year')->nullable();
+            $table->string('prov_notes', 70)->nullable();
+            $table->string('type', 50)->nullable();
+            $table->string('material', 50)->nullable();
+            $table->string('dimensions', 250)->nullable();
+            $table->string('details', 250)->nullable();
             $table->unsignedInteger('material_id')->default(1);
             $table->unsignedInteger('base_type_id')->default(1);
-            $table->string('type', 50)->nullable();
-            $table->string('area', 50)->nullable();
-            $table->string('date', 50)->nullable();
-            $table->string('basket', 50)->nullable();
-            $table->string('locus', 50)->nullable();
-            $table->string('prov_notes', 70)->nullable();
-            $table->string('material', 50)->nullable();
-            $table->string('dimensions', 100)->nullable();
-            $table->string('details')->nullable();
-
-
+            $table->unsignedInteger('order_column')->nullable();            
             $table->foreign('base_type_id')
                 ->references('id')->on('stone_base_types')
                 ->onUpdate('cascade');

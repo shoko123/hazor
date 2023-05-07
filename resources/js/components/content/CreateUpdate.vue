@@ -6,7 +6,7 @@
         <component :is="module" :isCreate=props.isCreate>
           <template #data="{ v$, data, id }">
             <v-btn @click="submit(v$, data, id)" variant="outlined">Submit</v-btn>
-            <v-btn @click="cancel" variant="outlined" class="'ml-2">Cancel</v-btn>
+            <v-btn @click="cancel" variant="outlined" class="ml-1">Cancel</v-btn>
           </template>
         </component>
       </v-card-text>
