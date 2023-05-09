@@ -53,8 +53,8 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
                 extra.value.pageNoB1 = pageNoB1
                 extra.value.viewIndex = extra.value.views.indexOf(view)
                 let slice = array.value.slice(start, start + ipp)
-               
-                savePage(slice, view, module)              
+
+                savePage(slice, view, module)
                 return true
 
             case 'Image':
@@ -114,12 +114,12 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
                 page.value = <TPageCMainVTable[]>toSave
                 break;
 
-                case 'Chip':
+            case 'Chip':
 
-                
-                    toSave = (<TPageVChip[]>apiPage).map(x => { return { id: x.id, url_id: x.url_id, tag: x.url_id } })
-                    page.value = <TPageVChip[]>toSave
-                    break;                
+
+                toSave = (<TPageVChip[]>apiPage).map(x => { return { id: x.id, url_id: x.url_id, tag: x.url_id } })
+                page.value = <TPageVChip[]>toSave
+                break;
         }
         //console.log(`main.savePage() length: ${toSave.length}`)
     }
@@ -135,15 +135,23 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         return page.value.some((x) => (<TPageCMainVImage>x).id === id)
     }
 
-    function itemByIndex(index: number) : TApiArray {
+    function itemByIndex(index: number): TApiArray {
         return array.value[index]
 
     }
-    function removeItemFromArrayById(id: number) : number {
-            const newArray = array.value.filter(x => x.id !== id)
-            array.value = newArray
-            return newArray.length
+    function removeItemFromArrayById(id: number): number {
+        const newArray = array.value.filter(x => x.id !== id)
+        array.value = newArray
+        extra.value.length--
+        return newArray.length
     }
+
+    function pushToArray(arrayItem: TApiArrayMain): number {
+        array.value.push(arrayItem)
+        extra.value.length++
+        return array.value.length
+    }
+
     function clear() {
         array.value = []
         page.value = []
@@ -163,6 +171,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         itemIsInPage,
         itemByIndex,
         removeItemFromArrayById,
+        pushToArray,
         clear,
     }
 })

@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { TMedia } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/routesTypes'
-import { TApiArray, TApiMediaOrNull, TApiPageMedia } from '@/js/types/collectionTypes'
+import { TApiArray, TApiArrayMedia, TApiMediaOrNull, TApiPageMedia } from '@/js/types/collectionTypes'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
@@ -170,7 +170,7 @@ export const useMediaStore = defineStore('media', () => {
       })
   }
 
-  function setItemMedia(array: TApiArray[], page: TApiPageMedia[], media1: TApiMediaOrNull) {
+  function setItemMedia(array: TApiArrayMedia[], page: TApiPageMedia[], media1: TApiMediaOrNull) {
     let i = useItemStore()
     let c = useCollectionsStore()
     let cm = useCollectionMediaStore()

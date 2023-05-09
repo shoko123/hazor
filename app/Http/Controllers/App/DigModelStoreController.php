@@ -13,9 +13,10 @@ class DigModelStoreController extends Controller
         $validated = $r->validated();
         $item = $m->store($validated["id"], $validated["item"], $r->isMethod('put'));
 
-        return response()->json([
-            "msg" => "ModelStoreController.store()",
-            "item" => $item,
-        ], 200);
+        $resp = array_merge($item, [
+            "msg" => "ModelControler.store()",
+        ]);
+
+        return response()->json($resp, 200);
     }
 }

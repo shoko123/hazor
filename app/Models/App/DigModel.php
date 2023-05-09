@@ -42,7 +42,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
     public function index($queryParams)
     {
         $builder = $this->indexSelect();
-        $collection = $builder->get();
+        $collection = $builder->take(30)->get();
         return $collection;
     }
 
@@ -102,7 +102,14 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         unset($item->global_tags);
         unset($item->model_tags);
 
-        return ["fields" => $item, "media1" => $media1, "mediaPage" => $mediaPage, "mediaArray" => $mediaArray,  "global_tags" => $global_tags, "model_tags" => $model_tags];
+        return [
+            "fields" => $item,
+            "media1" => $media1,
+            "mediaPage" => $mediaPage,
+            "mediaArray" => $mediaArray,
+            "global_tags" => $global_tags,
+            "model_tags" => $model_tags
+        ];
     }
 
     public function carousel($id)
@@ -141,7 +148,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
     public function store(int $id, array $new_item, bool $methodIsPut)
     {
 
-        if ($methodIsPut) { 
+        if ($methodIsPut) {
             $item = self::findOrFail($id);
         } else {
             $modelName = "App\Models\DigModels\\" . $this->eloquent_model_name;
@@ -154,6 +161,23 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         }
 
         $item->save();
-        return $item;
-    }    
+
+        if ($methodIsPut) {
+            return [
+                "fields" => $item,
+                "url_id" => $this->getUrlIdFromId($item->id)
+            ];
+        } else {
+            return [
+                "fields" => $item,
+                "media" => [],
+                "media1" => null,
+                "mediaPage" => [],
+                "mediaArray" => [],
+                "model_tags" => [],
+                "global_tags" => [],
+                "url_id" => $this->getUrlIdFromId($item->id)
+            ];
+        }
+    }
 }

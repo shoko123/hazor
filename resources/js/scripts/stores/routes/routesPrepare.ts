@@ -168,10 +168,8 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     try {
       let res = await xhr.send('model/show', 'post', { model: to.module, url_id: to.url_id })
       //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
-      i.fields = res.data.fields
-      i.url_id = res.data.url_id
-      i.tag = m.tagFromUrlId(to.module, res.data.url_id)
-      setItemMedia(res.data.mediaArray, res.data.mediaPage, res.data.media1)
+
+      i.saveItem(res.data)
       n.showSpinner(false)
       return true
 
@@ -210,46 +208,10 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
   function prepareForUpdate(module: TModule): void {
     prepareForNew(false, module)
-    // let store = null
-    // console.log(`routesPrepare.prepareForUpdate(module: ${module})`)
-    // switch (module) {
-    //   case 'Locus':
-    //     store = useLocusStore()
-    //     store.prepareForUpdate(<TLocusFields>i.fields)
-    //     break
-
-    //   case 'Stone':
-    //     store = useStoneStore()
-    //     store.prepareForUpdate(<TStoneFields>i.fields)
-    //     break
-
-    //   case 'Fauna':
-    //     store = useFaunaStore()
-    //     store.prepareForUpdate(<TFaunaFields>i.fields)
-    //     break
-    // }
   }
 
   function prepareForCreate(module: TModule): void {
     prepareForNew(true, module)
-    // let store = null
-    // console.log(`routesPrepare.prepareForCreate(module: ${module})`)
-    // switch (module) {
-    //   case 'Locus':
-    //     store = useLocusStore()
-    //     store.prepareForCreate()
-    //     break
-
-    //   case 'Stone':
-    //     store = useStoneStore()
-    //     store.prepareForCreate()
-    //     break
-
-    //   case 'Fauna':
-    //     store = useFaunaStore()
-    //     store.prepareForCreate()
-    //     break
-    // }
   }
 
   function prepareForNew(isCreate: boolean, module: TModule): void {

@@ -84,7 +84,8 @@ type TFaunaFieldsToStore = {
         snippet: string
 }
 
-type TFields = TLocusFields | TStoneFields | TFaunaFields
+type TFakeModuleFields = TItemMandatoryFields
+type TFields = TLocusFields | TStoneFields | TFaunaFields | TFakeModuleFields
 type TFieldsToStore = TStoneFieldsToStore | TLocusFieldsToStore | TFaunaFieldsToStore
 export {
         TItemMandatoryFields,

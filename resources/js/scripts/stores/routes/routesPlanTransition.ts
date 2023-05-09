@@ -113,10 +113,10 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                         return { success: true, data: ['item.load', 'item.setIndexInCollection'] }
 
                     case 'create':
-                        return { success: true, data: ['item.load'] }
+                        return { success: true, data: [] }
 
                     case 'update':
-                        return { success: true, data: ['item.load'] }
+                        return { success: true, data: [] }
 
                     case 'tags':
                         return { success: true, data: [] }

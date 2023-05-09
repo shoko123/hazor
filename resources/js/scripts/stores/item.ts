@@ -1,20 +1,27 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { TItemMandatoryFields } from '@/js/types/moduleFieldsTypes'
+import { TFields, TFieldsToStore} from '@/js/types/moduleFieldsTypes'
 import { TMedia } from '@/js/types/mediaTypes'
+import { TApiItemShow, TApiItemUpdate } from '@/js/types/itemTypes'
 import { TApiArrayMedia, TApiArrayMain } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections/collections'
 import { useCollectionMainStore } from './collections/collectionMain'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
+import { useModuleStore } from './module'
+import { useMediaStore } from './media'
 import { useNotificationsStore } from './notifications'
-export const useItemStore = defineStore('item', () => {
 
+export const useItemStore = defineStore('item', () => {
+  const { pushToArray } = useCollectionMainStore()
   const { current } = storeToRefs(useRoutesMainStore())
   const { collection, itemByIndex, itemIndexById, next } = useCollectionsStore()
-
-  let fields = ref<TItemMandatoryFields>({ id: -1 })
+  const { tagFromUrlId } = useModuleStore()
+  const { setItemMedia } = useMediaStore()
+  const { send } = useXhrStore()
+  const  { showSnackbar, showSpinner } = useNotificationsStore()  
+  let fields = ref<TFields>({ id: -1 })
   let url_id = ref<string | undefined>(undefined)
   let tag = ref<string | undefined>(undefined)
   let media1 = ref<TMedia>({ hasMedia: false, urls: { full: '', tn: '' } })
@@ -23,7 +30,7 @@ export const useItemStore = defineStore('item', () => {
   const itemIndex = ref<number>(-1)
 
   const id = computed(() => {
-    return typeof fields.value === 'undefined' ? -1 : (<TItemMandatoryFields>fields.value).id
+    return typeof fields.value === 'undefined' ? -1 : (<TFields>fields.value).id
   })
 
 
@@ -38,7 +45,13 @@ export const useItemStore = defineStore('item', () => {
     return { module: 'XXX', url_id: current.value.url_id }
   })
 
-
+  function saveItem(apiItem: TApiItemShow) {
+    //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
+    fields.value = apiItem.fields
+    url_id.value = apiItem.url_id
+    tag.value = tagFromUrlId(current.value.module, apiItem.url_id)
+    setItemMedia(apiItem.mediaArray, apiItem.mediaPage, apiItem.media1)
+}
   function itemClear(index: number) {
     itemIndex.value = -1
     fields.value = { id: -1 }
@@ -59,14 +72,39 @@ export const useItemStore = defineStore('item', () => {
     return mainArrayItem.url_id
   }
 
+  async function upload(isCreate: boolean, newFields: TFieldsToStore, id?: number) {
+    console.log(`item.upload isCreate: ${isCreate}, module: ${current.value.module}, fields: ${JSON.stringify(fields, null, 2)}`)
+    let res = await send('model/store', isCreate ? 'post' : 'put', { model: current.value.module, item: newFields, id })
+      .catch(err => {
+        showSnackbar(`model.store failed! Please try later!`)
+        console.log(`model.store  failed. err: ${JSON.stringify(err, null, 2)}`)
+        throw err
+      })
+
+
+    
+
+    if (isCreate) {
+      saveItem(res.data)
+      let newIndex = pushToArray({ "id": res.data.fields.id, "url_id": res.data.url_id })
+      itemIndex.value = newIndex
+    } else {
+      fields.value = res.data.fields
+    url_id.value = res.data.url_id
+    }
+    console.log(`model.store() returned (success) ${JSON.stringify(res.data, null, 2)}`)
+    showSnackbar(`${current.value.module} ${isCreate ? "created" : "updated"} successfully! redirecting to item`)
+    return res.data
+  }
+
   async function destroy(): Promise<string | null> {
-    const xhr = useXhrStore()
-    let { showSnackbar, showSpinner } = useNotificationsStore()
+    
+  
     const { removeItemFromArrayById } = useCollectionMainStore()
     const prev = next('main', itemIndexById(fields.value.id), false)
 
     showSpinner('Accessing DB to delete record')
-    await xhr.send("model/destroy", 'post', { model: current.value.module, id: fields.value.id })
+    await send("model/destroy", 'post', { model: current.value.module, id: fields.value.id })
       .catch((err) => {
         showSnackbar("Failed to delete item!", 'red')
         showSpinner(false)
@@ -100,6 +138,8 @@ export const useItemStore = defineStore('item', () => {
     itemClear,
     itemViewIndex,
     setItemViewIndex,
+    saveItem,
+    upload,
     destroy
   }
 })

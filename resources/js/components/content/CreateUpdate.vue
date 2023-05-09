@@ -22,7 +22,7 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
-import { useItemNewStore } from '../../scripts/stores/itemNew'
+import { useItemStore } from '../../scripts/stores/item'
 import { TFieldsToStore } from '@/js/types/moduleFieldsTypes'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 import StoneNew from '../modules/stones/StoneNew.vue'
@@ -33,7 +33,7 @@ import LocusNew from '../modules/loci/LocusNew.vue'
 let router = useRouter()
 
 let { showSnackbar } = useNotificationsStore()
-
+let { upload } = useItemStore()
 const props = defineProps<{
   isCreate: boolean
 }>()
@@ -67,17 +67,20 @@ async function submit(v$: Validation, data: TFieldsToStore, id?: number) {
   if (v$.$error || v$.$silentErrors.length > 0) {
     showSnackbar("Please correct the marked errors!", "orange")
     console.log(`validation errors: ${JSON.stringify(v$.$errors, null, 2)}`)
-    console.log(`validation silent errors: ${JSON.stringify(v$.$silentErrors, null, 2)}`)    
+    console.log(`validation silent errors: ${JSON.stringify(v$.$silentErrors, null, 2)}`)
     return
   }
 
   //alert("Form Successfully Submitted!")
-  const store = useItemNewStore()
-  const res = await store.upload(props.isCreate, data, id)
+ 
+  const res = await upload(props.isCreate, data, id).catch(err => {
+    console.log(`CreateUpdate.upload(error) - return`)
+  })
+  console.log(`CreateUpdate.after upload() res: ${JSON.stringify(res, null, 2)}`)
   if (props.isCreate) {
-    router.push({ name: 'show', params: { module: current.value.url_module, url_id: res.id } })
+    router.push({ name: 'show', params: { module: current.value.url_module, url_id: res.url_id } })
   } else {
-    router.go(-1)
+    router.push({ name: 'show', params: { module: current.value.url_module, url_id: current.value.url_id } })
   }
 }
 
