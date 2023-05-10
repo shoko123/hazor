@@ -27,21 +27,21 @@ class TestController extends Controller
 
     public function status(Request $r)
     {
-        $formatted = [];
-
-        $stones = Stone::select('id', 'date_orig', 'date', 'year')->get();
+        $updated = [];
+        $stones = Stone::select('id', 'area', 'area_orig', 'edit_notes')
+        //->whereIn('area_orig', ['- (no tag)'])->get();
+        ->whereNull('area')->get();      
         foreach ($stones as $r) {
-            if (is_numeric($r->date_orig)) {
-                $r->year = intval($r->date_orig);
+                $r->area = 'XX';
+                //$r->edit_notes = 'Original Area('. $r->area_orig . ') ';
                 $r->save();
-                array_push($formatted, $r);
-            }
+                array_push($updated, $r);
         }
 
         return response()->json([
-            "msg" => "copied years",
-            "formatted" => $formatted,
-            "cnt" => count($formatted)
+            "msg" => "update completed!",
+            "updated" => $updated,
+            "cnt" => count($updated)
         ], 200);
 
 

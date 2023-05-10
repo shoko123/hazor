@@ -4,6 +4,7 @@ namespace App\Models\ModelGroup;
 
 use App\Models\Interfaces\ModelGroupInterface;
 use App\Models\ModelGroup\ModelGroup;
+
 require_once 'global_tag_groups.php';
 
 class StoneGroup extends ModelGroup implements ModelGroupInterface
@@ -85,7 +86,7 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
     public function __construct()
     {
         ModelGroup::__construct('Stone');
-        self::$groups = array_merge(self::$model_groups, globalGroups());        
+        self::$groups = array_merge(self::$model_groups, globalGroups());
     }
 
     public static function getModelGroups(): array
@@ -98,7 +99,7 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
         return array_keys(self::$groups);
     }
 
-   
+
 
     public function trio(): array
     {
@@ -107,13 +108,38 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
                 ["Areas"],
             ],
             "Periods" => [
-                ["Periods (Top-Level)", "Neolithic Subperiods", "Bronze Subperiods"],
+                [
+                    "Periods (Top-Level)",
+                    "Neolithic Subperiods",
+                    "Bronze Subperiods",
+                    "Iron Subperiods",
+                    "Hellenistic Subperiods",
+                    "Roman Subperiods",
+                    "Early-Islamic Subperiods",
+                    "Medieval Subperiods",
+                    "Modern Subperiods"
+                ],
             ],
             "Basic Charectaristics" => [
-                ["Material", "Life Stage", "Morphology", "Profile", "Production", "Basic Typology"]
+                [
+                    "Material",
+                    "Life Stage",
+                    "Morphology",
+                    "Profile",
+                    "Production",
+                    "Basic Typology"
+                ]
             ],
             "Typology" => [
-                ["Passive Subtype", "Active Subtype", "Vessel Part", "Vessel Base", "Vessel Wall", "Vessel Rim", "Non-Processor Subtype"],
+                [
+                    "Passive Subtype",
+                    "Active Subtype",
+                    "Vessel Part",
+                    "Vessel Base",
+                    "Vessel Wall",
+                    "Vessel Rim",
+                    "Non-Processor Subtype"
+                ],
             ]
         ];
 

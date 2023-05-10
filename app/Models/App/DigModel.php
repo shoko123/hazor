@@ -42,7 +42,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
     public function index($queryParams)
     {
         $builder = $this->indexSelect();
-        $collection = $builder->take(30)->get();
+        $collection = $builder->get();
         return $collection;
     }
 

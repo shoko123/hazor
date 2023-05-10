@@ -29,7 +29,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let t = useTrioStore();
   let i = useItemStore();
   let r = useRoutesMainStore()
-  let { setItemMedia } = useMediaStore()
 
   async function prepareForNewRoute(to: TRouteInfo, from: TRouteInfo, plan: TPlanAction[]): Promise<TPrepareResponse> {
     for (const x of plan) {
@@ -182,7 +181,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
   async function loadPage(firstPage: boolean): Promise<void> {
     console.log(`prepare.loadPage()`)
-    //return await c.loadPageByItemIndex('main', c.mainCollection.meta.view, firstPage ? 0 : i.itemIndex, r.to.module)
     return await c.loadPageByItemIndex('main', c.collection('main').value.meta.view, firstPage ? 0 : i.itemIndex, r.to.module)
   }
 

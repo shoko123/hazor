@@ -11,7 +11,7 @@
 
       <v-tabs v-model="groupIndex">
         <v-tab v-for="(group, index) in groups" :key="index"  color="purple"
-          :class="[group.selectedCount > 0 ? 'has-selected': '', 'no-uppercase']">
+          :class="[group.selectedCount > 0 ? 'has-selected': '', 'text-lowercase']">
           {{ group.selectedCount === 0 ? group.name : `${group.name}(${group.selectedCount})` }}
         </v-tab>
       </v-tabs>
@@ -85,10 +85,6 @@ function paramClicked(paramIndex: number) {
 
 </script>
 <style scoped>
-.no-uppercase {
-  text-transform: none !important;
-}
-
 .has-selected {
   background-color: rgb(212, 235, 244);
   margin: 2px;

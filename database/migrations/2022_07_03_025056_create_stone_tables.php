@@ -39,6 +39,7 @@ return new class extends Migration
             $table->string('material', 50)->nullable();
             $table->string('dimensions', 250)->nullable();
             $table->string('details', 250)->nullable();
+            $table->string('edit_notes', 250)->nullable();
             $table->unsignedInteger('material_id')->default(1);
             $table->unsignedInteger('base_type_id')->default(1);
             $table->unsignedInteger('order_column')->nullable();            
