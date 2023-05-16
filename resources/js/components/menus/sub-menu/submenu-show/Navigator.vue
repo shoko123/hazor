@@ -61,9 +61,6 @@ function next(isRight: boolean) {
 </script>
 
 <style scoped>
-.no-uppercase {
-  text-transform: none;
-}
 
 .min_width {
   min-width: 500px;

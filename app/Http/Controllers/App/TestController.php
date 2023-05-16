@@ -5,50 +5,42 @@ namespace App\Http\Controllers\App;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Models\App\DigModel;
 use App\Models\DigModels\Stone;
+use App\Models\DigModels\Fauna;
 use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
 
 class TestController extends Controller
 {
-    public function test(Request $r, DigModel $m)
+    public function run(Request $r)
     {
-        $res = $m->show(1);
+        if(app()->environment(['production'])) {
+            return response()->json([
+                "msg" => "Test unavailable in production!",
+            ], 403);
+        }
 
-        return response()->json(
-            [
-                "message" => "Hi from test!",
-                "res" => $res
-            ],
-            200
-        );
-    }
-
-    public function status(Request $r)
-    {
         $updated = [];
-        $stones = Stone::select('id', 'area', 'area_orig', 'edit_notes')
+        $res = Fauna::select('id', 'area', 'locus')->where('area', '=', 'Area A23')->get();
         //->whereIn('area_orig', ['- (no tag)'])->get();
-        ->whereNull('area')->get();      
-        foreach ($stones as $r) {
-                $r->area = 'XX';
+        //->whereNull('area')->get();      
+        foreach ($res as $r) {
+                //$r->area = 'XX';
                 //$r->edit_notes = 'Original Area('. $r->area_orig . ') ';
-                $r->save();
+                //$r->save();
                 array_push($updated, $r);
         }
 
         return response()->json([
             "msg" => "update completed!",
+            "cnt" => count($updated),            
             "updated" => $updated,
-            "cnt" => count($updated)
+
         ], 200);
 
 
-        //$stones = Stone::select('id', 'date_orig', 'date', 'year')->where('date_orig', 'LIKE', '%/%')->get();
 
-
-
+        $stones = Stone::select('id', 'area', 'area_orig', 'edit_notes')->whereNull('area')->get();        
         foreach ($stones as $r) {
             $p = explode("/", $r->date_orig);
             $year = "";
@@ -69,21 +61,12 @@ class TestController extends Controller
                 array_push($formatted, $r);
             }
         }
+    }
 
-        return response()->json([
-            "msg" => "Date done!",
-            "formatted" => $formatted,
-            "cnt" => count($formatted)
-        ], 200);
-
-
-
-
-
+    public function status(Request $r)
+    {
         $media = SpatieMedia::whereIn('id', array(1, 2, 3))->get();
-        $tables = ['loci', 'fauna'];
         $totals = [];
-
 
         $m = collect([]);
         foreach ($media as $med) {

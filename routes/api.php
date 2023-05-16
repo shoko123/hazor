@@ -27,6 +27,7 @@ use App\Http\Controllers\Dig\StoneController;
 //open routes
 Route::get('app/init', [AppController::class, 'init']);
 Route::post('test/status', [TestController::class, 'status']);
+Route::post('test/run', [TestController::class, 'run']);
 
 //authentication routes
 Route::post('auth/login', [AuthController::class, 'login']);

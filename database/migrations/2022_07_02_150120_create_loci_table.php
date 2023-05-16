@@ -22,7 +22,7 @@ class CreateLociTable extends Migration
             $table->string('elevation', 20)->nullable();
             $table->string('cross_ref', 130)->nullable();
             $table->string('stratum', 15)->nullable();
-            $table->string('edit_notes', 50)->nullable();
+            $table->string('description', 400)->nullable();
             $table->unsignedSmallInteger('s1_no')->nullable();
             $table->string('s1_ext', 1)->nullable();
             $table->unsignedSmallInteger('s2_no')->nullable();
@@ -31,6 +31,8 @@ class CreateLociTable extends Migration
             $table->unsignedSmallInteger('s4_no')->nullable();
             $table->unsignedSmallInteger('s5_no')->nullable();
             $table->unsignedSmallInteger('s6_no')->nullable();
+
+            $table->unique(['area', 'name']);            
         });
 
         Schema::create('locus_tag_groups', function (Blueprint $table) {
