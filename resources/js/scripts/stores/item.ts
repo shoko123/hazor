@@ -11,14 +11,16 @@ import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useModuleStore } from './module'
 import { useMediaStore } from './media'
+import { useTrioStore } from './trio'
 import { useNotificationsStore } from './notifications'
 
 export const useItemStore = defineStore('item', () => {
   const { pushToArray } = useCollectionMainStore()
-  const { current } = storeToRefs(useRoutesMainStore())
+  const { current, to } = storeToRefs(useRoutesMainStore())
   const { collection, itemByIndex, itemIndexById, next } = useCollectionsStore()
   const { tagFromUrlId } = useModuleStore()
-  const { setItemMedia } = useMediaStore()
+  const { setItemMedia } = useMediaStore() 
+  const { saveItemTags } = useTrioStore()
   const { send } = useXhrStore()
   const  { showSnackbar, showSpinner } = useNotificationsStore()  
   let fields = ref<TFields>({ id: -1 })
@@ -42,16 +44,18 @@ export const useItemStore = defineStore('item', () => {
     itemViewIndex.value = index
   }
   const derived = computed(() => {
-    return { module: 'XXX', url_id: current.value.url_id }
+    return { module: current.value.module, url_id: current.value.url_id }
   })
 
   function saveItem(apiItem: TApiItemShow) {
     //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
     fields.value = apiItem.fields
     url_id.value = apiItem.url_id
-    tag.value = tagFromUrlId(current.value.module, apiItem.url_id)
+    tag.value = tagFromUrlId(to.value.module, apiItem.url_id)
     setItemMedia(apiItem.mediaArray, apiItem.mediaPage, apiItem.media1)
+    saveItemTags(apiItem.model_tags, apiItem.global_tags)
 }
+
   function itemClear(index: number) {
     itemIndex.value = -1
     fields.value = { id: -1 }

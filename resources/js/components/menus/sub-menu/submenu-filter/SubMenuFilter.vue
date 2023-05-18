@@ -15,7 +15,7 @@ import { useRouter } from 'vue-router'
 import { useRoutesParserStore } from '../../../../scripts/stores/routes/routesParser'
 
 let { current } = storeToRefs(useRoutesMainStore())
-let { clearFilters, selectedParamGroups } = useTrioStore()
+let { clearFilters, groupsWithASelectedParam } = useTrioStore()
 const { serializeQueryParams } = useRoutesParserStore()
 const router = useRouter()
 
@@ -25,14 +25,14 @@ const name = computed(() => {
 
 function submit() {
   console.log(`filter.submit()`);
-  let query = serializeQueryParams(selectedParamGroups('Filter'));
+  let query = serializeQueryParams(groupsWithASelectedParam('Filter'));
 
   router.push({ name: 'index', params: { module: current.value.url_module }, query })
 }
 
 async function getCount() {
   console.log(`getCount()`);
-  //let query = serializeQueryParams(selectedParamGroups('Filter'));
+  //let query = serializeQueryParams(groupsWithASelectedParam('Filter'));
   //router.push({ name: 'index', params: { module: current.value.url_module }, query })
 }
 function clear() {

@@ -11,7 +11,7 @@
 
       <v-tabs v-model="groupIndex">
         <v-tab v-for="(group, index) in groups" :key="index"  color="purple"
-          :class="[group.selectedCount > 0 ? 'has-selected': '', 'text-lowercase']">
+          :class="[group.selectedCount > 0 ? 'has-selected': '', 'text-capitalize']">
           {{ group.selectedCount === 0 ? group.name : `${group.name}(${group.selectedCount})` }}
         </v-tab>
       </v-tabs>

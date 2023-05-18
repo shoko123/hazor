@@ -1,7 +1,7 @@
 <template>
 
     <v-btn large rounded slot="activator" @click="openModal()" :disabled="disable"
-      class="purple white--text text-lowercase">{{ tag }}</v-btn>
+      class="purple white--text text-capitalize">{{ tag }}</v-btn>
     <v-dialog v-model="dialog" persistent max-width="600">
       <v-card class="elevation-12">
         <v-card-title class="primary white--text">Pick a {{ moduleName }}</v-card-title>

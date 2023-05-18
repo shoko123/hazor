@@ -1,11 +1,11 @@
 <template>
   <v-card class="elevation-12">
-    <v-card-title id="title" class="grey py-0 mb-4">Selected Filters</v-card-title>
+    <v-card-title id="title" class="grey py-0 mb-4">{{ details.header }}</v-card-title>
     <v-card-text>
-      <div v-if="!trio.length">[ No filters selected ]</div>
+      <div v-if="!trio.length">{{ details.emptyTitle }}</div>
       <v-list v-if="trio.length">
         <v-list-item v-for="cat in trio">
-          <div  class="font-weight-bold">{{ cat.catName}}</div>
+          <div class="font-weight-bold">{{ cat.catName }}</div>
           <v-list-item v-for="group in cat.groups">
             <v-list-item-title>
               <v-container fluid class="pa-0 ma-0">
@@ -33,13 +33,22 @@ const props = defineProps<{
   source: TrioSourceName
 }>()
 
+const details = computed(() => {
+  switch (props.source) {
+    case 'Filter':
+      return { header: `Selected Filters`, emptyTitle: `[ No filters selected ]` }
+
+    case 'Item':
+      return { header: `Tags for Item`, emptyTitle: `[ No tags selected for Item ]` }
+
+    case 'New':
+      return { header: `Selected new tags for Item`, emptyTitle: `[ No tags selected ]` }
+  }
+})
+
 const trio = computed(() => {
   return selectedTrio(props.source)
 })
-
-
-
-
 
 </script>
 <style scoped>
