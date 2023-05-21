@@ -1,7 +1,7 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { TFields, TFieldsToStore} from '@/js/types/moduleFieldsTypes'
+import { TFields, TFieldsToStore } from '@/js/types/moduleFieldsTypes'
 import { TMedia } from '@/js/types/mediaTypes'
 import { TApiItemShow, TApiItemUpdate } from '@/js/types/itemTypes'
 import { TApiArrayMedia, TApiArrayMain } from '@/js/types/collectionTypes'
@@ -18,11 +18,11 @@ export const useItemStore = defineStore('item', () => {
   const { pushToArray } = useCollectionMainStore()
   const { current, to } = storeToRefs(useRoutesMainStore())
   const { collection, itemByIndex, itemIndexById, next } = useCollectionsStore()
-  const { tagFromUrlId } = useModuleStore()
-  const { setItemMedia } = useMediaStore() 
+  const moduleStore = useModuleStore()
+  const { setItemMedia } = useMediaStore()
   const { saveItemTags } = useTrioStore()
   const { send } = useXhrStore()
-  const  { showSnackbar, showSpinner } = useNotificationsStore()  
+  const { showSnackbar, showSpinner } = useNotificationsStore()
   let fields = ref<TFields>({ id: -1 })
   let url_id = ref<string | undefined>(undefined)
   let tag = ref<string | undefined>(undefined)
@@ -48,13 +48,13 @@ export const useItemStore = defineStore('item', () => {
   })
 
   function saveItem(apiItem: TApiItemShow) {
-    //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
+    console.log(`item.saveItem()`)
     fields.value = apiItem.fields
     url_id.value = apiItem.url_id
-    tag.value = tagFromUrlId(to.value.module, apiItem.url_id)
+    tag.value = moduleStore.tagFromUrlId(to.value.module, apiItem.url_id)
     setItemMedia(apiItem.mediaArray, apiItem.mediaPage, apiItem.media1)
     saveItemTags(apiItem.model_tags, apiItem.global_tags)
-}
+  }
 
   function itemClear(index: number) {
     itemIndex.value = -1
@@ -86,7 +86,7 @@ export const useItemStore = defineStore('item', () => {
       })
 
 
-    
+
 
     if (isCreate) {
       saveItem(res.data)
@@ -94,7 +94,7 @@ export const useItemStore = defineStore('item', () => {
       itemIndex.value = newIndex
     } else {
       fields.value = res.data.fields
-    url_id.value = res.data.url_id
+      url_id.value = res.data.url_id
     }
     console.log(`model.store() returned (success) ${JSON.stringify(res.data, null, 2)}`)
     showSnackbar(`${current.value.module} ${isCreate ? "created" : "updated"} successfully! redirecting to item`)
@@ -102,8 +102,8 @@ export const useItemStore = defineStore('item', () => {
   }
 
   async function destroy(): Promise<string | null> {
-    
-  
+
+
     const { removeItemFromArrayById } = useCollectionMainStore()
     const prev = next('main', itemIndexById(fields.value.id), false)
 

@@ -15,11 +15,8 @@ import { useCollectionsStore } from '../collections/collections'
 import { useModuleStore } from '../module'
 import { useNotificationsStore } from '../notifications'
 import { useItemStore } from '../item'
-import { useMediaStore } from '../media'
 import { useRoutesMainStore } from './routesMain'
-import { useLocusStore } from '../modules/locus'
-import { useFaunaStore } from '../modules/fauna'
-import { useStoneStore } from '../modules/stone'
+
 
 export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let xhr = useXhrStore();
@@ -88,14 +85,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           prepareForMedia()
           break
 
-        case 'item.prepareForUpdate':
-          prepareForUpdate(to.module)
-          break
-
-          case 'item.prepareForCreate':
-            prepareForCreate(to.module)
-            break  
-                    
         default:
           console.log(`PrepareForNewRoute() Bad Action: ${x}`)
           throw 'RoutingBadActionError'
@@ -204,33 +193,5 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     //
   }
 
-  function prepareForUpdate(module: TModule): void {
-    prepareForNew(false, module)
-  }
-
-  function prepareForCreate(module: TModule): void {
-    prepareForNew(true, module)
-  }
-
-  function prepareForNew(isCreate: boolean, module: TModule): void {
-    let store = null
-    console.log(`routesPrepare.prepareForCreate(module: ${module})`)
-    switch (module) {
-      case 'Locus':
-        store = useLocusStore()
-        store.prepareForNew(isCreate, <TLocusFields>i.fields)
-        break
-
-      case 'Stone':
-        store = useStoneStore()
-        store.prepareForNew(isCreate, <TStoneFields>i.fields)
-        break
-
-      case 'Fauna':
-        store = useFaunaStore()
-        store.prepareForNew(isCreate, <TFaunaFields>i.fields)
-        break
-    }
-  }
   return { prepareForNewRoute }
 })

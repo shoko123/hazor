@@ -9,8 +9,7 @@ import { useRoutesPlanTransitionStore } from './routesPlanTransition';
 import { useRoutesPrepareStore } from './routesPrepare';
 import { useAuthStore } from '../auth';
 import { useNotificationsStore } from '../notifications';
-import { useModuleStore } from '../module';
-import { useXhrStore } from '../xhr';
+
 import type { TUrlModule, TModule, TRouteInfo, TParsingError, TParseResponse, TPlanAction, TPrepareError } from '../../../types/routesTypes';
 
 export const useRoutesMainStore = defineStore('routesMain', () => {
@@ -127,7 +126,6 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     }
 
     function finalizeRouting() {
-        let module = useModuleStore()
         console.log(`finalizing routing. copy to -> current to: ${JSON.stringify(to.value)}`)
         current.value = JSON.parse(JSON.stringify(to.value))
     }

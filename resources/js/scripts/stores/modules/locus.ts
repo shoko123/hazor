@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { TLocusFields, } from '@/js/types/moduleFieldsTypes'
+import { TLocusFields, TFields} from '@/js/types/moduleFieldsTypes'
 
 export const useLocusStore = defineStore('locus', () => {
   const base: TLocusFields = {
@@ -20,12 +20,12 @@ export const useLocusStore = defineStore('locus', () => {
     return url_id
   }
 
-  function prepareForNew(isCreate: boolean, current: TLocusFields): void {
+  function prepareForNew(isCreate: boolean, current: TFields): void {
     console.log(`locus.prepareForNew() isCreate: ${isCreate}  current${JSON.stringify(current, null, 2)}`)
     if (isCreate) {
       fields.value = base
     } else {
-      fields.value = current
+      fields.value = <TLocusFields>current
     }
   }
   function clear(){

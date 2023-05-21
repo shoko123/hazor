@@ -131,14 +131,14 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
             case 'create':
                  switch (from.name) {
                     case 'show':
-                        return { success: true, data: ['item.prepareForCreate'] }
+                        return { success: true, data: [] }
                     default:
                         return { success: false, data: 'BadTransition' }
                 }
             case 'update':
                 switch (from.name) {
                     case 'show':
-                        return { success: true, data: ['item.prepareForUpdate'] }
+                        return { success: true, data: [] }
                     default:
                         return { success: false, data: 'BadTransition' }
                 }

@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { TStoneFields } from '@/js/types/moduleFieldsTypes'
+import { TStoneFields, TFields } from '@/js/types/moduleFieldsTypes'
 
 export const useStoneStore = defineStore('stone', () => {
   const base: TStoneFields = {
@@ -21,6 +21,7 @@ export const useStoneStore = defineStore('stone', () => {
   let fields = ref<TStoneFields>(base)
 
   function tagFromUrlId(url_id: string): string {
+    console.log(`Stone.tagFromUrlId()`)    
     return url_id
   }
 
@@ -28,12 +29,12 @@ export const useStoneStore = defineStore('stone', () => {
     fields.value = base
   }
 
-  function prepareForNew(isCreate: boolean, current: TStoneFields): void {
+  function prepareForNew(isCreate: boolean, current: TFields): void {
     console.log(`stone.prepareForNew() isCreate: ${isCreate}  current${JSON.stringify(current, null, 2)}`)
     if (isCreate) {
       fields.value = base
     } else {
-      fields.value = current
+      fields.value = <TStoneFields>current
     }
   }
 

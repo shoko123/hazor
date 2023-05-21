@@ -9,6 +9,9 @@ use App\Models\App\FindModel;
 use App\Models\Tags\StoneTag;
 use App\Models\Tags\Tag;
 use App\Http\Requests\DigModelStoreRequest;
+use App\Models\Lookups\StoneBaseType;
+use App\Models\Lookups\StoneMaterial;
+
 use Illuminate\Database\Eloquent\Builder;
 
 class Stone extends FindModel
@@ -90,4 +93,14 @@ class Stone extends FindModel
     {
         return 'xxx';
     }
+
+    public function baseType()
+    {
+        return $this->belongsTo(StoneBaseType::class, 'base_type_id');
+    }
+
+    public function material()
+    {
+        return $this->belongsTo(StoneMaterial::class, 'material_id');
+    }    
 }

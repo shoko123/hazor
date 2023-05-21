@@ -1,7 +1,7 @@
 
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { TFaunaFields, TFaunaFieldsToStore } from '@/js/types/moduleFieldsTypes'
+import { TFaunaFields, TFaunaFieldsToStore, TFields } from '@/js/types/moduleFieldsTypes'
 
 
 export const useFaunaStore = defineStore('fauna', () => {
@@ -9,7 +9,7 @@ export const useFaunaStore = defineStore('fauna', () => {
     return 4
   })
 
-  function tagFromUrlId(url_id: ""): "" {
+  function tagFromUrlId(url_id: string): string {
     return url_id
   }
   const base: TFaunaFields = {
@@ -34,12 +34,12 @@ export const useFaunaStore = defineStore('fauna', () => {
 
   let fields = ref<TFaunaFields>(base)
 
-  function prepareForNew(isCreate: boolean, current: TFaunaFields): void {
+  function prepareForNew(isCreate: boolean, current: TFields): void {
     console.log(`locus.prepareForNew() isCreate: ${isCreate}  current${JSON.stringify(current, null, 2)}`)
     if (isCreate) {
       fields.value = base
     } else {
-      fields.value = current 
+      fields.value = <TFaunaFields>current 
     }
   }
   

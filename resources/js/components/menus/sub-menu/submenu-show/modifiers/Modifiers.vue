@@ -44,6 +44,8 @@ import { useModuleStore } from '../../../../../scripts/stores/module'
 import { useRoutesMainStore } from '../../../../../scripts/stores/routes/routesMain'
 import { useItemStore } from '../../../../../scripts/stores/item'
 let { current } = storeToRefs(useRoutesMainStore())
+let { prepareForNew } = useModuleStore()
+const i = useItemStore()
 const router = useRouter()
 
 const module = computed(() => {
@@ -53,8 +55,6 @@ const module = computed(() => {
 const isLoggedIn = computed(() => {
   return true
 })
-
-
 
 const tmp = computed(() => {
   return false
@@ -66,12 +66,14 @@ function isAllowed(module: string) {
 
 function itemCreate() {
   console.log(`itemCreate`)
+  prepareForNew(true, current.value.module, i.fields)
   router.push({ name: 'create', params: { module: current.value.url_module } })
 }
 
 function itemUpdate() {
   console.log(`itemUpdate`)
-  router.push({ name: 'update', params: { module: current.value.url_module, url_id:current.value.url_id } })  
+  prepareForNew(false, current.value.module, i.fields)
+  router.push({ name: 'update', params: { module: current.value.url_module, url_id: current.value.url_id } })
 }
 
 function goToMedia() {
@@ -83,7 +85,6 @@ function goToTagger() {
   console.log(`goToTagger`)
 }
 
-
 async function itemDelete() {
   const i = useItemStore()
   if (i.media1.hasMedia) {
@@ -92,19 +93,19 @@ async function itemDelete() {
   }
 
   if (!confirm("Are you sure you want to delete this item?")) { return }
-  
+
   let urlId = null;
   try {
     urlId = await i.destroy()
   } catch (error) {
-      console.log(`Delete item failed error: ${error}`)
-      return
+    console.log(`Delete item failed error: ${error}`)
+    return
   }
 
   if (urlId !== null) {
     router.push({ name: 'show', params: { module: current.value.url_module, url_id: <string>urlId } })
   } else {
-    console.log(`Last item in array deleted - goto Welcome page`)    
+    console.log(`Last item in array deleted - goto Welcome page`)
     router.push({ name: 'welcome', params: { module: current.value.url_module } })
   }
 }
