@@ -53,7 +53,7 @@ export const useItemStore = defineStore('item', () => {
     url_id.value = apiItem.url_id
     tag.value = moduleStore.tagFromUrlId(to.value.module, apiItem.url_id)
     setItemMedia(apiItem.mediaArray, apiItem.mediaPage, apiItem.media1)
-    saveItemTags(apiItem.model_tags, apiItem.global_tags)
+    saveItemTags(apiItem.model_tags, apiItem.global_tags, apiItem.discrete_columns)
   }
 
   function itemClear(index: number) {

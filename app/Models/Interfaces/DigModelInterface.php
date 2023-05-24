@@ -5,6 +5,7 @@ namespace App\Models\Interfaces;
 //use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 interface DigModelInterface
 {
     public function init(): array;    
@@ -21,8 +22,8 @@ interface DigModelInterface
     public function pageSelect(): string;//returns {id, url_id}[]
     public function pageFormat(): string;//returns {id, url_id, description, media1 (null | {tnUrl, fullUrl})}[]
     public function buildSqlDescription(): string; //used by both indexSelect and pageSelect
-    public function itemSelect(): string;
-
+    public function itemSelect(): Builder;
+    public function discreteColumns(Model $model): array;
   
     public function itemFormat(): string;
     public function destroyItem(int $id);

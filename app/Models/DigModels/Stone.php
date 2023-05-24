@@ -11,7 +11,7 @@ use App\Models\Tags\Tag;
 use App\Http\Requests\DigModelStoreRequest;
 use App\Models\Lookups\StoneBaseType;
 use App\Models\Lookups\StoneMaterial;
-
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
 class Stone extends FindModel
@@ -33,6 +33,16 @@ class Stone extends FindModel
     public function global_tags()
     {
         return $this->morphToMany(Tag::class, 'taggable');
+    }
+
+    public function baseType()
+    {
+        return $this->belongsTo(StoneBaseType::class, 'base_type_id');
+    }
+
+    public function material()
+    {
+        return $this->belongsTo(StoneMaterial::class, 'material_id');
     }
 
     public function init(): array
@@ -77,10 +87,26 @@ class Stone extends FindModel
         return 'xxx';
     }
 
-    public function itemSelect(): string
-    {
-        return 'xxx';
+    public function itemSelect(): Builder {
+        return self::with([
+            'media',
+            'model_tags.tag_group',
+            'global_tags.tag_group'/* => function ($query) {
+                $query->select('id', 'name', 'type');
+            },*/,
+            'material',
+            'baseType'
+        ]);
     }
+
+    public function discreteColumns(Model $fields): array {
+        $material = 'Material' . '.' .$fields["material"]["name"];
+        $base_type = 'Basic Typology' . '.' .$fields["baseType"]["name"];
+        unset($fields->material);
+        unset($fields->baseType);
+        return [$material, $base_type];
+    }    
+    
     public function indexFormat(): string
     {
         return 'xxx';
@@ -92,15 +118,5 @@ class Stone extends FindModel
     public function itemFormat(): string
     {
         return 'xxx';
-    }
-
-    public function baseType()
-    {
-        return $this->belongsTo(StoneBaseType::class, 'base_type_id');
-    }
-
-    public function material()
-    {
-        return $this->belongsTo(StoneMaterial::class, 'material_id');
-    }    
+    } 
 }

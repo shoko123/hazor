@@ -256,9 +256,9 @@ export const useTrioStore = defineStore('trio', () => {
     trio.value = normalizeTrio(res);
   }
 
-  function saveItemTags(modelTags: string[], globalTags: string[]) {
+  function saveItemTags(modelTags: string[], globalTags: string[], discrete_columns: string[]) {
     //verify that each of group.param[] exists [for this module/group] and save them
-   selectedItemParams.value = [...modelTags, ...globalTags]
+   selectedItemParams.value = [...modelTags, ...globalTags, ...discrete_columns]
   }
 
   function trioClear() {
@@ -300,6 +300,8 @@ export const useTrioStore = defineStore('trio', () => {
     groupIndex,
     groupsWithASelectedParam,
     selectedFilterParams,
+    selectedItemParams,
+    selectedNewItemParams,
     saveItemTags
   }
 })

@@ -73,15 +73,9 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
     public function show($id)
     {
-        $item = self::with([
-            'media',
-            'model_tags.tag_group',
-            'global_tags.tag_group'/* => function ($query) {
-                $query->select('id', 'name', 'type');
-            },*/
+        $item = $this->itemSelect()->findOrFail($id);
 
-        ])->findOrFail($id);
-
+        $discrete_columns = $this->discreteColumns($item);
         //media: order by collection_name, order_column (done in MediaModel)
         $mediaPage = collect([]);
         $media1 = null;
@@ -116,7 +110,8 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             "mediaPage" => $mediaPage,
             "mediaArray" => $mediaArray,
             "global_tags" => $global_tags,
-            "model_tags" => $model_tags
+            "model_tags" => $model_tags,
+            'discrete_columns' => $discrete_columns
         ];
     }
 

@@ -11,6 +11,7 @@ type TLocusFields = TItemMandatoryFields & {
         stratum: string,
         cross_ref: string,
 }
+type TLocusField = keyof TLocusFields
 
 type TLocusFieldsToStore = {
         area: string,
@@ -29,12 +30,13 @@ type TStoneFields = TItemMandatoryFields & {
         date: string,
         prov_notes: string,
         type: string,
-        material: string,
+        material_code: string,
         details: string,
         dimensions: string,
         material_id: number,
         base_type_id: number,
 }
+type TStoneField = keyof TStoneFields
 
 type TStoneFieldsToStore = {
         area: string,
@@ -43,7 +45,7 @@ type TStoneFieldsToStore = {
         date: string,
         prov_notes: string,
         type: string,
-        material: string,
+        material_code: string,
         details: string,
         dimensions: string,
 }
@@ -66,6 +68,7 @@ type TFaunaFields = TItemMandatoryFields & {
         taxon_id: string
         element_id: string
 }
+type TFaunaField = keyof TFaunaFields
 
 type TFaunaFieldsToStore = {
         label: string,
@@ -87,6 +90,7 @@ type TFaunaFieldsToStore = {
 type TFakeModuleFields = TItemMandatoryFields
 type TFields = TLocusFields | TStoneFields | TFaunaFields | TFakeModuleFields
 type TFieldsToStore = TStoneFieldsToStore | TLocusFieldsToStore | TFaunaFieldsToStore
+type TColumnName =  TLocusField | TStoneField | TFaunaField
 export {
         TItemMandatoryFields,
         TLocusFields,
@@ -96,5 +100,6 @@ export {
         TFaunaFields,
         TFaunaFieldsToStore,
         TFields,
-        TFieldsToStore
+        TFieldsToStore,
+        TColumnName
 }

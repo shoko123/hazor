@@ -10,7 +10,7 @@
     <v-row wrap no-gutters>
       <v-text-field label="Provenience Notes" v-model="item.prov_notes" v-show="item.prov_notes" class="mr-1" filled
         readonly></v-text-field>
-      <v-text-field label="Material" v-model="item.material" v-show="item.material" class="mr-1" filled readonly>
+      <v-text-field label="Material Code" v-model="item.material_code" v-show="item.material_code" class="mr-1" filled readonly>
       </v-text-field>
       <v-text-field label="Type" v-model="item.type" class="mr-1" filled readonly> </v-text-field>
     </v-row>

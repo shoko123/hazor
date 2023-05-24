@@ -36,7 +36,7 @@ return new class extends Migration
             $table->unsignedInteger('year')->nullable();
             $table->string('prov_notes', 70)->nullable();
             $table->string('type', 50)->nullable();
-            $table->string('material', 50)->nullable();
+            $table->string('material_code', 50)->nullable();
             $table->string('dimensions', 250)->nullable();
             $table->string('details', 250)->nullable();
             $table->string('edit_notes', 250)->nullable();

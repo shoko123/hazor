@@ -3,7 +3,7 @@
 function globalGroups()
 {
     return [
-        "Areas" => [
+        "Area" => [
             "group_type_code" => "CV",
             "table_name" => "loci",
             "column_name" => "area"

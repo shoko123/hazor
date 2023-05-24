@@ -37,7 +37,7 @@ class LocusGroup extends ModelGroup implements ModelGroupInterface
     {
         $cats = [
             "Registration" => [
-                ["Areas"]
+                ["Area"]
             ], 
             "Chronology" => [
                 ["Stratum"],

@@ -20,6 +20,7 @@ type TApiItemShow = {
         mediaArray: TApiArrayMedia[],        
         model_tags: any[],
         global_tags: any[],
+        discrete_columns: string[]
         url_id: string,
         extra: any
 }

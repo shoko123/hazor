@@ -7,6 +7,7 @@ use App\Models\App\DigModel;
 use App\Models\Tags\LocusTag;
 use App\Models\Tags\Tag;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class Locus extends DigModel
 {
@@ -65,9 +66,21 @@ class Locus extends DigModel
         return 'xxx';
     }
 
-    public function itemSelect(): string {
-        return 'xxx';
+    public function itemSelect(): Builder {
+        return self::with([
+            'media',
+            'model_tags.tag_group',
+            'global_tags.tag_group'/* => function ($query) {
+                $query->select('id', 'name', 'type');
+            },*/
+        ]);
     }
+ 
+    public function discreteColumns(Model $model): array {
+        $area = 'Area' . '.' .$model["area"];
+        return [$area];        
+    }    
+    
     public function indexFormat(): string  {
         return 'xxx';
     }

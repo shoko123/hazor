@@ -13,7 +13,7 @@
       <v-text-field label="Provenience notes" v-model="data.prov_notes" :error-messages="provErrors" rows="1" class="mr-1"
         auto-grow>
       </v-text-field>
-      <v-text-field label="Material" v-model="data.material" class="mr-1" filled> </v-text-field>
+      <v-text-field label="Material Code" v-model="data.material_code" class="mr-1" filled> </v-text-field>
       <v-text-field label="Type" v-model="data.type" class="mr-1" filled> </v-text-field>
     </v-row>
 
@@ -42,7 +42,7 @@ onMounted(() => {
   data.basket = fields.value.basket
   data.date = fields.value.date
   data.prov_notes = fields.value.prov_notes
-  data.material = fields.value.material
+  data.material_code = fields.value.material_code
   data.type = fields.value.type
   data.details = fields.value.details
   data.dimensions = fields.value.dimensions
@@ -57,7 +57,7 @@ const data: TStoneFieldsToStore = reactive({
   basket: "",
   date: "",
   prov_notes: "",
-  material: "",
+  material_code: "",
   type: "",
   details: "",
   dimensions: "",
@@ -70,7 +70,7 @@ const rules = computed(() => {
     basket: { required },
     date: {},
     prov_notes: {},
-    material: {},
+    material_code: {},
     type: {},
     details: {},
     dimensions: {},

@@ -103,7 +103,7 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
     {
         $cats = [
             "Registration" => [
-                ["Areas"]
+                ["Area"]
             ],
             "Basic Characteristics" => [
                 ["Life Stage", "Symmetry", "Weathering (Behrensmeyer 1978)"],
