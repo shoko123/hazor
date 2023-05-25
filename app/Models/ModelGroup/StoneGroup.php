@@ -105,7 +105,7 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
     {
         $cats = [
             "Registration" => [
-                ["Areas"],
+                ["Area"],
             ],
             "Periods" => [
                 [

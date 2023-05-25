@@ -262,6 +262,9 @@ export const useTrioStore = defineStore('trio', () => {
   }
 
   function trioClear() {
+    selectedItemParams.value = []
+    selectedNewItemParams.value = []
+    selectedFilterParams.value = []
     groupIndex.value = 0
     categoryIndex.value = 0
     trio.value.result.length = 0
@@ -291,6 +294,7 @@ export const useTrioStore = defineStore('trio', () => {
     clearFilters,
     paramClicked,
     setTrio,
+    trioClear,
     selectedTrio,
     visibleCategories,
     visibleGroups,

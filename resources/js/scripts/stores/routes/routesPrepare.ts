@@ -37,7 +37,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'module.clear':
-          t.clearFilters()
+          t.trioClear()          
           break
 
         case 'collection.item.load':

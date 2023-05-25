@@ -46,7 +46,11 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                         }
 
                     case 'show':
-                        return { success: true, data: ['item.clear'] }
+                        if (changed.module) {
+                            return { success: true, data: ['item.clear', 'collection.clear', 'module.clear', 'module.load'] }
+                        } else {
+                            return { success: true, data: ['item.clear'] }
+                        }
 
                     default:
                         return { success: false, data: 'BadTransition' }
@@ -129,7 +133,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                 break
 
             case 'create':
-                 switch (from.name) {
+                switch (from.name) {
                     case 'show':
                         return { success: true, data: [] }
                     default:
