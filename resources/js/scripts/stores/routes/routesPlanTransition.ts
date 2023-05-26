@@ -122,7 +122,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                     case 'update':
                         return { success: true, data: [] }
 
-                    case 'tags':
+                    case 'tag':
                         return { success: true, data: [] }
 
                     case 'media':
@@ -146,7 +146,13 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                     default:
                         return { success: false, data: 'BadTransition' }
                 }
-            case 'tags':
+            case 'tag':
+                switch (from.name) {
+                    case 'show':
+                        return { success: true, data: [] }
+                    default:
+                        return { success: false, data: 'BadTransition' }
+                }                
             case 'media':
                 switch (from.name) {
                     case 'show':

@@ -107,7 +107,7 @@ export const useTrioStore = defineStore('trio', () => {
     return ags
   }
 
-  function getSelectedParams(sourceName: TrioSourceName) : string[] {
+  function getSelectedParams(sourceName: TrioSourceName): string[] {
     return sourceName === 'Item' ?
       selectedItemParams.value :
       (sourceName === 'New' ? selectedNewItemParams.value : selectedFilterParams.value)
@@ -252,16 +252,16 @@ export const useTrioStore = defineStore('trio', () => {
   }
 
   function setTrio(res: object) {
-    trioClear()
+    trioReset()
     trio.value = normalizeTrio(res);
   }
 
   function saveItemTags(modelTags: string[], globalTags: string[], discrete_columns: string[]) {
     //verify that each of group.param[] exists [for this module/group] and save them
-   selectedItemParams.value = [...modelTags, ...globalTags, ...discrete_columns]
+    selectedItemParams.value = [...modelTags, ...globalTags, ...discrete_columns]
   }
 
-  function trioClear() {
+  function trioReset() {
     selectedItemParams.value = []
     selectedNewItemParams.value = []
     selectedFilterParams.value = []
@@ -284,17 +284,33 @@ export const useTrioStore = defineStore('trio', () => {
     }
   }
 
-  function clearFilters() {
+  function copyCurrentToNew() {
+    selectedNewItemParams.value = [...selectedItemParams.value]
+  }
+
+  function clearSelected(sourceName: TrioSourceName) {
     groupIndex.value = 0
     categoryIndex.value = 0
-    selectedFilterParams.value = []
+    switch (sourceName) {
+      case 'Filter':
+        selectedFilterParams.value = []
+        break
+
+      case 'New':
+        selectedNewItemParams.value = []
+        break
+
+      case 'Item':
+        selectedItemParams.value = []
+        break
+    }
   }
 
   return {
-    clearFilters,
+    clearSelected,
     paramClicked,
     setTrio,
-    trioClear,
+    trioReset,
     selectedTrio,
     visibleCategories,
     visibleGroups,
@@ -306,6 +322,7 @@ export const useTrioStore = defineStore('trio', () => {
     selectedFilterParams,
     selectedItemParams,
     selectedNewItemParams,
+    copyCurrentToNew,
     saveItemTags
   }
 })

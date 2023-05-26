@@ -45,7 +45,7 @@ const routes = [
   },
   {
     path: '/:module/filter',
-    component: () => import('@/components/filter/Filter.vue'),
+    component: () => import('@/components/content/Filter.vue'),
     name: 'filter'
   },
 
@@ -72,9 +72,9 @@ const routes = [
     name: 'media'
   },
   {
-    path: '/:module/:url_id/tags',
-    component: Index,
-    name: 'tags'
+    path: '/:module/:url_id/tag',
+    component: () => import('@/components/content/Tagger.vue'),
+    name: 'tag'
   },
   {
     path: "/:module/:url_id/:catchAll(.*)",

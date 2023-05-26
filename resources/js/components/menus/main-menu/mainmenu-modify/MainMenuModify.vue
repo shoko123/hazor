@@ -7,7 +7,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
-
 let rm = useRoutesMainStore()
 
 const header = computed(() => {
@@ -16,7 +15,7 @@ const header = computed(() => {
     case 'media':
       return `** Dig ** : Media Editor for ${itemText}`
 
-    case 'tags':
+    case 'tag':
       return `** Dig ** : Tag Editor for ${itemText}`
 
     case 'create':
@@ -28,6 +27,8 @@ const header = computed(() => {
     default:
       return `***** Dig - Modify mode *****`
   }
+  
 })
+
 </script>
 

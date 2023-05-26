@@ -43,6 +43,7 @@ import { useRouter } from 'vue-router'
 import { useModuleStore } from '../../../../../scripts/stores/module'
 import { useRoutesMainStore } from '../../../../../scripts/stores/routes/routesMain'
 import { useItemStore } from '../../../../../scripts/stores/item'
+import { useTrioStore } from '../../../../../scripts/stores/trio'
 let { current } = storeToRefs(useRoutesMainStore())
 let { prepareForNew } = useModuleStore()
 const i = useItemStore()
@@ -83,10 +84,12 @@ function goToMedia() {
 
 function goToTagger() {
   console.log(`goToTagger`)
+  const { copyCurrentToNew } = useTrioStore()
+  copyCurrentToNew()
+  router.push({ name: 'tag', params: { module: current.value.url_module, url_id: current.value.url_id } })
 }
 
 async function itemDelete() {
-  const i = useItemStore()
   if (i.media1.hasMedia) {
     alert(`Delete aborted. Please delete related media!`)
     return

@@ -15,7 +15,7 @@ import { useRouter } from 'vue-router'
 import { useRoutesParserStore } from '../../../../scripts/stores/routes/routesParser'
 
 let { current } = storeToRefs(useRoutesMainStore())
-let { clearFilters, groupsWithASelectedParam } = useTrioStore()
+let { clearSelected, groupsWithASelectedParam } = useTrioStore()
 const { serializeQueryParams } = useRoutesParserStore()
 const router = useRouter()
 
@@ -37,6 +37,6 @@ async function getCount() {
 }
 function clear() {
   console.log(`filter.clear()`);
-  clearFilters()
+  clearSelected('Filter')
 };
 </script>

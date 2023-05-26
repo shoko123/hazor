@@ -39,10 +39,10 @@ const details = computed(() => {
       return { header: `Selected Filters`, emptyTitle: `[ No filters selected ]` }
 
     case 'Item':
-      return { header: `Tags for Item`, emptyTitle: `[ No tags selected for Item ]` }
+      return { header: `Tags for Item`, emptyTitle: `[ Item has no tags ]` }
 
     case 'New':
-      return { header: `Selected new tags for Item`, emptyTitle: `[ No tags selected ]` }
+      return { header: `Selected Tags`, emptyTitle: `[ No tags selected ]` }
   }
 })
 

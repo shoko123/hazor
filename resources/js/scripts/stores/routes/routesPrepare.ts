@@ -3,7 +3,7 @@
 //relevant fields are stored in routesStore.from and .to. Actions needed
 //to complete the transition to the new route are stored in TPlanAction[].
 //Here we execute the loading of assets (collection, page, item)and other 
-//activities (e.g. clearFilters, copy current -> new,), before
+//activities (e.g. clear, copy current -> new,), before
 //proceeding to the new route.
 
 import type { TRouteInfo, TPlanAction, TPrepareResponse, TModule } from '@/js/types/routesTypes'
@@ -37,7 +37,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'module.clear':
-          t.trioClear()          
+          t.trioReset()          
           break
 
         case 'collection.item.load':
@@ -63,6 +63,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'item.clear':
+          t.clearSelected('Item')
           i.fields = { id: -1 }
           c.clear(['media', 'related'])
           break
@@ -95,7 +96,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
   async function loadTrio(to: TRouteInfo, from: TRouteInfo) {
-    t.clearFilters()
+    t.trioReset()
     n.showSpinner('Loading module data ...')
     return xhr.send('model/init', 'post', { model: to.module })
       .then(res => {

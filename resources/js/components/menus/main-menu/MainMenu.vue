@@ -27,7 +27,8 @@ const menu = computed(() => {
         case 'Media':
             return Media
         default:
-            return undefined
+            console.log(`Bad Props to MainMenu`)
+            return Media
     }
 })
 

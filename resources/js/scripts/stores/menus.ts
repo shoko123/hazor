@@ -6,11 +6,9 @@ import { computed } from 'vue'
 
 import { useRoutesMainStore } from './routes/routesMain'
 
-type TMainMenu = 'Read' | 'Media' | 'Modify' | 'Admin' | undefined
+type TMainMenu = 'Read' | 'Media' | 'Modify' | 'Admin'
 export const useMenusStore = defineStore('menus', () => {
-
   let rms = useRoutesMainStore()
-
 
   const hasSubMenu = computed(() => {
     switch (rms.current.name) {
@@ -19,12 +17,12 @@ export const useMenusStore = defineStore('menus', () => {
       case 'media':
       case 'create':
       case 'update':
+      case 'tag':
         return false
 
       default:
         return true
     }
-
   })
 
   const mainMenuType = computed((): TMainMenu => {
@@ -36,13 +34,17 @@ export const useMenusStore = defineStore('menus', () => {
       case 'show':
       case 'filter':
         return 'Read'
+
       case 'media':
         return 'Media'
+
       case 'create':
       case 'update':
+      case 'tag':
         return 'Modify'
+        
       default:
-        return undefined
+        return 'Read'
     }
   })
 

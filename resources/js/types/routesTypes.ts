@@ -1,5 +1,5 @@
 // routesStore.js
-type TName = 'home' | 'welcome' | 'filter' | 'index' | 'show' | 'create' | 'update' | 'tags' | 'media' | 'login' | 'register'
+type TName = 'home' | 'welcome' | 'filter' | 'index' | 'show' | 'create' | 'update' | 'tag' | 'media' | 'login' | 'register'
 type TUrlModule = 'auth' | 'admin' | 'loci' | 'fauna' | 'stones' | ''
 type TModule = 'Home' | 'Auth' | 'Admin' | 'Locus' | 'Fauna' | 'Stone'
 type TParsingError = 'BadModuleName' | 'BadIdFormat' | 'BadQueryParams'
