@@ -48,7 +48,7 @@ abstract class ModelGroup
                 return $this->getLookupGroupDetails($group_name, $group);
 
             case "TS":
-                return $this->getTextualSearchFields($group_name, $group);
+                return $this->getTextualSearchGroupDetails($group_name, $group);
         }
         return [];
     }
@@ -117,14 +117,18 @@ abstract class ModelGroup
         ]);
     }
 
-    private function getTextualSearchFields($group_name, $group)
+    private function getTextualSearchGroupDetails($group_name, $group)
     {
-        //return $this->getConnection()->getSchemaBuilder()->getColumnListing($this->getTable());
+        $group = $this->getModelGroup($group_name) ?? null;
+        if (is_null($group)) {
+            throw new Exception("***MODEL INIT() ERROR*** Group * " . $group_name . " * NOT FOUND");
+        }
 
         return [
             "group_type_code" => "TS",
-            "group_name" => "Text Search",
-            //"params" => $this->getConnection()->getSchemaBuilder()->getColumnListing($this->getTable())
+            "group_name" => $group_name,
+            "column_name" => $group["column_name"],
+            "params" => [["name" => "term1"], ["name" => "term2"], ["name" => "term3"]]
         ];
     }
 

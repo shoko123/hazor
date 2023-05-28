@@ -54,7 +54,7 @@ type TSelectedParam = {
 }
 
 type TrioSourceName = 'Item' | 'New' | 'Filter'
-type TmpGroup = { groupName: string, params: string[], selectedCount: number }
+type TmpGroup = { groupName: string, params: string[], categoryKey: string, selectedCount: number }
 
 export {
   IObject,

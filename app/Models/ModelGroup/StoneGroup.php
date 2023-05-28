@@ -40,7 +40,6 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
             "dependency" => null,
             "multiple" => true
         ],
-
         "Use Wear" => [
             "group_type_code" => "TM",
             "dependency" => null,
@@ -81,6 +80,22 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
             "dependency" => ["Basic Typology.Non-Processor"],
             "multiple" => true
         ],
+        "Search-Locus" => [
+            "group_type_code" => "TS",            
+            "column_name" => "name",
+        ],
+        "Search-Basket" => [
+            "group_type_code" => "TS",            
+            "column_name" => "basket",
+        ],
+        "Search-Year" => [
+            "group_type_code" => "TS",            
+            "column_name" => "year",
+        ],
+        "Search-Details" => [
+            "group_type_code" => "TS",            
+            "column_name" => "details",
+        ],
     ];
 
     public function __construct()
@@ -104,6 +119,14 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
     public function trio(): array
     {
         $cats = [
+            "Search" => [
+                [
+                    "Search-Locus",
+                    "Search-Basket",
+                    "Search-Year",
+                    "Search-Details"
+                ]
+            ],
             "Registration" => [
                 ["Area"],
             ],

@@ -6,6 +6,8 @@
       <div class="mb-2">
         <v-btn color="green" @click="submit">Submit</v-btn>
         <v-btn class="ml-2" color="red" @click="cancel">cancel</v-btn>
+        <v-btn class="ml-2" color="blue" @click="resetToItem">Reset To Item</v-btn>
+        <v-btn class="ml-2" color="blue" @click="clear">Clear</v-btn>
       </div>
       <v-tabs v-model="categoryIndex" class="primary">
         <v-tab v-for="(cat, index) in cats" :key="index" color="purple"
@@ -100,6 +102,18 @@ function cancel(paramIndex: number) {
   console.log(`cancelClicked`)
   trio.clearSelected('New')
   router.go(-1)
+}
+
+function resetToItem() {
+  console.log(`resetToItem`)  
+  trio.groupIndex = 0
+  trio.categoryIndex = 0
+  trio.copyCurrentToNew()  
+}
+
+function clear() {
+  console.log(`clear`)
+  trio.clearSelected('New')
 }
 </script>
 <style scoped>
