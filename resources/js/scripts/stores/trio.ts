@@ -27,10 +27,10 @@ export const useTrioStore = defineStore('trio', () => {
   let selectedItemParams = ref<string[]>([])
   let selectedNewItemParams = ref<string[]>([])
 
-  //index in visibleCategories
+  //index in visible categories
   let categoryIndex = ref<number>(0)
 
-  //index in visibleGroups
+  //index in visible groups
   let groupIndex = ref<number>(0)
 
 
@@ -40,14 +40,11 @@ export const useTrioStore = defineStore('trio', () => {
     let agk = availableGroupsKeys(sourceName)
 
     agk.forEach(x => {
-      let selectedKeys = selectedParamsKeysBySource(sourceName)
       let group = trio.value.entities.groups[x]
 
       //count
-      let selectedCount = selectedKeys.reduce((accumulator, gk) => {
-        return accumulator + groupSelectedParamsCnt(sourceName, gk)
-      }, 0);
-
+      let selectedCount = groupSelectedParamsCnt(sourceName, x)
+      console.log(`cnt: ${selectedCount}`)
       let i = cats.findIndex(x => x.catName === group.categoryKey)
       if (i === -1) {
         cats.push({ catName: group.categoryKey, grpKeys: [x], cnt: selectedCount })
@@ -55,97 +52,82 @@ export const useTrioStore = defineStore('trio', () => {
         cats[i].cnt += selectedCount
       }
     })
-    return cats.map(x => { return { name: x.catName, visible: true, selectedCount: x.cnt } })
+    const res = cats.map(x => { return { name: x.catName, visible: true, selectedCount: x.cnt } })
+    //console.log(`visibleCategories: ${JSON.stringify(res, null, 2)}`)
+    return res//cats.map(x => { return { name: x.catName, visible: true, selectedCount: x.cnt } })
   }
 
-  //DEBUG only
-  const filterVisibleCategoriesKeys = computed(() => {
+  function visibleCategoriesKeys(sourceName: TrioSourceName): string[] {
     let cats: string[] = []
+    let agk = availableGroupsKeys(sourceName)
 
-    let availGrpsKeys = availableGroupsKeys("Filter")
-    availGrpsKeys.forEach(x => {
-      let g = trio.value.entities.groups[x]
-      let i = cats.findIndex(x => x === g.categoryKey)
+    agk.forEach(x => {
+      let group = trio.value.entities.groups[x]
+      let i = cats.findIndex(x => x === group.categoryKey)
       if (i === -1) {
-        cats.push(g.categoryKey)
+        cats.push(group.categoryKey)
       }
     })
     return cats
-  })
-
-  const filterVisibleGroupsKeys = computed(() => {
-    let groupKeys = trio.value.entities.categories[filterVisibleCategoriesKeys.value[categoryIndex.value]].groups
-    //let vc = visibleCategories(sourceName)
-    //et groupKeys = trio.value.entities.categories[vc[categoryIndex.value].name].groups
-
-    return groupKeys.filter(x => groupIsVisible("Filter", x))
-  })
-  //END DEBUG
-
-
-  function groupsWithASelectedParam(sourceName: TrioSourceName): TmpGroup[] {
-    if (trio.value.result.length === 0) { return [] }
-    let groups: TmpGroup[] = []
-    let selectedParams = selectedParamsKeysBySource(sourceName)
-
-    selectedParams.forEach(x => {
-      let pieces = x.split('.')
-      let group = pieces[0]
-      let param = pieces[1]
-
-      let i = groups.findIndex(x => x.groupName === group)
-      if (i === -1) {
-        let params: string[] = [param]
-        groups.push({ groupName: group, params: params, categoryKey: trio.value.entities.groups[group].categoryKey, selectedCount: 1 })
-      } else {
-        groups[i].params.push(param)
-        groups[i].selectedCount++
-      }
-    })
-    return groups
   }
 
+  //returns groups that belong to the currently selected category, and that are also available.
+  //add counts
   function visibleGroups(sourceName: TrioSourceName): TViewGroup[] {
     if (trio.value.result.length === 0) { return [] }
-    let vc = visibleCategories(sourceName)
-    let groupKeys = trio.value.entities.categories[vc[categoryIndex.value].name].groups
 
-    let selected = groupsWithASelectedParam(sourceName)
-    let agks = availableGroupsKeys(sourceName)
+    let vc = visibleCategoriesKeys(sourceName)
+    let perCategoryGroupsKeys = trio.value.entities.categories[vc[categoryIndex.value]].groups
 
-    //console.log(`visibleGroups().availableGroupsKeys: ${JSON.stringify(agks, null, 2)}`)
-    let allGroupsPerCategory = groupKeys.map(x => {
+    //filter only available groups
+    let visibleGroupsKeys = perCategoryGroupsKeys.filter(x => groupIsAvailable(sourceName, x))
+
+    return visibleGroupsKeys.map(x => {
       let group = trio.value.entities.groups[x]
-      let index = selected.findIndex(y => y.groupName === group.group_name)
-      let selectedCount = index === -1 ? 0 : selected[index].selectedCount
-
       return {
-        name: trio.value.entities.groups[x].group_name,
+        name: x,
         groupKey: x,
-        visible: agks.includes(group.group_name),
-        selectedCount,
-        params: trio.value.entities.groups[x].params
+        visible: true,
+        selectedCount: groupSelectedParamsCnt(sourceName, x),
+        params: group.params
       }
     })
-
-    //filter
-    return allGroupsPerCategory.filter(x => x.visible)
   }
 
-
-  function availableGroupsKeys(sourceName: TrioSourceName) {
+  function availableGroupsKeys(sourceName: TrioSourceName, onlySelected = false) {
     let agk = []
     for (const [key, value] of Object.entries(trio.value.entities.groups)) {
-      if (groupIsAvailable(sourceName, key)) {
-        agk.push(key)
+      if (onlySelected) {
+        if (groupIsAvailable(sourceName, key) && (groupSelectedParamsCnt(sourceName, key) > 0)) {
+          agk.push(key)
+        }
+      } else {
+        if (groupIsAvailable(sourceName, key)) {
+          agk.push(key)
+        }
       }
     }
     return agk
   }
 
-  //if group has a dependency, check if met.
-  //if source is filter, available
-  //if source is 'New' don't show TS (textual search). If TM ot TG check dependancy
+  //To be used by submit as the final selected groups and their params
+  function groupsWithASelectedParam(sourceName: TrioSourceName): TmpGroup[] {
+    if (trio.value.result.length === 0) { return [] }
+    let selectedGroups = availableGroupsKeys(sourceName, true)
+
+    return selectedGroups.map(x => {
+      let group = trio.value.entities.groups[x]
+      let params = group.params.map(p => {
+        let pieces = p.split('.')
+        return pieces[1]
+      })
+      return { groupName: x, params: params, categoryKey: group.categoryKey, selectedCount: groupSelectedParamsCnt(sourceName, x) }
+    })
+  }
+  //Is group available?.
+  //if source is filter, all groups are available.
+  //if source is 'New' don't show TS (textual search). Check if group available for current item scope.
+  //if TM ot TG check dependency.
   function groupIsAvailable(sourceName: TrioSourceName, groupKey: string) {
     let selectedParams = selectedParamsKeysBySource(sourceName)
     let g = trio.value.entities.groups[groupKey]
@@ -166,9 +148,8 @@ export const useTrioStore = defineStore('trio', () => {
   }
 
   function groupIsVisible(sourceName: TrioSourceName, groupKey: string) {
-    let vc = visibleCategories(sourceName)
-    let groupKeys = trio.value.entities.categories[vc[categoryIndex.value].name].groups
-
+    let vc = visibleCategoriesKeys(sourceName)
+    let groupKeys = trio.value.entities.categories[vc[categoryIndex.value]].groups
     return groupKeys.includes(groupKey) && groupIsAvailable(sourceName, groupKey)
   }
 
@@ -180,6 +161,14 @@ export const useTrioStore = defineStore('trio', () => {
       return accumulator + toAdd
     }, 0);
     return selectedCount
+  }
+
+  function groupSelectedParamsKeys(sourceName: TrioSourceName, groupKey: string) {
+    let selectedKeys = selectedParamsKeysBySource(sourceName)
+    return selectedKeys.filter(x => {
+      let pieces = x.split('.')
+      return pieces[0] === groupKey
+    })
   }
 
   function visibleParams(sourceName: TrioSourceName): TViewParam[] {
@@ -202,17 +191,23 @@ export const useTrioStore = defineStore('trio', () => {
     if (trio.value.result.length === 0) { return [] }
     //Assign each "selected" group to a category
     let catsWithGroups: { catName: string, groups: TmpGroup[] }[] = []
+    let selectedGroupsKeys = availableGroupsKeys(sourceName, true)
 
-    let groups = groupsWithASelectedParam(sourceName)
-    groups.forEach(g => {
-      let i = catsWithGroups.findIndex(y => {
-        return trio.value.entities.groups[g.groupName].categoryKey === y.catName
+    selectedGroupsKeys.forEach(gk => {
+      let group = trio.value.entities.groups[gk]
+      let params = groupSelectedParamsKeys(sourceName, gk).map(p => {
+        let pieces = p.split('.')
+        return pieces[1]
+      })
+      let i = catsWithGroups.findIndex(c => {
+        return trio.value.entities.groups[gk].categoryKey === c.catName
       })
 
+      let tmpGroup: TmpGroup = { groupName: gk, params, categoryKey: group.categoryKey, selectedCount: groupSelectedParamsCnt(sourceName, gk) }
       if (i === -1) {
-        catsWithGroups.push({ catName: trio.value.entities.groups[g.groupName].categoryKey, groups: [g] })
+        catsWithGroups.push({ catName: trio.value.entities.groups[gk].categoryKey, groups: [tmpGroup] })
       } else {
-        catsWithGroups[i].groups.push(g)
+        catsWithGroups[i].groups.push(tmpGroup)
       }
     })
     return catsWithGroups
@@ -349,6 +344,27 @@ export const useTrioStore = defineStore('trio', () => {
     }
   }
 
+  //DEBUG only
+  // const filterVisibleCategoriesKeys = computed(() => {
+  //   let cats: string[] = []
+
+  //   let availGrpsKeys = availableGroupsKeys("Filter")
+  //   availGrpsKeys.forEach(x => {
+  //     let g = trio.value.entities.groups[x]
+  //     let i = cats.findIndex(x => x === g.categoryKey)
+  //     if (i === -1) {
+  //       cats.push(g.categoryKey)
+  //     }
+  //   })
+  //   return cats
+  // })
+
+  // const filterVisibleGroupsKeys = computed(() => {
+  //   let groupKeys = trio.value.entities.categories[filterVisibleCategoriesKeys.value[categoryIndex.value]].groups
+  //   return groupKeys.filter(x => groupIsVisible("Filter", x))
+  // })
+  //END DEBUG
+
   return {
     clearSelected,
     paramClicked,
@@ -361,13 +377,13 @@ export const useTrioStore = defineStore('trio', () => {
     trio,
     categoryIndex,
     groupIndex,
-    groupsWithASelectedParam,
     selectedFilterParams,
     selectedItemParams,
     selectedNewItemParams,
     copyCurrentToNew,
     saveItemTags,
-    filterVisibleCategoriesKeys,
-    filterVisibleGroupsKeys
+    groupsWithASelectedParam
+    // filterVisibleCategoriesKeys,
+    // filterVisibleGroupsKeys
   }
 })
