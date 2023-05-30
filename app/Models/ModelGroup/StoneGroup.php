@@ -147,6 +147,7 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
                 [
                     "Material",
                     "Life Stage",
+                    "Use Wear",
                     "Morphology",
                     "Profile",
                     "Production",

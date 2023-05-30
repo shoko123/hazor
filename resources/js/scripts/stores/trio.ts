@@ -121,7 +121,7 @@ export const useTrioStore = defineStore('trio', () => {
         let pieces = p.split('.')
         return pieces[1]
       })
-      return { groupName: x, params: params, categoryKey: group.categoryKey, selectedCount: groupSelectedParamsCnt(sourceName, x) }
+      return { groupName: x, params, categoryKey: group.categoryKey, selectedCount: groupSelectedParamsCnt(sourceName, x) }
     })
   }
   //Is group available?.
@@ -163,11 +163,14 @@ export const useTrioStore = defineStore('trio', () => {
     return selectedCount
   }
 
-  function groupSelectedParamsKeys(sourceName: TrioSourceName, groupKey: string) {
+  function groupSelectedParamsNames(sourceName: TrioSourceName, groupKey: string) {
     let selectedKeys = selectedParamsKeysBySource(sourceName)
     return selectedKeys.filter(x => {
       let pieces = x.split('.')
       return pieces[0] === groupKey
+    }).map(p => {
+      let pieces = p.split('.')
+      return pieces[1]
     })
   }
 
@@ -195,17 +198,13 @@ export const useTrioStore = defineStore('trio', () => {
 
     selectedGroupsKeys.forEach(gk => {
       let group = trio.value.entities.groups[gk]
-      let params = groupSelectedParamsKeys(sourceName, gk).map(p => {
-        let pieces = p.split('.')
-        return pieces[1]
-      })
       let i = catsWithGroups.findIndex(c => {
         return trio.value.entities.groups[gk].categoryKey === c.catName
       })
 
-      let tmpGroup: TmpGroup = { groupName: gk, params, categoryKey: group.categoryKey, selectedCount: groupSelectedParamsCnt(sourceName, gk) }
+      let tmpGroup: TmpGroup = { groupName: gk, params: groupSelectedParamsNames(sourceName, gk), categoryKey: group.categoryKey, selectedCount: groupSelectedParamsCnt(sourceName, gk) }
       if (i === -1) {
-        catsWithGroups.push({ catName: trio.value.entities.groups[gk].categoryKey, groups: [tmpGroup] })
+        catsWithGroups.push({ catName: group.categoryKey, groups: [tmpGroup] })
       } else {
         catsWithGroups[i].groups.push(tmpGroup)
       }
@@ -318,6 +317,10 @@ export const useTrioStore = defineStore('trio', () => {
     selectedNewItemParams.value = [...selectedItemParams.value]
   }
 
+  function parseParamKey(paramKey : string, getGroup=false) {
+    let pieces = paramKey.split('.')
+    return getGroup ? pieces[1] : pieces[0]
+  }
   function clearSelected(sourceName: TrioSourceName) {
     groupIndex.value = 0
     categoryIndex.value = 0

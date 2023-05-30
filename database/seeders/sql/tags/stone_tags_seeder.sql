@@ -5,7 +5,7 @@ INSERT INTO `stone_tag_groups` VALUES
 (4,'Profile',1),
 (5,'Active Subtype',1),
 (6,'Non-Processor Subtype',1),
-(7,'Passive Subtype ',1),
+(7,'Passive Subtype',1),
 (8,'Use Wear',1),
 (9,'Vessel Base',1),
 (10,'Vessel Part',1),
