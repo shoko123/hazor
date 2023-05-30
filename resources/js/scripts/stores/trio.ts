@@ -118,8 +118,7 @@ export const useTrioStore = defineStore('trio', () => {
     return selectedGroups.map(x => {
       let group = trio.value.entities.groups[x]
       let params = group.params.map(p => {
-        let pieces = p.split('.')
-        return pieces[1]
+        return parseParamKey(p)
       })
       return { groupName: x, params, categoryKey: group.categoryKey, selectedCount: groupSelectedParamsCnt(sourceName, x) }
     })
@@ -156,8 +155,7 @@ export const useTrioStore = defineStore('trio', () => {
   function groupSelectedParamsCnt(sourceName: TrioSourceName, groupKey: string) {
     let selectedKeys = selectedParamsKeysBySource(sourceName)
     let selectedCount = selectedKeys.reduce((accumulator, param) => {
-      let pieces = param.split('.')
-      let toAdd = (pieces[0] === groupKey ? 1 : 0)
+      let toAdd = (parseParamKey(param, false) === groupKey ? 1 : 0)
       return accumulator + toAdd
     }, 0);
     return selectedCount
@@ -166,11 +164,9 @@ export const useTrioStore = defineStore('trio', () => {
   function groupSelectedParamsNames(sourceName: TrioSourceName, groupKey: string) {
     let selectedKeys = selectedParamsKeysBySource(sourceName)
     return selectedKeys.filter(x => {
-      let pieces = x.split('.')
-      return pieces[0] === groupKey
+      return parseParamKey(x, false) === groupKey
     }).map(p => {
-      let pieces = p.split('.')
-      return pieces[1]
+      return parseParamKey(p)
     })
   }
 
@@ -317,9 +313,9 @@ export const useTrioStore = defineStore('trio', () => {
     selectedNewItemParams.value = [...selectedItemParams.value]
   }
 
-  function parseParamKey(paramKey : string, getGroup=false) {
+  function parseParamKey(paramKey : string, getParam=true) {
     let pieces = paramKey.split('.')
-    return getGroup ? pieces[1] : pieces[0]
+    return getParam ? pieces[1] : pieces[0]
   }
   function clearSelected(sourceName: TrioSourceName) {
     groupIndex.value = 0
@@ -332,8 +328,7 @@ export const useTrioStore = defineStore('trio', () => {
       case 'New':
         const resetParams: string[] = []
         selectedNewItemParams.value.forEach(x => {
-          let pieces = x.split('.')
-          let group = trio.value.entities.groups[pieces[0]]
+          let group = trio.value.entities.groups[parseParamKey(x, false)]
           if (["LV", "CV"].includes(group.group_type_code)) {
             resetParams.push(group.params[0])
           }

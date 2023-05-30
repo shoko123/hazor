@@ -5,6 +5,9 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\Rule;
+use Illuminate\Database\Query\Builder;
+use Closure;
 
 class TagSyncRequest extends FormRequest
 {
@@ -18,6 +21,12 @@ class TagSyncRequest extends FormRequest
         "Stone" => "stone_tags",
         "Fauna" => "fauna_tags"
     ];
+
+    private $modelInfo = [
+        "Locus" => [ "table_name" => "loci", "tag_table_name" => "locus_tags", "fields" => ["area"]],
+        "Stone" => [ "table_name" => "stones", "tag_table_name" => "stone_tags", "fields" => ["material_id", "base_type_id"]],
+        "Fauna" => [ "table_name" => "fauna", "tag_table_name" => "fauna_tags", "fields" => []],
+    ];    
     
     /**
      * Determine if the user is authorized to make this request.
@@ -40,19 +49,24 @@ class TagSyncRequest extends FormRequest
      */
     public function rules(): array
     {
-        //TODO finish global_tags, CV and LV rules
+        //TODO  column_values Rule
         $model = $this->input("model");
-        $table_name = $this->modelToTableName[$model];
-        $tag_table_name = $this->modelToTagTableName[$model];
-        $id_exists_rule = 'exists:' . $table_name . ',id';
-        $tag_id_exists_rule = 'exists:' . $tag_table_name . ',id';
-        //$global_tag_id_exists_rule = '';
+        $info = $this->modelInfo[$this->input("model")];
 
+        $table_name = $this->modelToTableName[$this->input("model")];
+        $tag_table_name = $this->modelToTagTableName[$model];
+        $id_exists_rule = 'required|exists:' . $table_name . ',id';
+        $tag_id_exists_rule = 'exists:' . $tag_table_name . ',id';
+
+        $column_names = collect($info["fields"])->implode(',');
+        $column_name_rule = 'in:' . $column_names;
         return [
             'model' => 'required|in:Locus,Stone,Fauna',
             'id' => $id_exists_rule,
-            'new_tag_ids.*' => $tag_id_exists_rule,
-            //'global_tags.*' => $global_tag_id_exists_rule,
+            'model_tag_ids.*' => $tag_id_exists_rule,
+            'ids.*' => 'exists:tags,id',
+            'columns.*.name' => $column_name_rule,
+            'columns.*.value' => '',
         ];
     }
 
