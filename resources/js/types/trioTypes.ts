@@ -48,7 +48,18 @@ type Trio = {
   result: string[],
 }
 
+type TParam = {
+  id: number,
+  name: string,
+  ordr: number,
+  paramKey: string
+}
 
+type TColumnInfo = {
+  column_name: string,
+  val: number | string
+  paramKey: string
+}
 
 type TSelectedParam = {
   key: string,
@@ -66,6 +77,8 @@ export {
   TGroupTag,
   TGroup,
   TGroupType,
+  TParam,
+  TColumnInfo,
   IGroupObject,
   ICategoryObject,
   TEntities,

@@ -11,6 +11,10 @@ function globalGroups()
             "group_type_code" => "BF",
             "params"  => ["Photo", "Drawing", "Photo and Drawing", "Plan", "Misc"]
         ],
+        "Scope" => [
+            "group_type_code" => "BF",
+            "params"  => ["Basket", "Artifact"]
+        ],
         "Periods (Top-Level)" => [
             "group_type_code" => "TG",
             "dependency" => null

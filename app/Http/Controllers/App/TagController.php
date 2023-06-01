@@ -14,10 +14,7 @@ class TagController extends Controller
     public function sync(TagSyncRequest $r, DigModel $m, TagModel $tagModel)
     {
         $validated = $r->validated();
-        return response()->json([
-            "msg" => "TagController.sync()",
-            "res" => $tagModel->sync($validated, $m)//"Yeah"//$res
-        ], 200);
+        return response()->json($tagModel->sync($validated, $m), 200);
     }
 
     public function init(Request $r)

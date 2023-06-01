@@ -1,8 +1,10 @@
 // stores/trio.js
-import { defineStore } from 'pinia'
+import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
-import { TGroupTag, TGroup, Trio, TrioSourceName, TmpGroup } from '../../types/trioTypes'
-import { TApiItemShow, TApiItemUpdate } from '@/js/types/itemTypes'
+import { TGroupTag, TGroup, Trio, TrioSourceName, TmpGroup, TGroupValue, TColumnInfo } from '../../types/trioTypes'
+import { useXhrStore } from './xhr'
+import { useItemStore } from './item'
+import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import normalizeTrio from './trioNormalizer'
 
 type TViewParam = { paramKey: string, id: number, name: string, selected: boolean }
@@ -98,8 +100,8 @@ export const useTrioStore = defineStore('trio', () => {
           required = false
           multiple = (<TGroupTag>group).multiple
           break
-          default:
-            break
+        default:
+          break
       }
       return {
         name: x,
@@ -129,19 +131,6 @@ export const useTrioStore = defineStore('trio', () => {
     return agk
   }
 
-  //To be used by submit as the final selected groups and their params
-  function groupsWithASelectedParam(sourceName: TrioSourceName): TmpGroup[] {
-    if (trio.value.result.length === 0) { return [] }
-    let selectedGroups = availableGroupsKeys(sourceName, true)
-
-    return selectedGroups.map(x => {
-      let group = trio.value.entities.groups[x]
-      let params = group.params.map(p => {
-        return parseParamKey(p)
-      })
-      return { groupName: x, params, categoryKey: group.categoryKey, selectedCount: groupSelectedParamsCnt(sourceName, x) }
-    })
-  }
   //Is group available?.
   //if source is filter, all groups are available.
   //if source is 'New' don't show CS (textual search). Check if group available for current item scope.
@@ -163,12 +152,6 @@ export const useTrioStore = defineStore('trio', () => {
       tagGroup.dependency.some(x => {
         return (selectedParams.includes(x))
       })
-  }
-
-  function groupIsVisible(sourceName: TrioSourceName, groupKey: string) {
-    let vc = visibleCategoriesKeys(sourceName)
-    let groupKeys = trio.value.entities.categories[vc[categoryIndex.value]].groups
-    return groupKeys.includes(groupKey) && groupIsAvailable(sourceName, groupKey)
   }
 
   function groupSelectedParamsCnt(sourceName: TrioSourceName, groupKey: string) {
@@ -234,7 +217,6 @@ export const useTrioStore = defineStore('trio', () => {
     let group = trio.value.entities.groups[parseParamKey(paramInfo.paramKey, false)]
 
     let selected = selectedParamsKeysBySource(sourceName)
-    let selectedPerGroup = selected.filter(x => parseParamKey(x, false) === group.group_name)
     const isSelected = selected.includes(paramInfo.paramKey)
     console.log(`TRIO.click(${groupIndex}, ${paramIndex}): "${paramInfo.paramKey}"`)
     switch (sourceName) {
@@ -242,7 +224,6 @@ export const useTrioStore = defineStore('trio', () => {
         return paramFilterClicked(sourceName, paramInfo.paramKey, group, selected, isSelected)
       case 'New':
         return paramNewClicked(sourceName, paramInfo.paramKey, group, selected, isSelected)
-
       case 'Item':
         console.log("Error in param - source name is 'Item'")
     }
@@ -306,6 +287,7 @@ export const useTrioStore = defineStore('trio', () => {
         console.log("Error in paramNewClicked - wrong group_type_code")
     }
   }
+
   function flipParam(sourceName: TrioSourceName, paramKey: string, selectedParams: string[], select: boolean) {
     if (select) {
       selectedParams.push(paramKey)
@@ -317,6 +299,7 @@ export const useTrioStore = defineStore('trio', () => {
     }
 
   }
+
   //When unselecting a param, we must check and possibly unselect dependencies.
   function clearDependecies(sourceName: TrioSourceName, paramKey: string) {
     console.log(`clearDependecies param: ${paramKey}`)
@@ -405,10 +388,70 @@ export const useTrioStore = defineStore('trio', () => {
     selectedNewItemParams.value = [...selectedItemParams.value]
   }
 
+  async function submit() {
+    let { send } = useXhrStore()
+    let { fields } = useItemStore()
+    let { current } = storeToRefs(useRoutesMainStore())
+    console.log(`trio.submit()`)
+    let globalTagIds = <number[]>([])
+    let modelTagIds = <number[]>([])
+    let columns = <TColumnInfo[]>([])
+
+    selectedNewItemParams.value.forEach(paramKey => {
+      let group = trio.value.entities.groups[parseParamKey(paramKey, false)]
+      switch (group.group_type_code) {
+        case "TG":
+          globalTagIds.push(trio.value.entities.params[paramKey].id)
+          break
+        case "TM":
+          modelTagIds.push(trio.value.entities.params[paramKey].id)
+          break
+        case "LV":
+        case "CV":
+          let param = trio.value.entities.params[paramKey]
+          let column_name = (<TGroupValue>group).column_name
+          columns.push({ column_name, val: param.id, paramKey: param.paramKey })
+          break
+      }
+    })
+    let data = {
+      model: current.value.module,
+      id: current.value.url_id,
+      ids: globalTagIds,
+      model_tag_ids: modelTagIds,
+      columns
+    }
+
+    console.log(`tags.sync() data: ${JSON.stringify(data, null, 2)}`)
+
+    let res = await send('tags/sync', 'post', data)
+      .catch(err => {
+        console.log(`tags.sync() failed. err: ${JSON.stringify(err, null, 2)}`)
+        throw err
+      })
+    categoryIndex.value = 0
+    groupIndex.value = 0
+  
+    //console.log(`tags.sync() res.data: ${JSON.stringify(res.data.all_tags, null, 2)}`)
+    selectedItemParams.value = [...res.data.all_tags]
+    
+    //TODO fix this ugly casting later
+    let genFields = fields as unknown as { 
+      [key: string]: number |string
+    }
+
+    let cols: TColumnInfo[] = [...res.data.columns]
+    cols.forEach(x => {
+      genFields[x.column_name]= x.val
+    })
+    clearSelected('New')
+  }
+
   function parseParamKey(paramKey: string, getParam = true) {
     let pieces = paramKey.split('.')
     return getParam ? pieces[1] : pieces[0]
   }
+
   function clearSelected(sourceName: TrioSourceName) {
     groupIndex.value = 0
     categoryIndex.value = 0
@@ -434,27 +477,6 @@ export const useTrioStore = defineStore('trio', () => {
     }
   }
 
-  //DEBUG only
-  // const filterVisibleCategoriesKeys = computed(() => {
-  //   let cats: string[] = []
-
-  //   let availGrpsKeys = availableGroupsKeys("Filter")
-  //   availGrpsKeys.forEach(x => {
-  //     let g = trio.value.entities.groups[x]
-  //     let i = cats.findIndex(x => x === g.categoryKey)
-  //     if (i === -1) {
-  //       cats.push(g.categoryKey)
-  //     }
-  //   })
-  //   return cats
-  // })
-
-  // const filterVisibleGroupsKeys = computed(() => {
-  //   let groupKeys = trio.value.entities.categories[filterVisibleCategoriesKeys.value[categoryIndex.value]].groups
-  //   return groupKeys.filter(x => groupIsVisible("Filter", x))
-  // })
-  //END DEBUG
-
   return {
     clearSelected,
     paramClicked,
@@ -472,8 +494,6 @@ export const useTrioStore = defineStore('trio', () => {
     selectedNewItemParams,
     copyCurrentToNew,
     saveItemTags,
-    groupsWithASelectedParam
-    // filterVisibleCategoriesKeys,
-    // filterVisibleGroupsKeys
+    submit
   }
 })

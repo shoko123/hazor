@@ -38,6 +38,7 @@
 import { computed, ref } from 'vue'
 import { useTrioStore } from '../../scripts/stores/trio';
 import { useRouter } from 'vue-router'
+import { TModule } from '@/js/types/routesTypes';
 
 const router = useRouter()
 let trio = useTrioStore()
@@ -97,8 +98,10 @@ function paramClicked(paramIndex: number) {
   trio.paramClicked('New', trio.groupIndex, paramIndex)
 }
 
-function submit(paramIndex: number) {
-  console.log(`submitClicked`)
+async function submit() {
+  await trio.submit()
+  trio.clearSelected('New')
+  router.go(-1) 
 }
 function cancel(paramIndex: number) {
   console.log(`cancelClicked`)

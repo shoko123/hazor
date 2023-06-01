@@ -65,8 +65,9 @@ class TagSyncRequest extends FormRequest
             'id' => $id_exists_rule,
             'model_tag_ids.*' => $tag_id_exists_rule,
             'ids.*' => 'exists:tags,id',
-            'columns.*.name' => $column_name_rule,
-            'columns.*.value' => '',
+            'columns.*.column_name' => $column_name_rule,
+            'columns.*.val' => '',
+            'columns.*.paramKey' => '',
         ];
     }
 
