@@ -47,8 +47,10 @@ const header = computed(() => {
 })
 
 const groupHeader = computed(() => {
-  return 'requird, multiple-selection'
+  let group = groups.value[groupIndex.value]
+  return `${group.required ? "R": "Not r"}equired,  ${group.multiple ? "multiple": "single"} selection`
 })
+
 const cats = computed(() => {
   return trio.visibleCategories('New')
 })

@@ -81,19 +81,19 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
             "multiple" => true
         ],
         "Search-Locus" => [
-            "group_type_code" => "TS",            
+            "group_type_code" => "CS",
             "column_name" => "name",
         ],
         "Search-Basket" => [
-            "group_type_code" => "TS",            
+            "group_type_code" => "CS",
             "column_name" => "basket",
         ],
         "Search-Year" => [
-            "group_type_code" => "TS",            
+            "group_type_code" => "CS",
             "column_name" => "year",
         ],
         "Search-Details" => [
-            "group_type_code" => "TS",            
+            "group_type_code" => "CS",
             "column_name" => "details",
         ],
     ];
@@ -128,7 +128,10 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
                 ]
             ],
             "Registration" => [
-                ["Area"],
+                [
+                    "Area",
+                    "Media"
+                ],
             ],
             "Periods" => [
                 [

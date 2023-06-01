@@ -47,8 +47,11 @@ abstract class ModelGroup
             case "LV":
                 return $this->getLookupGroupDetails($group_name, $group);
 
-            case "TS":
+            case "CS":
                 return $this->getTextualSearchGroupDetails($group_name, $group);
+
+            case "BF":
+                return $this->getBespokeFilterGroupDetails($group_name, $group);
         }
         return [];
     }
@@ -82,6 +85,7 @@ abstract class ModelGroup
         return array_merge($group, [
             "group_name" => $group_name,
             "group_id" => $tagGroup->id,
+            "multiple" => $tagGroup->multiple,
             "params"  => $tagGroup->tags->map(function ($y) {
                 return ["id" => $y->id, "name" => $y->name];
             }),
@@ -100,6 +104,7 @@ abstract class ModelGroup
         return array_merge($group, [
             "group_name" => $group_name,
             "group_id" => $gtg->id,
+            "multiple" => true,
             "params"  => $gtg->tags->map(function ($y) {
                 return ["id" => $y->id, "name" => $y->name];
             }),
@@ -125,13 +130,22 @@ abstract class ModelGroup
         }
 
         return [
-            "group_type_code" => "TS",
+            "group_type_code" => "CS",
             "group_name" => $group_name,
             "column_name" => $group["column_name"],
             "params" => [["name" => "term1"], ["name" => "term2"], ["name" => "term3"]]
         ];
     }
 
+    private function getBespokeFilterGroupDetails($group_name, $group)
+    {
+        $paramsFormatted = collect($group["params"])->map(function ($y, $key) {
+            return ["id" => $key, "name" => $y];
+        });
+        $group["params"] = $paramsFormatted;
+        $group["group_name"] = $group_name;
+        return $group;
+    }
     public function buildTrio($cats): array
     {
         $trio = [];

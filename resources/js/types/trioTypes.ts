@@ -7,9 +7,10 @@ type TCategory = {
   name: string,
   groups: string[]
 }
+type TGroupType = 'TM' | 'TG' | 'LV' | 'CV' | 'CS' | 'BF'
 
 type TGroupValue = {
-  group_type_code: string,
+  group_type_code: TGroupType,
   group_name: string,
   table_name: string,
   column_name: string,
@@ -18,14 +19,16 @@ type TGroupValue = {
 }
 
 type TGroupTag = {
-  group_type_code: string,
+  group_type_code: TGroupType,
   group_name: string,
   group_id: string,
-  multiple: string,
+  multiple: boolean,
   dependency: string[],
   params: string[],
   categoryKey: string
 }
+
+type TGroup = TGroupTag | TGroupValue
 
 interface IGroupObject {
   [key: string]: TGroupValue | TGroupTag
@@ -61,6 +64,8 @@ export {
   TCategory,
   TGroupValue,
   TGroupTag,
+  TGroup,
+  TGroupType,
   IGroupObject,
   ICategoryObject,
   TEntities,

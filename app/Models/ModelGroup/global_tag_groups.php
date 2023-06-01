@@ -4,9 +4,12 @@ function globalGroups()
 {
     return [
         "Area" => [
-            "group_type_code" => "CV",
-            "table_name" => "loci",
-            "column_name" => "area"
+            "group_type_code" => "BF",
+            "params"  => ["A1", "A2", "A3", "A4", "A5"]
+        ],
+        "Media" => [
+            "group_type_code" => "BF",
+            "params"  => ["Photo", "Drawing", "Photo and Drawing", "Plan", "Misc"]
         ],
         "Periods (Top-Level)" => [
             "group_type_code" => "TG",

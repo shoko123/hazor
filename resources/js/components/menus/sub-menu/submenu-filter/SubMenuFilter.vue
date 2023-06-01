@@ -15,7 +15,8 @@ import { useRouter } from 'vue-router'
 import { useRoutesParserStore } from '../../../../scripts/stores/routes/routesParser'
 
 let { current } = storeToRefs(useRoutesMainStore())
-let { clearSelected, groupsWithASelectedParam } = useTrioStore()
+let trio = useTrioStore()
+
 const { serializeQueryParams } = useRoutesParserStore()
 const router = useRouter()
 
@@ -25,7 +26,9 @@ const name = computed(() => {
 
 function submit() {
   console.log(`filter.submit()`);
-  let query = serializeQueryParams(groupsWithASelectedParam('Filter'));
+  trio.groupIndex = 0
+  trio.categoryIndex = 0
+  let query = serializeQueryParams(trio.groupsWithASelectedParam('Filter'));
 
   router.push({ name: 'index', params: { module: current.value.url_module }, query })
 }
@@ -37,6 +40,6 @@ async function getCount() {
 }
 function clear() {
   console.log(`filter.clear()`);
-  clearSelected('Filter')
+  trio.clearSelected('Filter')
 };
 </script>
