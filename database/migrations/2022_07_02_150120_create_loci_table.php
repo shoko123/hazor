@@ -31,6 +31,7 @@ class CreateLociTable extends Migration
             $table->unsignedSmallInteger('s4_no')->nullable();
             $table->unsignedSmallInteger('s5_no')->nullable();
             $table->unsignedSmallInteger('s6_no')->nullable();
+            $table->unsignedMediumInteger('order_column')->default(0);
 
             $table->unique(['area', 'name']);            
         });

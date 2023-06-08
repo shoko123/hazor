@@ -39,8 +39,9 @@ class CreateFaunaTables extends Migration
             $table->string('fragment_present', 50)->nullable();
             $table->unsignedSmallInteger('bone_number')->nullable();
             $table->string('snippet', 200)->nullable();
-            $table->unsignedTinyInteger('taxon_id')->dafault(1);
-            $table->unsignedTinyInteger('element_id')->dafault(1);
+            $table->unsignedTinyInteger('taxon_id')->default(1);
+            $table->unsignedTinyInteger('element_id')->default(1);
+            $table->unsignedMediumInteger('order_column')->default(0);
 
             $table->foreign('taxon_id')
                 ->references('id')->on('fauna_taxa')

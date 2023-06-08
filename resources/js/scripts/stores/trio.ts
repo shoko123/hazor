@@ -60,17 +60,8 @@ export const useTrioStore = defineStore('trio', () => {
   }
 
   function visibleCategoriesKeys(sourceName: TrioSourceName): string[] {
-    let cats: string[] = []
-    let agk = availableGroupsKeys(sourceName)
-
-    agk.forEach(x => {
-      let group = trio.value.entities.groups[x]
-      let i = cats.findIndex(x => x === group.categoryKey)
-      if (i === -1) {
-        cats.push(group.categoryKey)
-      }
-    })
-    return cats
+    let c = visibleCategories(sourceName)
+    return c.map(x => x.name)
   }
 
   //returns groups that belong to the currently selected category, and that are also available.
@@ -256,13 +247,13 @@ export const useTrioStore = defineStore('trio', () => {
             //if there is currently  a  selected one - unselect the currently selected and select the new one.
             //if there isn't, select the new one.
             const currentKey = selected.find(x => { return parseParamKey(x, false) === group.group_name })
-            if (currentKey === undefined) {
+            if (currentKey !== undefined) {
+              flipParam(sourceName, currentKey, selected, false)
+              flipParam(sourceName, paramKey, selected, true)
+            } else {
               console.log("No param currently selected - selecting clicked")
               flipParam(sourceName, paramKey, selected, true)
-              return
             }
-            flipParam(sourceName, currentKey, selected, false)
-            flipParam(sourceName, paramKey, selected, true)
           }
         }
         break
@@ -388,6 +379,19 @@ export const useTrioStore = defineStore('trio', () => {
     selectedNewItemParams.value = [...selectedItemParams.value]
   }
 
+  function groupsWithASelectedParam(sourceName: TrioSourceName): TmpGroup[] {
+    if (trio.value.result.length === 0) { return [] }
+    let selectedGroups = availableGroupsKeys(sourceName, true)
+
+    return selectedGroups.map(x => {
+      let group = trio.value.entities.groups[x]
+      let params = group.params.map(p => {
+        return parseParamKey(p)
+      })
+      return { groupName: x, params, categoryKey: group.categoryKey, selectedCount: groupSelectedParamsCnt(sourceName, x) }
+    })
+  }
+
   async function submit() {
     let { send } = useXhrStore()
     let { fields } = useItemStore()
@@ -431,18 +435,18 @@ export const useTrioStore = defineStore('trio', () => {
       })
     categoryIndex.value = 0
     groupIndex.value = 0
-  
+
     //console.log(`tags.sync() res.data: ${JSON.stringify(res.data.all_tags, null, 2)}`)
     selectedItemParams.value = [...res.data.all_tags]
-    
+
     //TODO fix this ugly casting later
-    let genFields = fields as unknown as { 
-      [key: string]: number |string
+    let genFields = fields as unknown as {
+      [key: string]: number | string
     }
 
     let cols: TColumnInfo[] = [...res.data.columns]
     cols.forEach(x => {
-      genFields[x.column_name]= x.val
+      genFields[x.column_name] = x.val
     })
     clearSelected('New')
   }
@@ -492,6 +496,7 @@ export const useTrioStore = defineStore('trio', () => {
     selectedFilterParams,
     selectedItemParams,
     selectedNewItemParams,
+    groupsWithASelectedParam,
     copyCurrentToNew,
     saveItemTags,
     submit

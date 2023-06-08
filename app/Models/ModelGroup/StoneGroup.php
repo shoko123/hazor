@@ -146,7 +146,7 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
                     "Modern Subperiods"
                 ],
             ],
-            "Basic Charectaristics" => [
+            "Basic Characteristics" => [
                 [
                     "Material",
                     "Life Stage",
