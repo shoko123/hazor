@@ -1,14 +1,14 @@
 // stores/trio.js
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
-import { TGroupTag, TGroup, Trio, TrioSourceName, TmpGroup, TGroupValue, TColumnInfo } from '../../types/trioTypes'
+import { TGroupTag, TGroup, Trio, TrioSourceName, TmpGroup, TGroupValue, TColumnInfo, IObject } from '../../types/trioTypes'
 import { useXhrStore } from './xhr'
 import { useItemStore } from './item'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import normalizeTrio from './trioNormalizer'
 
-type TViewParam = { paramKey: string, id: number, name: string, selected: boolean }
-type TViewGroup = { groupKey: string, name: string, visible: boolean, params: string[], selectedCount: number, required: boolean, multiple: boolean }
+type TViewParam = { paramKey: string, id: number, name: string, selected: boolean, modal: boolean }
+type TViewGroup = { groupKey: string, name: string, visible: boolean, params: string[], selectedCount: number, isTextSearch: boolean, required: boolean, multiple: boolean }
 type TViewCategory = { name: string, visible: boolean, selectedCount: number }
 
 export const useTrioStore = defineStore('trio', () => {
@@ -99,6 +99,7 @@ export const useTrioStore = defineStore('trio', () => {
         groupKey: x,
         visible: true,
         selectedCount: groupSelectedParamsCnt(sourceName, x),
+        isTextSearch: (group.group_type_code === 'CS'),
         required,
         multiple,
         params: group.params
@@ -392,6 +393,21 @@ export const useTrioStore = defineStore('trio', () => {
     })
   }
 
+  function filtersToQueryObject(): IObject {
+    let query: IObject = {}
+    selectedFilterParams.value.forEach(pk => {
+      let groupKeyUnderlined = parseParamKey(pk, false).replace(/ /g, "_")
+      let paramUnderlined = parseParamKey(pk).replace(/ /g, "_")
+      if (query.hasOwnProperty(groupKeyUnderlined)) {
+        query[groupKeyUnderlined] += ',' + paramUnderlined
+      } else {
+        query[groupKeyUnderlined] = paramUnderlined
+      }
+    })
+    console.log(`filtersToQueryObject().query: ${JSON.stringify(query, null, 2)}`);
+    return query
+  }
+
   async function submit() {
     let { send } = useXhrStore()
     let { fields } = useItemStore()
@@ -451,9 +467,9 @@ export const useTrioStore = defineStore('trio', () => {
     clearSelected('New')
   }
 
-  function parseParamKey(paramKey: string, getParam = true) {
+  function parseParamKey(paramKey: string, getParam = true): string {
     let pieces = paramKey.split('.')
-    return getParam ? pieces[1] : pieces[0]
+    return getParam ? trio.value.entities.params[paramKey].name : pieces[0]
   }
 
   function clearSelected(sourceName: TrioSourceName) {
@@ -462,6 +478,12 @@ export const useTrioStore = defineStore('trio', () => {
     switch (sourceName) {
       case 'Filter':
         selectedFilterParams.value = []
+        //clear CS searchText
+        for (const [key, value] of Object.entries(trio.value.entities.groups)) {
+          if (value.group_type_code === 'CS') {
+            value.params.forEach(x => trio.value.entities.params[x].name = '[empty]')
+          }
+        }
         break
 
       case 'New':
@@ -481,6 +503,11 @@ export const useTrioStore = defineStore('trio', () => {
     }
   }
 
+  function setFilterSearchTerm(paramKey: string, searchTerm: string) {
+    console.log(`setFilterSearchTerm(${paramKey}, ${searchTerm})`)
+    trio.value.entities.params[paramKey].name = searchTerm
+  }
+
   return {
     clearSelected,
     paramClicked,
@@ -497,6 +524,8 @@ export const useTrioStore = defineStore('trio', () => {
     selectedItemParams,
     selectedNewItemParams,
     groupsWithASelectedParam,
+    filtersToQueryObject,
+    setFilterSearchTerm,
     copyCurrentToNew,
     saveItemTags,
     submit

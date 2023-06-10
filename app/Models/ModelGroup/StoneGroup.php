@@ -121,10 +121,10 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
         $cats = [
             "Search" => [
                 [
+                    "Search-Details",
                     "Search-Locus",
                     "Search-Basket",
                     "Search-Year",
-                    "Search-Details"
                 ]
             ],
             "Registration" => [

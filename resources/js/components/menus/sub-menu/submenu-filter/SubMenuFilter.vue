@@ -17,7 +17,6 @@ import { useRoutesParserStore } from '../../../../scripts/stores/routes/routesPa
 let { current } = storeToRefs(useRoutesMainStore())
 let trio = useTrioStore()
 
-const { serializeQueryParams } = useRoutesParserStore()
 const router = useRouter()
 
 const name = computed(() => {
@@ -28,15 +27,12 @@ function submit() {
   console.log(`filter.submit()`);
   trio.groupIndex = 0
   trio.categoryIndex = 0
-  let query = serializeQueryParams(trio.groupsWithASelectedParam('Filter'));
-
+  const query = trio.filtersToQueryObject()
   router.push({ name: 'index', params: { module: current.value.url_module }, query })
 }
 
 async function getCount() {
   console.log(`getCount()`);
-  //let query = serializeQueryParams(groupsWithASelectedParam('Filter'));
-  //router.push({ name: 'index', params: { module: current.value.url_module }, query })
 }
 function clear() {
   console.log(`filter.clear()`);

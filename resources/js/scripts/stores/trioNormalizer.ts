@@ -18,11 +18,15 @@ export default function normalizeTrio(res: object): Trio {
       return `${parent.group_name}.${value.name}`
     },
     processStrategy: (value, parent, key) => {
-      return {
+      let param = {
         ...value,
         paramKey: `${parent.group_name}.${value.name}`,
         order: 0
-      };
+      }
+      if(parent.group_type_code === 'CS'){
+        param.name = "[empty]"
+      }
+      return param
     },
   });
 

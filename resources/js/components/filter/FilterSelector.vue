@@ -4,23 +4,25 @@
     <v-card-text>
       <v-tabs v-model="categoryIndex" class="primary">
         <v-tab v-for="(cat, index) in cats" :key="index" color="purple"
-          :class="cat.selectedCount > 0 ? 'has-selected': ''">
+          :class="cat.selectedCount > 0 ? 'has-selected' : ''">
           {{ cat.selectedCount === 0 ? cat.name : `${cat.name}(${cat.selectedCount})` }}
         </v-tab>
       </v-tabs>
 
       <v-tabs v-model="groupIndex">
-        <v-tab v-for="(group, index) in groups" :key="index"  color="purple"
-          :class="[group.selectedCount > 0 ? 'has-selected': '', 'text-capitalize']">
+        <v-tab v-for="(group, index) in groups" :key="index" color="purple"
+          :class="[group.selectedCount > 0 ? 'has-selected' : '', 'text-capitalize']">
           {{ group.selectedCount === 0 ? group.name : `${group.name}(${group.selectedCount})` }}
         </v-tab>
       </v-tabs>
 
-      <v-sheet elevation="10" class="pa-4">
-        <v-chip-group multiple column v-model="selected" active-class="primary">
-          <v-chip v-for="(param, index) in params" :key="index" @click="paramClicked(index)" color="blue" large>
-            {{ param.name }}</v-chip>
-        </v-chip-group>
+      <v-sheet elevation="10" class="ma-2">
+        <div v-if="isColumnSearchGroup">
+          <ParamsAsTextSelectors/>
+        </div>
+        <div v-else>
+          <ParamsAsChips/>
+        </div>
       </v-sheet>
     </v-card-text>
   </v-card>
@@ -28,10 +30,12 @@
 
 <script lang="ts" setup >
 import { computed, ref } from 'vue'
-import { useTrioStore } from '../../scripts/stores/trio';
-
+import { useTrioStore } from '../../scripts/stores/trio'
+import ParamsAsChips from './ParamsAsChips.vue'
+import ParamsAsTextSelectors from './ParamsAsTextSelectors.vue'
 let trio = useTrioStore()
-
+let searchText = ref<string>("")
+let modal = ref<boolean[]>([false, false, false])
 const header = computed(() => {
   return 'Filter Selector'
 })
@@ -65,7 +69,7 @@ const groupIndex = computed({
   }
 })
 
-const selected = computed({
+const selectedParamIndexes = computed({
   get: () => {
     let selected: number[] = []
     params.value.forEach((x, index) => {
@@ -78,10 +82,19 @@ const selected = computed({
   set: val => { }
 })
 
-function paramClicked(paramIndex: number) {
-  trio.paramClicked('Filter', trio.groupIndex, paramIndex)
-}
+const isColumnSearchGroup = computed(() => {
+  return groups.value[groupIndex.value].isTextSearch
+})
 
+function paramClicked(paramIndex: number) {
+  if (isColumnSearchGroup.value) {
+    console.log(`textSearchChip.clicked(${paramIndex})`)
+    modal.value[paramIndex] = true
+    //console.log(`modal=${modal})`)
+  } else {
+    trio.paramClicked('Filter', trio.groupIndex, paramIndex)
+  }
+}
 
 </script>
 <style scoped>

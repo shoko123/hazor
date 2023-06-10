@@ -119,20 +119,6 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
         to.queryParams = urlQuery
         return true
     }
-    
-    function serializeQueryParams(groups: TmpGroup[]): IObject {
-        let query: IObject = {}
-        groups.forEach((group => {
-            let commaSeperated = ''
-            group.params.forEach(x => {
-                commaSeperated += x.replace(/ /g, "_") + ",";
-            })
-            query[group.groupName.replace(/ /g, "_")] = commaSeperated.slice(0, -1)
-        }
-        ));
-        console.log(`query: ${JSON.stringify(query, null, 2)}`);
-        return query
-    }
 
     function parseQueryParams(qp: IObject): IObject | null {
         type TGroupCode = 'TG' | 'TM' | 'LV' | 'CV' | 'BE'
@@ -152,5 +138,5 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
         }
         return groupsByType
     }
-    return { parse, parseUrlModule, parseUrlId, serializeQueryParams, parseQueryParams }
+    return { parse, parseUrlModule, parseUrlId, parseQueryParams }
 })
