@@ -99,7 +99,7 @@ function paramClicked(paramIndex: number) {
 }
 
 async function submit() {
-  await trio.submit()
+  await trio.sync()
   trio.clearSelected('New')
   router.go(-1) 
 }

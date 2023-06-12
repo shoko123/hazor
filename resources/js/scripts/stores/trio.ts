@@ -2,6 +2,8 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
 import { TGroupTag, TGroup, Trio, TrioSourceName, TmpGroup, TGroupValue, TColumnInfo, IObject } from '../../types/trioTypes'
+import { TParsingError } from '../../types/routesTypes'
+
 import { useXhrStore } from './xhr'
 import { useItemStore } from './item'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
@@ -46,7 +48,7 @@ export const useTrioStore = defineStore('trio', () => {
 
       //count
       let selectedCount = groupSelectedParamsCnt(sourceName, x)
-      console.log(`cnt: ${selectedCount}`)
+      //console.log(`cnt: ${selectedCount}`)
       let i = cats.findIndex(x => x.catName === group.categoryKey)
       if (i === -1) {
         cats.push({ catName: group.categoryKey, grpKeys: [x], cnt: selectedCount })
@@ -380,19 +382,6 @@ export const useTrioStore = defineStore('trio', () => {
     selectedNewItemParams.value = [...selectedItemParams.value]
   }
 
-  function groupsWithASelectedParam(sourceName: TrioSourceName): TmpGroup[] {
-    if (trio.value.result.length === 0) { return [] }
-    let selectedGroups = availableGroupsKeys(sourceName, true)
-
-    return selectedGroups.map(x => {
-      let group = trio.value.entities.groups[x]
-      let params = group.params.map(p => {
-        return parseParamKey(p)
-      })
-      return { groupName: x, params, categoryKey: group.categoryKey, selectedCount: groupSelectedParamsCnt(sourceName, x) }
-    })
-  }
-
   function filtersToQueryObject(): IObject {
     let query: IObject = {}
     selectedFilterParams.value.forEach(pk => {
@@ -408,11 +397,105 @@ export const useTrioStore = defineStore('trio', () => {
     return query
   }
 
-  async function submit() {
+  function urlQueryObjectToApiFilters(qp: IObject): IObject | TParsingError {
+    console.log(`urlQueryObjectToApiFilters().urlQuery: ${JSON.stringify(qp, null, 2)}`);
+    let all = {
+      model_tag_ids: <number[]>[],
+      global_tag_ids: <number[]>[],
+      column_values: <{ column_name: string, vals: string[] }[]>[],
+      column_lookup_ids: <{ column_name: string, vals: number[] }[]>[],
+      column_search: <{ column_name: string, vals: string[] }[]>[],
+      bespoke: <{ name: string, vals: string[] }[]>[]
+    }
+
+    for (const [key, value] of Object.entries(qp)) {
+      //Verify that the group exists. 
+      let groupKey = key.replace(/_/g, " ")
+
+      if (!trio.value.entities.groups.hasOwnProperty(groupKey)) {
+        console.log(`Query parsing Error: "${key}" group doesn't exist. aborting... `)
+        return 'BadQueryParams'
+      }
+      let group = trio.value.entities.groups[groupKey]
+
+      //verify that params exist for this group 
+      let underlinedParams = <string[]>value.split(',')
+      let params = underlinedParams.map(x => <string>x.replace(/_/g, " "))
+      let possibleParams = group.params.map(x => parseParamKey(x))
+      //console.log(`key: ${groupKey}\nparams: ${params}\npossibleParams: ${possibleParams}\ngroup: ${JSON.stringify(group, null, 2)}`);
+
+      params.forEach(x => {
+        if (group.group_type_code !== 'CS') {
+          if (!possibleParams.some(y => y === x)) {
+            console.log(`Query parsing Error: "${x}" param doesn't exist in group ${key}. aborting... `)
+            return 'BadQueryParams'
+          }
+        }
+      })
+
+      console.log(`passed group+params existence`)
+
+      //assign parameters to their correct 'filter' category
+      switch (group.group_type_code) {
+        case 'TG':
+          all.global_tag_ids.push(...params.map(x => {
+            let paramKey = groupKey + '.' + x
+            return trio.value.entities.params[paramKey].id
+          }))
+          break
+        case 'TM':
+          all.model_tag_ids.push(...params.map(x => {
+            let paramKey = groupKey + '.' + x
+            return trio.value.entities.params[paramKey].id
+          }))
+          break
+        case 'LV':
+          all.column_lookup_ids.push({
+            column_name: (<TGroupValue>trio.value.entities.groups[groupKey]).column_name,
+            vals: params.map(x => {
+              let paramKey = groupKey + '.' + x
+              return trio.value.entities.params[paramKey].id
+            })
+          })
+          break
+        case 'CV':
+          all.column_values.push({ column_name: (<TGroupValue>trio.value.entities.groups[groupKey]).column_name, vals: params })
+          break
+        case 'CS':
+          all.column_search.push({ column_name: (<TGroupValue>trio.value.entities.groups[groupKey]).column_name, vals: params })
+          break
+        case 'BF':
+          switch (key) {
+            case 'Media':
+              all.bespoke.push({ name: key, vals: params })
+              break
+
+            case 'Area':
+              all.bespoke.push({ name: key, vals: params })
+              break
+            default:
+              console.log(`Query parsing Error: Unrecognized bespoke group ${key}. aborting... `)
+              return 'BadQueryParams'
+          }
+      }
+    }
+
+    let query: IObject = {}
+    for (const [key, value] of Object.entries(all)) {
+      if (value.length > 0) {
+        query[key] = value
+      }
+    }
+
+    console.log(`urlQueryObjectToApiFilters()\nquery: ${JSON.stringify(query, null, 2)}`);
+    return query
+  }
+
+  async function sync() {
     let { send } = useXhrStore()
     let { fields } = useItemStore()
     let { current } = storeToRefs(useRoutesMainStore())
-    console.log(`trio.submit()`)
+    console.log(`trio.sync()`)
     let globalTagIds = <number[]>([])
     let modelTagIds = <number[]>([])
     let columns = <TColumnInfo[]>([])
@@ -523,11 +606,11 @@ export const useTrioStore = defineStore('trio', () => {
     selectedFilterParams,
     selectedItemParams,
     selectedNewItemParams,
-    groupsWithASelectedParam,
     filtersToQueryObject,
+    urlQueryObjectToApiFilters,
     setFilterSearchTerm,
     copyCurrentToNew,
     saveItemTags,
-    submit
+    sync
   }
 })

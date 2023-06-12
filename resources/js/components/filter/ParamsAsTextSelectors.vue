@@ -3,7 +3,7 @@
     <v-chip v-for="(param, index) in params" :key="index" @click="paramClicked(index)" color="blue" large>
       {{ param.name }}
     </v-chip>
-    <v-dialog v-model=dialog width="auto">
+    <v-dialog v-model=dialog persistent width="auto">
       <v-card>
         <v-card-text>
           Please enter search term

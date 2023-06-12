@@ -18,8 +18,10 @@ import { TCollectionName } from '../../types/collectionTypes'
 import { TImageableDetailsMain } from '../../types/mediaTypes'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
+import { storeToRefs } from 'pinia'
+import type { LocationQueryRaw } from 'vue-router'
 
-const { getRouteInfo } = useRoutesMainStore()
+
 const router = useRouter()
 const props = defineProps<{
   source: TCollectionName,
@@ -27,6 +29,7 @@ const props = defineProps<{
   details: TImageableDetailsMain
 }>()
 
+let { current } = storeToRefs(useRoutesMainStore())
 onMounted(() => {
   //console.log(`Overlay.onMounted props: ${JSON.stringify(props, null, 2)}`)
 })
@@ -48,8 +51,9 @@ function openModalCarousel() {
 
 function goTo(item: TImageableDetailsMain) {
   console.log(`goto item: ${JSON.stringify(item, null, 2)}`)
-  let routeInfo = getRouteInfo()
-  router.push({ name: 'show', params: { module: routeInfo.value.url_module, url_id: item.url_id } })
+  let queryParams = current.value.queryParams
+  router.push({ name: 'show', params: { module: current.value.url_module, url_id: item.url_id }, query: <LocationQueryRaw>queryParams})
+  //router.push({ name: 'index', params: { module: current.value.url_module }, query: query })
 }
 
 

@@ -9,7 +9,6 @@
 <script lang="ts" setup >
 import { computed, ref } from 'vue'
 import { useTrioStore } from '../../scripts/stores/trio'
-import TextSelectorChip from './TextSelectorChip.vue'
 
 let trio = useTrioStore()
 

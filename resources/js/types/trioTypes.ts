@@ -61,6 +61,11 @@ type TColumnInfo = {
   paramKey: string
 }
 
+type TColumnSearch = {
+  column_name: string,
+  search_term:  string
+}
+
 type TSelectedParam = {
   key: string,
   groupKey: string,
@@ -79,6 +84,7 @@ export {
   TGroupType,
   TParam,
   TColumnInfo,
+  TColumnSearch,
   IGroupObject,
   ICategoryObject,
   TEntities,

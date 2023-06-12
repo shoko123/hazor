@@ -115,7 +115,8 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
     }
 
     function parseUrlQuery(module: TModule | null, urlQuery: LocationQuery): TParsingError | true {
-        console.log(`parseUrlQuery() urlQuery: ${JSON.stringify(urlQuery, null, 2)}`);
+        trio.urlQueryObjectToApiFilters(urlQuery)
+        //console.log(`parseUrlQuery() urlQuery: ${JSON.stringify(urlQuery, null, 2)}`);
         to.queryParams = urlQuery
         return true
     }
