@@ -5,7 +5,7 @@ function globalGroups()
     return [
         "Area" => [
             "group_type_code" => "BF",
-            "params"  => ["A1", "A2", "A3", "A4", "A5"]
+            "params"  => ["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "XX"]
         ],
         "Media" => [
             "group_type_code" => "BF",

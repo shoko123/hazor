@@ -11,6 +11,7 @@ use App\Models\Interfaces\DigModelInterface;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\Functional\MediaModel;
 use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
+use Illuminate\Database\Eloquent\Builder;
 
 abstract class DigModel extends Model implements HasMedia, DigModelInterface
 {
@@ -18,6 +19,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
     public $timestamps = false;
     protected $guarded = [];
     protected $eloquent_model_name;
+    protected $builder;
 
     abstract function buildSqlDescription(): string;
     abstract function buildSqlUrlId(): string;
@@ -39,13 +41,52 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             ->nonQueued();
     }
 
-    public function index($queryParams)
+    public function index($query)
     {
-        $builder = $this->indexSelect();
-        $collection = $builder->orderBy('order_column', 'asc')->get();
+        $this->builder = $this->indexSelect();
+        $this->applyFilters($query);
+        $collection = $this->builder->orderBy('order_column', 'asc')->get();
         return $collection;
     }
 
+    public function applyFilters($query)
+    {
+        if (!empty($query["model_tag_ids"])) {
+            $this->applyModelTagFilters($query["model_tag_ids"]);
+        }
+
+        if (!empty($query["global_tag_ids"])) {
+            $this->applyGlobalTagFilters($query["global_tag_ids"]);
+        }
+        return;
+    }
+
+    public function applyModelTagFilters(array $tag_ids)
+    {
+        $modelName = "App\\Models\\Tags\\" . $this->eloquent_model_name . "Tag";
+        $model = new $modelName;
+        $groups = [];
+        $tags = $model->select('id', 'group_id')->whereIn('id', $tag_ids)->get();
+
+        foreach ($tags as $tag) {
+            if (array_key_exists($tag->group_id, $groups)) {
+                array_push($groups[$tag->group_id], $tag->id);
+            } else {
+                $groups[$tag->group_id] = [$tag->id];
+            }
+        }
+
+        foreach ($groups as $type_id => $tag_ids_for_group) {
+            $this->builder->whereHas('model_tags', function (Builder $q) use ($tag_ids_for_group) {
+                $q->whereIn('id', $tag_ids_for_group);
+            });
+        }
+    }
+    public function applyGlobalTagFilters(array $tag_ids)
+    {
+
+    }
+    
     public function page($ids, $view): Collection
     {
         $idsAsCommaSeperatedString = implode(',', $ids);

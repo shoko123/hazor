@@ -10,6 +10,12 @@ require_once 'global_tag_groups.php';
 class LocusGroup extends ModelGroup implements ModelGroupInterface
 {
     static private $model_groups = [
+        "Area" => [
+            "group_type_code" => "CV",
+            "table_name" => "loci",
+            "column_name" => "area",
+        ],
+
         "Stratum" => [
             "group_type_code" => "TM",
             "dependency" => null,
@@ -20,7 +26,7 @@ class LocusGroup extends ModelGroup implements ModelGroupInterface
     public function __construct()
     {
         ModelGroup::__construct('Locus');
-        self::$groups = array_merge(self::$model_groups, globalGroups());
+        self::$groups = array_merge(globalGroups(), self::$model_groups);
     }
 
     public static function getModelGroups(): array
@@ -37,11 +43,8 @@ class LocusGroup extends ModelGroup implements ModelGroupInterface
     {
         $cats = [
             "Registration" => [
-                ["Area"]
+                ["Area", "Stratum"]
             ], 
-            "Chronology" => [
-                ["Stratum"],
-            ],
         ];
 
         return $this->buildTrio($cats);

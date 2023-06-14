@@ -30,7 +30,7 @@ type TIdParams = { id: number, params: object, extra: object } | undefined
 type TRouteInfo = {
     url_module: TUrlModule | undefined,
     url_id: string | undefined,
-    url_query_string: string | undefined,
+    url_full_path: string | undefined,
     name: TName,
     module: TModule,
     idParams: TIdParams,

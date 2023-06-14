@@ -550,10 +550,7 @@ export const useTrioStore = defineStore('trio', () => {
     selectedItemParams.value = [...res.data.all_tags]
 
     //TODO fix this ugly casting later
-    let genFields = fields as unknown as {
-      [key: string]: number | string
-    }
-
+    let genFields = fields as unknown as IObject
     let cols: TColumnInfo[] = [...res.data.columns]
     cols.forEach(x => {
       genFields[x.column_name] = x.val
@@ -562,6 +559,7 @@ export const useTrioStore = defineStore('trio', () => {
   }
 
   function parseParamKey(paramKey: string, getParam = true): string {
+    //console.log(`parseParamKey() key: ${paramKey} value: ${trio.value.entities.params[paramKey]}`)
     let pieces = paramKey.split('.')
     return getParam ? trio.value.entities.params[paramKey].name : pieces[0]
   }

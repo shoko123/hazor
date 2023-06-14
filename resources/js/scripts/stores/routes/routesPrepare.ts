@@ -140,13 +140,13 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     let queryRes = p.parseQuery(module, query)
 
     if (!queryRes.success) {
-      console.log(`parseSlug() failed`)
+      console.log(`parseQuery() failed`)
       throw (<TParseErrorDetails>queryRes.data).error
     }
 
-    n.showSpinner(`Loading Module ${module} collection...`)
+    n.showSpinner(`Loading ${module} collection...`)
     console.log(`prepare.loadMainCollection()`)
-    return xhr.send('model/index', 'post', { model: module })
+    return xhr.send('model/index', 'post', { model: module, query: queryRes.data })
       .then(res => {
         r.to.queryParams = query
         c.setArray('main', res.data.collection)
@@ -170,7 +170,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       throw (<TParseErrorDetails>idRes.data).error
     }
 
-    n.showSpinner(`Loading item ${module} ...`)
+    n.showSpinner(`Loading ${module} item...`)
     try {
       let res = await xhr.send('model/show', 'post', { model: module, url_id: url_id })
       //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)

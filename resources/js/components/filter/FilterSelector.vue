@@ -83,18 +83,10 @@ const selectedParamIndexes = computed({
 })
 
 const isColumnSearchGroup = computed(() => {
+  if(groups.value.length === 0) return false
   return groups.value[groupIndex.value].isTextSearch
 })
 
-function paramClicked(paramIndex: number) {
-  if (isColumnSearchGroup.value) {
-    console.log(`textSearchChip.clicked(${paramIndex})`)
-    modal.value[paramIndex] = true
-    //console.log(`modal=${modal})`)
-  } else {
-    trio.paramClicked('Filter', trio.groupIndex, paramIndex)
-  }
-}
 
 </script>
 <style scoped>

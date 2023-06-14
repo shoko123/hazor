@@ -3,7 +3,7 @@
 
 import { ref } from 'vue'
 import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
-import type { TParseModuleData, TRouteInfo, TName, TParseErrorDetails, TPlanAction, TPrepareError } from '../../../types/routesTypes';
+import type { TParseModuleData, TRouteInfo, TName, TParseErrorDetails, TPlanAction, TPrepareError, TModule, TUrlModule } from '../../../types/routesTypes';
 
 import { defineStore, storeToRefs } from 'pinia'
 
@@ -13,6 +13,7 @@ import { useRoutesPrepareStore } from './routesPrepare';
 import { useAuthStore } from '../auth';
 import { useNotificationsStore } from '../notifications';
 
+
 export const useRoutesMainStore = defineStore('routesMain', () => {
     const { parseModule } = useRoutesParserStore()
     const { planTransition } = useRoutesPlanTransitionStore()
@@ -20,7 +21,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     const current = ref<TRouteInfo>({
         url_module: undefined,
         url_id: undefined,
-        url_query_string: undefined,
+        url_full_path: undefined,
         module: 'Home',
         name: 'home',
         idParams: undefined,
@@ -30,7 +31,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     const to = ref<TRouteInfo>({
         url_module: undefined,
         url_id: undefined,
-        url_query_string: undefined,
+        url_full_path: undefined,
         module: 'Home',
         name: 'home',
         idParams: undefined,
@@ -46,7 +47,6 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
 
         console.log(`handleRouteChange(${String(handle_from.name)} -> ${String(handle_to.name)})`)
-       
 
         //authorize
         if (handle_to.name === "login" && authenticated.value) {
@@ -60,7 +60,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         }
 
         to.value.name = <TName>handle_to.name
-        to.value.url_query_string = handle_to.fullPath
+        to.value.url_full_path = handle_to.fullPath
         //parse module 
         //console.log(`A.current: ${JSON.stringify(current.value, null, 2)}\nto: ${JSON.stringify(to.value, null, 2)})`)
         if (handle_to.params.hasOwnProperty('module')) {
@@ -83,7 +83,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         //console.log(`handle_from: ${handle_from.fullPath} current: ${JSON.stringify(current.value, null, 2)}\nhandle_to: ${handle_to.fullPath} to: ${JSON.stringify(to.value, null, 2)})`)
 
         //verify that the transition is legal and prepare the plan required for a successful transition.
-        
+
         let planResponse = planTransition(handle_to, handle_from)
 
         if (!planResponse.success) {
@@ -106,7 +106,8 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             // } else {
             //     console.log("prepare OK")
             // }
-            finalizeRouting()
+            //finalizeRouting()
+            finalizeRouting(handle_to)
 
             //console.log(`router.beforeEach returned ${JSON.stringify(res, null, 2)}`);
             isLoading.value = false
@@ -138,11 +139,31 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         return Promise.resolve(false)
     }
 
-    function finalizeRouting() {
-        console.log(`finalizing routing. copy to -> current to: ${JSON.stringify(to.value)}`)
-        current.value = Object.assign(to.value);
+    function finalizeRouting(handle_to: RouteLocationNormalized) {
+        current.value.name = <TName>handle_to.name
+        current.value.module = to.value.module
+        current.value.url_module = to.value.url_module
+        current.value.queryParams = current.value.name === 'index' ? handle_to.query : undefined
+        current.value.url_full_path = current.value.name === 'index' ? handle_to.fullPath : undefined
+
+        switch (handle_to.name) {
+            case 'show':
+            case 'update':
+            case 'media':
+            case 'tag':
+                current.value.url_id = <string>handle_to.params.url_id
+                current.value.idParams = to.value.idParams
+                break
+            default:
+                current.value.url_id = undefined
+                current.value.idParams = undefined
+        }
+
+        console.log(`finalizing routing. current: ${JSON.stringify(current.value)}`)
+        //current.value = Object.assign(to.value);
         //current.value = JSON.parse(JSON.stringify(to.value))
     }
+
     function goHome() {
         console.log(`goHome`)
         isLoading.value = false

@@ -14,7 +14,7 @@ class DigModelReadController extends Controller
 
     public function index(Request $r, DigModel $m)
     {
-        $collection = $m->index($r["queryParams"]);
+        $collection = $m->index($r["query"]);
         return response()->json([
             "msg" => "ModelController.index(" .  $this->model_name . ")",
             "collection" => $collection,
