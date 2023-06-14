@@ -38,9 +38,41 @@ type TRouteInfo = {
 }
 type TRouteEntityFlags = { module: boolean, collection: boolean, item: boolean, page: boolean }
 
-type TParseResponse = {
+type TParseErrorDetails = {
+    error: TParsingError,
+    message: string
+}
+
+type TParseModuleData = {
+    module: TModule,
+    url_module: TUrlModule
+}
+type TParseUrlModuleResponse = {
     success: boolean,
-    data: TRouteInfo | TParsingError
+    data: TParseErrorDetails | TParseModuleData
+}
+
+type TParseSlugData = {
+    url_id: string,
+    url_params: TIdParams
+}
+type TParseSlugResponse = {
+    success: boolean,
+    data: TParseErrorDetails | TParseSlugData
+}
+
+type TParseQueryData = {
+    model_tag_ids: number[],
+    global_tag_ids: number[],
+    column_values: { column_name: string, vals: string[] }[],
+    column_lookup_ids: { column_name: string, vals: number[] }[],
+    column_search: { column_name: string, vals: string[] }[],
+    bespoke: { name: string, vals: string[] }[]
+}
+
+type TParseUrlQueryResponse = {
+    success: boolean,
+    data: TParseErrorDetails | TParseQueryData
 }
 
 type TPlanResponse = {
@@ -52,4 +84,23 @@ type TPrepareResponse = {
     success: boolean,
     errorDetails?: TPrepareError
 }
-export { TName, TUrlModule, TModule, TRouteInfo, TParseResponse, TParsingError, TRouteEntityFlags, TPlanResponse, TPlanAction, TPlanError, TPrepareResponse, TPrepareError }
+export {
+    TName,
+    TUrlModule,
+    TModule,
+    TRouteInfo,
+    TParsingError,
+    TParseModuleData,
+    TParseSlugResponse,
+    TParseSlugData,
+    TParseErrorDetails,
+    TParseUrlModuleResponse,
+    TParseQueryData,
+    TParseUrlQueryResponse,
+    TRouteEntityFlags,
+    TPlanResponse,
+    TPlanAction,
+    TPlanError,
+    TPrepareResponse,
+    TPrepareError
+}

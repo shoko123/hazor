@@ -3,17 +3,18 @@
 
 import { ref } from 'vue'
 import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
+import type { TParseModuleData, TRouteInfo, TName, TParseErrorDetails, TPlanAction, TPrepareError } from '../../../types/routesTypes';
+
 import { defineStore, storeToRefs } from 'pinia'
+
 import { useRoutesParserStore } from './routesParser';
 import { useRoutesPlanTransitionStore } from './routesPlanTransition';
 import { useRoutesPrepareStore } from './routesPrepare';
 import { useAuthStore } from '../auth';
 import { useNotificationsStore } from '../notifications';
 
-import type { TUrlModule, TModule, TRouteInfo, TParsingError, TParseResponse, TPlanAction, TPrepareError } from '../../../types/routesTypes';
-
 export const useRoutesMainStore = defineStore('routesMain', () => {
-    const { parse } = useRoutesParserStore()
+    const { parseModule } = useRoutesParserStore()
     const { planTransition } = useRoutesPlanTransitionStore()
 
     const current = ref<TRouteInfo>({
@@ -43,8 +44,9 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         let p = useRoutesPrepareStore()
         let { authenticated } = storeToRefs(useAuthStore())
 
+
         console.log(`handleRouteChange(${String(handle_from.name)} -> ${String(handle_to.name)})`)
-        //console.log(`handleRouteChange(${JSON.stringify(handle_to, null, 2)})`)
+       
 
         //authorize
         if (handle_to.name === "login" && authenticated.value) {
@@ -57,19 +59,32 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             return { name: 'login', params: { module: 'auth' } }
         }
 
-        //parse (module, id, queryParams), and save to local storage (to).
-        let parseResponse = parse(handle_to)
-        if (parseResponse.success) {
-            to.value = { ...(<TRouteInfo>parseResponse.data) }
-            console.log("parse OK")
+        to.value.name = <TName>handle_to.name
+        to.value.url_query_string = handle_to.fullPath
+        //parse module 
+        //console.log(`A.current: ${JSON.stringify(current.value, null, 2)}\nto: ${JSON.stringify(to.value, null, 2)})`)
+        if (handle_to.params.hasOwnProperty('module')) {
+            let res = parseModule(<string>handle_to.params.module)
+            if (res.success) {
+                let data = <TParseModuleData>res.data
+                to.value.module = data.module
+                to.value.url_module = data.url_module
+            }
+            else {
+                console.log(`parseModule returned ${JSON.stringify(res, null, 2)}`)
+                n.showSnackbar(`${(<TParseErrorDetails>res.data).message}; redirected to Home Page`)
+                return goHome()
+            }
         } else {
-            //cancel navigation
-            n.showSnackbar(`Parsing error ${parseResponse.data}; redirected to Home Page`)
-            return goHome()
-        };
+            to.value.module = 'Home'
+            to.value.url_module = ''
+        }
+
+        //console.log(`handle_from: ${handle_from.fullPath} current: ${JSON.stringify(current.value, null, 2)}\nhandle_to: ${handle_to.fullPath} to: ${JSON.stringify(to.value, null, 2)})`)
 
         //verify that the transition is legal and prepare the plan required for a successful transition.
-        let planResponse = planTransition(to.value, current.value)
+        
+        let planResponse = planTransition(handle_to, handle_from)
 
         if (!planResponse.success) {
             console.log("plan failed...")
@@ -78,12 +93,11 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         }
 
         console.log(`Plan successful: ${JSON.stringify(planResponse.data, null, 2)}`)
-
         //prepare - access server and load stuff (async)
         isLoading.value = true
 
-        try {         
-            await p.prepareForNewRoute(to.value, current.value, <TPlanAction[]>planResponse.data)
+        try {
+            await p.prepareForNewRoute(to.value.module, handle_to.query, <string>handle_to.params.url_id, <TPlanAction[]>planResponse.data)
             // console.log(`routesMain returned from prepareForNewRoute(no exception!) prepare: ${JSON.stringify(prepare, null, 2)}`);
             // if (!prepare.success) {
             //     console.log(`known prepare() error: ${prepare.errorDetails}`)
@@ -92,7 +106,6 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             // } else {
             //     console.log("prepare OK")
             // }
-
             finalizeRouting()
 
             //console.log(`router.beforeEach returned ${JSON.stringify(res, null, 2)}`);
@@ -120,14 +133,15 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         }
     }
 
-    function handlePrepareError(errorDetails: TPrepareError): Promise<RouteLocationRaw | boolean> {   
+    function handlePrepareError(errorDetails: TPrepareError): Promise<RouteLocationRaw | boolean> {
         console.log(`handlePrepareError: ${JSON.stringify(errorDetails)}`)
         return Promise.resolve(false)
     }
 
     function finalizeRouting() {
         console.log(`finalizing routing. copy to -> current to: ${JSON.stringify(to.value)}`)
-        current.value = JSON.parse(JSON.stringify(to.value))
+        current.value = Object.assign(to.value);
+        //current.value = JSON.parse(JSON.stringify(to.value))
     }
     function goHome() {
         console.log(`goHome`)
@@ -158,7 +172,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         return to.value.module === current.value.module
     }
 
-    
+
 
     return { isLoading, getModule, getUrlModule, getToModule, getRouteInfo, getToRouteInfo, toAndCurrentAreTheSameModule, current, to, handleRouteChange }
 })

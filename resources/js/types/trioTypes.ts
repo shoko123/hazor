@@ -1,7 +1,5 @@
 // trioTypes.ts
-interface IObject {
-  [key: string]: any
-}
+import { IObject } from '@/js/types/generalTypes'
 
 type TCategory = {
   name: string,
@@ -76,7 +74,6 @@ type TrioSourceName = 'Item' | 'New' | 'Filter'
 type TmpGroup = { groupName: string, params: string[], categoryKey: string, selectedCount: number }
 
 export {
-  IObject,
   TCategory,
   TGroupValue,
   TGroupTag,

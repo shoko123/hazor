@@ -1,19 +1,21 @@
 // routesPlanTransition.ts
 //decide on action needed before transitioning to a new route
-
+import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
 import type { TRouteInfo, TPlanResponse, TPlanError, TPlanAction } from '../../../types/routesTypes'
 import { defineStore } from 'pinia'
 
 export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', () => {
+    function planTransition(handle_to: RouteLocationNormalized, handle_from: RouteLocationNormalized): TPlanResponse {
+        //console.log(`plan to: ${JSON.stringify(handle_to, null, 2)}\nfrom: ${JSON.stringify(handle_from, null, 2)} `)
 
-
-    function planTransition(to: TRouteInfo, from: TRouteInfo): TPlanResponse {
+        let to = { name: handle_to.name, module: <string>handle_to.params.module, url_id: handle_to.params.url_id }
+        let from = { name: handle_from.name, module: <string>handle_from.params.module, url_id: handle_from.params.url_id }
+        if(from.name === undefined) { from.name = 'home'}
         let changed = { module: false, name: false, urlId: false }
 
         changed.module = (to.module !== from.module)
         changed.name = (to.name !== from.name)
         changed.urlId = (to.url_id !== from.url_id)
-
         if (['Auth', 'Admin'].includes(to.module) ||
             ['Auth', 'Admin'].includes(from.module)) {
             return { success: true, data: [] }
@@ -152,7 +154,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                         return { success: true, data: [] }
                     default:
                         return { success: false, data: 'BadTransition' }
-                }                
+                }
             case 'media':
                 switch (from.name) {
                     case 'show':

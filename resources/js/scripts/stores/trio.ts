@@ -1,9 +1,9 @@
 // stores/trio.js
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
-import { TGroupTag, TGroup, Trio, TrioSourceName, TmpGroup, TGroupValue, TColumnInfo, IObject } from '../../types/trioTypes'
-import { TParsingError } from '../../types/routesTypes'
-
+import { TGroupTag, TGroup, Trio, TrioSourceName, TmpGroup, TGroupValue, TColumnInfo } from '../../types/trioTypes'
+import type { IObject } from '../../types/generalTypes'
+import type { TParseUrlQueryResponse, TParseQueryData } from '@/js/types/routesTypes'
 import { useXhrStore } from './xhr'
 import { useItemStore } from './item'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
@@ -397,15 +397,15 @@ export const useTrioStore = defineStore('trio', () => {
     return query
   }
 
-  function urlQueryObjectToApiFilters(qp: IObject): IObject | TParsingError {
+  function urlQueryObjectToApiFilters(qp: IObject): TParseUrlQueryResponse {
     console.log(`urlQueryObjectToApiFilters().urlQuery: ${JSON.stringify(qp, null, 2)}`);
-    let all = {
-      model_tag_ids: <number[]>[],
-      global_tag_ids: <number[]>[],
-      column_values: <{ column_name: string, vals: string[] }[]>[],
-      column_lookup_ids: <{ column_name: string, vals: number[] }[]>[],
-      column_search: <{ column_name: string, vals: string[] }[]>[],
-      bespoke: <{ name: string, vals: string[] }[]>[]
+    let all: TParseQueryData = {
+      model_tag_ids: [],
+      global_tag_ids: [],
+      column_values: [],
+      column_lookup_ids: [],
+      column_search: [],
+      bespoke: []
     }
 
     for (const [key, value] of Object.entries(qp)) {
@@ -414,7 +414,13 @@ export const useTrioStore = defineStore('trio', () => {
 
       if (!trio.value.entities.groups.hasOwnProperty(groupKey)) {
         console.log(`Query parsing Error: "${key}" group doesn't exist. aborting... `)
-        return 'BadQueryParams'
+        return {
+          success: false,
+          data: {
+            error: 'BadQueryParams',
+            message: `Query parsing Error: "${key}" group doesn't exist. aborting... `
+          }
+        }
       }
       let group = trio.value.entities.groups[groupKey]
 
@@ -428,7 +434,13 @@ export const useTrioStore = defineStore('trio', () => {
         if (group.group_type_code !== 'CS') {
           if (!possibleParams.some(y => y === x)) {
             console.log(`Query parsing Error: "${x}" param doesn't exist in group ${key}. aborting... `)
-            return 'BadQueryParams'
+            return {
+              success: false,
+              data: {
+                error: 'BadQueryParams',
+                message: `Query parsing Error: "${x}" param doesn't exist in group ${key}. aborting... `
+              }
+            }
           }
         }
       })
@@ -475,20 +487,19 @@ export const useTrioStore = defineStore('trio', () => {
               break
             default:
               console.log(`Query parsing Error: Unrecognized bespoke group ${key}. aborting... `)
-              return 'BadQueryParams'
+              return {
+                success: false,
+                data: {
+                  error: 'BadQueryParams',
+                  message: `Query parsing Error: Unrecognized bespoke group ${key}. aborting... `
+                }
+              }
           }
       }
     }
 
-    let query: IObject = {}
-    for (const [key, value] of Object.entries(all)) {
-      if (value.length > 0) {
-        query[key] = value
-      }
-    }
-
-    console.log(`urlQueryObjectToApiFilters()\nquery: ${JSON.stringify(query, null, 2)}`);
-    return query
+    console.log(`urlQueryObjectToApiFilters()\nquery: ${JSON.stringify(all, null, 2)}`);
+    return { success: true, data: all }
   }
 
   async function sync() {

@@ -6,8 +6,10 @@
 //activities (e.g. clear, copy current -> new,), before
 //proceeding to the new route.
 
-import type { TRouteInfo, TPlanAction, TPrepareResponse, TModule } from '@/js/types/routesTypes'
+import type { TRouteInfo, TPlanAction, TPrepareResponse, TModule, TParseSlugData, TParseSlugResponse, TParseErrorDetails } from '@/js/types/routesTypes'
+import type { RouteLocationNormalized, RouteLocationRaw, LocationQuery } from 'vue-router'
 import { TLocusFields, TStoneFields, TFaunaFields, } from '@/js/types/moduleFieldsTypes'
+import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useXhrStore } from '../xhr'
 import { useTrioStore } from '../trio'
@@ -16,7 +18,7 @@ import { useModuleStore } from '../module'
 import { useNotificationsStore } from '../notifications'
 import { useItemStore } from '../item'
 import { useRoutesMainStore } from './routesMain'
-
+import { useRoutesParserStore } from './routesParser'
 
 export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let xhr = useXhrStore();
@@ -26,28 +28,29 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let t = useTrioStore();
   let i = useItemStore();
   let r = useRoutesMainStore()
+  let p = useRoutesParserStore()
 
-  async function prepareForNewRoute(to: TRouteInfo, from: TRouteInfo, plan: TPlanAction[]): Promise<TPrepareResponse> {
+  async function prepareForNewRoute(module: TModule, query: LocationQuery, slug: string, plan: TPlanAction[]): Promise<TPrepareResponse> {
     for (const x of plan) {
       switch (x) {
         case 'module.load':
-          await loadTrio(to, from).catch(err => {
+          await loadTrio(module).catch(err => {
             throw 'ModuleInitError'
           })
           break
 
         case 'module.clear':
-          t.trioReset()          
+          t.trioReset()
           break
 
         case 'collection.item.load':
-          await loadCollectionAndItem(to, from).catch(err => {
+          await loadCollectionAndItem(module, query, slug).catch(err => {
             throw "LoadCollectionAndItemFError"
           })
           break
 
         case 'collection.load':
-          await loadMainCollection(to, from).catch(err => {
+          await loadMainCollection(module, query).catch(err => {
             throw 'CollectionLoadError'
           })
           break
@@ -57,7 +60,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'item.load':
-          await loadItem(to, from).catch(err => {
+          await loadItem(module, slug).catch(err => {
             throw 'ItemLoadError'
           })
           break
@@ -95,13 +98,13 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     return { success: true }
   }
 
-  async function loadTrio(to: TRouteInfo, from: TRouteInfo) {
+  async function loadTrio(module: TModule) {
     t.trioReset()
     n.showSpinner('Loading module data ...')
-    return xhr.send('model/init', 'post', { model: to.module })
+    return xhr.send('model/init', 'post', { model: module })
       .then(res => {
         //console.log(`auth.response is ${JSON.stringify(res, null, 2)}`)
-        console.log(`model(${to.module}).init() returned (success)`)
+        console.log(`model(${module}).init() returned (success)`)
         m.counts = res.data.counts
         m.itemViews = res.data.itemViews
         c.clear(['main', 'media', 'related'])
@@ -118,13 +121,13 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       })
   }
 
-  async function loadCollectionAndItem(to: TRouteInfo, from: TRouteInfo) {
-    n.showSpinner(`Loading ${to.url_module} ...`)
+  async function loadCollectionAndItem(module: TModule, query: LocationQuery, urlId: string) {
+    n.showSpinner(`Loading Module ${module} ...`)
     console.log(`prepare.loadCollectionAndItem()`)
 
     const [col, item] = await Promise.all([
-      loadMainCollection(to, from),
-      loadItem(to, from)
+      loadMainCollection(module, query),
+      loadItem(module, urlId)
     ])
       .catch(err => {
         throw err;
@@ -133,11 +136,19 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
   }
 
-  async function loadMainCollection(to: TRouteInfo, from: TRouteInfo) {
-    n.showSpinner(`Loading ${to.url_module} ...`)
+  async function loadMainCollection(module: TModule, query: LocationQuery) {
+    let queryRes = p.parseQuery(module, query)
+
+    if (!queryRes.success) {
+      console.log(`parseSlug() failed`)
+      throw (<TParseErrorDetails>queryRes.data).error
+    }
+
+    n.showSpinner(`Loading Module ${module} collection...`)
     console.log(`prepare.loadMainCollection()`)
-    return xhr.send('model/index', 'post', { model: to.module })
+    return xhr.send('model/index', 'post', { model: module })
       .then(res => {
+        r.to.queryParams = query
         c.setArray('main', res.data.collection)
         console.log(`collection loaded successfully`)
       })
@@ -151,12 +162,21 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
 
-  async function loadItem(to: TRouteInfo, from: TRouteInfo) {
-    console.log(`prepare.loadItem() to: ${JSON.stringify(to, null, 2)}`)
-    n.showSpinner(`Loading item ${to.url_id} ...`)
+  async function loadItem(module: TModule, url_id: string) {
+    console.log(`prepare.loadItem() url_id: ${url_id}`)
+    let idRes = p.parseSlug(module, url_id)
+    if (!idRes.success) {
+      console.log(`parseSlug() failed`)
+      throw (<TParseErrorDetails>idRes.data).error
+    }
+
+    n.showSpinner(`Loading item ${module} ...`)
     try {
-      let res = await xhr.send('model/show', 'post', { model: to.module, url_id: to.url_id })
+      let res = await xhr.send('model/show', 'post', { model: module, url_id: url_id })
       //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
+      let idResData = <TParseSlugData>idRes.data
+      r.to.url_id = idResData.url_id
+      r.to.idParams = idResData.url_params
 
       i.saveItem(res.data)
       n.showSpinner(false)
