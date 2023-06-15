@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Models\Functional\MediaModel;
 use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 use Illuminate\Database\Eloquent\Builder;
+use App\Models\Tags\Tag;
 
 abstract class DigModel extends Model implements HasMedia, DigModelInterface
 {
@@ -58,7 +59,20 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         if (!empty($query["global_tag_ids"])) {
             $this->applyGlobalTagFilters($query["global_tag_ids"]);
         }
-        return;
+
+        if (!empty($query["column_lookup_ids"])) {
+            $this->applyColumnLookupOrValueFilters($query["column_lookup_ids"]);
+        }
+
+        if (!empty($query["column_values"])) {
+            $this->applyColumnLookupOrValueFilters($query["column_values"]);
+        }
+        if (!empty($query["column_search"])) {
+            $this->applyColumnSearchFilters($query["column_search"]);
+        }
+        if (!empty($query["bespoke"])) {
+            $this->applyBespokeFilters($query["bespoke"]);
+        }
     }
 
     public function applyModelTagFilters(array $tag_ids)
@@ -82,11 +96,64 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             });
         }
     }
+
     public function applyGlobalTagFilters(array $tag_ids)
     {
+        $tags = Tag::select('id', 'group_id')->whereIn('id', $tag_ids)->get();
+        $groups = [];
 
+        foreach ($tags as $tag) {
+            if (array_key_exists($tag->group_id, $groups)) {
+                array_push($groups[$tag->group_id], $tag->id);
+            } else {
+                $groups[$tag->group_id] = [$tag->id];
+            }
+        }
+
+        foreach ($groups as $type_id => $tag_ids_for_group) {
+            $this->builder->whereHas('global_tags', function (Builder $q) use ($tag_ids_for_group) {
+                $q->whereIn('id', $tag_ids_for_group);
+            });
+        }
     }
-    
+
+    public function applyColumnLookupOrValueFilters(array $cols)
+    {
+        foreach ($cols as $key => $col) {
+            $this->builder->whereIn($col["column_name"], $col["vals"]);
+        }
+    }
+
+
+    public function applyColumnSearchFilters(array $cols)
+    {
+        foreach ($cols as $key => $col) {
+            $this->builder->Where(function ($query) use ($key, $col) {
+                foreach ($col["vals"] as $key1 => $term) {
+                    $query->orWhere($col["column_name"], 'LIKE', '%' . $term . '%');
+                }
+            });
+        }
+    }
+    public function applyBespokeFilters(array $bespoke)
+    {
+        foreach ($bespoke as $key => $item) {
+            switch ($item["name"]) {
+                case "Media":
+                    $this->applyMediaFilter($item["vals"]);
+                    break;
+                default:
+            }
+        }
+    }
+
+    public function applyMediaFilter(array $collectionNames)
+    {
+        $this->builder->whereHas('media', function (Builder $mediaQuery) use ($collectionNames) {
+            $mediaQuery->whereIn('collection_name', $collectionNames);
+        });
+    }
+
     public function page($ids, $view): Collection
     {
         $idsAsCommaSeperatedString = implode(',', $ids);
