@@ -69,7 +69,7 @@ class MediaModel implements MediaModelInterface
 
     public static function getMedia(MediaCollection $mc)
     {
-        //ATTENTION these have to match the groups in global_tag_groups.Media
+        //ATTENTION these have to match the groups in config.media-library.media_collections
         $collection_order = ['Plan', 'Drawing', 'Photo and Drawing', 'Photo', 'Misc'];
         $ordered =  collect([]);
 

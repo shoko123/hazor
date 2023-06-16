@@ -12,18 +12,18 @@
 import { computed } from 'vue'
 import { useMediaStore } from '../../scripts/stores/media'
 import { TMedia } from '../../types/mediaTypes'
-
-let { getBucketUrl } = useMediaStore()
+import { storeToRefs } from 'pinia'
+let { bucketUrl } = storeToRefs( useMediaStore())
 
 const media = computed(() => {
-  let bucketUrl = getBucketUrl()
+ 
   let c: Array<TMedia> = [];
   for (let i = 1; i <= 6; i++) {
     c.push({
       hasMedia: true,
       urls: {
-        full: `${bucketUrl}app/carousel/hazor${i}.jpg`,
-        tn: `${bucketUrl}app/carousel/hazor${i}-tn.jpg`
+        full: `${bucketUrl.value}app/carousel/hazor${i}.jpg`,
+        tn: `${bucketUrl.value}app/carousel/hazor${i}-tn.jpg`
       }
     })
   }

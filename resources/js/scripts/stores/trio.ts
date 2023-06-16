@@ -368,7 +368,6 @@ export const useTrioStore = defineStore('trio', () => {
     selectedFilterParams.value = []
     groupIndex.value = 0
     categoryIndex.value = 0
-    trio.value.result.length = 0
     trio.value = {
       entities: {
         categories: {},
@@ -599,12 +598,7 @@ export const useTrioStore = defineStore('trio', () => {
     console.log(`setFilterSearchTerm(${paramKey}, ${searchTerm})`)
     trio.value.entities.params[paramKey].name = searchTerm
   }
-  const mediaParams = computed(() => {
-    if (trio.value.result.length === 0) { return [] }
-    const mediaGroup = trio.value.entities.groups["Media"]
-    //console.log(`medCols medGroup: ${JSON.stringify(mediaGroup, null, 2)}`)
-    return mediaGroup.params.map(x => (trio.value.entities.params[x]).name)
-  })
+
 
   return {
     clearSelected,
@@ -626,7 +620,6 @@ export const useTrioStore = defineStore('trio', () => {
     setFilterSearchTerm,
     copyCurrentToNew,
     saveItemTags,
-    sync,
-    mediaParams
+    sync
   }
 })

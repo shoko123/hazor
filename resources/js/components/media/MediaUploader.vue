@@ -85,7 +85,7 @@ function clear() {
 
 //choose media collection
 const mediaCollections = computed<string[]>(() => {
-  return m.mediaCollections
+  return m.mediaCollectionNames
 })
 
 const mediaCollection = computed({

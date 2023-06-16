@@ -13,18 +13,17 @@ import { useFaunaStore } from './modules/fauna'
 
 export const useModuleStore = defineStore('module', () => {
 
-  const { getBucketUrl } = useMediaStore()
+  const { bucketUrl } =  storeToRefs(useMediaStore())
   const { current } = storeToRefs(useRoutesMainStore())
 
   let counts = ref({ items: 0, media: 0 })
   const itemViews = ref<string[]>([])
 
   const backgroundImage = computed(() => {
-    let bucketUrl = getBucketUrl()
     let module = current.value.module
     return module !== 'Home' ? {
-      fullUrl: `${bucketUrl}app/background/${module}.jpg`,
-      tnUrl: `${bucketUrl}app/background/${module}-tn.jpg`
+      fullUrl: `${bucketUrl.value}app/background/${module}.jpg`,
+      tnUrl: `${bucketUrl.value}app/background/${module}-tn.jpg`
     } : undefined
   })
 

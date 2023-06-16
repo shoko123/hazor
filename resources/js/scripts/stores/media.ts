@@ -16,15 +16,15 @@ export const useMediaStore = defineStore('media', () => {
   let { showSnackbar, } = useNotificationsStore()
   const { send } = useXhrStore()
 
-  let bucketUrl = ref("")
+  //both bucketUrl and mediaCollectionNames are initiated at app.init()
+  const bucketUrl = ref("")
+  const mediaCollectionNames = ref<string[]>([])
+  
   const showUploader = ref<boolean>(false)
 
-  function getBucketUrl() {
-    return bucketUrl.value
-  }
-
-  function setBucketUrl(burl: string) {
+  function initMedia(burl: string, media_collections: string[]) {
     bucketUrl.value = burl
+    mediaCollectionNames.value = media_collections
   }
 
   function buildMedia(apiMedia: TApiMediaOrNull, module?: TModule): TMedia {
@@ -47,13 +47,8 @@ export const useMediaStore = defineStore('media', () => {
     }
   }
 
-  //Media Collection 
-  let { mediaParams } = storeToRefs(useTrioStore())
+  //Media collection index
   const mediaCollectionIndex = ref(0)
-
-  const mediaCollections = computed(() => {
-    return mediaParams.value//.value.map((x, index) => { return { ...x, index } })
-  })
 
   //upload
   const images = ref<File[]>([])
@@ -116,7 +111,7 @@ export const useMediaStore = defineStore('media', () => {
 
     fd.append("model", r.current.module);
     fd.append("id", <string>r.current.url_id);
-    fd.append("media_collection_name", mediaCollections.value[mediaCollectionIndex.value])
+    fd.append("media_collection_name", mediaCollectionNames.value[mediaCollectionIndex.value])
 
     return send("media/upload", 'post', fd)
       .then((res) => {
@@ -163,11 +158,11 @@ export const useMediaStore = defineStore('media', () => {
   }
 
   return {
-    setBucketUrl,
-    getBucketUrl,
+    initMedia,
+    bucketUrl,
     buildMedia,
     showUploader,
-    mediaCollections,
+    mediaCollectionNames,
     mediaCollectionIndex,
     setItemMedia,
     upload,

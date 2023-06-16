@@ -1,7 +1,9 @@
 <?php
 
 return [
-
+    //allowed media_collections names
+    //ATTENTION these have to match the groups in MediaModel.getMedia()
+    'media_collections' => ["Photo", "Drawing", "Photo and Drawing", "Plan", "Misc"],
     /*
      * The disk on which to store added files and derived images by default. Choose
      * one or more of the disks you've configured in config/filesystems.php.
