@@ -15,25 +15,18 @@ class CreateLociTable extends Migration
     {
         Schema::create('loci', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('area', 2);
             $table->string('name', 10)->nullable();
+            $table->string('area', 3);
             $table->string('square', 10)->nullable();
-            $table->string('type', 30)->nullable();
-            $table->string('elevation', 20)->nullable();
-            $table->string('cross_ref', 130)->nullable();
             $table->string('stratum', 15)->nullable();
-            $table->string('description', 400)->nullable();
-            $table->unsignedSmallInteger('s1_no')->nullable();
-            $table->string('s1_ext', 1)->nullable();
-            $table->unsignedSmallInteger('s2_no')->nullable();
-            $table->string('s2_ext', 1)->nullable();
-            $table->unsignedSmallInteger('s3_no')->nullable();
-            $table->unsignedSmallInteger('s4_no')->nullable();
-            $table->unsignedSmallInteger('s5_no')->nullable();
-            $table->unsignedSmallInteger('s6_no')->nullable();
+            $table->string('type', 30)->nullable();
+            $table->string('cross_ref', 130)->nullable();
+            $table->string('description', 500)->nullable();
+            $table->string('notes', 200)->nullable();
+            $table->string('elevation', 20)->nullable();
             $table->unsignedMediumInteger('order_column')->default(0);
 
-            $table->unique(['area', 'name']);            
+            $table->unique(['area', 'name']);
         });
 
         Schema::create('locus_tag_groups', function (Blueprint $table) {
