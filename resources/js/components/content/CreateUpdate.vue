@@ -73,12 +73,12 @@ async function submit(v$: Validation, data: TFieldsToStore, id?: number) {
 
   //alert("Form Successfully Submitted!")
  
-  const res = await upload(props.isCreate, data, id).catch(err => {
+  const urlId = await upload(props.isCreate, data, id).catch(err => {
     console.log(`CreateUpdate.upload(error) - return`)
   })
-  console.log(`CreateUpdate.after upload() res: ${JSON.stringify(res, null, 2)}`)
+  //console.log(`CreateUpdate.after upload() res: ${JSON.stringify(urlId, null, 2)}`)
   if (props.isCreate) {
-    router.push({ name: 'show', params: { module: current.value.url_module, url_id: res.url_id } })
+    router.push({ name: 'show', params: { module: current.value.url_module, url_id: <string>urlId } })
   } else {
     router.push({ name: 'show', params: { module: current.value.url_module, url_id: current.value.url_id } })
   }

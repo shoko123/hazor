@@ -48,10 +48,9 @@ export const useItemStore = defineStore('item', () => {
   })
 
   function saveItem(apiItem: TApiItemShow) {
-    console.log(`item.saveItem()`)
     fields.value = apiItem.fields
     url_id.value = apiItem.url_id
-    tag.value = moduleStore.tagFromUrlId(to.value.module, apiItem.url_id)
+    tag.value = moduleStore.tagFromUrlId(current.value.module, apiItem.url_id)
     setItemMedia(apiItem.mediaArray, apiItem.mediaPage, apiItem.media1)
     saveItemTags(apiItem.model_tags, apiItem.global_tags, apiItem.discrete_columns)
   }
@@ -76,8 +75,9 @@ export const useItemStore = defineStore('item', () => {
     return mainArrayItem.url_id
   }
 
-  async function upload(isCreate: boolean, newFields: TFieldsToStore, id?: number) {
-    console.log(`item.upload isCreate: ${isCreate}, module: ${current.value.module}, fields: ${JSON.stringify(fields, null, 2)}`)
+  //return the newly created/update item's urlId (need it only for create())
+  async function upload(isCreate: boolean, newFields: TFieldsToStore, id?: number) : Promise<string> {
+    console.log(`item.upload isCreate: ${isCreate}, module: ${current.value.module}, fields: ${JSON.stringify(fields.value, null, 2)}`)
     let res = await send('model/store', isCreate ? 'post' : 'put', { model: current.value.module, item: newFields, id })
       .catch(err => {
         showSnackbar(`model.store failed! Please try later!`)
@@ -85,20 +85,18 @@ export const useItemStore = defineStore('item', () => {
         throw err
       })
 
-
-
-
     if (isCreate) {
       saveItem(res.data)
       let newIndex = pushToArray({ "id": res.data.fields.id, "url_id": res.data.url_id })
       itemIndex.value = newIndex
+      //console.log(`item pushed to main array. index: ${itemIndex.value}`)
     } else {
       fields.value = res.data.fields
       url_id.value = res.data.url_id
     }
     console.log(`model.store() returned (success) ${JSON.stringify(res.data, null, 2)}`)
     showSnackbar(`${current.value.module} ${isCreate ? "created" : "updated"} successfully! redirecting to item`)
-    return res.data
+    return res.data.url_id
   }
 
   async function destroy(): Promise<string | null> {

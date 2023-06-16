@@ -281,12 +281,13 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         } else {
             return [
                 "fields" => $item,
-                "media" => [],
+               
                 "media1" => null,
                 "mediaPage" => [],
                 "mediaArray" => [],
                 "model_tags" => [],
                 "global_tags" => [],
+                "discrete_columns" => [],
                 "url_id" => $this->getUrlIdFromId($item->id)
             ];
         }

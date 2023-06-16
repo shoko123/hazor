@@ -147,9 +147,8 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     }
 
     function pushToArray(arrayItem: TApiArrayMain): number {
-        array.value.push(arrayItem)
-        extra.value.length++
-        return array.value.length
+        extra.value.length = array.value.push(arrayItem)
+        return array.value.length - 1
     }
 
     function clear() {
