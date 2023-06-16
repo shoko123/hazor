@@ -1,17 +1,19 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { TLocusFields, TFields} from '@/js/types/moduleFieldsTypes'
+import { TLocusFields, TFields } from '@/js/types/moduleFieldsTypes'
 
 export const useLocusStore = defineStore('locus', () => {
   const base: TLocusFields = {
     id: 0,
-    area: "XX",
     name: "",
+    area: "XX",
     square: "",
-    elevation: "",
-    type: "",
     stratum: "",
+    type: "",
     cross_ref: "",
+    description: "",
+    notes: "",
+    elevation: "",
   }
 
   let fields = ref<TLocusFields>(base)
@@ -28,7 +30,7 @@ export const useLocusStore = defineStore('locus', () => {
       fields.value = <TLocusFields>current
     }
   }
-  function clear(){
+  function clear() {
     fields.value = base
   }
   return {

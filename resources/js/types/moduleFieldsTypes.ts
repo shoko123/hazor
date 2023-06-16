@@ -3,24 +3,29 @@ type TItemMandatoryFields = {
 }
 
 type TLocusFields = TItemMandatoryFields & {
-        area: string
         name: string,
+        area: string
         square: string,
-        elevation: string,
-        type: string,
         stratum: string,
+        type: string,
         cross_ref: string,
+        description: string,
+        notes: string
+        elevation: string,
 }
+
 type TLocusField = keyof TLocusFields
 
 type TLocusFieldsToStore = {
-        area: string,
         name: string,
+        area: string,
         square: string,
-        elevation: string,
-        type: string,
         stratum: string,
+        type: string,
         cross_ref: string,
+        description: string,
+        notes: string,
+        elevation: string,
 }
 
 type TStoneFields = TItemMandatoryFields & {
@@ -90,7 +95,7 @@ type TFaunaFieldsToStore = {
 type TFakeModuleFields = TItemMandatoryFields
 type TFields = TLocusFields | TStoneFields | TFaunaFields | TFakeModuleFields
 type TFieldsToStore = TStoneFieldsToStore | TLocusFieldsToStore | TFaunaFieldsToStore
-type TColumnName =  TLocusField | TStoneField | TFaunaField
+type TColumnName = TLocusField | TStoneField | TFaunaField
 export {
         TItemMandatoryFields,
         TLocusFields,
