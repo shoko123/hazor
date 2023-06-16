@@ -1,6 +1,6 @@
 // stores/media.js
 import { ref, computed } from 'vue'
-import { defineStore } from 'pinia'
+import { defineStore, storeToRefs } from 'pinia'
 import { TMedia } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/routesTypes'
 import { TApiArray, TApiArrayMedia, TApiMediaOrNull, TApiPageMedia } from '@/js/types/collectionTypes'
@@ -10,6 +10,7 @@ import { useNotificationsStore } from '../../scripts/stores/notifications'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import { useCollectionMediaStore } from '../../scripts/stores/collections/collectionMedia'
 import { useItemStore } from '../../scripts/stores/item'
+import { useTrioStore } from './trio'
 
 export const useMediaStore = defineStore('media', () => {
   let { showSnackbar, } = useNotificationsStore()
@@ -46,38 +47,15 @@ export const useMediaStore = defineStore('media', () => {
     }
   }
 
-  //Media Collection
-  type TMediaCollectionName = 'photos' | 'drawings' | 'photos+drawings' | 'plans'
-  type TMediaCollection = { name: TMediaCollectionName, label: string }
-  type TMediaCollectionWithIndex = { index: number, name: TMediaCollectionName, label: string }
+  //Media Collection 
+  let { mediaParams } = storeToRefs(useTrioStore())
+  const mediaCollectionIndex = ref(0)
 
-
-  const mediaCollections = ref<TMediaCollection[]>([
-    { name: 'photos', label: 'Photo(s)' },
-    { name: 'drawings', label: 'Drawings(s)' },
-    { name: 'photos+drawings', label: 'Photo+Drawing(s)' },
-    { name: 'plans', label: 'Plan(s)' },
-  ])
-
-  const mediaCollectionIndex = ref<number>(0)
-
-  const getMediaCollectionsNames = computed((): TMediaCollectionWithIndex[] => {
-    return mediaCollections.value.map((x, index) => { return { ...x, index } })
+  const mediaCollections = computed(() => {
+    return mediaParams.value//.value.map((x, index) => { return { ...x, index } })
   })
 
-  const getMediaCollection = computed(() => {
-    return mediaCollections.value[mediaCollectionIndex.value].label
-  })
-
-  function setMediaCollection(index: number) {
-    mediaCollectionIndex.value = index
-    console.log(`set mediaCollection to ${index}`)
-  }
-
-
-  //////////////////
   //upload
-
   const images = ref<File[]>([])
   const imagesAsBrowserReadable = ref<string[]>([])
   const loadingToBrowser = ref<boolean>(false)
@@ -138,7 +116,7 @@ export const useMediaStore = defineStore('media', () => {
 
     fd.append("model", r.current.module);
     fd.append("id", <string>r.current.url_id);
-    fd.append("media_collection_name", (mediaCollections.value[mediaCollectionIndex.value]).name);
+    fd.append("media_collection_name", mediaCollections.value[mediaCollectionIndex.value])
 
     return send("media/upload", 'post', fd)
       .then((res) => {
@@ -148,7 +126,7 @@ export const useMediaStore = defineStore('media', () => {
         showSnackbar("Media uploaded successfully")
       })
       .catch((err) => {
-        showSnackbar("Media upload failed. Please try later!", 'red')        
+        showSnackbar("Media upload failed. Please try later!", 'red')
         console.log(`mediaUpload failed! err:\n ${JSON.stringify(err, null, 2)}`)
       })
   }
@@ -183,15 +161,14 @@ export const useMediaStore = defineStore('media', () => {
       c.clear(['media'])
     }
   }
-  
+
   return {
     setBucketUrl,
     getBucketUrl,
     buildMedia,
     showUploader,
-    getMediaCollectionsNames,
-    getMediaCollection,
-    setMediaCollection,
+    mediaCollections,
+    mediaCollectionIndex,
     setItemMedia,
     upload,
     images,

@@ -30,8 +30,8 @@
           </v-row>
 
           <v-row>
-            <v-select v-if="mediaReady" label="media collection type" :items="mediaCollections" item-title="label"
-              item-value="index" v-model="mediaCollection"></v-select>
+            <v-select v-if="mediaReady" label="media collection type" :items="mediaCollections"
+              v-model="mediaCollection"></v-select>
           </v-row>
 
           <v-row class="d-flex justify-left align-baseline pt-2" style="gap: 1rem">
@@ -84,15 +84,14 @@ function clear() {
 }
 
 //choose media collection
-const mediaCollections = computed(() => {
-  return m.getMediaCollectionsNames
+const mediaCollections = computed<string[]>(() => {
+  return m.mediaCollections
 })
 
 const mediaCollection = computed({
-  get: () => { return m.getMediaCollection },
+  get: () => { return mediaCollections.value[m.mediaCollectionIndex] },
   set: val => {
-    console.log(`mediaCollection.set(${val})`)
-    m.setMediaCollection(val as unknown as number)
+    m.mediaCollectionIndex = mediaCollections.value.indexOf(val)
   }
 })
 

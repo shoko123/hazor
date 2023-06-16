@@ -9,6 +9,7 @@ function globalGroups()
         ],
         "Media" => [
             "group_type_code" => "BF",
+            //ATTENTION these have to match the groups in MediaModel.getMedia()
             "params"  => ["Photo", "Drawing", "Photo and Drawing", "Plan", "Misc"]
         ],
         "Scope" => [

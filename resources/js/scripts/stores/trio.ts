@@ -599,12 +599,12 @@ export const useTrioStore = defineStore('trio', () => {
     console.log(`setFilterSearchTerm(${paramKey}, ${searchTerm})`)
     trio.value.entities.params[paramKey].name = searchTerm
   }
-  // const mediaGroups = computed(() => {
-  //   if (trio.value.result.length === 0) { return [] }
-  //   const mediaGroup = trio.value.entities.groups["Media"]
-  //   //console.log(`medCols medGroup: ${JSON.stringify(mediaGroup, null, 2)}`)
-  //   return mediaGroup.params.map(x => (trio.value.entities.params[x]).name)
-  // })
+  const mediaParams = computed(() => {
+    if (trio.value.result.length === 0) { return [] }
+    const mediaGroup = trio.value.entities.groups["Media"]
+    //console.log(`medCols medGroup: ${JSON.stringify(mediaGroup, null, 2)}`)
+    return mediaGroup.params.map(x => (trio.value.entities.params[x]).name)
+  })
 
   return {
     clearSelected,
@@ -627,6 +627,6 @@ export const useTrioStore = defineStore('trio', () => {
     copyCurrentToNew,
     saveItemTags,
     sync,
-    //mediaGroups
+    mediaParams
   }
 })
