@@ -15,12 +15,27 @@ class LocusGroup extends ModelGroup implements ModelGroupInterface
             "table_name" => "loci",
             "column_name" => "area",
         ],
-
         "Stratum" => [
             "group_type_code" => "TM",
             "dependency" => null,
             "multiple" => true
         ],
+        "Search-Description" => [
+            "group_type_code" => "CS",
+            "column_name" => "description",
+        ],
+        "Search-Type" => [
+            "group_type_code" => "CS",
+            "column_name" => "type",
+        ],
+        "Search-Square" => [
+            "group_type_code" => "CS",
+            "column_name" => "square",
+        ],
+        "Search-Stratum" => [
+            "group_type_code" => "CS",
+            "column_name" => "stratum",
+        ],        
     ];
 
     public function __construct()
@@ -45,6 +60,14 @@ class LocusGroup extends ModelGroup implements ModelGroupInterface
             "Registration" => [
                 ["Area", "Stratum"]
             ], 
+            "Search" => [
+                [
+                    "Search-Description",
+                    "Search-Square",
+                    "Search-Stratum",
+                    "Search-Type",
+                ]
+            ],
         ];
 
         return $this->buildTrio($cats);

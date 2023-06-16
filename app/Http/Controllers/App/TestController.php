@@ -6,61 +6,54 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Models\App\DigModel;
-use App\Models\DigModels\Stone;
-use App\Models\DigModels\Fauna;
+use App\Models\DigModels\Locus;
+use App\Models\DigModels\Tags\LocusTag;
 use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
 
 class TestController extends Controller
 {
     public function run(Request $r)
     {
-        if(app()->environment(['production'])) {
+        if (app()->environment(['production'])) {
             return response()->json([
                 "msg" => "Test unavailable in production!",
             ], 403);
         }
 
         $updated = [];
-        $res = Fauna::select('id', 'area', 'locus')->where('area', '=', 'Area A23')->get();
-        //->whereIn('area_orig', ['- (no tag)'])->get();
-        //->whereNull('area')->get();      
+        $res = Locus::where('s6_no', 10)->get();
+
         foreach ($res as $r) {
-                //$r->area = 'XX';
-                //$r->edit_notes = 'Original Area('. $r->area_orig . ') ';
-                //$r->save();
-                array_push($updated, $r);
+            // $tag_id = 0;
+            // switch ($r->s2_ext) {
+            //     case null:
+            //     case 0:
+            //          $tag_id = 300;
+            //         break;
+            //     case 'a':
+            //         $tag_id = 301;
+            //         break;
+            //     case 'b':
+            //         $tag_id = 302;
+            //         break;
+            //     case 'c':
+            //         $tag_id = 303;
+            //         break;
+
+            //     default:
+                   
+            // }
+            $r->model_tags()->attach(300);
+
+            array_push($updated, $r->id);
         }
 
         return response()->json([
             "msg" => "update completed!",
-            "cnt" => count($updated),            
+            "cnt" => count($updated),
             "updated" => $updated,
 
         ], 200);
-
-
-
-        $stones = Stone::select('id', 'area', 'area_orig', 'edit_notes')->whereNull('area')->get();        
-        foreach ($stones as $r) {
-            $p = explode("/", $r->date_orig);
-            $year = "";
-            $new = "";
-            if (count($p) === 3) {
-                $y = intval($p[2]);
-                if (($y > 80  && $y < 100)) {
-                    $year = "19" .  str_pad($y, 2, '0', STR_PAD_LEFT);
-                } else  if ($y >= 0  && $y <= 50) {
-                    $year = "20" .  str_pad($y, 2, '0', STR_PAD_LEFT);
-                } else  if ($y >= 1990) {
-                    $year = $y;
-                }
-                $new = $year . '-' . str_pad($p[1], 2, '0', STR_PAD_LEFT) . '-' . str_pad($p[0], 2, '0', STR_PAD_LEFT);
-                $r->date = $new;
-                $r->year = intval($year);
-                $r->save();
-                array_push($formatted, $r);
-            }
-        }
     }
 
     public function status(Request $r)
