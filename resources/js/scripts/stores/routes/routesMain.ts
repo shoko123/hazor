@@ -12,6 +12,7 @@ import { useRoutesPlanTransitionStore } from './routesPlanTransition';
 import { useRoutesPrepareStore } from './routesPrepare';
 import { useAuthStore } from '../auth';
 import { useNotificationsStore } from '../notifications';
+import { EmptyResultSetError } from '../../setups/routes/errors';
 
 
 export const useRoutesMainStore = defineStore('routesMain', () => {
@@ -98,15 +99,6 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
         try {
             await p.prepareForNewRoute(to.value.module, handle_to.query, <string>handle_to.params.url_id, <TPlanAction[]>planResponse.data)
-            // console.log(`routesMain returned from prepareForNewRoute(no exception!) prepare: ${JSON.stringify(prepare, null, 2)}`);
-            // if (!prepare.success) {
-            //     console.log(`known prepare() error: ${prepare.errorDetails}`)
-            //     throw prepare.errorDetails
-            //     //return handlePrepareError(<TPrepareError>prepare.errorDetails)
-            // } else {
-            //     console.log("prepare OK")
-            // }
-            //finalizeRouting()
             finalizeRouting(handle_to)
 
             //console.log(`router.beforeEach returned ${JSON.stringify(res, null, 2)}`);
@@ -115,6 +107,11 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         }
         catch (err) {
             isLoading.value = false
+            if (err === EmptyResultSetError && handle_from.name === 'filter') {
+                console.log(`EMPTY ERROR`)
+                n.showSnackbar('Query resulted in an set. Please modify query and resubmit!')
+                return { name: 'filter' }
+            }
             n.showSnackbar('Unexpected Error - redirceted to Home page')
             console.log(`unexpected prepare() error: ${JSON.stringify(err, null, 2)} redirect to home`);
             return goHome()

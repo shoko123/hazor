@@ -19,6 +19,7 @@ import { useNotificationsStore } from '../notifications'
 import { useItemStore } from '../item'
 import { useRoutesMainStore } from './routesMain'
 import { useRoutesParserStore } from './routesParser'
+import { EmptyResultSetError } from '../../setups/routes/errors'
 
 export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let xhr = useXhrStore();
@@ -51,8 +52,13 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
         case 'collection.load':
           await loadMainCollection(module, query).catch(err => {
-            throw 'CollectionLoadError'
+            if (err === EmptyResultSetError) {
+              throw err
+            } else {
+              throw 'CollectionLoadError'
+            }
           })
+
           break
 
         case 'collection.clear':
@@ -148,6 +154,9 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     console.log(`prepare.loadMainCollection()`)
     return xhr.send('model/index', 'post', { model: module, query: queryRes.data })
       .then(res => {
+        if(res.data.collection.length === 0){
+          throw EmptyResultSetError
+        }
         r.to.queryParams = query
         c.setArray('main', res.data.collection)
         console.log(`collection loaded successfully`)
