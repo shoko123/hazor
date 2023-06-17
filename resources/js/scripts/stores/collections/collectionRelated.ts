@@ -46,48 +46,32 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
 
         console.log(`collectionMedia.loadPage() view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1} module: ${module} `);
 
-       
-                //savePage(array.value.slice(start, start + ipp), view, module)
-                extra.value.pageNoB1 = pageNoB1
-                extra.value.viewIndex = extra.value.views.indexOf(view)
-                let slice = array.value.slice(start, start + ipp)
-               
-                savePage(slice, module)              
-                return true
+
+        //savePage(array.value.slice(start, start + ipp), view, module)
+        extra.value.pageNoB1 = pageNoB1
+        extra.value.viewIndex = extra.value.views.indexOf(view)
+        let slice = array.value.slice(start, start + ipp)
+
+        savePage(slice, module)
+        return true
 
 
     }
 
     function savePage(apiPage: TApiArrayMedia[], module: TModule) {
-        let toSave = []
-        let pageRef = <TPageItem[]>([])
-
-      
-
-                toSave = (<TApiPageMedia[]>apiPage).map(x => {
-                    const media = buildMedia(x, module)
-                    const item = { id: x?.id, description: x.description }
-                    return { ...item, media: media }
-                })
-                page.value = <TPageCMainVImage[]>toSave
-             
         //console.log(`Saving page: ${JSON.stringify(toSave, null, 2)}`)
     }
 
-
-
     function itemIndexById(id: number) {
-        let index = array.value.findIndex(x => x?.id === id)
-        //console.log(`itemIndexById(id:${id}) index: ${index}`)
+        let index = array.value.findIndex(x => x === id)
         return index
-
     }
 
     function itemIsInPage(id: number) {
         return page.value.some((x) => (<TPageCMainVImage>x).id === id)
     }
 
-    function itemByIndex(index: number) : TApiArray {
+    function itemByIndex(index: number): TApiArray {
         return array.value[index]
     }
 

@@ -22,12 +22,6 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
     protected $eloquent_model_name;
     protected $builder;
 
-    abstract function buildSqlDescription(): string;
-    abstract function buildSqlUrlId(): string;
-    abstract function init(): array;
-    abstract function getIdFromUrlId(string $url_id): int;
-    abstract function getUrlIdFromId(int $id): string;
-
     public function __construct($eloquent_model_name = null)
     {
         $this->eloquent_model_name = $eloquent_model_name;
@@ -44,9 +38,10 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
     public function index($query)
     {
-        $this->builder = $this->indexSelect();
+        $this->builderIndexSelect();
         $this->applyFilters($query);
-        $collection = $this->builder->orderBy('order_column', 'asc')->get();
+        $this->builderOrder();
+        $collection = $this->builder->get();
         return $collection;
     }
 
@@ -279,17 +274,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
                 "url_id" => $this->getUrlIdFromId($item->id)
             ];
         } else {
-            return [
-                "fields" => $item,
-               
-                "media1" => null,
-                "mediaPage" => [],
-                "mediaArray" => [],
-                "model_tags" => [],
-                "global_tags" => [],
-                "discrete_columns" => [],
-                "url_id" => $this->getUrlIdFromId($item->id)
-            ];
+            return array_merge($this->show($item["id"]), ["url_id" => $this->getUrlIdFromId($item->id)]);
         }
     }
 }

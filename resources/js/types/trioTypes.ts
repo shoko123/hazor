@@ -53,10 +53,9 @@ type TParam = {
   paramKey: string
 }
 
-type TColumnInfo = {
+type TColumnValueUpdateInfo = {
   column_name: string,
   val: number | string
-  paramKey: string
 }
 
 type TColumnSearch = {
@@ -80,7 +79,7 @@ export {
   TGroup,
   TGroupType,
   TParam,
-  TColumnInfo,
+  TColumnValueUpdateInfo,
   TColumnSearch,
   IGroupObject,
   ICategoryObject,

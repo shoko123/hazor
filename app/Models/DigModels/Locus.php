@@ -57,13 +57,13 @@ class Locus extends DigModel
         return $id;
     }
 
-    public function indexSelect(): Builder {
+    public function builderIndexSelect(): void {
         $url_id = $this->buildSqlUrlId();
-        return $this->select('id', DB::raw($url_id));
+        $this->builder = $this->select('id', DB::raw($url_id));        
     }
     
-    public function pageSelect(): string {
-        return 'xxx';
+    public function builderOrder(): void {
+        $this->builder->orderBy('id', 'asc');
     }
 
     public function itemSelect(): Builder {

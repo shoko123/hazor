@@ -17,11 +17,11 @@ interface DigModelInterface
 
     public function getIdFromUrlId(string $s) : int;
     public function getUrlIdFromId(int $id): string;    
-    public function indexSelect(): Builder;//returns {id, url_id}[]
+    public function builderIndexSelect(): void;
     public function indexFormat(): string;
-    public function pageSelect(): string;//returns {id, url_id}[]
+    public function builderOrder(): void;
     public function pageFormat(): string;//returns {id, url_id, description, media1 (null | {tnUrl, fullUrl})}[]
-    public function buildSqlDescription(): string; //used by both indexSelect and pageSelect
+    public function buildSqlDescription(): string; //used by both builderIndexSelect and order
     public function itemSelect(): Builder;
     public function discreteColumns(Model $model): array;
   

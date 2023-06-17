@@ -15,7 +15,6 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
 </template>
 
 <script lang="ts" setup>
@@ -24,12 +23,12 @@ import { storeToRefs } from 'pinia'
 import PickerForm from './PickerForm.vue'
 //let { name } = storeToRefs(useModuleStore())
 import { useItemStore } from '../../../../../scripts/stores/item'
-
+import { useCollectionMainStore } from '../../../../../scripts/stores/collections/collectionMain'
 let i = useItemStore()
-
+let { extra } = storeToRefs( useCollectionMainStore())
 
 const tag = computed(() => {
-  return i.derived.module + ' ' + i.derived.url_id
+  return `${i.derived.module} ${i.derived.url_id} (${i.itemIndex + 1}/${extra.value.length})`
 })
 
 const moduleName = computed(() => {

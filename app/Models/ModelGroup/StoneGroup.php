@@ -114,11 +114,14 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
         return array_keys(self::$groups);
     }
 
-
-
     public function trio(): array
     {
         $cats = [
+            "Registration" => [
+                [
+                    "Media"
+                ],
+            ],
             "Search" => [
                 [
                     "Search-Details",
@@ -126,12 +129,6 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
                     "Search-Basket",
                     "Search-Year",
                 ]
-            ],
-            "Registration" => [
-                [
-                    "Area",
-                    "Media"
-                ],
             ],
             "Periods" => [
                 [

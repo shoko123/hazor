@@ -1,7 +1,7 @@
 // stores/trio.js
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
-import { TGroupTag, TGroup, Trio, TrioSourceName, TmpGroup, TGroupValue, TColumnInfo } from '../../types/trioTypes'
+import { TGroupTag, TGroup, Trio, TrioSourceName, TmpGroup, TGroupValue, TColumnValueUpdateInfo } from '../../types/trioTypes'
 import type { IObject } from '../../types/generalTypes'
 import type { TParseUrlQueryResponse, TParseQueryData } from '@/js/types/routesTypes'
 import { useXhrStore } from './xhr'
@@ -508,7 +508,7 @@ export const useTrioStore = defineStore('trio', () => {
     console.log(`trio.sync()`)
     let globalTagIds = <number[]>([])
     let modelTagIds = <number[]>([])
-    let columns = <TColumnInfo[]>([])
+    let columns = <TColumnValueUpdateInfo[]>([])
 
     selectedNewItemParams.value.forEach(paramKey => {
       let group = trio.value.entities.groups[parseParamKey(paramKey, false)]
@@ -523,10 +523,11 @@ export const useTrioStore = defineStore('trio', () => {
         case "CV":
           let param = trio.value.entities.params[paramKey]
           let column_name = (<TGroupValue>group).column_name
-          columns.push({ column_name, val: param.id, paramKey: param.paramKey })
+          columns.push({ column_name, val: group.group_type_code === "LV" ? param.id : param.name })
           break
       }
     })
+
     let data = {
       model: current.value.module,
       id: current.value.url_id,
@@ -537,7 +538,7 @@ export const useTrioStore = defineStore('trio', () => {
 
     console.log(`tags.sync() data: ${JSON.stringify(data, null, 2)}`)
 
-    let res = await send('tags/sync', 'post', data)
+    await send('tags/sync', 'post', data)
       .catch(err => {
         console.log(`tags.sync() failed. err: ${JSON.stringify(err, null, 2)}`)
         throw err
@@ -545,14 +546,11 @@ export const useTrioStore = defineStore('trio', () => {
     categoryIndex.value = 0
     groupIndex.value = 0
 
-    //console.log(`tags.sync() res.data: ${JSON.stringify(res.data.all_tags, null, 2)}`)
-    selectedItemParams.value = [...res.data.all_tags]
-
-    //TODO fix this ugly casting later
-    let genFields = fields as unknown as IObject
-    let cols: TColumnInfo[] = [...res.data.columns]
-    cols.forEach(x => {
-      genFields[x.column_name] = x.val
+    //once back successfully from server, update locally
+    selectedItemParams.value = [...selectedNewItemParams.value]
+    let fieldsAsAnObject = fields as unknown as IObject
+    columns.forEach(x => {
+      fieldsAsAnObject[x.column_name] = x.val
     })
     clearSelected('New')
   }
