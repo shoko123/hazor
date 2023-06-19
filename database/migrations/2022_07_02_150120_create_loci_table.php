@@ -17,6 +17,9 @@ class CreateLociTable extends Migration
             $table->increments('id');
             $table->string('name', 10)->nullable();
             $table->string('area', 3);
+            $table->unsignedMediumInteger('locus_no');
+            $table->string('addendum', 2)->nullable();
+            $table->unsignedSmallInteger('year')->nullable();
             $table->string('square', 10)->nullable();
             $table->string('stratum', 15)->nullable();
             $table->string('type', 30)->nullable();

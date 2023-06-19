@@ -21,31 +21,13 @@ class TestController extends Controller
         }
 
         $updated = [];
-        $res = Locus::where('s6_no', 10)->get();
-
+        $res = Locus::selectRaw('id,  RIGHT(name, 1) as new_addendum , name, locus_no')->where('name', 'regexp', '\d{4}[ab]{1}$')->get();
         foreach ($res as $r) {
-            // $tag_id = 0;
-            // switch ($r->s2_ext) {
-            //     case null:
-            //     case 0:
-            //          $tag_id = 300;
-            //         break;
-            //     case 'a':
-            //         $tag_id = 301;
-            //         break;
-            //     case 'b':
-            //         $tag_id = 302;
-            //         break;
-            //     case 'c':
-            //         $tag_id = 303;
-            //         break;
-
-            //     default:
-                   
-            // }
-            $r->model_tags()->attach(300);
-
-            array_push($updated, $r->id);
+          
+            $r->addendum = $r->new_addendum;
+            //$r->year = (int)$r->new_2year + 2000;
+            $r->save();
+            array_push($updated, $r );
         }
 
         return response()->json([

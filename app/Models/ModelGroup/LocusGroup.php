@@ -20,6 +20,10 @@ class LocusGroup extends ModelGroup implements ModelGroupInterface
             "dependency" => null,
             "multiple" => true
         ],
+        "Search-Name" => [
+            "group_type_code" => "CS",
+            "column_name" => "name",
+        ],
         "Search-Description" => [
             "group_type_code" => "CS",
             "column_name" => "description",
@@ -62,6 +66,7 @@ class LocusGroup extends ModelGroup implements ModelGroupInterface
             ], 
             "Search" => [
                 [
+                    "Search-Name",
                     "Search-Description",
                     "Search-Square",
                     "Search-Stratum",

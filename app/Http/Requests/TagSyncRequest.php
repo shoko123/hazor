@@ -25,7 +25,7 @@ class TagSyncRequest extends FormRequest
     private $modelInfo = [
         "Locus" => [ "table_name" => "loci", "tag_table_name" => "locus_tags", "fields" => ["area"]],
         "Stone" => [ "table_name" => "stones", "tag_table_name" => "stone_tags", "fields" => ["material_id", "base_type_id"]],
-        "Fauna" => [ "table_name" => "fauna", "tag_table_name" => "fauna_tags", "fields" => []],
+        "Fauna" => [ "table_name" => "fauna", "tag_table_name" => "fauna_tags", "fields" => ["taxon_id", "element_id"]],
     ];    
     
     /**
