@@ -82,7 +82,7 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
         ],
         "Search-Locus" => [
             "group_type_code" => "CS",
-            "column_name" => "name",
+            "column_name" => "locus",
         ],
         "Search-Basket" => [
             "group_type_code" => "CS",
@@ -117,18 +117,18 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
     public function trio(): array
     {
         $cats = [
+            "Search" => [
+                [
+                    "Search-Basket",
+                    "Search-Locus",
+                    "Search-Year",                    
+                    "Search-Details",
+                ]
+            ], 
             "Registration" => [
                 [
                     "Media"
                 ],
-            ],
-            "Search" => [
-                [
-                    "Search-Details",
-                    "Search-Locus",
-                    "Search-Basket",
-                    "Search-Year",
-                ]
             ],
             "Periods" => [
                 [

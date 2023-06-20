@@ -45,7 +45,7 @@ import { useRoutesMainStore } from '../../../../../scripts/stores/routes/routesM
 import { useItemStore } from '../../../../../scripts/stores/item'
 import { useTrioStore } from '../../../../../scripts/stores/trio'
 let { current } = storeToRefs(useRoutesMainStore())
-let { prepareForNew } = useModuleStore()
+
 const i = useItemStore()
 const router = useRouter()
 
@@ -67,13 +67,11 @@ function isAllowed(module: string) {
 
 function itemCreate() {
   console.log(`itemCreate`)
-  prepareForNew(true, current.value.module, i.fields)
   router.push({ name: 'create', params: { module: current.value.url_module } })
 }
 
 function itemUpdate() {
   console.log(`itemUpdate`)
-  prepareForNew(false, current.value.module, i.fields)
   router.push({ name: 'update', params: { module: current.value.url_module, url_id: current.value.url_id } })
 }
 

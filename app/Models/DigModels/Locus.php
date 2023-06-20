@@ -24,7 +24,7 @@ class Locus extends DigModel
     {
         return $this->belongsToMany(LocusTag::class, 'locus-locus_tags', 'item_id', 'tag_id');
     }
-    
+
     public function global_tags()
     {
         return $this->morphToMany(Tag::class, 'taggable');
@@ -49,24 +49,35 @@ class Locus extends DigModel
         return 'id AS url_id';
     }
 
-    function getIdFromUrlId(string $url_id) : int {
+    function getIdFromUrlId(string $url_id): int
+    {
         return $url_id;
     }
 
-    function getUrlIdFromId(int $id) : string {
+    function getUrlIdFromId(int $id): string
+    {
         return $id;
+        $item = $this->findOrFail($id);
+        $url_id = is_null($item->year) ? "0000-" : $item->year . "-";
+        $url_id .= $item->locus_no;
+        $url_id .= $item->area . "-";
+        $url_id .=  is_null($item->addendum) ? $item->addendum : "";
+        return $url_id;
     }
 
-    public function builderIndexSelect(): void {
+    public function builderIndexSelect(): void
+    {
         $url_id = $this->buildSqlUrlId();
-        $this->builder = $this->select('id', DB::raw($url_id));        
+        $this->builder = $this->select('id', DB::raw($url_id));
     }
-    
-    public function builderOrder(): void {
+
+    public function builderOrder(): void
+    {
         $this->builder->orderBy('id', 'asc');
     }
 
-    public function itemSelect(): Builder {
+    public function itemSelect(): Builder
+    {
         return self::with([
             'media',
             'model_tags.tag_group',
@@ -75,19 +86,23 @@ class Locus extends DigModel
             },*/
         ]);
     }
- 
-    public function discreteColumns(Model $model): array {
-        $area = 'Area' . '.' .$model["area"];
-        return [$area];        
-    }    
-    
-    public function indexFormat(): string  {
+
+    public function discreteColumns(Model $model): array
+    {
+        $area = 'Area' . '.' . $model["area"];
+        return [$area];
+    }
+
+    public function indexFormat(): string
+    {
         return 'xxx';
     }
-    public function pageFormat(): string  {
+    public function pageFormat(): string
+    {
         return 'xxx';
     }
-    public function itemFormat(): string {
+    public function itemFormat(): string
+    {
         return 'xxx';
     }
 }

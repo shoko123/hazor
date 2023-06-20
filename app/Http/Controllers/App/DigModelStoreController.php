@@ -11,7 +11,7 @@ class DigModelStoreController extends Controller
     public function store(DigModelStoreRequest $r, DigModel $m)
     {
         $validated = $r->validated();
-        $item = $m->store($validated["id"], $validated["item"], $r->isMethod('put'));
+        $item = $m->store($validated["id"], $validated["item"], $r->isMethod('post'));
 
         $resp = array_merge($item, [
             "msg" => "ModelControler.store()",

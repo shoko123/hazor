@@ -22,10 +22,23 @@ class FaunaStoreRequest extends DigModelStoreRequest
     public function rules(): array
     {
         return [
-            'item.area' => 'min:1|max:3',
-            'item.locus' => 'max:500',
-            'item.basket' => 'numeric|min:1|max:50000|nullable',
-            'item.date' => 'string|nullable',
+            'id' => 'required|numeric',
+            'item.label' => 'max:20|nullable',
+            'item.area' => 'max:20|nullable',
+            'item.locus' => 'max:30|nullable',
+            'item.basket' => 'max:30|nullable',
+            'item.stratum' => 'max:20|nullable',
+            'item.item_category' => 'max:30|nullable',
+            'item.biological_taxonomy' => 'max:100|nullable',
+            'item.has_taxonomic_identifier' => 'max:40|nullable',
+            'item.has_anatomical_identifier' => 'max:40|nullable',
+            'item.taxon' => 'max:30|nullable',
+            'item.element' => 'max:30|nullable',
+            'item.fragment_present' => 'max:30|nullable',
+            'item.bone_number' => 'max:40|nullable',
+            'item.snippet' => 'max:200|nullable',
+            'item.taxon_id' => 'max:10|nullable',
+            'item.element_id' => 'max:10|nullable',
         ];
     }
 }

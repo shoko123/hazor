@@ -1,42 +1,32 @@
-import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { TLocusFields, TFields } from '@/js/types/moduleFieldsTypes'
 
 export const useLocusStore = defineStore('locus', () => {
-  const base: TLocusFields = {
-    id: 0,
-    name: "",
-    area: "XX",
-    square: "",
-    stratum: "",
-    type: "",
-    cross_ref: "",
-    description: "",
-    notes: "",
-    elevation: "",
-  }
-
-  let fields = ref<TLocusFields>(base)
-
+  const reNameIsLocusNo = /^\d{1,5}$/
+  const reNameIsLocusNoWithAddendum = /^\d{+}[a-c]$/
+  const reNameIsYearHyphenLocusNo = /^\d{2}-\d{3}$/
+  const reNameIsYearAreaHyphenLocusNo = /^\d{2}[A-Z]\d{1}-\d{3}$/
+  
   function tagFromUrlId(url_id: string): string {
     return url_id
   }
 
-  function prepareForNew(isCreate: boolean, current: TFields): void {
-    console.log(`locus.prepareForNew() isCreate: ${isCreate}  current${JSON.stringify(current, null, 2)}`)
+  function beforeStore(isCreate: boolean, fields: TFields): TFields | false {
+    console.log(`locus.beforStores() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
+    let lf = <TLocusFields>fields
     if (isCreate) {
-      fields.value = base
+      let rf = { ...lf }
+      if (reNameIsLocusNo) {
+        rf.locus_no = lf.name as unknown as number
+      }
+      return rf
     } else {
-      fields.value = <TLocusFields>current
+      return lf
     }
   }
-  function clear() {
-    fields.value = base
-  }
+
   return {
-    fields,
-    clear,
+    beforeStore,
     tagFromUrlId,
-    prepareForNew
   }
 })

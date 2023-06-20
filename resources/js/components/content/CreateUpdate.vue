@@ -18,18 +18,20 @@
 
 import type { Component } from 'vue'
 import type { Validation } from "@vuelidate/core"
-import { computed } from 'vue'
+import { TApiItemShow, TApiItemUpdate } from '@/js/types/itemTypes'
+import { computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useItemStore } from '../../scripts/stores/item'
-import { TFieldsToStore } from '@/js/types/moduleFieldsTypes'
+import { TFields } from '@/js/types/moduleFieldsTypes'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 import StoneNew from '../modules/stones/StoneNew.vue'
 import FaunaNew from '../modules/fauna/FaunaNew.vue'
 import LocusNew from '../modules/loci/LocusNew.vue'
-
-
+import { useLocusStore } from '../../scripts/stores/modules/locus'
+import { useStoneStore } from '../../scripts/stores/modules/stone'
+import { useFaunaStore } from '../../scripts/stores/modules/fauna'
 let router = useRouter()
 
 let { showSnackbar } = useNotificationsStore()
@@ -43,6 +45,7 @@ let { current } = storeToRefs(useRoutesMainStore())
 const title = computed(() => {
   return props.isCreate ? "Create" : "Update"
 })
+
 const module = computed<Component>(() => {
   switch (current.value.module) {
     case 'Locus':
@@ -57,9 +60,29 @@ const module = computed<Component>(() => {
   }
 })
 
+function beforeStore(isCreate: boolean, fields: TFields ) {
+  let store
+  switch (current.value.module) {
+    case 'Locus':
+      store = useLocusStore()
+      break
+    case 'Stone':
+    store = useStoneStore()
+      break
+    case 'Fauna':
+    store = useFaunaStore()
+      break
+    default:
+      console.log(`Update.vue invalid module`)
+      return false
+  }
+  return store.beforeStore(props.isCreate, fields)
+}
 
-async function submit(v$: Validation, data: TFieldsToStore, id?: number) {
-  console.log(`CreateUpdate.submit() data: ${JSON.stringify(data, null, 2)}`)
+const child = ref(null)
+
+async function submit(v$: Validation, data: TFields, id?: number) {
+  //console.log(`CreateUpdate.submit() data: ${JSON.stringify(data, null, 2)}`)
 
   // vuelidate validation
   await v$.$validate();
@@ -70,15 +93,22 @@ async function submit(v$: Validation, data: TFieldsToStore, id?: number) {
     console.log(`validation silent errors: ${JSON.stringify(v$.$silentErrors, null, 2)}`)
     return
   }
-
+  
   //alert("Form Successfully Submitted!")
- 
-  const urlId = await upload(props.isCreate, data, id).catch(err => {
+ let fieldsToSend = beforeStore(props.isCreate, data)
+
+ if(fieldsToSend === false){
+  alert(`problem with data`)
+  return
+}
+
+  const itemDetails = await upload(props.isCreate, <TFields>fieldsToSend).catch(err => {
     console.log(`CreateUpdate.upload(error) - return`)
   })
+
   //console.log(`CreateUpdate.after upload() res: ${JSON.stringify(urlId, null, 2)}`)
   if (props.isCreate) {
-    router.push({ name: 'show', params: { module: current.value.url_module, url_id: <string>urlId } })
+    router.push({ name: 'show', params: { module: current.value.url_module, url_id: (<TApiItemShow>itemDetails).url_id} })
   } else {
     router.push({ name: 'show', params: { module: current.value.url_module, url_id: current.value.url_id } })
   }

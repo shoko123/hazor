@@ -2,7 +2,7 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
 import { TModule } from '../../types/routesTypes'
-import { TFields, TFieldsToStore } from '../../types/moduleFieldsTypes'
+import { TFields } from '../../types/moduleFieldsTypes'
 
 import { useMediaStore } from './media'
 import { useRoutesMainStore } from './routes/routesMain'
@@ -33,10 +33,6 @@ export const useModuleStore = defineStore('module', () => {
     return store.tagFromUrlId(urlId)
   }
 
-  function prepareForNew(isCreate: boolean, module: TModule, fields: TFields): void {
-    return getStore(module).prepareForNew(isCreate, fields)
-  }
-
   function getStore(module: TModule) {
     switch (module) {
       case 'Locus':
@@ -46,11 +42,13 @@ export const useModuleStore = defineStore('module', () => {
         return useStoneStore()
 
       case 'Fauna':
+        return useFaunaStore()
+        
       default:
         return useFaunaStore()
     }
   }
 
 
-  return { counts, backgroundImage, itemViews, tagFromUrlId, prepareForNew }
+  return { counts, backgroundImage, itemViews, tagFromUrlId }
 })

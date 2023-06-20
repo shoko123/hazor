@@ -1,8 +1,8 @@
 // stores/media.js
+import type { TFields } from '@/js/types/moduleFieldsTypes'
+import type { TMedia } from '@/js/types/mediaTypes'
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { TFields, TFieldsToStore } from '@/js/types/moduleFieldsTypes'
-import { TMedia } from '@/js/types/mediaTypes'
 import { TApiItemShow, TApiItemUpdate } from '@/js/types/itemTypes'
 import { TApiArrayMedia, TApiArrayMain } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections/collections'
@@ -23,7 +23,7 @@ export const useItemStore = defineStore('item', () => {
   const { saveItemTags } = useTrioStore()
   const { send } = useXhrStore()
   const { showSnackbar, showSpinner } = useNotificationsStore()
-  let fields = ref<TFields>({ id: -1 })
+  let fields = ref<TFields | null>(null)
   let url_id = ref<string | undefined>(undefined)
   let tag = ref<string | undefined>(undefined)
   let media1 = ref<TMedia>({ hasMedia: false, urls: { full: '', tn: '' } })
@@ -57,7 +57,7 @@ export const useItemStore = defineStore('item', () => {
 
   function itemClear(index: number) {
     itemIndex.value = -1
-    fields.value = { id: -1 }
+    fields.value = null
   }
 
   function nextUrlId(isRight: boolean) {
@@ -76,9 +76,9 @@ export const useItemStore = defineStore('item', () => {
   }
 
   //return the newly created/update item's urlId (need it only for create())
-  async function upload(isCreate: boolean, newFields: TFieldsToStore, id?: number) : Promise<string> {
-    console.log(`item.upload isCreate: ${isCreate}, module: ${current.value.module}, fields: ${JSON.stringify(fields.value, null, 2)}`)
-    let res = await send('model/store', isCreate ? 'post' : 'put', { model: current.value.module, item: newFields, id })
+  async function upload(isCreate: boolean, newFields: TFields): Promise<TApiItemShow> {
+    console.log(`item.upload isCreate: ${isCreate}, module: ${current.value.module}, fields: ${JSON.stringify(newFields, null, 2)}`)
+    let res = await send('model/store', isCreate ? 'post' : 'put', { model: current.value.module, item: newFields, id: newFields.id })
       .catch(err => {
         showSnackbar(`model.store failed! Please try later!`)
         console.log(`model.store  failed. err: ${JSON.stringify(err, null, 2)}`)
@@ -96,17 +96,15 @@ export const useItemStore = defineStore('item', () => {
     }
     console.log(`model.store() returned (success) ${JSON.stringify(res.data, null, 2)}`)
     showSnackbar(`${current.value.module} ${isCreate ? "created" : "updated"} successfully! redirecting to item`)
-    return res.data.url_id
+    return res.data
   }
 
   async function destroy(): Promise<string | null> {
-
-
     const { removeItemFromArrayById } = useCollectionMainStore()
-    const prev = next('main', itemIndexById(fields.value.id), false)
+    const prev = next('main', itemIndexById((<TFields>fields.value).id), false)
 
     showSpinner('Accessing DB to delete record')
-    await send("model/destroy", 'post', { model: current.value.module, id: fields.value.id })
+    await send("model/destroy", 'post', { model: current.value.module, id: (<TFields>fields.value).id })
       .catch((err) => {
         showSnackbar("Failed to delete item!", 'red')
         showSpinner(false)
@@ -117,7 +115,7 @@ export const useItemStore = defineStore('item', () => {
     showSnackbar("Item deleted successfully")
     showSpinner(false)
     console.log(`${current.value.module}item.destroy() success!`)
-    const newLength = removeItemFromArrayById(fields.value.id)
+    const newLength = removeItemFromArrayById((<TFields>fields.value).id)
 
     //go to 'previous' url_id or to module.home (if array.length is 1)
     if (newLength === 0) {

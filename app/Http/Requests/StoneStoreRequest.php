@@ -22,6 +22,7 @@ class StoneStoreRequest extends DigModelStoreRequest
             'item.area' => 'min:1|max:3',
             'item.locus' => 'max:500',
             'item.basket' => 'string|nullable',
+            'item.year' => 'numeric|min:1950|max:2025|nullable',
             'item.date' => 'string|max:10|nullable',
             'item.prov_notes' => 'max:500',
             'item.material_code' => 'max:500',

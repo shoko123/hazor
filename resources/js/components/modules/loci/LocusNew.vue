@@ -2,7 +2,7 @@
   <v-container fluid class="pa-1 ma-0">
     <v-row wrap no-gutters>
       <v-text-field label="Name" v-model="data.name" :error-messages="nameErrors" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Area" v-model="data.area" :error-messages="areaErrors" class="mr-1" filled> </v-text-field>
+      <v-select  label="Area" v-model="area" :items="allowedAreas"></v-select>
       <v-text-field label="Square" v-model="data.square" :error-messages="squareErrors" class="mr-1" filled>
       </v-text-field>
       <v-text-field label="stratum" v-model="data.stratum" :error-messages="stratumErrors" class="mr-1" filled>
@@ -22,37 +22,57 @@
       <v-textarea label="Description" v-model="data.description" class="mr-1" :error-messages="descriptionErrors" filled> </v-textarea>
       <v-textarea label="Notes" v-model="data.notes" class="mr-1" :error-messages="notesErrors" filled> </v-textarea>
     </v-row>
-    <slot name="data" v-bind:v$=v$ v-bind:data=data v-bind:id=fields.id></slot>
+    <slot name="data" v-bind:v$=v$ v-bind:data=data v-bind:id=data.id></slot>
   </v-container>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, computed } from "vue";
+
+import type { TLocusFields } from '@/js/types/moduleFieldsTypes'
+import { onMounted, reactive, computed, ref, defineExpose } from "vue";
 import { storeToRefs } from 'pinia'
 import { useVuelidate } from "@vuelidate/core";
-import { required, minLength, maxLength } from "@vuelidate/validators";
-import { TLocusFieldsToStore } from '@/js/types/moduleFieldsTypes'
-import { useLocusStore } from '../../../scripts/stores/modules/locus'
+import { required, integer, maxLength, helpers } from "@vuelidate/validators";
+import { useItemStore } from '../../../scripts/stores/item'
+import { useTrioStore } from '../../../scripts/stores/trio'
+
+const props = defineProps<{
+  isCreate: boolean
+}>()
 
 onMounted(() => {
-  data.name = fields.value.name
-  data.area = fields.value.area
-  data.square = fields.value.square
-  data.stratum = fields.value.stratum
-  data.type = fields.value.type
-  data.cross_ref = fields.value.cross_ref
-  data.description = fields.value.description
-  data.notes = fields.value.notes
-  data.elevation = fields.value.elevation
-
-  console.log(`LocusNew.Mount fields: ${JSON.stringify(data, null, 2)}`)
+  const locusFields = <TLocusFields>fields.value
+  if(!props.isCreate){
+     data.id = locusFields.id
+     data.name = locusFields.name
+     data.area = locusFields.area
+     data.locus_no = locusFields.locus_no
+     data.addendum = locusFields.addendum
+     data.year = locusFields.year
+     data.square = locusFields.square
+     data.stratum = locusFields.stratum
+     data.type = locusFields.type
+     data.cross_ref = locusFields.cross_ref
+     data.description = locusFields.description
+     data.notes = locusFields.notes
+     data.elevation = locusFields.elevation
+     areaIndex.value = allowedAreas.value.indexOf(data.area)
+  }
+  console.log(`LocusNew isCreate: ${props.isCreate}\n data: ${JSON.stringify(data, null, 2)}`)
 })
 
-let { fields } = storeToRefs(useLocusStore())
+const { fields } = storeToRefs(useItemStore())
 
-const data: TLocusFieldsToStore = reactive({
+
+let { trio }=storeToRefs(useTrioStore())
+
+let data: TLocusFields = reactive({
+  id: 0,
   name: "",
-  area: "",
+  area: "XX",
+  locus_no: 0,
+  addendum: null,
+  year: null,
   square: "",
   stratum: "",
   type: "",
@@ -62,10 +82,34 @@ const data: TLocusFieldsToStore = reactive({
   elevation: "",
 })
 
+const nameIsLocusNo = helpers.regex(/^\d{1,5}$/)
+const nameIsLocusNoWithAddendum = helpers.regex(/^\d{+}[a-c]$/)
+const nameIsYearHyphenLocusNo = helpers.regex(/^\d{2}-\d{3}$/)
+const nameIsYearAreaHyphenLocusNo = helpers.regex(/^\d{2}[A-Z]\d{1}-\d{3}$/)
+//allowed names int(1-5 digits), int with 1-2 chars addendum, year(2-digits)-locusNo(3-digits), year+area-locusNo
+const nameValidator = helpers.regex(/^\d{1,5}$|^\d{1,5}[a-c]$|^\d{2}-\d{3}$|^\d{2}[A-Z]\d{1}-\d{3}$/)
+
+const allowedAreas = computed(() => {
+ return trio.value.entities.groups["Area"].params.map(x => trio.value.entities.params[x].name)
+})
+
+const area = computed({
+  get: () => { return allowedAreas.value[areaIndex.value] },
+  set: val => {
+    areaIndex.value = allowedAreas.value.indexOf(val)
+  }
+})
+
+let areaIndex = ref(0)
+
 const rules = computed(() => {
   return {
-    name: { required },
-    area: { required, minLength: minLength(2), maxLength: maxLength(2) },
+    id: {},
+    name: { nameIsLocusNo: helpers.withMessage('Incorrect name pattern', nameValidator) },
+    area: { required  },//from select list
+    locus_no: {required, integer },
+    addendum: {},
+    year: {},
     square: {},
     stratum: {},
     type: {},
@@ -82,8 +126,8 @@ const nameErrors = computed(() => {
   return <string>(v$.value.name.$error ? v$.value.name.$errors[0].$message : undefined)
 })
 
-const areaErrors = computed(() => {
-  return <string>(v$.value.area.$error ? v$.value.area.$errors[0].$message : undefined)
+const locus_noErrors = computed(() => {
+  return <string>(v$.value.locus_no.$error ? v$.value.locus_no.$errors[0].$message : undefined)
 })
 
 const squareErrors = computed(() => {
@@ -113,7 +157,4 @@ const notesErrors = computed(() => {
 const elevationErrors = computed(() => {
   return <string>(v$.value.elevation.$error ? v$.value.elevation.$errors[0].$message : undefined)
 })
-
-
-
 </script>
