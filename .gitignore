@@ -3,6 +3,8 @@
 /public/hot
 /public/storage
 /storage/*.key
+/database/seeders/UsersTableSeeder.php
+/database/seeders/sql/tmp
 /vendor
 .env
 .env.backup
