@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Dig</title>
+    <title>Hazor Groundstones</title>
     @vite('resources/js/app.ts')
 </head>
 

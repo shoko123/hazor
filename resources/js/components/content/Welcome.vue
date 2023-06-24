@@ -37,15 +37,15 @@ let { getModule } = useRoutesMainStore()
 const { backgroundImage, counts } = storeToRefs(useModuleStore())
 
 
-onMounted(() => {
-  let elHtml = document.getElementsByTagName("html")[0];
-  elHtml.style.overflowY = "hidden";
-})
+// onMounted(() => {
+//   let elHtml = document.getElementsByTagName("html")[0];
+//   elHtml.style.overflowY = "hidden";
+// })
 
-onUnmounted(() => {
-  let elHtml = document.getElementsByTagName("html")[0];
-  elHtml.style.overflowY = '';
-})
+// onUnmounted(() => {
+//   let elHtml = document.getElementsByTagName("html")[0];
+//   elHtml.style.overflowY = '';
+// })
 
 const module = computed(() => {
   return getModule()

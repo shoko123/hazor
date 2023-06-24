@@ -1,5 +1,5 @@
 <template>
-  <v-btn v-if="isAllowed('edit')" @click="itemUpdate()" icon size="small">
+  <v-btn v-if="isAllowed('update')" @click="itemUpdate()" icon size="small">
     <v-icon>mdi-pencil</v-icon>
     <v-tooltip activator="parent" location="bottom">
       Edit {{ module }} Entry
@@ -40,12 +40,13 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-import { useModuleStore } from '../../../../../scripts/stores/module'
+import { useAuthStore } from '../../../../../scripts/stores/auth'
 import { useRoutesMainStore } from '../../../../../scripts/stores/routes/routesMain'
 import { useItemStore } from '../../../../../scripts/stores/item'
 import { useTrioStore } from '../../../../../scripts/stores/trio'
-let { current } = storeToRefs(useRoutesMainStore())
 
+const { current } = storeToRefs(useRoutesMainStore())
+const { permissions } = storeToRefs(useAuthStore())
 const i = useItemStore()
 const router = useRouter()
 
@@ -53,16 +54,10 @@ const module = computed(() => {
   return current.value.module
 })
 
-const isLoggedIn = computed(() => {
-  return true
-})
 
-const tmp = computed(() => {
-  return false
-})
-
-function isAllowed(module: string) {
-  return true
+function isAllowed(action: string) {
+  const term = current.value.module + '-' + action
+  return permissions.value.includes(term)
 }
 
 function itemCreate() {

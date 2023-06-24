@@ -16,8 +16,8 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
         changed.module = (to.module !== from.module)
         changed.name = (to.name !== from.name)
         changed.urlId = (to.url_id !== from.url_id)
-        if (['Auth', 'Admin'].includes(to.module) ||
-            ['Auth', 'Admin'].includes(from.module)) {
+        if (['auth', 'admin'].includes(to.module) ||
+            ['auth', 'admin'].includes(from.module)) {
             return { success: true, data: [] }
         }
 

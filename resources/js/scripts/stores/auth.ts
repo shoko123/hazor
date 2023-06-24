@@ -16,18 +16,23 @@ type TUser = {
   'id': number,
   'token': string,
   'permissions': string[]
-} | null
+}
 
 export const useAuthStore = defineStore('auth', () => {
   let { send } = useXhrStore()
 
   let loginForm = ref<TLoginForm>({ email: "", password: "" })
-  let user = ref<TUser>(null)
+  let user = ref<TUser | null>(null)
   let accessibility = ref({ authenticatedUsersOnly: true, readOnly: false })
 
   const authenticated = computed(() => {
     return user.value !== null
   })
+
+  const permissions = computed(() => {
+    return user.value === null ? [] : (<TUser>user.value).permissions
+  })
+
 
   async function login(): Promise<boolean> {
     //clear user
@@ -71,5 +76,5 @@ export const useAuthStore = defineStore('auth', () => {
         showSpinner(false)
       })
   }
-  return { loginForm, user, accessibility, authenticated, login, logout }
+  return { loginForm, user, accessibility, authenticated, permissions, login, logout }
 })

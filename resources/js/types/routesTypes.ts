@@ -34,7 +34,8 @@ type TRouteInfo = {
     name: TName,
     module: TModule,
     idParams: TIdParams,
-    queryParams: object | undefined
+    queryParams: object | undefined,
+    preLoginFullPath: string | undefined
 }
 type TRouteEntityFlags = { module: boolean, collection: boolean, item: boolean, page: boolean }
 

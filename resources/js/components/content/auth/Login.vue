@@ -8,8 +8,7 @@
               <v-toolbar-title>Login</v-toolbar-title>
             </v-toolbar>
             <v-card-text>
-              <v-form @submit.prevent="loginRedirect
-              ">
+              <v-form @submit.prevent="loginRedirect">
                 <v-text-field prepend-icon="mdi-account" name="email" email="email" v-model="loginForm.email">
                 </v-text-field>
                 <v-text-field prepend-icon="mdi-lock" name="password" label="password" type="password"
@@ -35,23 +34,26 @@ import { storeToRefs } from 'pinia'
 import { useAuthStore } from '../../../scripts/stores/auth'
 import { useNotificationsStore } from '../../../scripts/stores/notifications';
 import { useModuleStore } from '../../../scripts/stores/module'
+import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
 import { router } from '../../../scripts/setups/vue-router'
 
 let { showSpinner, showSnackbar } = useNotificationsStore()
 let auth = useAuthStore()
 let { backgroundImage } = storeToRefs(useModuleStore())
+let { current } = storeToRefs(useRoutesMainStore())
 
 const loginForm = computed(() => {
   return auth.loginForm
 })
+
 async function loginRedirect() {
   showSpinner('Logging in ...')
   let res = await auth.login()
   showSpinner(false)
   if (res) {
-    showSnackbar('Successfully logged-in; redirected to home page')
-    //router.back()
-    router.push({ name: 'home' })
+    showSnackbar('Successfully logged-in!')
+    console.log(`Login success push to preLoginPath: ${current.value.preLoginFullPath}`)
+    router.push(<string>current.value.preLoginFullPath)
   } else {
     showSnackbar('Login or server access error! Please try again!')
   }

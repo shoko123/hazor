@@ -26,7 +26,8 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         module: 'Home',
         name: 'home',
         idParams: undefined,
-        queryParams: undefined
+        queryParams: undefined,
+        preLoginFullPath: undefined
     })
 
     const to = ref<TRouteInfo>({
@@ -36,7 +37,8 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         module: 'Home',
         name: 'home',
         idParams: undefined,
-        queryParams: undefined
+        queryParams: undefined,
+        preLoginFullPath: undefined
     })
 
     const isLoading = ref(false)
@@ -81,7 +83,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             to.value.url_module = ''
         }
 
-        //console.log(`handle_from: ${handle_from.fullPath} current: ${JSON.stringify(current.value, null, 2)}\nhandle_to: ${handle_to.fullPath} to: ${JSON.stringify(to.value, null, 2)})`)
+        console.log(`after parse() to: ${JSON.stringify(to.value, null, 2)})`)
 
         //verify that the transition is legal and prepare the plan required for a successful transition.
 
@@ -99,7 +101,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
         try {
             await p.prepareForNewRoute(to.value.module, handle_to.query, <string>handle_to.params.url_id, <TPlanAction[]>planResponse.data)
-            finalizeRouting(handle_to)
+            finalizeRouting(handle_to, handle_from)
 
             //console.log(`router.beforeEach returned ${JSON.stringify(res, null, 2)}`);
             isLoading.value = false
@@ -136,13 +138,14 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         return Promise.resolve(false)
     }
 
-    function finalizeRouting(handle_to: RouteLocationNormalized) {
+    function finalizeRouting(handle_to: RouteLocationNormalized, handle_from: RouteLocationNormalized) {
         current.value.name = <TName>handle_to.name
         current.value.module = to.value.module
         current.value.url_module = to.value.url_module
         current.value.queryParams = current.value.name === 'index' ? handle_to.query : undefined
-        current.value.url_full_path = current.value.name === 'index' ? handle_to.fullPath : undefined
-
+        current.value.url_full_path = handle_to.fullPath
+        current.value.preLoginFullPath = to.value.url_module === 'auth' ? handle_from.fullPath: undefined
+        
         switch (handle_to.name) {
             case 'show':
             case 'update':

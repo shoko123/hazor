@@ -23,9 +23,6 @@
 
 import { useAuthStore } from '../../../scripts/stores/auth'
 import { storeToRefs } from 'pinia'
-let auth =  useAuthStore()
-let { accessibility }  = storeToRefs(useAuthStore())
-
 
 async function register() {
   //await auth.register(registrationForm)
