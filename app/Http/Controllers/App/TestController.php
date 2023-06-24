@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Models\App\DigModel;
-use App\Models\DigModels\Locus;
+use App\Models\DigModels\Stone;
 use App\Models\DigModels\Tags\LocusTag;
 use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
 
@@ -21,17 +21,20 @@ class TestController extends Controller
         }
 
         $updated = [];
-        $res = Locus::selectRaw('id,  RIGHT(name, 1) as new_addendum , name, locus_no')->where('name', 'regexp', '\d{4}[ab]{1}$')->get();
+        //$res = Stone::selectRaw('id,  area, locus, basket_orig, basket, stone_no')->where('basket', 'regexp', '[.]\d$')->get();
+        //$res = Stone::selectRaw('id,  area, locus, basket, stone_no, description')->where('basket', 'regexp', '^[^0-9]{1,9}$')->get();
+        $res = Stone::selectRaw('id,  area, locus, basket, stone_no, description')->whereNull('basket')->get();
         foreach ($res as $r) {
           
-            $r->addendum = $r->new_addendum;
-            //$r->year = (int)$r->new_2year + 2000;
-            $r->save();
+            //$r->edit_notes = $r->edit_notes . 'basket(' . $r->basket . ')';
+            // $r-> stone_no = intval(substr($r->basket, -1), 10);
+            // $r->basket = substr($r->basket, 0, -2);
+            // $r->save();
             array_push($updated, $r );
         }
 
         return response()->json([
-            "msg" => "update completed!",
+            "msg" => "selection completed!",
             "cnt" => count($updated),
             "updated" => $updated,
 

@@ -22,13 +22,16 @@ class StoneStoreRequest extends DigModelStoreRequest
             'item.area' => 'min:1|max:3',
             'item.locus' => 'max:500',
             'item.basket' => 'string|nullable',
+            'item.stone_no' => 'min:0|max:99',
             'item.year' => 'numeric|min:1950|max:2025|nullable',
             'item.date' => 'string|max:10|nullable',
             'item.prov_notes' => 'max:500',
             'item.material_code' => 'max:500',
             'item.type' => 'max:500',
-            'item.details' => 'max:500',
+            'item.description' => 'max:500',
+            'item.notes' => 'max:500',
             'item.dimensions' => 'max:500',
+            'item.rim_diameter' => 'min:1|max:500|nullable',
         ];
     }
 }

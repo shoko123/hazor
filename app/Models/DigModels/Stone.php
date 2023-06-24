@@ -59,7 +59,7 @@ class Stone extends FindModel
 
     function buildSqlDescription(): string
     {
-        return 'details AS description';
+        return 'description';
     }
     function buildSqlUrlId(): string
     {

@@ -80,6 +80,10 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
             "dependency" => ["Basic Typology.Non-Processor"],
             "multiple" => true
         ],
+        "Search-Area" => [
+            "group_type_code" => "CS",
+            "column_name" => "area",
+        ],
         "Search-Locus" => [
             "group_type_code" => "CS",
             "column_name" => "locus",
@@ -92,9 +96,13 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
             "group_type_code" => "CS",
             "column_name" => "year",
         ],
-        "Search-Details" => [
+        "Search-Description" => [
             "group_type_code" => "CS",
-            "column_name" => "details",
+            "column_name" => "description",
+        ],
+        "Search-Notes" => [
+            "group_type_code" => "CS",
+            "column_name" => "notes",
         ],
     ];
 
@@ -120,9 +128,11 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
             "Search" => [
                 [
                     "Search-Basket",
+                    "Search-Area",
                     "Search-Locus",
                     "Search-Year",                    
-                    "Search-Details",
+                    "Search-Description",
+                    "Search-Notes"
                 ]
             ], 
             "Registration" => [

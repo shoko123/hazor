@@ -1,4 +1,4 @@
-type TLocusFields =  {
+type TLocusFields = {
         id: number,
         name: string,
         area: string,
@@ -21,16 +21,21 @@ type TStoneFields = {
         area: string,
         locus: string,
         basket: string,
-        year: number | null,
+        stone_no: number,
         date: string,
+        year: number | null,
         prov_notes: string,
         type: string,
-        material: string,
-        details: string,
+        material_code: string,
         dimensions: string,
+        rim_diameter: number | null,
+        description: string,
+        notes: string,
         material_id: number,
         base_type_id: number,
+        order_column: number | null
 }
+
 type TStoneField = keyof TStoneFields
 
 type TFaunaFields = {

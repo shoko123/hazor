@@ -7,7 +7,7 @@
       <v-card>
         <v-card-text>
           Please enter search term
-          <v-text-field label="search term" v-model="searchText" filled></v-text-field>
+          <v-text-field label="search term" v-model="searchText" autofocus filled></v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-row wrap>
@@ -63,11 +63,13 @@ function activate(activate: boolean, clear = false) {
   let paramKey = params.value[dialogIndex.value].paramKey
   let isActivated = trio.selectedFilterParams.some(x => x === paramKey)
 
-  trio.setFilterSearchTerm(params.value[dialogIndex.value].paramKey, clear ? '[empty]' : ((searchText.value === '') ? '[empty]': searchText.value))
+  trio.setFilterSearchTerm(params.value[dialogIndex.value].paramKey, clear ? '[empty]' : ((searchText.value === '') ? '[empty]' : searchText.value))
 
-  if(clear) {searchText.value = ""}
+  if (clear) {
+    searchText.value = ""
+  }
 
-  if(activate && searchText.value === "") {
+  if (activate && searchText.value === "") {
     dialog.value = false
     return
   }
