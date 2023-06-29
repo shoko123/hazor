@@ -1,7 +1,7 @@
 <template>
   <v-hover v-slot="{ isHovering, props }">
     <v-card v-bind="props" :color="isHovering ? 'blue' : undefined">
-      <v-img :src="media.urls.full" :lazy-src="media.urls.tn" contain aspect-ratio="1" class="bg-grey">
+      <v-img :src="media.urls.full" :lazy-src="media.urls.tn" aspect-ratio="1" :cover="cover" max-height="300" class="bg-grey-lighten-2">
         <v-btn v-if="showTag" class="text-subtitle-1 font-weight-medium black--text" color="grey">{{ tagText }}</v-btn>
         <v-card class="mx-auto" color="transparent" flat>
           <v-card-text class="text-body-1 white--text">
@@ -50,6 +50,11 @@ onMounted(() => {
 const showTag = computed(() => {
   return props.source === 'main'
 })
+
+const cover = computed(() => {
+  return !props.media.hasMedia
+})
+
 const tagText = computed(() => {
   switch (props.source) {
     case 'main':
@@ -67,7 +72,7 @@ const overlayText = computed(() => {
       return (<TImageableDetailsMain>props.details).description
 
     case 'media':
-      return `MediaSquare overlaytext`
+      return ``
   }
 })
 

@@ -2,7 +2,7 @@
 
 <template>
   <v-container fluid>
-    <v-card>
+    <v-card height="97vh">
       <v-toolbar id="toolbar" height="36">
         <v-toolbar-title>{{ carouselHeader }}</v-toolbar-title>
         <v-spacer />
@@ -14,8 +14,7 @@
       <v-card-text>
         <v-row>
           <v-card width="80%">
-            <v-img :src="urls.full" :lazy-src="urls.tn" aspect-ratio="1" max-height="61%" max-width="100%"
-              contain class="bg-grey">
+            <v-img :src="urls.full" :lazy-src="urls.tn" aspect-ratio="1" height="97vh" :cover="cover" class="bg-grey-lighten-2">
             </v-img>
           </v-card>
 
@@ -49,6 +48,9 @@ const isReady = computed(() => {
   return true
 })
 
+const cover = computed(() => {
+  return !c.media.hasMedia
+})
 const categoryIndex = computed({
   get: () => { return true },
   set: val => {

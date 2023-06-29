@@ -45,7 +45,7 @@ export const useCarouselStore = defineStore('carousel', () => {
     let text = ""
     switch (collectionName.value) {
       case 'main':
-        text = `${mainDetails.value.module} result set. Showing item "${mainDetails.value.url_id}"`
+        text = `${current.value.module} result set. Showing item "${mainDetails.value.url_id}"`
         break
       case 'media':
         text = `Media for ${current.value.module} "${current.value.url_id}"`

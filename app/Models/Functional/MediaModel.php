@@ -67,7 +67,7 @@ class MediaModel implements MediaModelInterface
         }
     }
 
-    public static function getMedia(MediaCollection $mc)
+    public static function getMedia(MediaCollection $mc, bool $just1 = false)
     {
         //ATTENTION these have to match the groups in config.media-library.media_collections
         $collection_order = ['Plan', 'Drawing', 'Photo and Drawing', 'Photo', 'Misc'];
@@ -79,6 +79,10 @@ class MediaModel implements MediaModelInterface
                     $ordered->push(['full' => $med->getPath(), 'tn' =>  $med->getPath('tn'), 'id' => $med['id'], 'description' => $med['description']]);
                 }
             }
+        }
+
+        if ($just1) {
+            return  count($mc) === 0 ? null : $ordered[0];
         }
 
         $page  = $ordered->take(18);

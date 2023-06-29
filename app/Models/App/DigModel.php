@@ -225,9 +225,11 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             ->select('id', DB::raw($desc))
             ->findOrFail($id);
 
+
+
         $media1 = null;
         if (!$item->media->isEmpty()) {
-            $media1 = ['full' => $item->getFirstMediaPath('photos'), 'tn' =>  $item->getFirstMediaPath('photos', 'tn')];
+            $media1 = MediaModel::getMedia($item->media, true);
         }
         unset($item->media);
 
