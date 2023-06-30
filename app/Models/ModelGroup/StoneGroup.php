@@ -55,6 +55,11 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
             "dependency" => ["Basic Typology.Active (handheld)"],
             "multiple" => true
         ],
+        "Vessel Type" => [
+            "group_type_code" => "TM",
+            "dependency" => ["Basic Typology.Vessel"],
+            "multiple" => true
+        ],
         "Vessel Part" => [
             "group_type_code" => "TM",
             "dependency" => ["Basic Typology.Vessel"],
@@ -166,8 +171,9 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
             ],
             "Typology" => [
                 [
+                    "Vessel Type",
                     "Passive Subtype",
-                    "Active Subtype",
+                    "Active Subtype",            
                     "Vessel Part",
                     "Vessel Base",
                     "Vessel Wall",

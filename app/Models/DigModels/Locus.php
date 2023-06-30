@@ -34,7 +34,7 @@ class Locus extends DigModel
     {
         return [
             "message" => $this->eloquent_model_name . '.init()',
-            "counts" => ["items" => $this->count(), "media" => 777,],
+            "counts" => ["items" => $this->count(), "media" => DB::table('media')->where('model_type', 'Locus')->count(),],
             "itemViews" => config('display_options.itemViews.Locus'),
         ];
     }

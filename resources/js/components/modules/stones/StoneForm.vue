@@ -19,9 +19,9 @@
     </v-row>
 
     <v-row wrap no-gutters>
-      <v-textarea label="Description" v-model="item.description" rows="1" class="mr-1" filled readonly>
+      <v-textarea label="Description" v-model="item.description" rows="2" class="mr-1" filled readonly>
       </v-textarea>
-      <v-textarea label="Dimensions" v-model="item.dimensions" rows="1" class="mr-1" auto-grow filled
+      <v-textarea label="Dimensions" v-model="item.dimensions" rows="2" class="mr-1" auto-grow filled
         readonly></v-textarea>
     </v-row>
 

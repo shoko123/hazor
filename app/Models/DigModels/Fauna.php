@@ -47,9 +47,9 @@ class Fauna extends FindModel
     public function init() : array {
         return [
             "message" => $this->eloquent_model_name . '.init()',
-            "counts" => [ "items" => $this->count(), "media" => 777,],
+            "counts" => ["items" => $this->count(), "media" => DB::table('media')->where('model_type', 'Fauna')->count(),],
             "itemViews" => config('display_options.itemViews.Fauna'),
-        ];
+        ];  
     }
     
     function buildSqlDescription() : string {

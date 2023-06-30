@@ -2,7 +2,7 @@
   <v-card class="elevation-12">
     <v-toolbar id="collection" density="compact" :height="50">
       <v-toolbar-title>{{ header }}</v-toolbar-title>
-      <v-pagination v-if="!isEmpty" v-model="page" :length="paginator.pages" :total-visible="16">
+      <v-pagination v-if="paginator.show" v-model="page" :length="paginator.pages" :total-visible="16">
       </v-pagination>
       <!-- <v-spacer></v-spacer> -->
 
@@ -47,6 +47,7 @@ const isEmpty = computed(() => {
   return meta.value.length === 0
 })
 
+
 const page = computed({
   get: () => { return paginator.value.page },
   set: val => {
@@ -58,6 +59,9 @@ const page = computed({
 const pageInfoAsText = computed(() => {
   if (meta.value.length === 0) {
     return `[Empty]`
+  }
+  if (meta.value.length === 1) {
+    return `item(1)`
   }
   if (meta.value.noOfPages === 1) {
     return `items(${meta.value.firstItemNo} - ${meta.value.lastItemNo}/${meta.value.noOfItems})`
@@ -84,9 +88,6 @@ const paginator = computed(() => {
     page: meta.value.pageNoB1,
     pages: meta.value.noOfPages
   }
-})
-const showPaginator = computed(() => {
-  return true
 })
 
 const collectionPage = computed<Component>(() => {

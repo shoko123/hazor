@@ -4,17 +4,20 @@
     </v-app-bar>
 </template>
 <script lang="ts" setup>
+
 import { ref, computed } from 'vue'
+import { storeToRefs } from 'pinia'
+
 import SubWelcome from './submenu-welcome/SubMenuWelcome.vue'
 import SubIndex from './submenu-index/SubMenuIndex.vue'
 import SubMenuFilter from './submenu-filter/SubMenuFilter.vue'
 import SubMenuShow from './submenu-show/SubMenuShow.vue'
 import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
 
-const { getToRouteInfo } = useRoutesMainStore()
+const { current } = storeToRefs(useRoutesMainStore())
 
 const sub = computed(() => {
-    switch (getToRouteInfo().value.name) {
+    switch (current.value.name) {
         case 'welcome':
             return SubWelcome
         case 'index':

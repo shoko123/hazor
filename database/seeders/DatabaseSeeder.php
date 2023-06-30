@@ -8,8 +8,10 @@ use Database\Seeders\LociTablesSeeder;
 use Database\Seeders\FaunaTablesSeeder;
 use Database\Seeders\StoneTablesSeeder;
 use Database\Seeders\UsersTableSeeder;
-use Database\Seeders\PermissionsSeeder;
+use Database\Seeders\MediaTablesSeeder;
 use Database\Seeders\TagTablesSeeder;
+use Database\Seeders\PermissionsSeeder;
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -25,11 +27,6 @@ class DatabaseSeeder extends Seeder
         $this->call(FaunaTablesSeeder::class);
         $this->call(StoneTablesSeeder::class);
         $this->call(TagTablesSeeder::class);
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        $this->call(MediaTablesSeeder::class);
     }
 }

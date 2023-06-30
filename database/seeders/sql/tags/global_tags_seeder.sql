@@ -62,3 +62,5 @@ INSERT INTO `tags` (`id`, `name`, `group_id`, `order_column`) VALUES
 (1400, "Modern", 1, 1),
 (1401, "1917-1948", 90, 1),
 (1402, "1949-present", 90, 1);
+
+INSERT INTO `taggables` VALUES (300,'Stone',1),(600,'Stone',1095);

@@ -111,7 +111,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             isLoading.value = false
             if (err === EmptyResultSetError && handle_from.name === 'filter') {
                 console.log(`EMPTY ERROR`)
-                n.showSnackbar('Query resulted in an set. Please modify query and resubmit!')
+                n.showSnackbar('No results returned. Please modify query and resubmit!')
                 return { name: 'filter' }
             }
             n.showSnackbar('Unexpected Error - redirceted to Home page')
