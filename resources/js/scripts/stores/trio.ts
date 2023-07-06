@@ -83,7 +83,7 @@ export const useTrioStore = defineStore('trio', () => {
       let multiple = false
       switch (group.group_type_code) {
         case "CV":
-        case "LV":
+        case "CL":
           required = true
           multiple = false
           break
@@ -133,11 +133,11 @@ export const useTrioStore = defineStore('trio', () => {
     let selectedParams = selectedParamsKeysBySource(sourceName)
     let g = trio.value.entities.groups[groupKey]
 
-    if (sourceName === 'New' && ["CS", "BF"].includes(g.group_type_code)) {
+    if (sourceName === 'New' && ["CS", "BF", "CR"].includes(g.group_type_code)) {
       return false
     }
 
-    if (["CS", "LV", "CV", "BF"].includes(g.group_type_code)) {
+    if (["CS", "CL", "CV", "CR", "BF"].includes(g.group_type_code)) {
       return true
     }
 
@@ -147,6 +147,25 @@ export const useTrioStore = defineStore('trio', () => {
         return (selectedParams.includes(x))
       })
   }
+
+  // function groupIsAvailable(sourceName: TrioSourceName, groupKey: string) {
+  //   let selectedParams = selectedParamsKeysBySource(sourceName)
+  //   let g = trio.value.entities.groups[groupKey]
+
+  //   if (sourceName === 'New' && ["CS", "BF"].includes(g.group_type_code)) {
+  //     return false
+  //   }
+
+  //   if (["CS", "CL", "CV", "BF"].includes(g.group_type_code)) {
+  //     return true
+  //   }
+
+  //   let tagGroup = <TGroupTag>g
+  //   return tagGroup.dependency === null ||
+  //     tagGroup.dependency.some(x => {
+  //       return (selectedParams.includes(x))
+  //     })
+  // }
 
   function groupSelectedParamsCnt(sourceName: TrioSourceName, groupKey: string) {
     let selectedKeys = selectedParamsKeysBySource(sourceName)
@@ -261,7 +280,7 @@ export const useTrioStore = defineStore('trio', () => {
         }
         break
 
-      case "LV":
+      case "CL":
       case "CV":
         if (isSelected) {
           //do nothing
@@ -460,7 +479,7 @@ export const useTrioStore = defineStore('trio', () => {
             return trio.value.entities.params[paramKey].id
           }))
           break
-        case 'LV':
+        case 'CL':
           all.column_lookup_ids.push({
             column_name: (<TGroupValue>trio.value.entities.groups[groupKey]).column_name,
             vals: params.map(x => {
@@ -470,6 +489,7 @@ export const useTrioStore = defineStore('trio', () => {
           })
           break
         case 'CV':
+        case 'CR':
           all.column_values.push({ column_name: (<TGroupValue>trio.value.entities.groups[groupKey]).column_name, vals: params })
           break
         case 'CS':
@@ -519,11 +539,11 @@ export const useTrioStore = defineStore('trio', () => {
         case "TM":
           modelTagIds.push(trio.value.entities.params[paramKey].id)
           break
-        case "LV":
+        case "CL":
         case "CV":
           let param = trio.value.entities.params[paramKey]
           let column_name = (<TGroupValue>group).column_name
-          columns.push({ column_name, val: group.group_type_code === "LV" ? param.id : param.name })
+          columns.push({ column_name, val: group.group_type_code === "CL" ? param.id : param.name })
           break
       }
     })
@@ -579,7 +599,7 @@ export const useTrioStore = defineStore('trio', () => {
         const resetParams: string[] = []
         selectedNewItemParams.value.forEach(x => {
           let group = trio.value.entities.groups[parseParamKey(x, false)]
-          if (["LV", "CV"].includes(group.group_type_code)) {
+          if (["CL", "CV"].includes(group.group_type_code)) {
             resetParams.push(group.params[0])
           }
         })

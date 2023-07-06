@@ -16,6 +16,7 @@ use App\Http\Requests\DigModelStoreRequest;
 use App\Http\Requests\LocusStoreRequest;
 use App\Http\Requests\StoneStoreRequest;
 use App\Http\Requests\FaunaStoreRequest;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -45,7 +46,7 @@ class AppServiceProvider extends ServiceProvider
                 case "Fauna":
                     return new FaunaGroup;
             }
-        });        
+        });
         $this->app->singleton(DigModelStoreRequest::class, function ($app) {
             switch (request()->input("model")) {
                 case "Locus":
@@ -54,8 +55,10 @@ class AppServiceProvider extends ServiceProvider
                     return new StoneStoreRequest;
                 case "Fauna":
                     return new FaunaStoreRequest;
+                default:
+                    throw 'BadModelName';
             }
-        });             
+        });
     }
 
     /**

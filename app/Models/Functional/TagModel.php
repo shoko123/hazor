@@ -37,17 +37,19 @@ class TagModel
         $current_ids = collect($item->global_tags->map(function (object $item, int $key) {
             return $item["id"];
         }));
-        
+
         //find required changes
         $attach_ids = $new_ids->diff($current_ids)->values()->all();
         $detach_ids = $current_ids->diff($new_ids)->values()->all();
 
         //column values
         /**************/
-        foreach ($validated["columns"] as $col) {
-            $item[$col["column_name"]] = $col["val"];
+        if (isset($validated["columns"])) {
+            foreach ($validated["columns"] as $col) {
+                $item[$col["column_name"]] = $col["val"];
+            }
         }
-        
+
         //save changes
         /************/
         DB::transaction(function () use ($item, $detach_model_ids, $attach_model_ids, $attach_ids, $detach_ids) {
@@ -58,7 +60,7 @@ class TagModel
             $item->global_tags()->attach($attach_ids);
         });
 
-        
+
         //Return 'success' or throw an exception with any failure.
         //(too lazy to re-read and format values as newItemParamKeys and column fields which
         //are already available at the front end),

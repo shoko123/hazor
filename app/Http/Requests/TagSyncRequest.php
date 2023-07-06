@@ -23,23 +23,25 @@ class TagSyncRequest extends FormRequest
     ];
 
     private $modelInfo = [
-        "Locus" => [ "table_name" => "loci", "tag_table_name" => "locus_tags", "fields" => ["area"]],
-        "Stone" => [ "table_name" => "stones", "tag_table_name" => "stone_tags", "fields" => ["material_id", "base_type_id"]],
-        "Fauna" => [ "table_name" => "fauna", "tag_table_name" => "fauna_tags", "fields" => ["taxon_id", "element_id"]],
-    ];    
-    
+        "Locus" => ["table_name" => "loci", "tag_table_name" => "locus_tags", "fields" => ["area"]],
+        "Stone" => ["table_name" => "stones", "tag_table_name" => "stone_tags", "fields" => ["material_id", "base_type_id"]],
+        "Fauna" => ["table_name" => "fauna", "tag_table_name" => "fauna_tags", "fields" => ["taxon_id", "element_id"]],
+    ];
+
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
-        //BEFORE PRODUCTION - enable checks!
-        if (!auth('api')->check()) {
-            return false;
+        if (app()->environment(['production'])) {
+            if (!auth('api')->check()) {
+                return false;
+            }
+            $p = $this->input("model") . "tag";
+            return $this->user('sanctum')->can($p);
+        } else {
+            return true;
         }
-        $p = $this->input("model") . "tag";
-        return $this->user('sanctum')->can($p);
     }
 
     /**

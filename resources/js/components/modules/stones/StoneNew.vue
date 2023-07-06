@@ -1,8 +1,7 @@
 <template>
   <v-container fluid class="pa-1 ma-0">
     <v-row wrap no-gutters>
-      <v-text-field id="area" label="Area" v-model="data.area" :error-messages="areaErrors" class="mr-1" filled>
-      </v-text-field>
+      <v-select label="Area" v-model="data.area" :items="areas"></v-select>
       <v-text-field id="locus" label="Locus" v-model="data.locus" :error-messages="locusErrors" class="mr-1" filled>
       </v-text-field>
       <v-text-field id="basket" label="Basket" v-model="data.basket" :error-messages="basketErrors" class="mr-1" filled>
@@ -18,114 +17,107 @@
 
     <v-row wrap no-gutters>
       <v-text-field label="Type" v-model="data.type" :error-messages="typeErrors" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Material Code" v-model="data.material_code" :error-messages="typeErrors" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Rim Diameter" v-model="data.rim_diameter" :error-messages="rim_diameterErrors" class="mr-1" filled> </v-text-field>
+      <v-text-field label="Material Code" v-model="data.material_code" :error-messages="material_codeErrors" class="mr-1"
+        filled>
+      </v-text-field>
+      <v-text-field label="Rim Diameter (mm)" v-model="data.rim_diameter" :error-messages="rim_diameterErrors" class="mr-1"
+        filled> </v-text-field>
     </v-row>
 
     <v-row wrap no-gutters>
-      <v-textarea label="Description" v-model="data.description" :error-messages="descriptionErrors" rows="1"
-        class="mr-1" auto-grow>
+      <v-textarea label="Description" v-model="data.description" :error-messages="descriptionErrors" rows="1" class="mr-1"
+        auto-grow>
       </v-textarea>
       <v-textarea label="Dimensions" v-model="data.dimensions" :error-messages="dimensionsErrors" rows="1" class="mr-1"
         auto-grow></v-textarea>
     </v-row>
+
     <v-row wrap no-gutters>
       <v-textarea label="Provenience notes" v-model="data.prov_notes" :error-messages="provErrors" rows="1"
         class="mr-1"></v-textarea>
       <v-textarea label="Notes" v-model="data.notes" :error-messages="notesErrors" rows="1" class="mr-1"></v-textarea>
-
-
     </v-row>
 
+    <v-row wrap no-gutters>
+      <v-textarea label="Publication(s)" v-model="data.publication" :error-messages="publicationErrors" rows="1"
+        class="mr-1"></v-textarea>
+    </v-row>
     <slot name="data" v-bind:v$=v$ v-bind:data=data v-bind:id=data.id></slot>
   </v-container>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, computed } from "vue"
+import { onMounted, reactive, computed, ref } from "vue"
 import { storeToRefs } from 'pinia'
 import { useVuelidate } from "@vuelidate/core"
 import { required, numeric, minLength, maxLength, minValue, maxValue } from "@vuelidate/validators"
 import { TStoneFields } from '@/js/types/moduleFieldsTypes'
 import { useStoneStore } from '../../../scripts/stores/modules/stone'
 import { useItemStore } from '../../../scripts/stores/item'
+import { useTrioStore } from '../../../scripts/stores/trio'
 
 const props = defineProps<{
   isCreate: boolean
 }>()
 
 onMounted(() => {
-  const sf = <TStoneFields>fields.value
   if (!props.isCreate) {
-    data.id = sf.id
-    data.area = sf.area
-    data.locus = sf.locus
-    data.basket = sf.basket
-    data.stone_no = sf.stone_no
-    data.year = sf.year
-    data.date = sf.date
-    data.prov_notes = sf.prov_notes
-    data.material_code = sf.material_code
-    data.type = sf.type
-    data.description = sf.description
-    data.notes = sf.notes
-    data.dimensions = sf.dimensions
-    data.rim_diameter = sf.rim_diameter
-    data.material_id = sf.material_id
-    data.base_type_id = sf.base_type_id
+    Object.assign(data, fields.value)
   }
   console.log(`StoneNew.Mount fields: ${JSON.stringify(data, null, 2)}`)
 })
 
 const { fields } = storeToRefs(useItemStore())
-
+let { trio } = storeToRefs(useTrioStore())
 
 const data: TStoneFields = reactive({
   id: 0,
-  area: "",
-  locus: "",
-  basket: "",
+  area: "A",
+  locus: "Change Me",
+  basket: "Change Me",
   stone_no: 0,
   year: null,
-  date: "",
-  prov_notes: "",
-  material_code: "",
-  type: "",
-  description: "",
-  notes: "",
-  dimensions: "",
+  date: null,
+  prov_notes: null,
+  material_code: null,
+  type: null,
+  description: null,
+  notes: null,
+  publication: null,
+  dimensions: null,
   rim_diameter: null,
   order_column: null,
   material_id: 1,
   base_type_id: 1
 })
 
+const areas = computed(() => {
+  return trio.value.entities.groups["Area"].params.map(x => trio.value.entities.params[x].name)
+})
+
 const rules = computed(() => {
   return {
     id: {},
-    area: { required, minLength: minLength(1), maxLength: maxLength(3) },
-    locus: { required },
-    basket: { required },
-    stone_no: { required, numeric, minLength: minLength(1), maxLength: maxLength(99) },
-    date: {},
+    area: { required },//no need for validation - from select 
+    locus: { required, maxLength: maxLength(50) },
+    basket: { required, maxLength: maxLength(50) },
+    stone_no: { required, numeric, minValue: minValue(0), maxValue: maxValue(99) },
+    date: { maxLength: maxLength(50) },
     year: { minValue: minValue(1950), maxValue: maxValue(2025) },
-    prov_notes: {},
-    type: {},
-    material_code: {},
-    dimensions: {},
-    rim_diameter: {minValue: minValue(1), maxValue: maxValue(99)},
-    notes: {},
-    description: {},
-    material_id: {},
-    base_type_id: {}
+    prov_notes: { maxLength: maxLength(200) },
+    type: { maxLength: maxLength(50) },
+    material_code: { maxLength: maxLength(20) },
+    dimensions: { maxLength: maxLength(250) },
+    rim_diameter: { minValue: minValue(1), maxValue: maxValue(500) },
+    notes: { maxLength: maxLength(250) },
+    description: { maxLength: maxLength(500) },
+    publication: { maxLength: maxLength(250) },
+    material_id: { required, minValue: minValue(1), maxValue: maxValue(200) },
+    base_type_id: { required, minValue: minValue(1), maxValue: maxValue(99) }
   }
 })
 
 const v$ = useVuelidate(rules, data)
-
-const areaErrors = computed(() => {
-  return <string>(v$.value.area.$error ? v$.value.area.$errors[0].$message : undefined)
-})
 
 const locusErrors = computed(() => {
   return <string>(v$.value.locus.$error ? v$.value.locus.$errors[0].$message : undefined)
@@ -150,6 +142,9 @@ const typeErrors = computed(() => {
   return <string>(v$.value.type.$error ? v$.value.type.$errors[0].$message : undefined)
 })
 
+const material_codeErrors = computed(() => {
+  return <string>(v$.value.material_code.$error ? v$.value.material_code.$errors[0].$message : undefined)
+})
 const provErrors = computed(() => {
   return <string>(v$.value.prov_notes.$error ? v$.value.prov_notes.$errors[0].$message : undefined)
 })
@@ -160,6 +155,10 @@ const descriptionErrors = computed(() => {
 
 const notesErrors = computed(() => {
   return <string>(v$.value.notes.$error ? v$.value.notes.$errors[0].$message : undefined)
+})
+
+const publicationErrors = computed(() => {
+  return <string>(v$.value.publication.$error ? v$.value.publication.$errors[0].$message : undefined)
 })
 
 const dimensionsErrors = computed(() => {

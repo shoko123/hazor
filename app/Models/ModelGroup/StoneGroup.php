@@ -10,13 +10,18 @@ require_once 'global_tag_groups.php';
 class StoneGroup extends ModelGroup implements ModelGroupInterface
 {
     static private $model_groups = [
+        "Area" => [
+            "group_type_code" => "CR",
+            "table_name" => "stones",
+            "column_name" => "area"
+        ],        
         "Material" => [
-            "group_type_code" => "LV",
+            "group_type_code" => "CL",
             "table_name" => "stone_materials",
             "column_name" => "material_id",
         ],
         "Basic Typology" => [
-            "group_type_code" => "LV",
+            "group_type_code" => "CL",
             "table_name" => "stone_base_types",
             "column_name" => "base_type_id"
         ],
@@ -133,7 +138,6 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
             "Search" => [
                 [
                     "Search-Basket",
-                    "Search-Area",
                     "Search-Locus",
                     "Search-Year",                    
                     "Search-Description",
@@ -142,6 +146,7 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
             ], 
             "Registration" => [
                 [
+                    "Area",
                     "Media"
                 ],
             ],

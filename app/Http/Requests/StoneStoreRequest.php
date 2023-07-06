@@ -16,22 +16,34 @@ class StoneStoreRequest extends DigModelStoreRequest
      */
     public function rules(): array
     {
-        return [
-            'model' => 'in:Locus,Stone,Fauna',
-            'id' => 'required|numeric',
-            'item.area' => 'min:1|max:3',
-            'item.locus' => 'max:500',
-            'item.basket' => 'string|nullable',
+        $base_rules = [
+            'item.area' => 'in:A,A1,A2,A3,A4,A5,A6,A7,M,M1,M2,M68,XX',
+            'item.locus' => 'max:50',
+            'item.basket' => 'max:50',
             'item.stone_no' => 'min:0|max:99',
-            'item.year' => 'numeric|min:1950|max:2025|nullable',
             'item.date' => 'string|max:10|nullable',
-            'item.prov_notes' => 'max:500',
-            'item.material_code' => 'max:500',
+            'item.year' => 'numeric|min:1950|max:2025|nullable',
+            'item.prov_notes' => 'max:200',
             'item.type' => 'max:500',
-            'item.description' => 'max:500',
-            'item.notes' => 'max:500',
-            'item.dimensions' => 'max:500',
+            'item.material_code' => 'max:20',
+            'item.dimensions' => 'max:250',
             'item.rim_diameter' => 'min:1|max:500|nullable',
+            'item.description' => 'max:500',
+            'item.notes' => 'max:250',
+            'item.publication' => 'max:250',
         ];
+        $create_rules = [
+            'item.material_id' => 'exists:stone_materials,id',
+            'item.base_type_id' => 'exists:stone_base_types,id'
+        ];
+        $update_rules = [
+            'item.id' => 'exists:stones,id'
+        ];
+
+        if ($this->method() === 'POST') {
+            return array_merge($base_rules, $create_rules);
+        } else {
+              return array_merge($base_rules, $update_rules);
+        }
     }
 }

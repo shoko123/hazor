@@ -2,7 +2,7 @@
   <v-container fluid class="pa-1 ma-0">
     <v-row wrap no-gutters>
       <v-text-field label="Name" v-model="data.name" :error-messages="nameErrors" class="mr-1" filled> </v-text-field>
-      <v-select  label="Area" v-model="area" :items="allowedAreas"></v-select>
+      <v-select  label="Area" v-model="data.area" :items="areas"></v-select>
       <v-text-field label="Square" v-model="data.square" :error-messages="squareErrors" class="mr-1" filled>
       </v-text-field>
       <v-text-field label="stratum" v-model="data.stratum" :error-messages="stratumErrors" class="mr-1" filled>
@@ -32,7 +32,7 @@ import type { TLocusFields } from '@/js/types/moduleFieldsTypes'
 import { onMounted, reactive, computed, ref, defineExpose } from "vue";
 import { storeToRefs } from 'pinia'
 import { useVuelidate } from "@vuelidate/core";
-import { required, integer, maxLength, helpers } from "@vuelidate/validators";
+import { required, minValue, maxValue, maxLength, helpers } from "@vuelidate/validators";
 import { useItemStore } from '../../../scripts/stores/item'
 import { useTrioStore } from '../../../scripts/stores/trio'
 
@@ -41,22 +41,8 @@ const props = defineProps<{
 }>()
 
 onMounted(() => {
-  const locusFields = <TLocusFields>fields.value
   if(!props.isCreate){
-     data.id = locusFields.id
-     data.name = locusFields.name
-     data.area = locusFields.area
-     data.locus_no = locusFields.locus_no
-     data.addendum = locusFields.addendum
-     data.year = locusFields.year
-     data.square = locusFields.square
-     data.stratum = locusFields.stratum
-     data.type = locusFields.type
-     data.cross_ref = locusFields.cross_ref
-     data.description = locusFields.description
-     data.notes = locusFields.notes
-     data.elevation = locusFields.elevation
-     areaIndex.value = allowedAreas.value.indexOf(data.area)
+    Object.assign(data, fields.value)
   }
   console.log(`LocusNew isCreate: ${props.isCreate}\n data: ${JSON.stringify(data, null, 2)}`)
 })
@@ -89,34 +75,26 @@ const nameIsYearAreaHyphenLocusNo = helpers.regex(/^\d{2}[A-Z]\d{1}-\d{3}$/)
 //allowed names int(1-5 digits), int with 1-2 chars addendum, year(2-digits)-locusNo(3-digits), year+area-locusNo
 const nameValidator = helpers.regex(/^\d{1,5}$|^\d{1,5}[a-c]$|^\d{2}-\d{3}$|^\d{2}[A-Z]\d{1}-\d{3}$/)
 
-const allowedAreas = computed(() => {
+const areas = computed(() => {
  return trio.value.entities.groups["Area"].params.map(x => trio.value.entities.params[x].name)
 })
 
-const area = computed({
-  get: () => { return allowedAreas.value[areaIndex.value] },
-  set: val => {
-    areaIndex.value = allowedAreas.value.indexOf(val)
-  }
-})
-
-let areaIndex = ref(0)
 
 const rules = computed(() => {
   return {
     id: {},
     name: { nameIsLocusNo: helpers.withMessage('Incorrect name pattern', nameValidator) },
     area: { required  },//from select list
-    locus_no: {required, integer },
-    addendum: {},
-    year: {},
-    square: {},
-    stratum: {},
-    type: {},
-    cross_ref: {},
+    locus_no: {required, minValue: minValue(1), maxValue: maxValue(99000)},
+    addendum: { maxLength: maxLength(2) },
+    year: {minValue: minValue(1950), maxValue: maxValue(2025) },
+    square:  { maxLength: maxLength(10)},
+    stratum:   { maxLength: maxLength(15)},
+    type:   { maxLength: maxLength(30)},
+    cross_ref:   { maxLength: maxLength(130)},
     description: { maxLength: maxLength(500) },
     notes: { maxLength: maxLength(200) },
-    elevation: {},
+    elevation: { maxLength: maxLength(20) },
   }
 })
 

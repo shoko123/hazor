@@ -5,7 +5,8 @@ type TCategory = {
   name: string,
   groups: string[]
 }
-type TGroupType = 'TM' | 'TG' | 'LV' | 'CV' | 'CS' | 'BF'
+
+type TGroupType = 'TM' | 'TG' | 'CL' | 'CV' | 'CS' | 'CR' | 'BF'
 
 type TGroupValue = {
   group_type_code: TGroupType,
@@ -21,6 +22,7 @@ type TGroupTag = {
   group_name: string,
   group_id: string,
   multiple: boolean,
+
   dependency: string[],
   params: string[],
   categoryKey: string

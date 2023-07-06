@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="pa-1 ma-0">
-    <slot name="data" v-bind:v$=v$ v-bind:data=data v-bind:id=data.id></slot>    
+    <slot name="data" v-bind:v$=v$ v-bind:data=data v-bind:id=data.id></slot>
     <v-row wrap no-gutters>
       <v-text-field label="Label" v-model="data.label" :error-messages="labelErrors" class="mr-1" filled> </v-text-field>
       <v-text-field label="Area" v-model="data.area" :error-messages="areaErrors" class="mr-1" filled> </v-text-field>
@@ -8,21 +8,22 @@
       <v-text-field label="Basket" v-model="data.basket" :error-messages="basketErrors" class="mr-1" filled>
       </v-text-field>
       <v-text-field label="Stratum" v-model="data.stratum" :error-messages="stratumErrors" class="mr-1" filled>
-      </v-text-field>      
+      </v-text-field>
       <v-text-field label="Item Category" v-model="data.item_category" :error-messages="item_categoryErrors" class="mr-1"
         filled> </v-text-field>
     </v-row>
 
     <v-row>
-      <v-text-field label="Bio Tax" v-model="data.biological_taxonomy"  class="mr-1" filled> </v-text-field>
+      <v-text-field label="Bio Tax" v-model="data.biological_taxonomy" class="mr-1" filled> </v-text-field>
       <v-text-field label="Has Tax Id" v-model="data.has_taxonomic_identifier" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Taxon" v-model="data.taxon" class="mr-1" filled> </v-text-field> 
-       <v-text-field label="Has Anatomical Id" v-model="data.has_anatomical_identifier"  class="mr-1" filled> </v-text-field>
-      <v-text-field label="Element" v-model="data.element"  class="mr-1" filled> </v-text-field>
-      <v-text-field label="Fragment Present" v-model="data.fragment_present"  class="mr-1" filled> </v-text-field>
+      <v-text-field label="Taxon" v-model="data.taxon" class="mr-1" filled> </v-text-field>
+      <v-text-field label="Has Anatomical Id" v-model="data.has_anatomical_identifier" class="mr-1" filled>
+      </v-text-field>
+      <v-text-field label="Element" v-model="data.element" class="mr-1" filled> </v-text-field>
+      <v-text-field label="Fragment Present" v-model="data.fragment_present" class="mr-1" filled> </v-text-field>
     </v-row>
     <v-row wrap no-gutters>
-        <v-text-field label="Snippet" v-model="data.snippet"  class="mr-1" filled> </v-text-field>
+      <v-text-field label="Snippet" v-model="data.snippet" class="mr-1" filled> </v-text-field>
     </v-row>
   </v-container>
 </template>
@@ -40,28 +41,12 @@ const props = defineProps<{
 }>()
 
 let { fields } = storeToRefs(useItemStore())
+
 onMounted(() => {
-  const ff = <TFaunaFields>fields.value
   if(!props.isCreate){
-  data.id = ff.id
-  data.label = ff.label
-  data.area = ff.area
-  data.locus = ff.locus
-  data.basket = ff.basket
-  data.item_category = ff.item_category
-  data.biological_taxonomy = ff.biological_taxonomy
-  data.has_taxonomic_identifier = ff.has_taxonomic_identifier
-  data.has_anatomical_identifier = ff.has_anatomical_identifier
-  data.stratum = ff.stratum
-  data.taxon = ff.taxon
-  data.element = ff.element
-  data.fragment_present = ff.fragment_present
-  data.bone_number = ff.bone_number
-  data.snippet = ff.snippet
-  data.taxon_id = ff.taxon_id
-  data.element_id = ff.element_id
+    Object.assign(data, fields.value)
   }
-   console.log(`FaunaNew.Mount fields: ${JSON.stringify(data, null, 2)}`)
+  console.log(`FaunaNew.Mount fields: ${JSON.stringify(data, null, 2)}`)
 })
 
 const data: TFaunaFields = reactive({
@@ -87,7 +72,7 @@ const data: TFaunaFields = reactive({
 const rules = computed(() => {
   return {
     id: {},
-    label: {required},
+    label: { required },
     area: {},
     locus: {},
     basket: {},

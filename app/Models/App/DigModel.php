@@ -253,13 +253,13 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         $toDelete->delete();
     }
 
-    public function store(int $id, array $new_item, bool $methodIsPost)
+    public function store(array $new_item, bool $methodIsPost)
     {
         if ($methodIsPost) {
             $modelName = "App\Models\DigModels\\" . $this->eloquent_model_name;
             $item = new $modelName;
         } else {
-            $item = self::findOrFail($id);
+            $item = self::findOrFail($new_item["id"]);
         }
 
         //copy the validated data from the validated array to the 'item' object.

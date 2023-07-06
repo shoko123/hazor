@@ -11,7 +11,7 @@ class LocusGroup extends ModelGroup implements ModelGroupInterface
 {
     static private $model_groups = [
         "Area" => [
-            "group_type_code" => "CV",
+            "group_type_code" => "CR",
             "table_name" => "loci",
             "column_name" => "area",
         ],

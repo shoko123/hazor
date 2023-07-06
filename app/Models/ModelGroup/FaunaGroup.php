@@ -11,12 +11,12 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
 {
     static private $model_groups = [
         "Base Taxon" => [
-            "group_type_code" => "LV",
+            "group_type_code" => "CL",
             "table_name" => "fauna_taxa",
             "column_name" => "taxon_id",
         ],
         "Element" => [
-            "group_type_code" => "LV",
+            "group_type_code" => "CL",
             "table_name" => "fauna_elements",
             "column_name" => "element_id"
         ],
@@ -102,9 +102,6 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
     public function trio(): array
     {
         $cats = [
-            "Registration" => [
-                ["Area"]
-            ],
             "Basic Characteristics" => [
                 ["Life Stage", "Symmetry", "Weathering (Behrensmeyer 1978)"],
             ],

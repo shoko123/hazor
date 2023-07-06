@@ -41,10 +41,11 @@ abstract class ModelGroup
 
                 //column values
             case "CV":
+            case "CR":                
                 return $this->getColumnGroupDetails($group_name, $group);
 
                 //lookup values
-            case "LV":
+            case "CL":
                 return $this->getLookupGroupDetails($group_name, $group);
 
             case "CS":
