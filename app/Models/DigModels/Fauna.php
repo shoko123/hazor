@@ -53,10 +53,7 @@ class Fauna extends FindModel
         ];
     }
 
-    // function buildSqlDescription(): string
-    // {
-    //     return 'CONCAT(label, ", ", taxon, ", ", element) AS description';
-    // }
+   
     function buildSqlUrlId(): string
     {
         return 'id AS url_id';

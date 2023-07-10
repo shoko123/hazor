@@ -1,19 +1,22 @@
 // collection.ts
 //handles all collections and loading of pages
-import { defineStore } from 'pinia'
+import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
 import { TCollectionExtra, TApiArray, TApiArrayMain, TApiPageMainImage, TApiPageMainTable, TApiPage, TPageItem, TCollectionView, TPageCMainVImage, TPageCMainVTable, TPageVChip } from '@/js/types/collectionTypes'
 import { TModule } from '../../../types/routesTypes'
 import { useCollectionsStore } from './collections'
-import { useRoutesMainStore } from '../routes/routesMain'
+import { useModuleStore } from '../module'
 import { useXhrStore } from '../xhr'
 import { useMediaStore } from '../media'
+import { useRoutesMainStore } from '../routes/routesMain'
 import { useNotificationsStore } from '../notifications'
 
 export const useCollectionMainStore = defineStore('collectionMain', () => {
     const { send } = useXhrStore()
     const { showSnackbar } = useNotificationsStore()
     const { buildMedia } = useMediaStore()
+    const { tagFromUrlId } = useModuleStore()
+    const { current } = storeToRefs(useRoutesMainStore()  )
     const c = useCollectionsStore()
 
     let extra = ref<TCollectionExtra>({
@@ -101,7 +104,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
 
                 toSave = (<TApiPageMainImage[]>apiPage).map(x => {
                     const media = buildMedia(x.media1, module)
-                    const item = { id: x.id, url_id: x.url_id, tag: x.url_id, description: x.description }
+                    const item = { id: x.id, url_id: x.url_id, slug: x.slug, tag: tagFromUrlId(current.value.module, x.slug), description: x.description }
                     return { ...item, media: media }
                 })
                 page.value = <TPageCMainVImage[]>toSave

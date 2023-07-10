@@ -39,11 +39,6 @@ class Locus extends DigModel
         ];
     }
 
-    // function buildSqlDescription(): string
-    // {
-    //     return 'type AS description';
-    // }
-
     function buildSqlUrlId(): string
     {
         return 'id AS url_id';

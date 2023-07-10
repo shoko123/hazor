@@ -23,8 +23,9 @@ export const useItemStore = defineStore('item', () => {
   const { saveItemTags } = useTrioStore()
   const { send } = useXhrStore()
   const { showSnackbar, showSpinner } = useNotificationsStore()
-  let fields = ref<TFields | null>(null)
+  let fields = ref<TFields | undefined>(undefined)
   let url_id = ref<string | undefined>(undefined)
+  let slug = ref<string | undefined>(undefined)
   let tag = ref<string | undefined>(undefined)
   let media1 = ref<TMedia>({ hasMedia: false, urls: { full: '', tn: '' } })
   let ready = ref<boolean>(false)
@@ -50,14 +51,19 @@ export const useItemStore = defineStore('item', () => {
   function saveItem(apiItem: TApiItemShow) {
     fields.value = apiItem.fields
     url_id.value = apiItem.url_id
-    tag.value = moduleStore.tagFromUrlId(current.value.module, apiItem.url_id)
+    slug.value = apiItem.slug
+    tag.value = moduleStore.tagFromUrlId(current.value.module, apiItem.slug)
     setItemMedia(apiItem.mediaArray, apiItem.mediaPage, apiItem.media1)
     saveItemTags(apiItem.model_tags, apiItem.global_tags, apiItem.discrete_columns)
   }
 
-  function itemClear(index: number) {
+  function itemClear() {
     itemIndex.value = -1
-    fields.value = null
+    fields.value = undefined
+    slug.value = undefined
+    tag.value = undefined
+    url_id.value = undefined
+    media1.value = { hasMedia: false, urls: { full: '', tn: '' } }
   }
 
   function nextUrlId(isRight: boolean) {
@@ -126,11 +132,12 @@ export const useItemStore = defineStore('item', () => {
   }
 
   return {
+    url_id,
+    slug,
+    tag,
     ready,
     fields,
     id,
-    url_id,
-    tag,
     derived,
     media1,
     itemIndex,

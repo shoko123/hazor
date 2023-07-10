@@ -15,6 +15,7 @@ type TMedia = {
 type TImageableDetailsMain = {
         id: number,
         url_id: string,
+        slug: string,
         tag: string,
         description: string
 }
@@ -28,7 +29,7 @@ type TImageableDetails = TImageableDetailsMain | TImageableDetailsMedia
 //Single carousel item, according to collectionName
 type TApiCarouselMain = {
         id: number,
-        url_id: string,
+        slug: string,
         description: string,
         media: TApiMediaOrNull,
         module: TModule
@@ -48,7 +49,8 @@ type TApiCarousel = TApiCarouselMedia | TApiCarouselMain
 //types used by carousel.ts
 type TCarouselMain = {
         id: number,
-        url_id: string,
+        slug: string, 
+        tag: string,
         description: string,
         module: TModule | undefined
 }

@@ -73,7 +73,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
         case 'item.clear':
           t.clearSelected('Item')
-          i.fields = null
+          i.itemClear()
           c.clear(['media', 'related'])
           break
 

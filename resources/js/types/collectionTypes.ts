@@ -21,6 +21,7 @@ type TApiArray = TApiArrayMain | TApiArrayMedia | TApiArrayRelated
 type TApiPageMainImage = {
         id: number,
         url_id: string,
+        slug: string,
         description: string,
         media1: TApiMediaOrNull
 }
@@ -48,6 +49,7 @@ type TPageVChip = {
 type TPageCMainVImage = {
         id: number,
         url_id: string,
+        slug: string,
         tag: string,
         description: string
         media: TMedia

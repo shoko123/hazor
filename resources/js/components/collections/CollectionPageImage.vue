@@ -5,7 +5,7 @@
           source: source,
           itemIndex: itemIndex(index),
           media: item.media,
-          details: { id: item.id, url_id: item.url_id, tag: item.tag, description: item.description },
+          details: { id: item.id, url_id: item.url_id, slug: item.slug, tag: item.tag, description: item.description },
           size: 250,
         }"></MediaSquare>
     </v-col>

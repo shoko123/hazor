@@ -52,15 +52,8 @@ class Stone extends FindModel
             "counts" => ["items" => $this->count(), "media" => DB::table('media')->where('model_type', 'Stone')->count(),],
             "itemViews" => config('display_options.itemViews.Stone'),
         ];
-
-        //DB::table('media')->where('model_type', self::$moduleName)->count();
-
     }
 
-    // function buildSqlDescription(): string
-    // {
-    //     return 'description';
-    // }
     function buildSqlUrlId(): string
     {
         return 'id AS url_id';

@@ -153,9 +153,6 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
     public function page($ids, $view): SupportCollection
     {
         $idsAsCommaSeperatedString = implode(',', $ids);
-        // $desc = $this->buildSqlDescription();
-        // $urlId = $this->buildSqlUrlId();
-
         $res = $this->whereIn('id', $ids)
             ->with("media")
             ->orderByRaw("FIELD(id, $idsAsCommaSeperatedString)")
@@ -165,15 +162,16 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         $r = $res->map(function ($item, $key) {
             $media = null;
             if (!$item->media->isEmpty()) {
-                 $media = ['full' => $item->media[0]->getPath(), 'tn' =>  $item->media[0]->getPath('tn')];
-            } 
+                $media = ['full' => $item->media[0]->getPath(), 'tn' =>  $item->media[0]->getPath('tn')];
+            }
             $id_params = $this->itemToIdParams($item);
 
             return [
-                "media1" => $media,
+                "id" => $item["id"],
                 "url_id" => $item["id"],
                 "slug" => $id_params["slug"],
-                "tag" => $id_params["tag"],
+                //"tag" => $id_params["tag"],
+                "media1" => $media,
                 "description" => $this->itemShortDescription(($item))
             ];
         });
@@ -181,7 +179,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
     }
 
 
-    
+
 
     public function show($id)
     {
@@ -233,23 +231,22 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
     public function carousel($id)
     {
-        $desc = $this->buildSqlDescription();
         $item = self::with('media')
-            ->select('id', DB::raw($desc))
             ->findOrFail($id);
-
-
 
         $media1 = null;
         if (!$item->media->isEmpty()) {
             $media1 = MediaModel::getMedia($item->media, true);
         }
-        unset($item->media);
+
+        $id_params = $this->itemToIdParams($item);
 
         return [
             "id" => $id,
             "url_id" => $this->getUrlIdFromId($id),
-            "description" => $item->description,
+            "slug" => $id_params["slug"],
+            "tag" => $id_params["tag"],            
+            "description" => $this->itemShortDescription(($item)),
             "media" => $media1,
         ];
     }

@@ -27,7 +27,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('area', 50)->nullable();
             $table->string('locus', 50)->nullable();
-            $table->string('basket', 50)->nullable();
+            $table->string('basket', 50);
             $table->unsignedTinyInteger('stone_no')->default(0);
             $table->string('date', 50)->nullable();
             $table->unsignedInteger('year')->nullable();

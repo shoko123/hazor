@@ -13,6 +13,8 @@ type TItemDerived = {
 }
 
 type TApiItemShow = {
+        slug: string,
+        tag: string,
         fields: TFields,
         media: TApiMediaOrNull[],
         media1: TApiMedia,

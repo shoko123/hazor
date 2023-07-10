@@ -28,7 +28,7 @@ let i = useItemStore()
 let { extra } = storeToRefs( useCollectionMainStore())
 
 const tag = computed(() => {
-  return `${i.derived.module} ${i.derived.url_id} (${i.itemIndex + 1}/${extra.value.length})`
+  return `${i.derived.module} ${i.slug} (${i.itemIndex + 1}/${extra.value.length})`
 })
 
 const moduleName = computed(() => {

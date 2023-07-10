@@ -10,6 +10,7 @@ import { useCollectionsStore } from '../collections/collections'
 import { useXhrStore } from '../xhr'
 import { useNotificationsStore } from '../notifications'
 import { useMediaStore } from '../media'
+import { useModuleStore } from '../module'
 import { useRoutesMainStore } from '../routes/routesMain'
 
 
@@ -19,6 +20,7 @@ export const useCarouselStore = defineStore('carousel', () => {
   const { showSpinner } = useNotificationsStore()
   const { current } = storeToRefs(useRoutesMainStore())
   const { buildMedia } = useMediaStore()
+ const { tagFromUrlId } = useModuleStore()
 
   let isOpen = ref<boolean>(false)
   let collectionName = ref<TCollectionName>('main')
@@ -27,7 +29,8 @@ export const useCarouselStore = defineStore('carousel', () => {
 
   let mainDetails = ref<TCarouselMain>({
     id: 0,
-    url_id: "",
+    slug: "",
+    tag: "",
     description: "",
     module: undefined
   })
@@ -45,7 +48,7 @@ export const useCarouselStore = defineStore('carousel', () => {
     let text = ""
     switch (collectionName.value) {
       case 'main':
-        text = `${current.value.module} result set. Showing item "${mainDetails.value.url_id}"`
+        text = `${current.value.module} result set. Showing item "${mainDetails.value.slug}"`
         break
       case 'media':
         text = `Media for ${current.value.module} "${current.value.url_id}"`
@@ -124,8 +127,10 @@ export const useCarouselStore = defineStore('carousel', () => {
   function saveMain(data: TApiCarouselMain) {
     media.value = buildMedia(data.media, current.value.module)
     mainDetails.value.id = data.id
-    mainDetails.value.url_id = data.url_id
-    mainDetails.value.module = data.module
+    mainDetails.value.slug = data.slug
+    mainDetails.value.tag = tagFromUrlId(current.value.module, data.slug)
+    mainDetails.value.slug = data.slug
+
     mainDetails.value.description = data.description
     
     mediaDetails.value.description = ""
@@ -141,7 +146,8 @@ export const useCarouselStore = defineStore('carousel', () => {
     mediaDetails.value.order_column= data.order_column
 
     mainDetails.value.id = 0
-    mainDetails.value.url_id = ""
+    mainDetails.value.slug = ""
+    mainDetails.value.tag = ""
     mainDetails.value.module = undefined
     mainDetails.value.description = ""
   }
