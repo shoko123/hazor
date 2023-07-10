@@ -21,14 +21,14 @@ class Fauna extends FindModel
 
     public function __construct()
     {
-        DigModel::__construct('Fauna');  
+        DigModel::__construct('Fauna');
     }
 
     public function model_tags()
     {
         return $this->belongsToMany(FaunaTag::class, 'fauna-fauna_tags', 'item_id', 'tag_id');
     }
-    
+
     public function global_tags()
     {
         return $this->morphToMany(Tag::class, 'taggable');
@@ -44,39 +44,47 @@ class Fauna extends FindModel
         return $this->belongsTo(FaunaElement::class, 'element_id');
     }
 
-    public function init() : array {
+    public function init(): array
+    {
         return [
             "message" => $this->eloquent_model_name . '.init()',
             "counts" => ["items" => $this->count(), "media" => DB::table('media')->where('model_type', 'Fauna')->count(),],
             "itemViews" => config('display_options.itemViews.Fauna'),
-        ];  
+        ];
     }
-    
-    function buildSqlDescription() : string {
-        return 'CONCAT(label, ", ", taxon, ", ", element) AS description'; 
-    }
-    function buildSqlUrlId() : string {
+
+    // function buildSqlDescription(): string
+    // {
+    //     return 'CONCAT(label, ", ", taxon, ", ", element) AS description';
+    // }
+    function buildSqlUrlId(): string
+    {
         return 'id AS url_id';
     }
-    
-    function getIdFromUrlId(string $url_id) : int {
+
+    function getIdFromUrlId(string $url_id): int
+    {
         return $url_id;
     }
 
-    function getUrlIdFromId(int $id) : string {
+    function getUrlIdFromId(int $id): string
+    {
         return $id;
     }
-    
-    public function builderIndexSelect(): void {
+
+    public function builderIndexSelect(): void
+    {
         $url_id = $this->buildSqlUrlId();
         $this->builder = $this->select('id', DB::raw($url_id));
     }
-    
-    public function builderOrder(): void {
+
+    public function builderOrder(): void
+    {
         $this->builder->orderBy('id', 'asc');
     }
 
-    public function itemSelect(): Builder {
+    public function itemSelect(): Builder
+    {
         return self::with([
             'media',
             'model_tags.tag_group',
@@ -85,22 +93,41 @@ class Fauna extends FindModel
             'element_tag',
         ]);
     }
-     
-    public function discreteColumns(Model $fields): array {
+
+    public function itemGet(object $slug_params): Builder
+    {
+        return self::findWhere('id',  $slug_params["id"]);
+    }
+
+    public function itemToIdParams(Model $item): array
+    {
+        return [
+            "id" => $item["id"],
+            "slug" => $item["locus"] . '.' . $item["basket"],
+            "tag"  => $item["locus"] . '/' . $item["basket"],
+        ];
+    }
+
+    public function discreteColumns(Model $fields): array
+    {
         $c1 = 'Element' . '.' . $fields->element_tag->name;
         $c2 = 'Base Taxon' . '.' . $fields->base_taxon->name;
         unset($fields->element_tag);
         unset($fields->base_taxon);
         return [$c1, $c2];
-    }    
-    
-    public function indexFormat(): string  {
+    }
+
+    public function itemShortDescription(Model $item): string
+    {
+        return $item["label"] . ', ' . $item["taxon"] . ', ' . $item["element"];
+    }
+
+    public function pageFormat(): string
+    {
         return 'xxx';
     }
-    public function pageFormat(): string  {
-        return 'xxx';
-    }
-    public function itemFormat(): string {
+    public function itemFormat(): string
+    {
         return 'xxx';
     }
 }

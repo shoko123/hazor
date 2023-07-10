@@ -171,7 +171,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
 
-  async function loadItem(module: TModule, url_id: string) {
+  async function loadItem(module: TModule, url_id: string, ) {
     console.log(`prepare.loadItem() url_id: ${url_id}`)
     let idRes = p.parseSlug(module, url_id)
     if (!idRes.success) {
@@ -180,12 +180,13 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     }
 
     n.showSpinner(`Loading ${module} item...`)
+
     try {
-      let res = await xhr.send('model/show', 'post', { model: module, url_id: url_id })
+      let res = await xhr.send('model/show', 'post', { model: module, url_id: url_id, params: idRes.data })
       //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
-      let idResData = <TParseSlugData>idRes.data
-      r.to.url_id = idResData.url_id
-      r.to.idParams = idResData.url_params
+      //let idResData = <TParseSlugData>idRes.data
+      r.to.url_id = res.data.url_id
+      r.to.idParams = res.data.id_params
 
       i.saveItem(res.data)
       n.showSpinner(false)

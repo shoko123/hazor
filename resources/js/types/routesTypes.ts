@@ -1,4 +1,5 @@
 // routesStore.js
+import type { TSlugParams, TIdParams } from '../types/moduleIdParamsTypes';
 type TName = 'home' | 'welcome' | 'filter' | 'index' | 'show' | 'create' | 'update' | 'tag' | 'media' | 'login' | 'register'
 type TUrlModule = 'auth' | 'admin' | 'loci' | 'fauna' | 'stones' | ''
 type TModule = 'Home' | 'Auth' | 'Admin' | 'Locus' | 'Fauna' | 'Stone'
@@ -25,7 +26,7 @@ type TPlanAction =
     'page.load1' //load pageB1 = 1
 
 
-type TIdParams = { id: number, params: object, extra: object } | undefined
+
 
 type TRouteInfo = {
     url_module: TUrlModule | undefined,
@@ -33,7 +34,7 @@ type TRouteInfo = {
     url_full_path: string | undefined,
     name: TName,
     module: TModule,
-    idParams: TIdParams,
+    idParams: TIdParams | undefined,
     queryParams: object | undefined,
     preLoginFullPath: string | undefined
 }
@@ -55,11 +56,11 @@ type TParseUrlModuleResponse = {
 
 type TParseSlugData = {
     url_id: string,
-    url_params: TIdParams
+    url_params: TSlugParams
 }
 type TParseSlugResponse = {
     success: boolean,
-    data: TParseErrorDetails | TParseSlugData
+    data: TParseErrorDetails | TSlugParams
 }
 
 type TParseQueryData = {

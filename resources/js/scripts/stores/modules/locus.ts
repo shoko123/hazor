@@ -1,12 +1,22 @@
 import { defineStore } from 'pinia'
 import { TLocusFields, TFields } from '@/js/types/moduleFieldsTypes'
+import {TLocusSlugParams, TLocusIdParams } from '@/js/types/moduleIdParamsTypes'
+import type { TParseSlugResponse, TParseSlugData } from '../../../types/routesTypes'
 
 export const useLocusStore = defineStore('locus', () => {
   const reNameIsLocusNo = /^\d{1,5}$/
   const reNameIsLocusNoWithAddendum = /^\d{+}[a-c]$/
   const reNameIsYearHyphenLocusNo = /^\d{2}-\d{3}$/
   const reNameIsYearAreaHyphenLocusNo = /^\d{2}[A-Z]\d{1}-\d{3}$/
-  
+
+  function slugToSlugParams(slug: string): TLocusSlugParams {
+    return {
+      id: slug as unknown as number,
+      area: "area",
+      name: "name",
+    }
+  }
+
   function tagFromUrlId(url_id: string): string {
     return url_id
   }
@@ -28,5 +38,6 @@ export const useLocusStore = defineStore('locus', () => {
   return {
     beforeStore,
     tagFromUrlId,
+    slugToSlugParams,
   }
 })

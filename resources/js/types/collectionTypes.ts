@@ -28,6 +28,8 @@ type TApiPageMainImage = {
 type TApiPageMainTable = {
         id: number,
         url_id: string,
+        slug: string,
+        tag: string,
         description: string,
 }
 

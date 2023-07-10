@@ -2,9 +2,14 @@
 //handles the entire routing mechanism - parsing, loading resources, error handling
 
 import type { TParsingError, TParseErrorDetails, TParseUrlModuleResponse, TParseUrlQueryResponse, TParseSlugResponse, TParseSlugData, TName, TModule, TRouteInfo } from '../../../types/routesTypes'
+import type { TIdParams, TLocusIdParams, TStoneIdParams, TFaunaIdParams, } from '../../../types/moduleIdParamsTypes'
+
 import type { LocationQuery, RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
 import { defineStore, storeToRefs } from 'pinia'
 import { useTrioStore } from '../../../scripts/stores/trio';
+import { useLocusStore } from '../modules/locus'
+import { useFaunaStore } from '../modules/fauna'
+import { useStoneStore } from '../modules/stone'
 
 
 const moduleConversion = {
@@ -33,7 +38,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
             default:
                 console.log(`******* URL Parser error: Unsupported module name "${module}" *********`)
                 return {
-                    success: true,
+                    success: false,
                     data: {
                         error: 'BadModuleName',
                         message: `unknown url module "${module}"`
@@ -43,20 +48,26 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
     }
 
 
-    function parseSlug(module: TModule, urlId: string): TParseSlugResponse {
-        //console.log(`parseUrlId() module: ${module}, urlId: ${urlId}`);
+    function parseSlug(module: TModule, slug: string): TParseSlugResponse {
+        console.log(`parseSlug() module: ${module}, slug: ${slug}`);
+        let store
         switch (module) {
             case "Locus":
+                store = useLocusStore()
+                break
 
-                break;
             case "Fauna":
+                store = useFaunaStore()
+                break
 
-                break;
             case "Stone":
+                store = useStoneStore()
+                break
 
-                break;
+            default:
+                return { success: false, data: { error: "BadIdFormat", message: "bad store name" } }
         }
-        return { success: true, data: { url_id: urlId, url_params: undefined } }
+        return { success: true, data: store.slugToSlugParams(slug) }
     }
 
     function parseQuery(module: TModule | null, urlQuery: LocationQuery): TParseUrlQueryResponse {

@@ -9,6 +9,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use App\Models\Interfaces\DigModelInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 use App\Models\Functional\MediaModel;
 use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 use Illuminate\Database\Eloquent\Builder;
@@ -149,30 +150,38 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         });
     }
 
-    public function page($ids, $view): Collection
+    public function page($ids, $view): SupportCollection
     {
         $idsAsCommaSeperatedString = implode(',', $ids);
-        $desc = $this->buildSqlDescription();
-        $urlId = $this->buildSqlUrlId();
+        // $desc = $this->buildSqlDescription();
+        // $urlId = $this->buildSqlUrlId();
 
         $res = $this->whereIn('id', $ids)
-            ->select('id', DB::raw($desc), DB::raw($urlId))
             ->with("media")
             ->orderByRaw("FIELD(id, $idsAsCommaSeperatedString)")
             ->get();
 
 
-        $res->transform(function ($item, $key) {
+        $r = $res->map(function ($item, $key) {
             $media = null;
             if (!$item->media->isEmpty()) {
-                $media = ['full' => $item->media[0]->getPath(), 'tn' =>  $item->media[0]->getPath('tn')];
-            }
-            unset($item->media);
-            $item->media1 = $media;
-            return $item;
+                 $media = ['full' => $item->media[0]->getPath(), 'tn' =>  $item->media[0]->getPath('tn')];
+            } 
+            $id_params = $this->itemToIdParams($item);
+
+            return [
+                "media1" => $media,
+                "url_id" => $item["id"],
+                "slug" => $id_params["slug"],
+                "tag" => $id_params["tag"],
+                "description" => $this->itemShortDescription(($item))
+            ];
         });
-        return $res;
+        return $r;
     }
+
+
+    
 
     public function show($id)
     {
@@ -202,6 +211,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             return $tag->tag_group->name . '.' . $tag->name;
         });
 
+        $id_params = $this->itemToIdParams($item);
         //unset
         unset($item->media);
         unset($item->global_tags);
@@ -214,7 +224,10 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             "mediaArray" => $mediaArray,
             "global_tags" => $global_tags,
             "model_tags" => $model_tags,
-            'discrete_columns' => $discrete_columns
+            "discrete_columns" => $discrete_columns,
+            "slug" => $id_params["slug"],
+            "tag" => $id_params["tag"],
+            "id_params" => $id_params
         ];
     }
 

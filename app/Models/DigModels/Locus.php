@@ -39,10 +39,10 @@ class Locus extends DigModel
         ];
     }
 
-    function buildSqlDescription(): string
-    {
-        return 'type AS description';
-    }
+    // function buildSqlDescription(): string
+    // {
+    //     return 'type AS description';
+    // }
 
     function buildSqlUrlId(): string
     {
@@ -87,15 +87,29 @@ class Locus extends DigModel
         ]);
     }
 
+    public function itemGet(object $slug_params): Builder
+    {
+        return self::findWhere('id',  $slug_params["id"]);
+    }
+
+    public function itemToIdParams(Model $item): array
+    {
+        return [
+            "id" => $item["id"],
+            "slug" => $item["area"] . '.' . $item["name"],
+            "tag"  => $item["area"] . '/' . $item["name"],
+        ];
+    }
+
     public function discreteColumns(Model $model): array
     {
         $area = 'Area' . '.' . $model["area"];
         return [$area];
     }
 
-    public function indexFormat(): string
+    public function itemShortDescription(Model $item): string
     {
-        return 'xxx';
+        return $item["type"];
     }
     public function pageFormat(): string
     {

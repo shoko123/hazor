@@ -57,10 +57,10 @@ class Stone extends FindModel
 
     }
 
-    function buildSqlDescription(): string
-    {
-        return 'description';
-    }
+    // function buildSqlDescription(): string
+    // {
+    //     return 'description';
+    // }
     function buildSqlUrlId(): string
     {
         return 'id AS url_id';
@@ -87,7 +87,8 @@ class Stone extends FindModel
         $this->builder->orderBy('id', 'asc');
     }
 
-    public function itemSelect(): Builder {
+    public function itemSelect(): Builder
+    {
         return self::with([
             'media',
             'model_tags.tag_group',
@@ -99,18 +100,34 @@ class Stone extends FindModel
         ]);
     }
 
-    public function discreteColumns(Model $fields): array {
-        $material = 'Material' . '.' .$fields["material"]["name"];
-        $base_type = 'Basic Typology' . '.' .$fields["baseType"]["name"];
+    public function itemGet(object $slug_params): Builder
+    {
+        return self::findWhere('id',  $slug_params["id"]);
+    }
+
+    public function itemToIdParams(Model $item): array
+    {
+        return [
+            "id" => $item["id"],
+            "slug" => $item["basket"] . '.' . $item["stone_no"],
+            "tag"  => 'B' . $item["basket"] . '/' . $item["stone_no"],
+        ];
+    }
+
+    public function discreteColumns(Model $fields): array
+    {
+        $material = 'Material' . '.' . $fields["material"]["name"];
+        $base_type = 'Basic Typology' . '.' . $fields["baseType"]["name"];
         unset($fields->material);
         unset($fields->baseType);
         return [$material, $base_type];
-    }    
-    
-    public function indexFormat(): string
-    {
-        return 'xxx';
     }
+
+    public function itemShortDescription(Model $item): string
+    {
+        return $item["description"];
+    }
+
     public function pageFormat(): string
     {
         return 'xxx';
@@ -118,5 +135,5 @@ class Stone extends FindModel
     public function itemFormat(): string
     {
         return 'xxx';
-    } 
+    }
 }
