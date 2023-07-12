@@ -2,14 +2,25 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { TFaunaFields, TFields } from '@/js/types/moduleFieldsTypes'
 import { TFaunaSlugParams, TFaunaIdParams } from '@/js/types/moduleIdParamsTypes'
+import { TParseSlugResponse } from '@/js/types/routesTypes'
 
 export const useFaunaStore = defineStore('fauna', () => {
 
-  function slugToSlugParams(slug: string): TFaunaSlugParams {
+  function slugParamsFromSlug(slug: string): TParseSlugResponse {
+    let arr = slug.split('.');
+    if (arr.length === 1) {
+      return {
+        success: false, data: {
+          error: "BadIdFormat",
+          message: "No . detected in slug"
+        }
+      }
+    }
     return {
-      id: slug as unknown as number,
-      locus: "locus",
-      basket: 0,
+      success: true, data: {
+        basket: arr[0],
+        stone_no: arr[1] as unknown as number
+      }
     }
   }
 
@@ -32,6 +43,6 @@ export const useFaunaStore = defineStore('fauna', () => {
   return {
     beforeStore,
     tagFromUrlId,
-    slugToSlugParams
+    slugParamsFromSlug
   }
 })

@@ -37,7 +37,7 @@ class TagSyncRequest extends FormRequest
             if (!auth('api')->check()) {
                 return false;
             }
-            $p = $this->input("model") . "tag";
+            $p = $this->input("model") . "-" . "tag";
             return $this->user('sanctum')->can($p);
         } else {
             return true;

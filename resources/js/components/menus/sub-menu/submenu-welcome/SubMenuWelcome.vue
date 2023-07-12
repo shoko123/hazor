@@ -23,8 +23,8 @@ const { current } = storeToRefs(useRoutesMainStore())
 const router = useRouter()
 
 async function showClicked() {
-  const { firstUrlId } = useCollectionsStore()
-  const firstUid = await firstUrlId()
+  const { firstSlug } = useCollectionsStore()
+  const firstUid = await firstSlug()
   if (firstUid) {
     router.push({ name: 'show', params: { module: current.value.url_module, url_id: firstUid } })
   } else {

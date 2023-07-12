@@ -67,7 +67,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
             default:
                 return { success: false, data: { error: "BadIdFormat", message: "bad store name" } }
         }
-        return { success: true, data: store.slugToSlugParams(slug) }
+        return store.slugParamsFromSlug(slug) 
     }
 
     function parseQuery(module: TModule | null, urlQuery: LocationQuery): TParseUrlQueryResponse {

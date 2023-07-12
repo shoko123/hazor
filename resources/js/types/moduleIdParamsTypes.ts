@@ -1,5 +1,4 @@
 type TLocusSlugParams = {
-        id: number,
         area: string,
         name: string
 }
@@ -16,7 +15,6 @@ type TLocusIdParams = {
 type TLocusIdParam = keyof TLocusIdParams
 
 type TStoneSlugParams = {
-        id: number,
         basket: string,
         stone_no: number
 }
@@ -33,7 +31,6 @@ type TStoneIdParams = {
 type TStoneIdParam = keyof TStoneIdParams
 
 type TFaunaSlugParams = {
-        id: number,
         locus: string,
         basket: number,
 }

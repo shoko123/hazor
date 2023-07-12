@@ -46,6 +46,12 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         return $collection;
     }
 
+    public function builderIndexSelect(): void
+    {
+        $url_id = $this->rawSqlSlug();
+        $this->builder = $this->select('id', DB::raw($url_id));
+    }
+
     public function applyFilters($query)
     {
         if (!empty($query["model_tag_ids"])) {
@@ -181,9 +187,12 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
 
 
-    public function show($id)
+    public function show(array $validated)
     {
-        $item = $this->itemSelect()->findOrFail($id);
+        $this->builderItemSelect();
+        $this->builderItemLocate($validated);
+        $item = $this->builder->first();
+
 
         $discrete_columns = $this->discreteColumns($item);
         //media: order by collection_name, order_column (done in MediaModel)
@@ -243,18 +252,18 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
         return [
             "id" => $id,
-            "url_id" => $this->getUrlIdFromId($id),
             "slug" => $id_params["slug"],
-            "tag" => $id_params["tag"],            
-            "description" => $this->itemShortDescription(($item)),
+            "tag" => $id_params["tag"],
+            "description" => $this->itemShortDescription($item),
             "media" => $media1,
         ];
     }
 
-    public function firstUrlId()
+    public function firstSlug()
     {
-        $first = self::first();
-        return $this->getUrlIdFromId($first->id);
+        $this->builderIndexSelect();
+        $item = $this->builder->where('id', '<', 10)->first();
+        return $item["url_id"];
     }
 
     public function destroyItem(int $id)
@@ -282,12 +291,15 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         }
         $item->save();
 
+        $id_params = $this->itemToIdParams($item);
+        $slug = $id_params["slug"];
+
         if ($methodIsPost) {
-            return array_merge($this->show($item["id"]), ["url_id" => $this->getUrlIdFromId($item->id)]);
+            return array_merge($this->show($item["id"]), ["url_id" => $slug]);
         } else {
             return [
                 "fields" => $item,
-                "url_id" => $this->getUrlIdFromId($item->id)
+                "url_id" => $slug
             ];
         }
     }

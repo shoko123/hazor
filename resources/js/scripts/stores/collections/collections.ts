@@ -136,21 +136,21 @@ export const useCollectionsStore = defineStore('collections', () => {
         })
     }
 
-    async function firstUrlId() {
+    async function firstSlug() {
         let xhr = useXhrStore();
         let n = useNotificationsStore();
         let { current } = useRoutesMainStore()
 
-        console.log(`firstUrlId model: ${current.module}`)
+        console.log(`firstSlug model: ${current.module}`)
         n.showSpinner(`Finding first item ...`)
-        return xhr.send('model/firstUrlId', 'post', { model: current.module })
+        return xhr.send('model/firstSlug', 'post', { model: current.module })
             .then(res => {
-                console.log(`firstUrlId() returned ${res.data.url_id}`)
+                console.log(`firstSlug() returned ${res.data.url_id}`)
                 //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
                 return res.data.url_id
             })
             .catch(err => {
-                console.log(`firstUrlId() failed`)
+                console.log(`firstSlug() failed`)
                 return false
             })
             .finally(() => {
@@ -220,6 +220,6 @@ export const useCollectionsStore = defineStore('collections', () => {
         loadPageByItemIndex,
         itemIsInPage,
         next,
-        firstUrlId
+        firstSlug
     }
 })

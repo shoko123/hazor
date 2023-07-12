@@ -80,9 +80,8 @@ export const useCarouselStore = defineStore('carousel', () => {
 
   async function open(source: TCollectionName, openIndex: number) {
     collectionName.value = source
-    console.log(`carousel.open() source: ${collectionName.value} index: ${openIndex}`)
     let item = c.itemByIndex(source, openIndex)
-    console.log(`model.open() item: ${JSON.stringify(item, null, 2)}`)
+    console.log(`carousel.open() source: ${collectionName.value} index: ${openIndex} item: ${JSON.stringify(item, null, 2)}`)
     await load(c.itemByIndex(source, openIndex))
     index.value = openIndex
     isOpen.value = true
@@ -97,12 +96,13 @@ export const useCarouselStore = defineStore('carousel', () => {
   async function load(item: TApiArray) {
 
     let url = ""
-    let data = { model: "", url_id: "", id: 0 }
+    let data = { model: "", id: 0 }
     switch (collectionName.value) {
       case 'main':
         url = 'model/carousel'
         data["model"] = current.value.module
-        data["url_id"] = (<TApiArrayMain>item).url_id
+        data["id"] = (<TApiArrayMain>item).id
+
         break
       case 'media':
         url = 'media/carousel'

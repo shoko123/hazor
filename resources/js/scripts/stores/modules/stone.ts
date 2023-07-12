@@ -2,13 +2,24 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { TStoneFields, TFields } from '@/js/types/moduleFieldsTypes'
 import { TStoneSlugParams, TStoneIdParams } from '@/js/types/moduleIdParamsTypes'
+import { TParseSlugResponse } from '@/js/types/routesTypes'
 export const useStoneStore = defineStore('stone', () => {
 
-  function slugToSlugParams(slug: string): TStoneSlugParams {
+  function slugParamsFromSlug(slug: string): TParseSlugResponse {
+    let arr = slug.split('.');
+    if (arr.length === 1) {
+      return {
+        success: false, data: {
+          error: "BadIdFormat",
+          message: "No . detected in slug"
+        }
+      }
+    }
     return {
-      id: slug as unknown as number,
-      basket: "basket",
-      stone_no: 0
+      success: true, data: {
+        basket: arr[0],
+        stone_no: arr[1] as unknown as number
+      }
     }
   }
 
@@ -30,7 +41,7 @@ export const useStoneStore = defineStore('stone', () => {
   }
   return {
     beforeStore,
-    slugToSlugParams,
+    slugParamsFromSlug,
     tagFromUrlId,
   }
 })

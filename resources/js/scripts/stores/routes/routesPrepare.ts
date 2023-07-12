@@ -173,18 +173,18 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
   async function loadItem(module: TModule, url_id: string, ) {
     console.log(`prepare.loadItem() url_id: ${url_id}`)
-    let idRes = p.parseSlug(module, url_id)
-    if (!idRes.success) {
+    let sp = p.parseSlug(module, url_id)
+    if (!sp.success) {
       console.log(`parseSlug() failed`)
-      throw (<TParseErrorDetails>idRes.data).error
+      throw (<TParseErrorDetails>sp.data).error
     }
 
     n.showSpinner(`Loading ${module} item...`)
 
     try {
-      let res = await xhr.send('model/show', 'post', { model: module, url_id: url_id, params: idRes.data })
+      let res = await xhr.send('model/show', 'post', { model: module, slug: url_id, params: sp.data })
       //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
-      //let idResData = <TParseSlugData>idRes.data
+      //let idResData = <TParseSlugData>sp.data
       r.to.url_id = res.data.url_id
       r.to.idParams = res.data.id_params
 

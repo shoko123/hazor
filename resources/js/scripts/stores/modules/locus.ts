@@ -9,11 +9,21 @@ export const useLocusStore = defineStore('locus', () => {
   const reNameIsYearHyphenLocusNo = /^\d{2}-\d{3}$/
   const reNameIsYearAreaHyphenLocusNo = /^\d{2}[A-Z]\d{1}-\d{3}$/
 
-  function slugToSlugParams(slug: string): TLocusSlugParams {
+  function slugParamsFromSlug(slug: string): TParseSlugResponse {
+    let arr = slug.split('.');
+    if (arr.length === 1) {
+      return {
+        success: false, data: {
+          error: "BadIdFormat",
+          message: "No . detected in slug"
+        }
+      }
+    }
     return {
-      id: slug as unknown as number,
-      area: "area",
-      name: "name",
+      success: true, data: {
+        basket: arr[0],
+        stone_no: arr[1] as unknown as number
+      }
     }
   }
 
@@ -38,6 +48,6 @@ export const useLocusStore = defineStore('locus', () => {
   return {
     beforeStore,
     tagFromUrlId,
-    slugToSlugParams,
+    slugParamsFromSlug,
   }
 })

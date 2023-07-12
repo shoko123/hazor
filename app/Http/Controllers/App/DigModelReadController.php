@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Models\App\DigModel;
+use App\Http\Requests\ShowParamsRequest;
 
 class DigModelReadController extends Controller
 {
@@ -28,21 +29,29 @@ class DigModelReadController extends Controller
         ], 200);
     }
 
-    public function show(Request $r, DigModel $m)
-    {
-        $id = $m->getIdFromUrlId($r["url_id"]);
-
-        $resp = array_merge($m->show($id), [
+    public function show(ShowParamsRequest $validator, DigModel $m)
+    {     
+        $v = $validator->validated();
+        
+        $resp = array_merge($m->show($v), [
             "msg" => "ModelControler.show(",
-            "url_id" => $r["url_id"]
+            "url_id" => $v["slug"]
         ]);
         return response()->json($resp, 200);
     }
 
     public function carousel(Request $r, DigModel $m)
     {
-        $id = $m->getIdFromUrlId($r["url_id"]);
-        return response()->json($m->carousel($id), 200);
+        $modelToTableName = [
+            "Locus" => "loci",
+            "Stone" => "stones",
+            "Fauna" => "fauna"
+        ];    
+        $validation_string = 'exists:' . $modelToTableName[$r["model"]] . ',id';
+        $v = $r->validate([
+            'id' => $validation_string
+        ]);
+        return response()->json($m->carousel($v["id"]), 200);
     }
 
     public function destroy($id)
@@ -53,9 +62,9 @@ class DigModelReadController extends Controller
         ], 200);
     }
 
-    public function firstUrlId(DigModel $m)
+    public function firstSlug(DigModel $m)
     {
-        $first = $m->firstUrlId();
+        $first = $m->firstSlug();
         return response()->json([
             "bla" => "bla",
             "url_id" => $first,
