@@ -20,7 +20,6 @@ type TApiArray = TApiArrayMain | TApiArrayMedia | TApiArrayRelated
 //Api page types
 type TApiPageMainImage = {
         id: number,
-        url_id: string,
         slug: string,
         description: string,
         media1: TApiMediaOrNull

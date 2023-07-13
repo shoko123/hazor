@@ -21,7 +21,7 @@ export const useModuleStore = defineStore('module', () => {
 
   const backgroundImage = computed(() => {
     let module = current.value.module
-    return module !== 'Home' ? {
+    return ['welcome', 'login'].includes(current.value.name) ? {
       fullUrl: `${bucketUrl.value}app/background/${module}.jpg`,
       tnUrl: `${bucketUrl.value}app/background/${module}-tn.jpg`
     } : undefined

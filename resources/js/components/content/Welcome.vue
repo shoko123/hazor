@@ -1,5 +1,5 @@
 <template>
-  <v-img id="img" v-if="backgroundImage" :src="backgroundImage.fullUrl" :lazy-src="backgroundImage.tnUrl" :cover="true">
+  <v-img id="img" :src="backgroundImage?.fullUrl" :lazy-src="backgroundImage?.tnUrl" :cover="true">
     <v-card width="30%" height="100%" flat color="rgb(255, 0, 0, 0)" class="opac">
       <v-card-title class="title text-white text-h4">{{ module }} Welcome Page</v-card-title>
       <v-card-text class="white--text text-h5">
@@ -33,22 +33,11 @@ import { storeToRefs } from 'pinia'
 import { useModuleStore } from '../../scripts/stores/module'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 
-let { getModule } = useRoutesMainStore()
+let { current } = storeToRefs(useRoutesMainStore())
 const { backgroundImage, counts } = storeToRefs(useModuleStore())
 
-
-// onMounted(() => {
-//   let elHtml = document.getElementsByTagName("html")[0];
-//   elHtml.style.overflowY = "hidden";
-// })
-
-// onUnmounted(() => {
-//   let elHtml = document.getElementsByTagName("html")[0];
-//   elHtml.style.overflowY = '';
-// })
-
 const module = computed(() => {
-  return getModule()
+  return current.value.module
 })
 
 const text = computed(() => {

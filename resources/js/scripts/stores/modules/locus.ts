@@ -21,8 +21,8 @@ export const useLocusStore = defineStore('locus', () => {
     }
     return {
       success: true, data: {
-        basket: arr[0],
-        stone_no: arr[1] as unknown as number
+        area: arr[0],
+        name: arr[1]
       }
     }
   }

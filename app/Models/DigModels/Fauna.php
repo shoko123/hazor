@@ -77,15 +77,15 @@ class Fauna extends FindModel
 
     public function builderItemLocate(array $v): void
     {
-        $this->builder->where('id', '=', $v["id"]);   
+        $this->builder->where('id', '=', $v["params"]["id"]);   
     }
 
     public function itemToIdParams(Model $item): array
     {
         return [
             "id" => $item["id"],
-            "slug" => $item["locus"] . '.' . $item["basket"],
-            "tag"  => $item["locus"] . '/' . $item["basket"],
+            "slug" => $item["id"],
+            "tag" => $item["id"],
         ];
     }
 

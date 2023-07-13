@@ -8,6 +8,7 @@ import { useXhrStore } from './xhr'
 import { useItemStore } from './item'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import normalizeTrio from './trioNormalizer'
+import { TFields } from '@/js/types/moduleFieldsTypes'
 
 type TViewParam = { paramKey: string, id: number, name: string, selected: boolean, modal: boolean }
 type TViewGroup = { groupKey: string, name: string, visible: boolean, params: string[], selectedCount: number, isTextSearch: boolean, required: boolean, multiple: boolean }
@@ -523,7 +524,7 @@ export const useTrioStore = defineStore('trio', () => {
 
   async function sync() {
     let { send } = useXhrStore()
-    let { fields } = useItemStore()
+    let { fields } = storeToRefs(useItemStore())
     let { current } = storeToRefs(useRoutesMainStore())
     console.log(`trio.sync()`)
     let globalTagIds = <number[]>([])
@@ -550,7 +551,7 @@ export const useTrioStore = defineStore('trio', () => {
 
     let data = {
       model: current.value.module,
-      id: current.value.url_id,
+      id: (<TFields>fields.value).id,
       ids: globalTagIds,
       model_tag_ids: modelTagIds,
       columns
@@ -568,7 +569,7 @@ export const useTrioStore = defineStore('trio', () => {
 
     //once back successfully from server, update locally
     selectedItemParams.value = [...selectedNewItemParams.value]
-    let fieldsAsAnObject = fields as unknown as IObject
+    let fieldsAsAnObject = fields.value as unknown as IObject
     columns.forEach(x => {
       fieldsAsAnObject[x.column_name] = x.val
     })

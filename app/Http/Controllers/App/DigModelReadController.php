@@ -66,7 +66,7 @@ class DigModelReadController extends Controller
     {
         $first = $m->firstSlug();
         return response()->json([
-            "bla" => "bla",
+            "message" => "ReadController.firstSlug()",
             "url_id" => $first,
         ], 200);
     }

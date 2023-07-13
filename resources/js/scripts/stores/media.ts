@@ -11,6 +11,7 @@ import { useCollectionsStore } from '../../scripts/stores/collections/collection
 import { useCollectionMediaStore } from '../../scripts/stores/collections/collectionMedia'
 import { useItemStore } from '../../scripts/stores/item'
 import { useTrioStore } from './trio'
+import { TFields } from '@/js/types/moduleFieldsTypes'
 
 export const useMediaStore = defineStore('media', () => {
   let { showSnackbar, } = useNotificationsStore()
@@ -102,6 +103,7 @@ export const useMediaStore = defineStore('media', () => {
   }
 
   async function upload() {
+    const i = useItemStore()
     const r = useRoutesMainStore()
     let fd = new FormData();
 
@@ -109,8 +111,9 @@ export const useMediaStore = defineStore('media', () => {
       fd.append("media_files[]", file, file.name);
     });
 
+    const idAsString = (<TFields>i.fields).id as unknown as string
     fd.append("model", r.current.module);
-    fd.append("id", <string>r.current.url_id);
+    fd.append("id", idAsString);
     fd.append("media_collection_name", mediaCollectionNames.value[mediaCollectionIndex.value])
 
     return send("media/upload", 'post', fd)
@@ -131,8 +134,8 @@ export const useMediaStore = defineStore('media', () => {
     const r = useRoutesMainStore()
     const i = useItemStore()
 
-    console.log(`destroy() media_id: ${media_id}, model_type: ${r.current.module}, model_id: ${i.fields.id}`)
-    return send("media/destroy", 'post', { media_id, model_type: r.current.module, model_id: i.fields.id })
+    console.log(`destroy() media_id: ${media_id}, model_type: ${r.current.module}, model_id: ${(<TFields>i.fields).id}`)
+    return send("media/destroy", 'post', { media_id, model_type: r.current.module, model_id: (<TFields>i.fields).id })
       .then((res) => {
         showUploader.value = false
         showSnackbar("Media deleted successfully")

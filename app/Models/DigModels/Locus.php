@@ -72,7 +72,7 @@ class Locus extends DigModel
 
     public function builderItemLocate(array $v): void
     {
-        $this->builder->where('id', '=', $v["id"]);   
+        $this->builder->where('area', '=', $v["params"]["area"])->where('name', '=', $v["params"]["name"]);   
     }
 
     public function itemToIdParams(Model $item): array

@@ -48,8 +48,8 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
     public function builderIndexSelect(): void
     {
-        $url_id = $this->rawSqlSlug();
-        $this->builder = $this->select('id', DB::raw($url_id));
+        $slug = $this->rawSqlSlug();
+        $this->builder = $this->select('id', DB::raw($slug));
     }
 
     public function applyFilters($query)
@@ -164,7 +164,6 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             ->orderByRaw("FIELD(id, $idsAsCommaSeperatedString)")
             ->get();
 
-
         $r = $res->map(function ($item, $key) {
             $media = null;
             if (!$item->media->isEmpty()) {
@@ -174,18 +173,13 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
             return [
                 "id" => $item["id"],
-                "url_id" => $item["id"],
                 "slug" => $id_params["slug"],
-                //"tag" => $id_params["tag"],
+                "description" => $this->itemShortDescription(($item)),
                 "media1" => $media,
-                "description" => $this->itemShortDescription(($item))
             ];
         });
         return $r;
     }
-
-
-
 
     public function show(array $validated)
     {
@@ -232,9 +226,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             "global_tags" => $global_tags,
             "model_tags" => $model_tags,
             "discrete_columns" => $discrete_columns,
-            "slug" => $id_params["slug"],
-            "tag" => $id_params["tag"],
-            "id_params" => $id_params
+            "url_id" => $id_params["slug"],
         ];
     }
 
@@ -295,7 +287,16 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         $slug = $id_params["slug"];
 
         if ($methodIsPost) {
-            return array_merge($this->show($item["id"]), ["url_id" => $slug]);
+            return [
+                "fields" => $item,
+                "media1" => null,
+                "mediaPage" => [],
+                "mediaArray" => [],
+                "global_tags" => [],
+                "model_tags" => [],
+                "discrete_columns" => $this->discreteColumns($item),
+                "url_id" => $id_params["slug"],
+            ];
         } else {
             return [
                 "fields" => $item,

@@ -7,19 +7,9 @@ import { TParseSlugResponse } from '@/js/types/routesTypes'
 export const useFaunaStore = defineStore('fauna', () => {
 
   function slugParamsFromSlug(slug: string): TParseSlugResponse {
-    let arr = slug.split('.');
-    if (arr.length === 1) {
-      return {
-        success: false, data: {
-          error: "BadIdFormat",
-          message: "No . detected in slug"
-        }
-      }
-    }
     return {
       success: true, data: {
-        basket: arr[0],
-        stone_no: arr[1] as unknown as number
+        id: slug as unknown as number
       }
     }
   }

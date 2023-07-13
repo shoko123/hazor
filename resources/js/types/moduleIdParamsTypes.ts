@@ -31,8 +31,7 @@ type TStoneIdParams = {
 type TStoneIdParam = keyof TStoneIdParams
 
 type TFaunaSlugParams = {
-        locus: string,
-        basket: number,
+        id: number,
 }
 type TFaunaIdParams = {
         id: number,
