@@ -23,9 +23,9 @@ export const useStoneStore = defineStore('stone', () => {
     }
   }
 
-  function tagFromUrlId(slug: string): string {
-    console.log(`Stone.tagFromUrlId()`)
-    return slug
+  function tagFromSlug(slug: string): string {
+    //console.log(`Stone.tagFromSlug()`)
+    return slug.replace('.', '/')    
   }
 
   function beforeStore(isCreate: boolean, fields: TFields): TFields | false {
@@ -42,6 +42,6 @@ export const useStoneStore = defineStore('stone', () => {
   return {
     beforeStore,
     slugParamsFromSlug,
-    tagFromUrlId,
+    tagFromSlug,
   }
 })

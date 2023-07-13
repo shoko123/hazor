@@ -14,7 +14,7 @@ export const useFaunaStore = defineStore('fauna', () => {
     }
   }
 
-  function tagFromUrlId(slug: string): string {
+  function tagFromSlug(slug: string): string {
     return slug
   }
 
@@ -32,7 +32,7 @@ export const useFaunaStore = defineStore('fauna', () => {
   
   return {
     beforeStore,
-    tagFromUrlId,
+    tagFromSlug,
     slugParamsFromSlug
   }
 })

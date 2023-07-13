@@ -90,16 +90,16 @@ async function itemDelete() {
 
   if (!confirm("Are you sure you want to delete this item?")) { return }
 
-  let urlId = null;
+  let slug = null;
   try {
-    urlId = await i.destroy()
+    slug = await i.destroy()
   } catch (error) {
     console.log(`Delete item failed error: ${error}`)
     return
   }
 
-  if (urlId !== null) {
-    router.push({ name: 'show', params: { module: current.value.url_module, slug: <string>urlId } })
+  if (slug !== null) {
+    router.push({ name: 'show', params: { module: current.value.url_module, slug: <string>slug } })
   } else {
     console.log(`Last item in array deleted - goto Welcome page`)
     router.push({ name: 'welcome', params: { module: current.value.url_module } })

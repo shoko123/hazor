@@ -27,8 +27,8 @@ export const useLocusStore = defineStore('locus', () => {
     }
   }
 
-  function tagFromUrlId(slug: string): string {
-    return slug
+  function tagFromSlug(slug: string): string {
+    return slug.replace('.', '/')
   }
 
   function beforeStore(isCreate: boolean, fields: TFields): TFields | false {
@@ -38,6 +38,7 @@ export const useLocusStore = defineStore('locus', () => {
       let rf = { ...lf }
       if (reNameIsLocusNo) {
         rf.locus_no = lf.name as unknown as number
+        rf.addendum = ""
       }
       return rf
     } else {
@@ -47,7 +48,7 @@ export const useLocusStore = defineStore('locus', () => {
 
   return {
     beforeStore,
-    tagFromUrlId,
+    tagFromSlug,
     slugParamsFromSlug,
   }
 })

@@ -2,7 +2,7 @@
   <v-container fluid class="pa-1 ma-0">
     <v-row wrap no-gutters>
       <v-text-field label="Name" v-model="data.name" :error-messages="nameErrors" class="mr-1" filled> </v-text-field>
-      <v-select  label="Area" v-model="data.area" :items="areas"></v-select>
+      <v-select label="Area" v-model="data.area" :items="areas"></v-select>
       <v-text-field label="Square" v-model="data.square" :error-messages="squareErrors" class="mr-1" filled>
       </v-text-field>
       <v-text-field label="stratum" v-model="data.stratum" :error-messages="stratumErrors" class="mr-1" filled>
@@ -19,7 +19,8 @@
     </v-row>
 
     <v-row wrap no-gutters>
-      <v-textarea label="Description" v-model="data.description" class="mr-1" :error-messages="descriptionErrors" filled> </v-textarea>
+      <v-textarea label="Description" v-model="data.description" class="mr-1" :error-messages="descriptionErrors" filled>
+      </v-textarea>
       <v-textarea label="Notes" v-model="data.notes" class="mr-1" :error-messages="notesErrors" filled> </v-textarea>
     </v-row>
     <slot name="data" v-bind:v$=v$ v-bind:data=data v-bind:id=data.id></slot>
@@ -41,7 +42,7 @@ const props = defineProps<{
 }>()
 
 onMounted(() => {
-  if(!props.isCreate){
+  if (!props.isCreate) {
     Object.assign(data, fields.value)
   }
   console.log(`LocusNew isCreate: ${props.isCreate}\n data: ${JSON.stringify(data, null, 2)}`)
@@ -50,7 +51,7 @@ onMounted(() => {
 const { fields } = storeToRefs(useItemStore())
 
 
-let { trio }=storeToRefs(useTrioStore())
+let { trio } = storeToRefs(useTrioStore())
 
 let data: TLocusFields = reactive({
   id: 0,
@@ -76,7 +77,7 @@ const nameIsYearAreaHyphenLocusNo = helpers.regex(/^\d{2}[A-Z]\d{1}-\d{3}$/)
 const nameValidator = helpers.regex(/^\d{1,5}$|^\d{1,5}[a-c]$|^\d{2}-\d{3}$|^\d{2}[A-Z]\d{1}-\d{3}$/)
 
 const areas = computed(() => {
- return trio.value.entities.groups["Area"].params.map(x => trio.value.entities.params[x].name)
+  return trio.value.entities.groups["Area"].params.map(x => trio.value.entities.params[x].name)
 })
 
 
@@ -84,14 +85,14 @@ const rules = computed(() => {
   return {
     id: {},
     name: { nameIsLocusNo: helpers.withMessage('Incorrect name pattern', nameValidator) },
-    area: { required  },//from select list
-    locus_no: {required, minValue: minValue(1), maxValue: maxValue(99000)},
-    addendum: { maxLength: maxLength(2) },
-    year: {minValue: minValue(1950), maxValue: maxValue(2025) },
-    square:  { maxLength: maxLength(10)},
-    stratum:   { maxLength: maxLength(15)},
-    type:   { maxLength: maxLength(30)},
-    cross_ref:   { maxLength: maxLength(130)},
+    area: { required },//from select list
+    //locus_no: value filled in beforeStore
+    //addendum:  value filled in beforeStore
+    year: { minValue: minValue(1950), maxValue: maxValue(2025) },
+    square: { maxLength: maxLength(10) },
+    stratum: { maxLength: maxLength(15) },
+    type: { maxLength: maxLength(30) },
+    cross_ref: { maxLength: maxLength(130) },
     description: { maxLength: maxLength(500) },
     notes: { maxLength: maxLength(200) },
     elevation: { maxLength: maxLength(20) },

@@ -15,7 +15,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     const { send } = useXhrStore()
     const { showSnackbar } = useNotificationsStore()
     const { buildMedia } = useMediaStore()
-    const { tagFromUrlId } = useModuleStore()
+    const { tagFromSlug } = useModuleStore()
     const { current } = storeToRefs(useRoutesMainStore()  )
     const c = useCollectionsStore()
 
@@ -97,39 +97,33 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
 
     function savePage(apiPage: TApiPage[], view: TCollectionView, module: TModule): void {
         let toSave = []
-        let pageRef = <TPageItem[]>([])
 
         switch (view) {
             case 'Image':
-
                 toSave = (<TApiPageMainImage[]>apiPage).map(x => {
                     const media = buildMedia(x.media1, module)
-                    const item = { id: x.id, slug: x.slug, tag: tagFromUrlId(current.value.module, x.slug), description: x.description }
+                    const item = { id: x.id, slug: x.slug, tag: tagFromSlug(module, x.slug), description: x.description }
                     return { ...item, media: media }
                 })
                 page.value = <TPageCMainVImage[]>toSave
                 break;
 
-
-
             case 'Table':
-                toSave = (<TApiPageMainTable[]>apiPage).map(x => { return { id: x.id, slug: x.slug, tag: x.slug, description: x.description } })
+                toSave = (<TApiPageMainTable[]>apiPage).map(x => { return { id: x.id, slug: x.slug, tag: tagFromSlug(module, x.slug), description: x.description } })
                 page.value = <TPageCMainVTable[]>toSave
                 break;
 
             case 'Chip':
-
-
-                toSave = (<TPageVChip[]>apiPage).map(x => { return { id: x.id, slug: x.slug, tag: x.slug } })
+                toSave = (<TPageVChip[]>apiPage).map(x => { return { id: x.id, slug: x.slug, tag: tagFromSlug(module, x.slug) } })
                 page.value = <TPageVChip[]>toSave
                 break;
         }
-        //console.log(`main.savePage() length: ${toSave.length}`)
+        //console.log(`mainCollection.savePage() length: ${toSave.length}\npage:\n${JSON.stringify(page.value, null, 2)}`)
     }
 
     function itemIndexById(id: number) {
         let index = array.value.findIndex(x => x.id === id)
-        //console.log(`collectionMain.itemIndexById(id:${id}) array: $${JSON.stringify(array.value.slice(0,5), null, 2)} index: ${index}`)
+        //console.log(`collectionMain.itemIndexById(id:${id}) array: ${JSON.stringify(array.value.slice(0,5), null, 2)} index: ${index}`)
         return index
 
     }

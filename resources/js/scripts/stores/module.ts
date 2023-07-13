@@ -27,10 +27,10 @@ export const useModuleStore = defineStore('module', () => {
     } : undefined
   })
 
-  function tagFromUrlId(module: TModule, urlId: string): string {
-    //console.log(`module.tagFromUrlId()`)
+  function tagFromSlug(module: TModule, slug: string): string {
+    //console.log(`module.tagFromSlug()`)
     const store = getStore(module)
-    return store.tagFromUrlId(urlId)
+    return store.tagFromSlug(slug)
   }
 
   function getStore(module: TModule) {
@@ -50,5 +50,5 @@ export const useModuleStore = defineStore('module', () => {
   }
 
 
-  return { counts, backgroundImage, itemViews, tagFromUrlId }
+  return { counts, backgroundImage, itemViews, tagFromSlug }
 })

@@ -20,7 +20,7 @@ export const useCarouselStore = defineStore('carousel', () => {
   const { showSpinner } = useNotificationsStore()
   const { current } = storeToRefs(useRoutesMainStore())
   const { buildMedia } = useMediaStore()
- const { tagFromUrlId } = useModuleStore()
+ const { tagFromSlug } = useModuleStore()
 
   let isOpen = ref<boolean>(false)
   let collectionName = ref<TCollectionName>('main')
@@ -48,7 +48,7 @@ export const useCarouselStore = defineStore('carousel', () => {
     let text = ""
     switch (collectionName.value) {
       case 'main':
-        text = `${current.value.module} result set. Showing item "${mainDetails.value.slug}"`
+        text = `${current.value.module} result set. Showing item "${mainDetails.value.tag}"`
         break
       case 'media':
         text = `Media for ${current.value.module} "${current.value.slug}"`
@@ -128,11 +128,8 @@ export const useCarouselStore = defineStore('carousel', () => {
     media.value = buildMedia(data.media, current.value.module)
     mainDetails.value.id = data.id
     mainDetails.value.slug = data.slug
-    mainDetails.value.tag = tagFromUrlId(current.value.module, data.slug)
-    mainDetails.value.slug = data.slug
-
-    mainDetails.value.description = data.description
-    
+    mainDetails.value.tag = tagFromSlug(current.value.module, data.slug)
+    mainDetails.value.description = data.description    
     mediaDetails.value.description = ""
     mediaDetails.value.id = 0
     mediaDetails.value.collection_name = ""

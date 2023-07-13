@@ -50,7 +50,7 @@ export const useItemStore = defineStore('item', () => {
   function saveItem(apiItem: TApiItemShow) {
     fields.value = apiItem.fields
     slug.value = apiItem.slug
-    tag.value = moduleStore.tagFromUrlId(current.value.module, apiItem.slug)
+    tag.value = moduleStore.tagFromSlug(current.value.module, apiItem.slug)
     setItemMedia(apiItem.mediaArray, apiItem.mediaPage, apiItem.media1)
     saveItemTags(apiItem.model_tags, apiItem.global_tags, apiItem.discrete_columns)
   }
@@ -63,7 +63,7 @@ export const useItemStore = defineStore('item', () => {
     media1.value = { hasMedia: false, urls: { full: '', tn: '' } }
   }
 
-  function nextUrlId(isRight: boolean) {
+  function nextSlug(isRight: boolean) {
     let newIndex
     let length = collection('main').value.meta.length
     if (isRight) {
@@ -74,11 +74,11 @@ export const useItemStore = defineStore('item', () => {
 
     //TODO change id to slug
     const mainArrayItem = <TApiArrayMain>itemByIndex('main', newIndex)
-    console.log(`nextUrlId: ${mainArrayItem.slug}`)
+    console.log(`nextSlug: ${mainArrayItem.slug}`)
     return mainArrayItem.slug
   }
 
-  //return the newly created/update item's urlId (need it only for create())
+  //return the newly created/update item's slug (need it only for create())
   async function upload(isCreate: boolean, newFields: TFields): Promise<TApiItemShow> {
     console.log(`item.upload isCreate: ${isCreate}, module: ${current.value.module}, fields: ${JSON.stringify(newFields, null, 2)}`)
     let res = await send('model/store', isCreate ? 'post' : 'put', { model: current.value.module, item: newFields, id: newFields.id })
@@ -137,7 +137,7 @@ export const useItemStore = defineStore('item', () => {
     derived,
     media1,
     itemIndex,
-    nextUrlId,
+    nextSlug,
     itemClear,
     itemViewIndex,
     setItemViewIndex,

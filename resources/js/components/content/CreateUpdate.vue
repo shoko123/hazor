@@ -106,7 +106,7 @@ async function submit(v$: Validation, data: TFields, id?: number) {
     console.log(`CreateUpdate.upload(error) - return`)
   })
 
-  //console.log(`CreateUpdate.after upload() res: ${JSON.stringify(urlId, null, 2)}`)
+  //console.log(`CreateUpdate.after upload() res: ${JSON.stringify(slug, null, 2)}`)
   if (props.isCreate) {
     router.push({ name: 'show', params: { module: current.value.url_module, slug: (<TApiItemShow>itemDetails).slug} })
   } else {

@@ -51,10 +51,10 @@ const header = computed(() => {
 
 
 function next(isRight: boolean) {
-  let { nextUrlId } = useItemStore()
-  let urlId = nextUrlId(isRight)
-  console.log(`goTo ${urlId}`)
-  router.push({ name: 'show', params: { module: current.value.url_module, slug: urlId } })  
+  let { nextSlug } = useItemStore()
+  let slug = nextSlug(isRight)
+  console.log(`goTo ${slug}`)
+  router.push({ name: 'show', params: { module: current.value.url_module, slug: slug } })  
 }
 
 

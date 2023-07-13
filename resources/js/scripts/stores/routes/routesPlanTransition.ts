@@ -11,11 +11,11 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
         let to = { name: handle_to.name, module: <string>handle_to.params.module, slug: handle_to.params.slug }
         let from = { name: handle_from.name, module: <string>handle_from.params.module, slug: handle_from.params.slug }
         if(from.name === undefined) { from.name = 'home'}
-        let changed = { module: false, name: false, urlId: false }
+        let changed = { module: false, name: false, slug: false }
 
         changed.module = (to.module !== from.module)
         changed.name = (to.name !== from.name)
-        changed.urlId = (to.slug !== from.slug)
+        changed.slug = (to.slug !== from.slug)
         if (['auth', 'admin'].includes(to.module) ||
             ['auth', 'admin'].includes(from.module)) {
             return { success: true, data: [] }
@@ -104,7 +104,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                         if (changed.module) {
                             return { success: true, data: ['item.clear', 'collection.clear', 'module.clear', 'module.load', 'collection.item.load', 'item.setIndexInCollection'] }
                         }
-                        if (changed.urlId) {
+                        if (changed.slug) {
                             return { success: true, data: ['item.load', 'item.setIndexInCollection'] }
                         }
                         return { success: false, data: 'BadTransition' }

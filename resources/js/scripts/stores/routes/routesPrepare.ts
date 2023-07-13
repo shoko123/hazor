@@ -127,13 +127,13 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       })
   }
 
-  async function loadCollectionAndItem(module: TModule, query: LocationQuery, urlId: string) {
+  async function loadCollectionAndItem(module: TModule, query: LocationQuery, slug: string) {
     n.showSpinner(`Loading Module ${module} ...`)
     console.log(`prepare.loadCollectionAndItem()`)
 
     const [col, item] = await Promise.all([
       loadMainCollection(module, query),
-      loadItem(module, urlId)
+      loadItem(module, slug)
     ])
       .catch(err => {
         throw err;
