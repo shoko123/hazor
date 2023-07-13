@@ -104,7 +104,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
 
                 toSave = (<TApiPageMainImage[]>apiPage).map(x => {
                     const media = buildMedia(x.media1, module)
-                    const item = { id: x.id, url_id: x.url_id, slug: x.slug, tag: tagFromUrlId(current.value.module, x.slug), description: x.description }
+                    const item = { id: x.id, slug: x.slug, tag: tagFromUrlId(current.value.module, x.slug), description: x.description }
                     return { ...item, media: media }
                 })
                 page.value = <TPageCMainVImage[]>toSave
@@ -113,14 +113,14 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
 
 
             case 'Table':
-                toSave = (<TApiPageMainTable[]>apiPage).map(x => { return { id: x.id, url_id: x.url_id, tag: x.url_id, description: x.description } })
+                toSave = (<TApiPageMainTable[]>apiPage).map(x => { return { id: x.id, slug: x.slug, tag: x.slug, description: x.description } })
                 page.value = <TPageCMainVTable[]>toSave
                 break;
 
             case 'Chip':
 
 
-                toSave = (<TPageVChip[]>apiPage).map(x => { return { id: x.id, url_id: x.url_id, tag: x.url_id } })
+                toSave = (<TPageVChip[]>apiPage).map(x => { return { id: x.id, slug: x.slug, tag: x.slug } })
                 page.value = <TPageVChip[]>toSave
                 break;
         }

@@ -5,7 +5,7 @@
           source: source,
           itemIndex: itemIndex(index),
           media: item.media,
-          details: { id: item.id, url_id: item.url_id, slug: item.slug, tag: item.tag, description: item.description },
+          details: { id: item.id, slug: item.slug, tag: item.tag, description: item.description },
           size: 250,
         }"></MediaSquare>
     </v-col>
@@ -48,7 +48,7 @@ function details(item: TPageCMainVImage | TPageCMediaVImage) {
 
       return {
         id: (<TPageCMainVImage>item).id,
-        url_id: (<TPageCMainVImage>item).url_id,
+        slug: (<TPageCMainVImage>item).slug,
         tag: (<TPageCMainVImage>item).tag,
         description: (<TPageCMainVImage>item).description
       }

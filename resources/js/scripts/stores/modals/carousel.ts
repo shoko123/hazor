@@ -51,7 +51,7 @@ export const useCarouselStore = defineStore('carousel', () => {
         text = `${current.value.module} result set. Showing item "${mainDetails.value.slug}"`
         break
       case 'media':
-        text = `Media for ${current.value.module} "${current.value.url_id}"`
+        text = `Media for ${current.value.module} "${current.value.slug}"`
         break
     }
     return text + ` [${index.value + 1}/${collection.value.array.length}]`

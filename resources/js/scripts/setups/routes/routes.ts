@@ -56,28 +56,28 @@ const routes = [
     props: { isCreate: true }
   },
   {
-    path: '/:module/:url_id',
+    path: '/:module/:slug',
     component: () => import('@/components/content/Show.vue'),
     name: 'show'
   },
   {
-    path: '/:module/:url_id/update',
+    path: '/:module/:slug/update',
     component:  () => import('@/components/content/CreateUpdate.vue'),
     name: 'update',
     props: { isCreate: false }    
   },
   {
-    path: '/:module/:url_id/media',
+    path: '/:module/:slug/media',
     component: () => import('@/components/media/MediaEditor.vue'),
     name: 'media'
   },
   {
-    path: '/:module/:url_id/tag',
+    path: '/:module/:slug/tag',
     component: () => import('@/components/content/Tagger.vue'),
     name: 'tag'
   },
   {
-    path: "/:module/:url_id/:catchAll(.*)",
+    path: "/:module/:slug/:catchAll(.*)",
     component: NotFound,
     name: "not-found-item-action",
   },

@@ -1,19 +1,10 @@
 
 //showTypes.ts
 //types returned from 'show' api route
-import { TMedia } from "./mediaTypes"
 import { TApiArrayMedia, TApiMedia, TApiMediaOrNull, TApiPageMedia } from "./collectionTypes"
 import { TFields } from "./moduleFieldsTypes"
 
-
-type TItemDerived = {
-        tag: string,
-        url_id: string
-
-}
-
 type TApiItemShow = {
-        slug: string,
         tag: string,
         fields: TFields,
         media: TApiMediaOrNull[],
@@ -23,12 +14,12 @@ type TApiItemShow = {
         model_tags: any[],
         global_tags: any[],
         discrete_columns: string[]
-        url_id: string,
+        slug: string,
         extra: any
 }
 type TApiItemUpdate = {
         fields: TFields,
-        url_id: string,
+        slug: string,
 }
 
 

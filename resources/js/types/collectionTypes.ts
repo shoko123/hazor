@@ -9,9 +9,9 @@ type TCollectionName = 'main' | 'media' | 'related'
 type TItemPerPagePerView = { Image: number, Chip: number, Table: number }
 
 //array types
-type TApiArrayMain = { id: number, url_id: string }
+type TApiArrayMain = { id: number, slug: string }
 type TApiArrayMedia = number
-type TApiArrayRelated = { module: TModule, id: number, url_id: string }
+type TApiArrayRelated = { module: TModule, id: number, slug: string }
 
 type TApiArray = TApiArrayMain | TApiArrayMedia | TApiArrayRelated
 
@@ -27,7 +27,6 @@ type TApiPageMainImage = {
 
 type TApiPageMainTable = {
         id: number,
-        url_id: string,
         slug: string,
         tag: string,
         description: string,
@@ -41,13 +40,12 @@ type TApiPage = TApiPageMainImage | TApiPageMainTable | TApiPageMedia | TApiArra
 
 type TPageVChip = {
         id: number,
-        url_id: string,
+        slug: string,
         tag: string,
 }
 
 type TPageCMainVImage = {
         id: number,
-        url_id: string,
         slug: string,
         tag: string,
         description: string
@@ -56,7 +54,7 @@ type TPageCMainVImage = {
 
 type TPageCMainVTable = {
         id: number,
-        url_id: string,
+        slug: string,
         tag: string
         description: string
 }

@@ -54,7 +54,7 @@ function next(isRight: boolean) {
   let { nextUrlId } = useItemStore()
   let urlId = nextUrlId(isRight)
   console.log(`goTo ${urlId}`)
-  router.push({ name: 'show', params: { module: current.value.url_module, url_id: urlId } })  
+  router.push({ name: 'show', params: { module: current.value.url_module, slug: urlId } })  
 }
 
 

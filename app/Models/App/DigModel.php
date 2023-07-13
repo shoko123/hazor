@@ -226,7 +226,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             "global_tags" => $global_tags,
             "model_tags" => $model_tags,
             "discrete_columns" => $discrete_columns,
-            "url_id" => $id_params["slug"],
+            "slug" => $id_params["slug"],
         ];
     }
 
@@ -255,7 +255,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
     {
         $this->builderIndexSelect();
         $item = $this->builder->where('id', '<', 10)->first();
-        return $item["url_id"];
+        return $item["slug"];
     }
 
     public function destroyItem(int $id)
@@ -295,12 +295,12 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
                 "global_tags" => [],
                 "model_tags" => [],
                 "discrete_columns" => $this->discreteColumns($item),
-                "url_id" => $id_params["slug"],
+                "slug" => $id_params["slug"],
             ];
         } else {
             return [
                 "fields" => $item,
-                "url_id" => $slug
+                "slug" => $slug
             ];
         }
     }

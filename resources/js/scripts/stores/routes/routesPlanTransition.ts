@@ -8,14 +8,14 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
     function planTransition(handle_to: RouteLocationNormalized, handle_from: RouteLocationNormalized): TPlanResponse {
         //console.log(`plan to: ${JSON.stringify(handle_to, null, 2)}\nfrom: ${JSON.stringify(handle_from, null, 2)} `)
 
-        let to = { name: handle_to.name, module: <string>handle_to.params.module, url_id: handle_to.params.url_id }
-        let from = { name: handle_from.name, module: <string>handle_from.params.module, url_id: handle_from.params.url_id }
+        let to = { name: handle_to.name, module: <string>handle_to.params.module, slug: handle_to.params.slug }
+        let from = { name: handle_from.name, module: <string>handle_from.params.module, slug: handle_from.params.slug }
         if(from.name === undefined) { from.name = 'home'}
         let changed = { module: false, name: false, urlId: false }
 
         changed.module = (to.module !== from.module)
         changed.name = (to.name !== from.name)
-        changed.urlId = (to.url_id !== from.url_id)
+        changed.urlId = (to.slug !== from.slug)
         if (['auth', 'admin'].includes(to.module) ||
             ['auth', 'admin'].includes(from.module)) {
             return { success: true, data: [] }

@@ -52,7 +52,7 @@ function openModalCarousel() {
 function goTo(item: TImageableDetailsMain) {
   console.log(`goto item: ${JSON.stringify(item, null, 2)}`)
   let queryParams = current.value.queryParams
-  router.push({ name: 'show', params: { module: current.value.url_module, url_id: item.slug }, query: <LocationQueryRaw>queryParams})
+  router.push({ name: 'show', params: { module: current.value.url_module, slug: item.slug }, query: <LocationQueryRaw>queryParams})
   //router.push({ name: 'index', params: { module: current.value.url_module }, query: query })
 }
 

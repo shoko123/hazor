@@ -34,10 +34,8 @@ const page = computed(() => {
 
 function goTo(item: any) {
   //console.log(`goto item: ${JSON.stringify(item, null, 2)}`)
-
   const routeInfo = getRouteInfo()
-  router.push({ name: 'show', params: { module: routeInfo.value.url_module, url_id: item.url_id } })
-
+  router.push({ name: 'show', params: { module: routeInfo.value.url_module, slug: item.slug } })
 }
 </script>
 

@@ -67,19 +67,19 @@ function itemCreate() {
 
 function itemUpdate() {
   console.log(`itemUpdate`)
-  router.push({ name: 'update', params: { module: current.value.url_module, url_id: current.value.url_id } })
+  router.push({ name: 'update', params: { module: current.value.url_module, slug: current.value.slug } })
 }
 
 function goToMedia() {
   console.log(`goToMedia`)
-  router.push({ name: 'media', params: { module: current.value.url_module, url_id: current.value.url_id } })
+  router.push({ name: 'media', params: { module: current.value.url_module, slug: current.value.slug } })
 }
 
 function goToTagger() {
   console.log(`goToTagger`)
   const { copyCurrentToNew } = useTrioStore()
   copyCurrentToNew()
-  router.push({ name: 'tag', params: { module: current.value.url_module, url_id: current.value.url_id } })
+  router.push({ name: 'tag', params: { module: current.value.url_module, slug: current.value.slug } })
 }
 
 async function itemDelete() {
@@ -99,7 +99,7 @@ async function itemDelete() {
   }
 
   if (urlId !== null) {
-    router.push({ name: 'show', params: { module: current.value.url_module, url_id: <string>urlId } })
+    router.push({ name: 'show', params: { module: current.value.url_module, slug: <string>urlId } })
   } else {
     console.log(`Last item in array deleted - goto Welcome page`)
     router.push({ name: 'welcome', params: { module: current.value.url_module } })

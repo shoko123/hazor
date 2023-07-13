@@ -19,7 +19,7 @@ const { showUploader } = storeToRefs(useMediaStore())
 const router = useRouter()
 
 const header = computed(() => {
-  return `** Dig ** : Media Editor for ${current.value.module} ${current.value.url_id}`
+  return `** Dig ** : Media Editor for ${current.value.module} ${current.value.slug}`
 })
 
 const disableShowUploaderButton = computed(() => {
@@ -31,7 +31,7 @@ function showUploader1() {
   showUploader.value = true
 }
 function back() {
-  router.push({ name: 'show', params: { module: current.value.url_module, url_id: current.value.url_id } })
+  router.push({ name: 'show', params: { module: current.value.url_module, slug: current.value.slug } })
   showUploader.value = false
 }
 </script>

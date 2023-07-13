@@ -24,7 +24,6 @@ export const useItemStore = defineStore('item', () => {
   const { send } = useXhrStore()
   const { showSnackbar, showSpinner } = useNotificationsStore()
   let fields = ref<TFields | undefined>(undefined)
-  let url_id = ref<string | undefined>(undefined)
   let slug = ref<string | undefined>(undefined)
   let tag = ref<string | undefined>(undefined)
   let media1 = ref<TMedia>({ hasMedia: false, urls: { full: '', tn: '' } })
@@ -45,14 +44,13 @@ export const useItemStore = defineStore('item', () => {
     itemViewIndex.value = index
   }
   const derived = computed(() => {
-    return { module: current.value.module, url_id: current.value.url_id }
+    return { module: current.value.module, slug: current.value.slug }
   })
 
   function saveItem(apiItem: TApiItemShow) {
     fields.value = apiItem.fields
-    url_id.value = apiItem.url_id
-    slug.value = apiItem.url_id
-    tag.value = moduleStore.tagFromUrlId(current.value.module, apiItem.url_id)
+    slug.value = apiItem.slug
+    tag.value = moduleStore.tagFromUrlId(current.value.module, apiItem.slug)
     setItemMedia(apiItem.mediaArray, apiItem.mediaPage, apiItem.media1)
     saveItemTags(apiItem.model_tags, apiItem.global_tags, apiItem.discrete_columns)
   }
@@ -62,7 +60,6 @@ export const useItemStore = defineStore('item', () => {
     fields.value = undefined
     slug.value = undefined
     tag.value = undefined
-    url_id.value = undefined
     media1.value = { hasMedia: false, urls: { full: '', tn: '' } }
   }
 
@@ -75,10 +72,10 @@ export const useItemStore = defineStore('item', () => {
       newIndex = (itemIndex.value === 0) ? length - 1 : itemIndex.value - 1
     }
 
-    //TODO change id to url_id
+    //TODO change id to slug
     const mainArrayItem = <TApiArrayMain>itemByIndex('main', newIndex)
-    console.log(`nextUrlId: ${mainArrayItem.url_id}`)
-    return mainArrayItem.url_id
+    console.log(`nextUrlId: ${mainArrayItem.slug}`)
+    return mainArrayItem.slug
   }
 
   //return the newly created/update item's urlId (need it only for create())
@@ -93,12 +90,12 @@ export const useItemStore = defineStore('item', () => {
 
     if (isCreate) {
       saveItem(res.data)
-      let newIndex = pushToArray({ "id": res.data.fields.id, "url_id": res.data.url_id })
+      let newIndex = pushToArray({ "id": res.data.fields.id, "slug": res.data.slug })
       itemIndex.value = newIndex
       //console.log(`item pushed to main array. index: ${itemIndex.value}`)
     } else {
       fields.value = res.data.fields
-      url_id.value = res.data.url_id
+      slug.value = res.data.slug
     }
     console.log(`model.store() returned (success) ${JSON.stringify(res.data, null, 2)}`)
     showSnackbar(`${current.value.module} ${isCreate ? "created" : "updated"} successfully! redirecting to item`)
@@ -123,16 +120,15 @@ export const useItemStore = defineStore('item', () => {
     console.log(`${current.value.module}item.destroy() success!`)
     const newLength = removeItemFromArrayById((<TFields>fields.value).id)
 
-    //go to 'previous' url_id or to module.home (if array.length is 1)
+    //go to 'previous' slug or to module.home (if array.length is 1)
     if (newLength === 0) {
       return null
     } else {
-      return (<TApiArrayMain>prev.item).url_id
+      return (<TApiArrayMain>prev.item).slug
     }
   }
 
   return {
-    url_id,
     slug,
     tag,
     ready,

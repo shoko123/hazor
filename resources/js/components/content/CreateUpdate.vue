@@ -108,9 +108,9 @@ async function submit(v$: Validation, data: TFields, id?: number) {
 
   //console.log(`CreateUpdate.after upload() res: ${JSON.stringify(urlId, null, 2)}`)
   if (props.isCreate) {
-    router.push({ name: 'show', params: { module: current.value.url_module, url_id: (<TApiItemShow>itemDetails).url_id} })
+    router.push({ name: 'show', params: { module: current.value.url_module, slug: (<TApiItemShow>itemDetails).slug} })
   } else {
-    router.push({ name: 'show', params: { module: current.value.url_module, url_id: current.value.url_id } })
+    router.push({ name: 'show', params: { module: current.value.url_module, slug: current.value.slug } })
   }
 }
 

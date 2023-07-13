@@ -41,19 +41,8 @@ class Locus extends DigModel
 
     function rawSqlSlug(): string
     {
-        return 'CONCAT(area , ".", name) AS url_id';
+        return 'CONCAT(area , ".", name) AS slug';
     }
-
-    // function getUrlIdFromId(int $id): string
-    // {
-    //     return $id;
-    //     $item = $this->findOrFail($id);
-    //     $url_id = is_null($item->year) ? "0000-" : $item->year . "-";
-    //     $url_id .= $item->locus_no;
-    //     $url_id .= $item->area . "-";
-    //     $url_id .=  is_null($item->addendum) ? $item->addendum : "";
-    //     return $url_id;
-    // }
 
     public function builderOrder(): void
     {

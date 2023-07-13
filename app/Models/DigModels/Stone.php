@@ -62,7 +62,7 @@ class Stone extends FindModel
     //show - single model
     function rawSqlSlug(): string
     {
-        return 'CONCAT(basket , ".", stone_no) AS url_id';
+        return 'CONCAT(basket , ".", stone_no) AS slug';
     }
 
     public function builderItemSelect(): void

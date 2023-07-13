@@ -35,7 +35,7 @@ class DigModelReadController extends Controller
         
         $resp = array_merge($m->show($v), [
             "msg" => "ModelControler.show(",
-            "url_id" => $v["slug"]
+            "slug" => $v["slug"]
         ]);
         return response()->json($resp, 200);
     }
@@ -67,7 +67,7 @@ class DigModelReadController extends Controller
         $first = $m->firstSlug();
         return response()->json([
             "message" => "ReadController.firstSlug()",
-            "url_id" => $first,
+            "slug" => $first,
         ], 200);
     }
 }

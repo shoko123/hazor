@@ -56,7 +56,7 @@ class Fauna extends FindModel
    
     function rawSqlSlug(): string
     {
-        return 'id AS url_id';
+        return 'id AS slug';
     }
 
     public function builderOrder(): void

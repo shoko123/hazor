@@ -10,7 +10,7 @@ import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain
 let rm = useRoutesMainStore()
 
 const header = computed(() => {
-  const itemText = `${rm.current.module} ${rm.current.url_id}`
+  const itemText = `${rm.current.module} ${rm.current.slug}`
   switch (rm.current.name) {
     case 'media':
       return `** Dig ** : Media Editor for ${itemText}`

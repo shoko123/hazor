@@ -21,7 +21,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
     const current = ref<TRouteInfo>({
         url_module: undefined,
-        url_id: undefined,
+        slug: undefined,
         url_full_path: undefined,
         module: 'Home',
         name: 'home',
@@ -32,7 +32,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
     const to = ref<TRouteInfo>({
         url_module: undefined,
-        url_id: undefined,
+        slug: undefined,
         url_full_path: undefined,
         module: 'Home',
         name: 'home',
@@ -100,7 +100,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         isLoading.value = true
 
         try {
-            await p.prepareForNewRoute(to.value.module, handle_to.query, <string>handle_to.params.url_id, <TPlanAction[]>planResponse.data)
+            await p.prepareForNewRoute(to.value.module, handle_to.query, <string>handle_to.params.slug, <TPlanAction[]>planResponse.data)
             finalizeRouting(handle_to, handle_from)
 
             //console.log(`router.beforeEach returned ${JSON.stringify(res, null, 2)}`);
@@ -151,11 +151,11 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             case 'update':
             case 'media':
             case 'tag':
-                current.value.url_id = <string>handle_to.params.url_id
+                current.value.slug = <string>handle_to.params.slug
                 current.value.idParams = to.value.idParams
                 break
             default:
-                current.value.url_id = undefined
+                current.value.slug = undefined
                 current.value.idParams = undefined
         }
 

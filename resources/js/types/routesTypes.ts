@@ -30,7 +30,7 @@ type TPlanAction =
 
 type TRouteInfo = {
     url_module: TUrlModule | undefined,
-    url_id: string | undefined,
+    slug: string | undefined,
     url_full_path: string | undefined,
     name: TName,
     module: TModule,
@@ -55,7 +55,7 @@ type TParseUrlModuleResponse = {
 }
 
 type TParseSlugData = {
-    url_id: string,
+    slug: string,
     url_params: TSlugParams
 }
 type TParseSlugResponse = {

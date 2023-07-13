@@ -14,8 +14,8 @@ export const useFaunaStore = defineStore('fauna', () => {
     }
   }
 
-  function tagFromUrlId(url_id: string): string {
-    return url_id
+  function tagFromUrlId(slug: string): string {
+    return slug
   }
 
   function beforeStore(isCreate: boolean, fields: TFields): TFields | false {

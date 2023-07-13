@@ -26,9 +26,9 @@ async function showClicked() {
   const { firstSlug } = useCollectionsStore()
   const firstUid = await firstSlug()
   if (firstUid) {
-    router.push({ name: 'show', params: { module: current.value.url_module, url_id: firstUid } })
+    router.push({ name: 'show', params: { module: current.value.url_module, slug: firstUid } })
   } else {
-    console.log(`failed to get first url_id`)
+    console.log(`failed to get first slug`)
   }
 }
 

@@ -145,9 +145,9 @@ export const useCollectionsStore = defineStore('collections', () => {
         n.showSpinner(`Finding first item ...`)
         return xhr.send('model/firstSlug', 'post', { model: current.module })
             .then(res => {
-                console.log(`firstSlug() returned ${res.data.url_id}`)
+                console.log(`firstSlug() returned ${res.data.slug}`)
                 //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
-                return res.data.url_id
+                return res.data.slug
             })
             .catch(err => {
                 console.log(`firstSlug() failed`)
