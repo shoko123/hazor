@@ -15,7 +15,7 @@ class CreateLociTable extends Migration
     {
         Schema::create('loci', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name', 10)->nullable();
+            $table->string('name', 10);
             $table->string('area', 3);
             $table->unsignedMediumInteger('locus_no');
             $table->string('addendum', 2)->nullable();

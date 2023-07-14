@@ -14,6 +14,7 @@ use App\Models\Functional\MediaModel;
 use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Tags\Tag;
+use Exception;
 
 abstract class DigModel extends Model implements HasMedia, DigModelInterface
 {
@@ -169,11 +170,10 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             if (!$item->media->isEmpty()) {
                 $media = ['full' => $item->media[0]->getPath(), 'tn' =>  $item->media[0]->getPath('tn')];
             }
-            $id_params = $this->itemToIdParams($item);
 
             return [
                 "id" => $item["id"],
-                "slug" => $id_params["slug"],
+                "slug" => $this->slugFromItem($item),
                 "description" => $this->itemShortDescription(($item)),
                 "media1" => $media,
             ];
@@ -212,7 +212,6 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             return $tag->tag_group->name . '.' . $tag->name;
         });
 
-        $id_params = $this->itemToIdParams($item);
         //unset
         unset($item->media);
         unset($item->global_tags);
@@ -226,7 +225,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             "global_tags" => $global_tags,
             "model_tags" => $model_tags,
             "discrete_columns" => $discrete_columns,
-            "slug" => $id_params["slug"],
+            "slug" => $this->slugFromItem($item),
         ];
     }
 
@@ -240,14 +239,12 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             $media1 = MediaModel::getMedia($item->media, true);
         }
 
-        $id_params = $this->itemToIdParams($item);
-
         return [
             "id" => $id,
-            "slug" => $id_params["slug"],
-            "tag" => $id_params["tag"],
+            "slug" => $this->slugFromItem($item),
             "description" => $this->itemShortDescription($item),
             "media" => $media1,
+            "module" => $this->eloquent_model_name
         ];
     }
 
@@ -281,10 +278,15 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         if ($methodIsPost) {
             unset($item->id);
         }
-        $item->save();
 
-        $id_params = $this->itemToIdParams($item);
-        $slug = $id_params["slug"];
+        try {
+             $item->save();
+        } catch (Exception $error) {
+            throw new Exception('Error while saving item to DB: ' . $error);
+        }
+
+
+       
 
         if ($methodIsPost) {
             return [
@@ -295,12 +297,12 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
                 "global_tags" => [],
                 "model_tags" => [],
                 "discrete_columns" => $this->discreteColumns($item),
-                "slug" => $id_params["slug"],
+                "slug" => $this->slugFromItem($item),
             ];
         } else {
             return [
                 "fields" => $item,
-                "slug" => $slug
+                "slug" => $this->slugFromItem($item)
             ];
         }
     }

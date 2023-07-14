@@ -64,7 +64,7 @@ onMounted(() => {
   if (!props.isCreate) {
     Object.assign(data, fields.value)
   }
-  console.log(`StoneNew.Mount fields: ${JSON.stringify(data, null, 2)}`)
+  //console.log(`StoneNew.Mount fields: ${JSON.stringify(data, null, 2)}`)
 })
 
 const { fields } = storeToRefs(useItemStore())

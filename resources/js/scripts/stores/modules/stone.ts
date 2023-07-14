@@ -29,7 +29,7 @@ export const useStoneStore = defineStore('stone', () => {
   }
 
   function beforeStore(isCreate: boolean, fields: TFields): TFields | false {
-    console.log(`locus.beforStores() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
+    //console.log(`stone.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
     let sf = <TStoneFields>fields
     if (isCreate) {
       let rf = { ...sf }

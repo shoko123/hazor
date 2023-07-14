@@ -49,7 +49,7 @@ class Locus extends DigModel
         $this->builder->orderBy('id', 'asc');
     }
 
-  
+
     public function builderItemSelect(): void
     {
         $this->builder = self::with([
@@ -61,16 +61,12 @@ class Locus extends DigModel
 
     public function builderItemLocate(array $v): void
     {
-        $this->builder->where('area', '=', $v["params"]["area"])->where('name', '=', $v["params"]["name"]);   
+        $this->builder->where('area', '=', $v["params"]["area"])->where('name', '=', $v["params"]["name"]);
     }
 
-    public function itemToIdParams(Model $item): array
+    public function slugFromItem(Model $item): string
     {
-        return [
-            "id" => $item["id"],
-            "slug" => $item["area"] . '.' . $item["name"],
-            "tag"  => $item["area"] . '/' . $item["name"],
-        ];
+        return $item["area"] . '.' . $item["name"];
     }
 
     public function discreteColumns(Model $model): array
@@ -81,6 +77,6 @@ class Locus extends DigModel
 
     public function itemShortDescription(Model $item): string
     {
-        return $item["type"];
+        return is_null($item["type"]) ? "" : $item["type"];
     }
 }

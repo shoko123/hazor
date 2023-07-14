@@ -80,13 +80,9 @@ class Fauna extends FindModel
         $this->builder->where('id', '=', $v["params"]["id"]);   
     }
 
-    public function itemToIdParams(Model $item): array
+    public function slugFromItem(Model $item): string
     {
-        return [
-            "id" => $item["id"],
-            "slug" => $item["id"],
-            "tag" => $item["id"],
-        ];
+        return $item["id"];
     }
 
     public function discreteColumns(Model $fields): array

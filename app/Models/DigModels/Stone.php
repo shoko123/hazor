@@ -80,16 +80,12 @@ class Stone extends FindModel
 
     public function builderItemLocate(array $v): void
     {
-        $this->builder->where('basket', '=', $v["params"]["basket"])->where('stone_no', '=', $v["params"]["stone_no"]);   
+        $this->builder->where('basket', '=', $v["params"]["basket"])->where('stone_no', '=', $v["params"]["stone_no"]);
     }
 
-    public function itemToIdParams(Model $item): array
+    public function slugFromItem(Model $item): string
     {
-        return [
-            "id" => $item["id"],
-            "slug" => $item["basket"] . '.' . $item["stone_no"],
-            "tag"  => 'B' . $item["basket"] . '/' . $item["stone_no"],
-        ];
+        return  $item["basket"] . '.' . $item["stone_no"];
     }
 
     public function discreteColumns(Model $fields): array
@@ -105,5 +101,4 @@ class Stone extends FindModel
     {
         return $item["description"];
     }
-
 }

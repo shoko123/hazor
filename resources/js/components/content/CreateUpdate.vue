@@ -60,17 +60,17 @@ const module = computed<Component>(() => {
   }
 })
 
-function beforeStore(isCreate: boolean, fields: TFields ) {
+function beforeStore(isCreate: boolean, fields: TFields) {
   let store
   switch (current.value.module) {
     case 'Locus':
       store = useLocusStore()
       break
     case 'Stone':
-    store = useStoneStore()
+      store = useStoneStore()
       break
     case 'Fauna':
-    store = useFaunaStore()
+      store = useFaunaStore()
       break
     default:
       console.log(`Update.vue invalid module`)
@@ -93,22 +93,23 @@ async function submit(v$: Validation, data: TFields, id?: number) {
     console.log(`validation silent errors: ${JSON.stringify(v$.$silentErrors, null, 2)}`)
     return
   }
-  
-  //alert("Form Successfully Submitted!")
- let fieldsToSend = beforeStore(props.isCreate, data)
 
- if(fieldsToSend === false){
-  alert(`problem with data`)
-  return
-}
+  //alert("Form Successfully Submitted!")
+  let fieldsToSend = beforeStore(props.isCreate, data)
+
+  if (fieldsToSend === false) {
+    alert(`problem with data`)
+    return
+  }
 
   const itemDetails = await upload(props.isCreate, <TFields>fieldsToSend).catch(err => {
-    console.log(`CreateUpdate.upload(error) - return`)
+    console.log(`CreateUpdate.upload failed!`)
+    throw 'FailedToUpload'
   })
 
   //console.log(`CreateUpdate.after upload() res: ${JSON.stringify(slug, null, 2)}`)
   if (props.isCreate) {
-    router.push({ name: 'show', params: { module: current.value.url_module, slug: (<TApiItemShow>itemDetails).slug} })
+    router.push({ name: 'show', params: { module: current.value.url_module, slug: (<TApiItemShow>itemDetails).slug } })
   } else {
     router.push({ name: 'show', params: { module: current.value.url_module, slug: current.value.slug } })
   }

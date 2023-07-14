@@ -83,8 +83,8 @@ export const useItemStore = defineStore('item', () => {
     console.log(`item.upload isCreate: ${isCreate}, module: ${current.value.module}, fields: ${JSON.stringify(newFields, null, 2)}`)
     let res = await send('model/store', isCreate ? 'post' : 'put', { model: current.value.module, item: newFields, id: newFields.id })
       .catch(err => {
-        showSnackbar(`model.store failed! Please try later!`)
-        console.log(`model.store  failed. err: ${JSON.stringify(err, null, 2)}`)
+        showSnackbar(`model.store failed!`)
+        //console.log(`model.store  failed. err: ${JSON.stringify(err, null, 2)}`)
         throw err
       })
 

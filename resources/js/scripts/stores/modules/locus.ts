@@ -32,7 +32,7 @@ export const useLocusStore = defineStore('locus', () => {
   }
 
   function beforeStore(isCreate: boolean, fields: TFields): TFields | false {
-    console.log(`locus.beforStores() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
+    //console.log(`locus.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
     let lf = <TLocusFields>fields
     if (isCreate) {
       let rf = { ...lf }
