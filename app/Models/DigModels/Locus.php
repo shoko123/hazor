@@ -39,6 +39,11 @@ class Locus extends DigModel
         ];
     }
 
+ public function builderPageTableSelect(string $sqlSlug): void
+    {
+        $this->builder = $this->select('id', DB::raw($sqlSlug), 'area', 'name',  'year', 'square', 'stratum', 'type', 'cross_ref', 'description', 'notes', 'elevation');
+    }
+
     function rawSqlSlug(): string
     {
         return 'CONCAT(area , ".", name) AS slug';
@@ -49,6 +54,7 @@ class Locus extends DigModel
         $this->builder->orderBy('id', 'asc');
     }
 
+   
 
     public function builderItemSelect(): void
     {

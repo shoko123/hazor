@@ -25,6 +25,19 @@ type TApiPageMainImage = {
         media1: TApiMediaOrNull
 }
 
+type TApiPageTableLocus = {
+        id: number,
+        slug: string,
+        year: number,
+        square: string,
+        stratum: string,
+        type: string,
+        cross_ref: string,
+        description: string,
+        notes: string,
+        elevation: string,
+}
+
 type TApiPageMainTable = {
         id: number,
         slug: string,
@@ -34,7 +47,7 @@ type TApiPageMainTable = {
 
 type TApiPageMedia = TApiMedia & { id: number, description: string }
 
-type TApiPage = TApiPageMainImage | TApiPageMainTable | TApiPageMedia | TApiArrayMain
+type TApiPage = TApiPageMainImage | TApiPageMainTable | TApiPageMedia | TApiArrayMain | TApiPageTableLocus
 
 //conversions ready for consumption for 'Media', 'Chip', and 'Table' views
 
@@ -103,6 +116,7 @@ export {
         TApiArray,
         TApiPageMainImage,
         TApiPageMainTable,
+        TApiPageTableLocus,
         TApiPageMedia,
         TApiPage,
         TPageVChip,

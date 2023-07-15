@@ -8,10 +8,8 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use App\Models\Interfaces\DigModelInterface;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Collection as SupportCollection;
+use Illuminate\Support\Collection;
 use App\Models\Functional\MediaModel;
-use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Tags\Tag;
 use Exception;
@@ -52,6 +50,8 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         $slug = $this->rawSqlSlug();
         $this->builder = $this->select('id', DB::raw($slug));
     }
+
+
 
     public function applyFilters($query)
     {
@@ -157,27 +157,41 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         });
     }
 
-    public function page($ids, $view): SupportCollection
+    public function page($ids, $view): Collection
     {
         $idsAsCommaSeperatedString = implode(',', $ids);
-        $res = $this->whereIn('id', $ids)
-            ->with("media")
-            ->orderByRaw("FIELD(id, $idsAsCommaSeperatedString)")
+        $this->builderPageTableSelect($this->rawSqlSlug());
+        $this->builder = $this->builder->whereIn('id', $ids);
+        if ($view === "Image") {
+            $this->builder = $this->builder->with("media");
+        }
+
+        $res = $this->builder->orderByRaw("FIELD(id, $idsAsCommaSeperatedString)")
             ->get();
 
-        $r = $res->map(function ($item, $key) {
-            $media = null;
-            if (!$item->media->isEmpty()) {
-                $media = ['full' => $item->media[0]->getPath(), 'tn' =>  $item->media[0]->getPath('tn')];
-            }
+        $r = collect([]);
+        switch ($view) {
+            case "Table":
 
-            return [
-                "id" => $item["id"],
-                "slug" => $this->slugFromItem($item),
-                "description" => $this->itemShortDescription(($item)),
-                "media1" => $media,
-            ];
-        });
+                return $res;
+            case "Image":
+                ///////////////////
+
+
+                $r = $res->map(function ($item, $key) {
+                    $media = null;
+                    if (!$item->media->isEmpty()) {
+                        $media = ['full' => $item->media[0]->getPath(), 'tn' =>  $item->media[0]->getPath('tn')];
+                    }
+
+                    return [
+                        "id" => $item["id"],
+                        "slug" => $this->slugFromItem($item),
+                        "description" => $this->itemShortDescription(($item)),
+                        "media1" => $media,
+                    ];
+                });
+        }
         return $r;
     }
 
@@ -280,13 +294,10 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         }
 
         try {
-             $item->save();
+            $item->save();
         } catch (Exception $error) {
             throw new Exception('Error while saving item to DB: ' . $error);
         }
-
-
-       
 
         if ($methodIsPost) {
             return [

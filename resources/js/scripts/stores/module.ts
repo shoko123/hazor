@@ -13,7 +13,7 @@ import { useFaunaStore } from './modules/fauna'
 
 export const useModuleStore = defineStore('module', () => {
 
-  const { bucketUrl } =  storeToRefs(useMediaStore())
+  const { bucketUrl } = storeToRefs(useMediaStore())
   const { current } = storeToRefs(useRoutesMainStore())
 
   let counts = ref({ items: 0, media: 0 })
@@ -43,12 +43,12 @@ export const useModuleStore = defineStore('module', () => {
 
       case 'Fauna':
         return useFaunaStore()
-        
+
       default:
         return useFaunaStore()
     }
   }
 
 
-  return { counts, backgroundImage, itemViews, tagFromSlug }
+  return { counts, backgroundImage, itemViews, getStore, tagFromSlug }
 })
