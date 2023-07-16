@@ -48,7 +48,23 @@ export const useModuleStore = defineStore('module', () => {
         return useFaunaStore()
     }
   }
+  const getCurrentStore = computed(() => {
+ switch (current.value.module) {
+        case 'Locus':
+          return useLocusStore()
+  
+        case 'Stone':
+          return useStoneStore()
+  
+        case 'Fauna':
+          return useFaunaStore()
+  
+        default:
+          return useFaunaStore()
+      }    
+  })
+  
 
 
-  return { counts, backgroundImage, itemViews, getStore, tagFromSlug }
+  return { counts, backgroundImage, itemViews, getCurrentStore, tagFromSlug }
 })

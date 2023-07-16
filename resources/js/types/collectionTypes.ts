@@ -38,6 +38,42 @@ type TApiPageTableLocus = {
         elevation: string,
 }
 
+type TApiPageTableStone = {
+        id: number,
+        slug: string,//basket.stone_no
+        date: string,
+        year: number,
+        prov_notes: string,
+        type: string,
+        material_code: string,
+        dimensions: string,
+        rim_diameter: string,
+        description: string,
+        notes: string,
+        publication: string,
+        material: string,
+        base_type: string,
+}
+
+type TApiPageTableFauna = {
+        id: number,
+        slug: string,
+        label: string,
+        area: string,
+        locus: string,
+        basket: string,
+        item_category: string,
+        biological_taxonomy: string,
+        has_taxonomic_identifier: string,
+        has_anatomical_identifier: string,
+        stratum: string,
+        taxon: string,
+        element: string,
+        fragment_present: string,
+        bone_number: string,
+        snippet: string,
+}
+
 type TApiPageMainTable = {
         id: number,
         slug: string,
@@ -47,7 +83,13 @@ type TApiPageMainTable = {
 
 type TApiPageMedia = TApiMedia & { id: number, description: string }
 
-type TApiPage = TApiPageMainImage | TApiPageMainTable | TApiPageMedia | TApiArrayMain | TApiPageTableLocus
+type TApiPage = TApiPageMainImage |
+        TApiPageMainTable |
+        TApiPageMedia |
+        TApiArrayMain |
+        TApiPageTableLocus |
+        TApiPageTableStone |
+        TApiPageTableFauna
 
 //conversions ready for consumption for 'Media', 'Chip', and 'Table' views
 

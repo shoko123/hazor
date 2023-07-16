@@ -54,16 +54,31 @@ class Stone extends FindModel
         ];
     }
 
+
+    function rawSqlSlug(): string
+    {
+        return 'CONCAT(basket , ".", stone_no) AS slug';
+    }
+
+    public function builderPageTableSelect(string $sqlSlug): void
+    {
+        $this->builder = $this->select([
+            'id',
+            'slug' => DB::raw($sqlSlug),
+            'date', 'year',  'prov_notes', 'type', 'material_code', 'rim_diameter', 'description', 'notes', 'publication',
+            'material' => StoneMaterial::select('name')
+                ->whereColumn('id', 'stones.material_id'),
+            'base_type' => StoneBaseType::select('name')
+                ->whereColumn('id', 'stones.base_type_id')
+        ]);
+    }
+
     public function builderOrder(): void
     {
         $this->builder->orderBy('id', 'asc');
     }
 
-    //show - single model
-    function rawSqlSlug(): string
-    {
-        return 'CONCAT(basket , ".", stone_no) AS slug';
-    }
+
 
     public function builderItemSelect(): void
     {

@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { computed } from 'vue'
 import { defineStore } from 'pinia'
 import { TStoneFields, TFields } from '@/js/types/moduleFieldsTypes'
 import { TStoneSlugParams, TStoneIdParams } from '@/js/types/moduleIdParamsTypes'
@@ -25,7 +25,7 @@ export const useStoneStore = defineStore('stone', () => {
 
   function tagFromSlug(slug: string): string {
     //console.log(`Stone.tagFromSlug()`)
-    return slug.replace('.', '/')    
+    return slug.replace('.', '/')
   }
 
   function beforeStore(isCreate: boolean, fields: TFields): TFields | false {
@@ -39,9 +39,27 @@ export const useStoneStore = defineStore('stone', () => {
       return sf
     }
   }
+
+  const headers = computed(() => {
+    return [
+      { title: 'Name', align: 'start', key: 'tag', },
+      { title: 'Year', align: 'end', key: 'year' },
+      { title: 'Type', align: 'end', key: 'type' },
+      { title: 'Description', key: 'description',align: 'start',  sortable: false, },
+      { title: 'Base Type', align: 'end', key: 'base_type' },
+      { title: 'Material Code', align: 'end', key: 'material_code' },
+      { title: 'Material', align: 'end', key: 'material' },
+      { title: 'Prov Notes', align: 'end', key: 'prove_notes' },
+      { title: 'Notes', align: 'end', key: 'notes' },
+      { title: 'Publication', align: 'end', key: 'publication' },
+      { title: 'Date', align: 'end', key: 'date' },
+    ]
+  })
+ 
   return {
     beforeStore,
     slugParamsFromSlug,
     tagFromSlug,
+    headers
   }
 })

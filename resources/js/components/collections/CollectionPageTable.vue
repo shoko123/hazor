@@ -18,16 +18,18 @@ import { useRouter } from 'vue-router'
 import { TCollectionName, TPageCMainVTable, TApiPageTableLocus } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import { useLocusStore } from '../../scripts/stores/modules/locus'
+import { useModuleStore } from '../../scripts/stores/module'
 const props = defineProps<{
   source: TCollectionName
   pageNoB1: number
 }>()
 
 let { collection } = useCollectionsStore()
-let { headers } = storeToRefs(useLocusStore())
+let { getCurrentStore } = useModuleStore()
 
 const heads = computed(() => {
-  return headers.value
+  const store = getCurrentStore
+  return store.headers
 })
 
 

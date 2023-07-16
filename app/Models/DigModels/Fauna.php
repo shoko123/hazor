@@ -53,10 +53,31 @@ class Fauna extends FindModel
         ];
     }
 
-   
     function rawSqlSlug(): string
     {
         return 'id AS slug';
+    }
+
+    public function builderPageTableSelect(string $sqlSlug): void
+    {
+        $this->builder = $this->select([
+            'id',
+            'slug' => DB::raw($sqlSlug),
+            'label',
+            'area',
+            'locus',
+            'basket',
+            'item_category',
+            'biological_taxonomy',
+            'has_taxonomic_identifier',
+            'has_anatomical_identifier',
+            'stratum',
+            'taxon',
+            'element',
+            'fragment_present',
+            'bone_number',
+            'snippet',
+        ]);
     }
 
     public function builderOrder(): void
@@ -77,7 +98,7 @@ class Fauna extends FindModel
 
     public function builderItemLocate(array $v): void
     {
-        $this->builder->where('id', '=', $v["params"]["id"]);   
+        $this->builder->where('id', '=', $v["params"]["id"]);
     }
 
     public function slugFromItem(Model $item): string
