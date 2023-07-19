@@ -18,6 +18,7 @@ class Fauna extends FindModel
     protected $table = 'fauna';
     public $timestamps = false;
     protected $guarded = [];
+    protected $appends = ['slug'];
 
     public function __construct()
     {
@@ -53,36 +54,24 @@ class Fauna extends FindModel
         ];
     }
 
-    function rawSqlSlug(): string
+    public function getSlugAttribute()
     {
-        return 'id AS slug';
+        return $this->id;
+    }
+
+    public function builderIndexSelect(): void
+    {
+        $this->builder = $this->select('id');
     }
 
     public function builderPageTableSelect(): void
     {
-        $this->builder = $this->select([
-            'id',
-            'slug' => DB::raw($this->rawSqlSlug()),
-            'label',
-            'area',
-            'locus',
-            'basket',
-            'item_category',
-            'biological_taxonomy',
-            'has_taxonomic_identifier',
-            'has_anatomical_identifier',
-            'stratum',
-            'taxon',
-            'element',
-            'fragment_present',
-            'bone_number',
-            'snippet',
-        ]);
+        $this->builder = $this->select('*');
     }
 
     public function builderPageImageSelect(): void
     {
-        $this->builder = $this->select('id', DB::raw($this->rawSqlSlug()), DB::raw('snippet AS short'))->with("media");
+        $this->builder = $this->select('id', DB::raw('snippet AS short'))->with("media");
     }
 
     public function builderOrder(): void
@@ -92,7 +81,7 @@ class Fauna extends FindModel
 
     public function builderItemSelect(): void
     {
-        $this->builder = self::select('*', DB::raw($this->rawSqlSlug()))->with([
+        $this->builder = self::with([
             'media',
             'model_tags.tag_group',
             'global_tags.tag_group',
@@ -101,7 +90,6 @@ class Fauna extends FindModel
         ]);
     }
 
-
     public function builderItemLocate(array $v): void
     {
         $this->builder->where('id', '=', $v["params"]["id"]);
@@ -109,12 +97,7 @@ class Fauna extends FindModel
 
     public function builderItemSelectCarousel(): void
     {
-        $this->builder =  $this->select('id', DB::raw($this->rawSqlSlug()), DB::raw('snippet AS short'))->with("media");
-    }
-
-    public function slugFromItem(Model $item): string
-    {
-        return $item["id"];
+        $this->builder =  $this->select('id', DB::raw('snippet AS short'))->with("media");
     }
 
     public function discreteColumns(Model $fields): array

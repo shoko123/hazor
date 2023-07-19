@@ -19,6 +19,7 @@ class Stone extends FindModel
     public $timestamps = false;
     protected $guarded = [];
     protected $table = 'stones';
+    protected $appends = ['slug'];
 
     public function __construct()
     {
@@ -54,17 +55,20 @@ class Stone extends FindModel
         ];
     }
 
-
-    function rawSqlSlug(): string
+    public function getSlugAttribute()
     {
-        return 'CONCAT(basket , ".", stone_no) AS slug';
+        return $this->basket . '.' . $this->stone_no;
+    }
+
+    public function builderIndexSelect(): void
+    {
+        $this->builder = $this->select('id', 'basket', 'stone_no');
     }
 
     public function builderPageTableSelect(): void
     {
         $this->builder = $this->select([
-            'id',
-            'slug' => DB::raw($this->rawSqlSlug()),
+            'id', 'basket', 'stone_no',
             'date', 'year',  'prov_notes', 'type', 'material_code', 'rim_diameter', 'description', 'notes', 'publication',
             'material' => StoneMaterial::select('name')
                 ->whereColumn('id', 'stones.material_id'),
@@ -75,7 +79,7 @@ class Stone extends FindModel
 
     public function builderPageImageSelect(): void
     {
-        $this->builder = $this->select('id', DB::raw($this->rawSqlSlug()), DB::raw('description AS short'))->with("media");
+        $this->builder = $this->select('id', 'basket', 'stone_no', DB::raw('description AS short'))->with("media");
     }
 
     public function builderOrder(): void
@@ -83,11 +87,9 @@ class Stone extends FindModel
         $this->builder->orderBy('id', 'asc');
     }
 
-
-
     public function builderItemSelect(): void
     {
-        $this->builder = self::select('*', DB::raw($this->rawSqlSlug()))->with([
+        $this->builder = self::with([
             'media',
             'model_tags.tag_group',
             'global_tags.tag_group'/* => function ($query) {
@@ -105,12 +107,7 @@ class Stone extends FindModel
 
     public function builderItemSelectCarousel(): void
     {
-        $this->builder =  $this->select('id', DB::raw($this->rawSqlSlug()), DB::raw('description AS short'))->with("media");
-    }
-
-    public function slugFromItem(Model $item): string
-    {
-        return  $item["basket"] . '.' . $item["stone_no"];
+        $this->builder =  $this->select('id', 'basket', 'stone_no', DB::raw('description AS short'))->with("media");
     }
 
     public function discreteColumns(Model $fields): array

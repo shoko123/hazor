@@ -14,7 +14,8 @@ class Locus extends DigModel
     public $timestamps = false;
     protected $guarded = [];
     protected $table = 'loci';
-
+    protected $appends = ['slug'];
+    
     public function __construct()
     {
         DigModel::__construct('Locus');
@@ -39,19 +40,23 @@ class Locus extends DigModel
         ];
     }
 
+    public function getSlugAttribute()
+    {
+        return $this->area . '.' . $this->name;
+    }
+    public function builderIndexSelect(): void
+    {
+        $this->builder = $this->select('id', 'area', 'name');
+    }
+
     public function builderPageTableSelect(): void
     {
-        $this->builder = $this->select('id', DB::raw($this->rawSqlSlug()), 'area', 'name',  'year', 'square', 'stratum', 'type', 'cross_ref', 'description', 'notes', 'elevation');
+        $this->builder = $this->select('*');
     }
 
     public function builderPageImageSelect(): void
     {
-        $this->builder = $this->select('id', DB::raw($this->rawSqlSlug()), DB::raw('type AS short'))->with("media");
-    }
-
-    function rawSqlSlug(): string
-    {
-        return 'CONCAT(area , ".", name) AS slug';
+        $this->builder = $this->select('id', 'area', 'name', DB::raw('type AS short'))->with("media");
     }
 
     public function builderOrder(): void
@@ -59,11 +64,9 @@ class Locus extends DigModel
         $this->builder->orderBy('id', 'asc');
     }
 
-
-
     public function builderItemSelect(): void
     {
-        $this->builder = self::select('*', DB::raw($this->rawSqlSlug()))->with([
+        $this->builder = self::with([
             'media',
             'model_tags.tag_group',
             'global_tags.tag_group',
@@ -72,17 +75,12 @@ class Locus extends DigModel
 
     public function builderItemSelectCarousel(): void
     {
-        $this->builder = $this->select('id', DB::raw($this->rawSqlSlug()), DB::raw('type AS short'))->with("media");
+        $this->builder = $this->select('id', 'area', 'name', DB::raw('type AS short'))->with("media");
     }
 
     public function builderItemLocate(array $v): void
     {
         $this->builder->where('area', '=', $v["params"]["area"])->where('name', '=', $v["params"]["name"]);
-    }
-
-    public function slugFromItem(Model $item): string
-    {
-        return $item["area"] . '.' . $item["name"];
     }
 
     public function discreteColumns(Model $model): array

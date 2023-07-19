@@ -42,16 +42,10 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         $this->applyFilters($query);
         $this->builderOrder();
         $collection = $this->builder->get();
-        return $collection;
+        return  $collection->map(function ($item, $key) {
+            return ["id" => $item->id, "slug" => $item->slug];
+        });
     }
-
-    public function builderIndexSelect(): void
-    {
-        $slug = $this->rawSqlSlug();
-        $this->builder = $this->select('id', DB::raw($slug));
-    }
-
-
 
     public function applyFilters($query)
     {
@@ -177,6 +171,11 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         switch ($view) {
             case "Table":
                 return $res;
+                return  $r = $res->map(function ($item, $key) {
+                    return array_merge($item->toArray(), ["slug" => $item->slug1]);
+                });
+
+
 
             case "Image":
 
@@ -233,26 +232,22 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         unset($item->global_tags);
         unset($item->model_tags);
 
-        $slug =  $item["slug"];
-        $fields = clone $item;
-        unset($fields->slug);
-
         return [
-            "fields" => $item,
+            "fields" => $item->makeHidden('slug'),
             "media1" => $media1,
             "mediaPage" => $mediaPage,
             "mediaArray" => $mediaArray,
             "global_tags" => $global_tags,
             "model_tags" => $model_tags,
             "discrete_columns" => $discrete_columns,
-            "slug" => $slug,
+            "slug" => $item->slug,
         ];
     }
 
     public function carousel($id)
     {
         $this->builderItemSelectCarousel();
-          $item =  $this->builder->findOrFail($id);
+        $item =  $this->builder->findOrFail($id);
 
         $media1 = null;
         if (!$item->media->isEmpty()) {
@@ -307,19 +302,19 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
         if ($methodIsPost) {
             return [
-                "fields" => $item,
+                "fields" => $item->makeHidden('slug'),
                 "media1" => null,
                 "mediaPage" => [],
                 "mediaArray" => [],
                 "global_tags" => [],
                 "model_tags" => [],
                 "discrete_columns" => $this->discreteColumns($item),
-                "slug" => $this->slugFromItem($item),
+                "slug" => $item->slug,
             ];
         } else {
             return [
-                "fields" => $item,
-                "slug" => $this->slugFromItem($item)
+                "fields" => $item->makeHidden('slug'),
+                "slug" => $item->slug,
             ];
         }
     }
