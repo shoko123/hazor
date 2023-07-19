@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { TLocusFields, TFields } from '@/js/types/moduleFieldsTypes'
-import {TLocusSlugParams, TLocusIdParams } from '@/js/types/moduleIdParamsTypes'
+import { TLocusSlugParams, TLocusIdParams } from '@/js/types/moduleIdParamsTypes'
 import type { TParseSlugResponse, TParseSlugData } from '../../../types/routesTypes'
 
 export const useLocusStore = defineStore('locus', () => {
@@ -47,23 +47,19 @@ export const useLocusStore = defineStore('locus', () => {
     }
   }
 
-const headers = computed(() => {
-  return [
-    {
-      title: 'Name',
-      align: 'start',
-      key: 'slug',
-    },
-    { title: 'Year', align: 'end', key: 'year' },
-    { title: 'Type', align: 'end', key: 'type' },
-    { title: 'Cross Reference', align: 'end', key: 'cross_ref' },
-    { title: 'Description', align: 'end', key: 'description' },
-    { title: 'Stratum', align: 'end', key: 'stratum' },
-    { title: 'Square', align: 'end', key: 'square' },
-    { title: 'Elevation', align: 'end', key: 'elevation' },
+  const headers = computed(() => {
+    return [
+      { title: 'Name', align: 'start', key: 'tag', },
+      { title: 'Year', align: 'end', key: 'year' },
+      { title: 'Type', align: 'start', key: 'type' },
+      { title: 'Cross Reference', align: 'start', key: 'cross_ref' },
+      { title: 'Description', align: 'start', key: 'description' },
+      { title: 'Stratum', align: 'end', key: 'stratum' },
+      { title: 'Square', align: 'start', key: 'square' },
+      { title: 'Elevation', align: 'end', key: 'elevation' },
 
-  ]
-})
+    ]
+  })
 
   return {
     beforeStore,

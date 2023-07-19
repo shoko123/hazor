@@ -39,9 +39,14 @@ class Locus extends DigModel
         ];
     }
 
- public function builderPageTableSelect(string $sqlSlug): void
+    public function builderPageTableSelect(): void
     {
-        $this->builder = $this->select('id', DB::raw($sqlSlug), 'area', 'name',  'year', 'square', 'stratum', 'type', 'cross_ref', 'description', 'notes', 'elevation');
+        $this->builder = $this->select('id', DB::raw($this->rawSqlSlug()), 'area', 'name',  'year', 'square', 'stratum', 'type', 'cross_ref', 'description', 'notes', 'elevation');
+    }
+
+    public function builderPageImageSelect(): void
+    {
+        $this->builder = $this->select('id', DB::raw($this->rawSqlSlug()), DB::raw('type AS short'))->with("media");
     }
 
     function rawSqlSlug(): string
@@ -54,15 +59,20 @@ class Locus extends DigModel
         $this->builder->orderBy('id', 'asc');
     }
 
-   
+
 
     public function builderItemSelect(): void
     {
-        $this->builder = self::with([
+        $this->builder = self::select('*', DB::raw($this->rawSqlSlug()))->with([
             'media',
             'model_tags.tag_group',
             'global_tags.tag_group',
         ]);
+    }
+
+    public function builderItemSelectCarousel(): void
+    {
+        $this->builder = $this->select('id', DB::raw($this->rawSqlSlug()), DB::raw('type AS short'))->with("media");
     }
 
     public function builderItemLocate(array $v): void
@@ -79,10 +89,5 @@ class Locus extends DigModel
     {
         $area = 'Area' . '.' . $model["area"];
         return [$area];
-    }
-
-    public function itemShortDescription(Model $item): string
-    {
-        return is_null($item["type"]) ? "" : $item["type"];
     }
 }

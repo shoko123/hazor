@@ -58,11 +58,11 @@ class Fauna extends FindModel
         return 'id AS slug';
     }
 
-    public function builderPageTableSelect(string $sqlSlug): void
+    public function builderPageTableSelect(): void
     {
         $this->builder = $this->select([
             'id',
-            'slug' => DB::raw($sqlSlug),
+            'slug' => DB::raw($this->rawSqlSlug()),
             'label',
             'area',
             'locus',
@@ -80,6 +80,11 @@ class Fauna extends FindModel
         ]);
     }
 
+    public function builderPageImageSelect(): void
+    {
+        $this->builder = $this->select('id', DB::raw($this->rawSqlSlug()), DB::raw('snippet AS short'))->with("media");
+    }
+
     public function builderOrder(): void
     {
         $this->builder->orderBy('id', 'asc');
@@ -87,7 +92,7 @@ class Fauna extends FindModel
 
     public function builderItemSelect(): void
     {
-        $this->builder = self::with([
+        $this->builder = self::select('*', DB::raw($this->rawSqlSlug()))->with([
             'media',
             'model_tags.tag_group',
             'global_tags.tag_group',
@@ -96,9 +101,15 @@ class Fauna extends FindModel
         ]);
     }
 
+
     public function builderItemLocate(array $v): void
     {
         $this->builder->where('id', '=', $v["params"]["id"]);
+    }
+
+    public function builderItemSelectCarousel(): void
+    {
+        $this->builder =  $this->select('id', DB::raw($this->rawSqlSlug()), DB::raw('snippet AS short'))->with("media");
     }
 
     public function slugFromItem(Model $item): string
@@ -113,10 +124,5 @@ class Fauna extends FindModel
         unset($fields->element_tag);
         unset($fields->base_taxon);
         return [$c1, $c2];
-    }
-
-    public function itemShortDescription(Model $item): string
-    {
-        return $item["label"] . ', ' . $item["taxon"] . ', ' . $item["element"];
     }
 }

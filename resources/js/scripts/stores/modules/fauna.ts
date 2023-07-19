@@ -32,7 +32,7 @@ export const useFaunaStore = defineStore('fauna', () => {
 
   const headers = computed(() => {
     return [
-      { title: 'ID', align: 'end', key: 'id', },
+      { title: 'ID', align: 'end', key: 'tag', },
       { title: 'Label', align: 'end', key: 'label', },
       { title: 'Area', align: 'start', key: 'area' },
       { title: 'Locus', align: 'start', key: 'locus' },

@@ -60,17 +60,22 @@ class Stone extends FindModel
         return 'CONCAT(basket , ".", stone_no) AS slug';
     }
 
-    public function builderPageTableSelect(string $sqlSlug): void
+    public function builderPageTableSelect(): void
     {
         $this->builder = $this->select([
             'id',
-            'slug' => DB::raw($sqlSlug),
+            'slug' => DB::raw($this->rawSqlSlug()),
             'date', 'year',  'prov_notes', 'type', 'material_code', 'rim_diameter', 'description', 'notes', 'publication',
             'material' => StoneMaterial::select('name')
                 ->whereColumn('id', 'stones.material_id'),
             'base_type' => StoneBaseType::select('name')
                 ->whereColumn('id', 'stones.base_type_id')
         ]);
+    }
+
+    public function builderPageImageSelect(): void
+    {
+        $this->builder = $this->select('id', DB::raw($this->rawSqlSlug()), DB::raw('description AS short'))->with("media");
     }
 
     public function builderOrder(): void
@@ -82,7 +87,7 @@ class Stone extends FindModel
 
     public function builderItemSelect(): void
     {
-        $this->builder = self::with([
+        $this->builder = self::select('*', DB::raw($this->rawSqlSlug()))->with([
             'media',
             'model_tags.tag_group',
             'global_tags.tag_group'/* => function ($query) {
@@ -98,6 +103,11 @@ class Stone extends FindModel
         $this->builder->where('basket', '=', $v["params"]["basket"])->where('stone_no', '=', $v["params"]["stone_no"]);
     }
 
+    public function builderItemSelectCarousel(): void
+    {
+        $this->builder =  $this->select('id', DB::raw($this->rawSqlSlug()), DB::raw('description AS short'))->with("media");
+    }
+
     public function slugFromItem(Model $item): string
     {
         return  $item["basket"] . '.' . $item["stone_no"];
@@ -110,10 +120,5 @@ class Stone extends FindModel
         unset($fields->material);
         unset($fields->baseType);
         return [$material, $base_type];
-    }
-
-    public function itemShortDescription(Model $item): string
-    {
-        return $item["description"];
     }
 }

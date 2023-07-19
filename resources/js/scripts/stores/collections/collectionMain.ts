@@ -56,7 +56,6 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
                 extra.value.pageNoB1 = pageNoB1
                 extra.value.viewIndex = extra.value.views.indexOf(view)
                 let slice = array.value.slice(start, start + ipp)
-
                 savePage(slice, view, module)
                 return true
 
@@ -114,7 +113,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
                 break;
 
             case 'Chip':
-                toSave = (<TPageVChip[]>apiPage).map(x => { return { id: x.id, slug: x.slug, tag: tagFromSlug(module, x.slug) } })
+                toSave = (<TApiArrayMain[]>apiPage).map(x => { return { ...x, tag: tagFromSlug(module, x.slug) } })
                 page.value = <TPageVChip[]>toSave
                 break;
         }

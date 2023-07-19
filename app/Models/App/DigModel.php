@@ -160,23 +160,25 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
     public function page($ids, $view): Collection
     {
         $idsAsCommaSeperatedString = implode(',', $ids);
-        $this->builderPageTableSelect($this->rawSqlSlug());
-        $this->builder = $this->builder->whereIn('id', $ids);
-        if ($view === "Image") {
-            $this->builder = $this->builder->with("media");
-        }
+        switch ($view) {
+            case 'Table':
+                $this->builderPageTableSelect();
+                break;
 
+            case 'Image':
+                $this->builderPageImageSelect();
+                break;
+        }
+        $this->builder = $this->builder->whereIn('id', $ids);
         $res = $this->builder->orderByRaw("FIELD(id, $idsAsCommaSeperatedString)")
             ->get();
 
         $r = collect([]);
         switch ($view) {
             case "Table":
-
                 return $res;
-            case "Image":
-                ///////////////////
 
+            case "Image":
 
                 $r = $res->map(function ($item, $key) {
                     $media = null;
@@ -186,8 +188,8 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
                     return [
                         "id" => $item["id"],
-                        "slug" => $this->slugFromItem($item),
-                        "description" => $this->itemShortDescription(($item)),
+                        "slug" => $item["slug"],
+                        "description" => $item["short"],
                         "media1" => $media,
                     ];
                 });
@@ -231,6 +233,10 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         unset($item->global_tags);
         unset($item->model_tags);
 
+        $slug =  $item["slug"];
+        $fields = clone $item;
+        unset($fields->slug);
+
         return [
             "fields" => $item,
             "media1" => $media1,
@@ -239,14 +245,14 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             "global_tags" => $global_tags,
             "model_tags" => $model_tags,
             "discrete_columns" => $discrete_columns,
-            "slug" => $this->slugFromItem($item),
+            "slug" => $slug,
         ];
     }
 
     public function carousel($id)
     {
-        $item = self::with('media')
-            ->findOrFail($id);
+        $this->builderItemSelectCarousel();
+          $item =  $this->builder->findOrFail($id);
 
         $media1 = null;
         if (!$item->media->isEmpty()) {
@@ -255,8 +261,8 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
         return [
             "id" => $id,
-            "slug" => $this->slugFromItem($item),
-            "description" => $this->itemShortDescription($item),
+            "slug" => $item["slug"],
+            "description" => $item["short"],
             "media" => $media1,
             "module" => $this->eloquent_model_name
         ];
