@@ -43,6 +43,8 @@ export const useStoneStore = defineStore('stone', () => {
   const headers = computed(() => {
     return [
       { title: 'Name', align: 'start', key: 'tag', },
+      { title: 'Area', align: 'end', key: 'area' },
+      { title: 'Locus', align: 'end', key: 'locus' },
       { title: 'Year', align: 'end', key: 'year' },
       { title: 'Type', align: 'end', key: 'type' },
       { title: 'Description', key: 'description',align: 'start',  sortable: false, },

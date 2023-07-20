@@ -68,7 +68,7 @@ class Stone extends FindModel
     public function builderPageTableSelect(): void
     {
         $this->builder = $this->select([
-            'id', 'basket', 'stone_no',
+            'id', 'basket', 'stone_no', 'area', 'locus',
             'date', 'year',  'prov_notes', 'type', 'material_code', 'rim_diameter', 'description', 'notes', 'publication',
             'material' => StoneMaterial::select('name')
                 ->whereColumn('id', 'stones.material_id'),

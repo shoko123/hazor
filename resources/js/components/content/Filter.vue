@@ -15,5 +15,5 @@
 
 <script lang="ts" setup >
 import FilterSelector from '../filter/FilterSelector.vue'
-import TagsForm from '../selected_tags/TagsForm.vue'
+import TagsForm from '../trio/TrioSelectedForm.vue'
 </script>

@@ -6,7 +6,7 @@ import type { TIdParams, TLocusIdParams, TStoneIdParams, TFaunaIdParams, } from 
 
 import type { LocationQuery, RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
 import { defineStore, storeToRefs } from 'pinia'
-import { useTrioStore } from '../../../scripts/stores/trio';
+import { useTrioStore } from '../trio/trio'
 import { useLocusStore } from '../modules/locus'
 import { useFaunaStore } from '../modules/fauna'
 import { useStoneStore } from '../modules/stone'

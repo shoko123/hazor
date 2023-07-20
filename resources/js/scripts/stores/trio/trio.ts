@@ -1,12 +1,12 @@
 // stores/trio.js
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
-import { TGroupTag, TGroup, Trio, TrioSourceName, TmpGroup, TGroupValue, TColumnValueUpdateInfo } from '../../types/trioTypes'
-import type { IObject } from '../../types/generalTypes'
+import { TGroupTag, TGroup, Trio, TrioSourceName, TmpGroup, TGroupValue, TColumnValueUpdateInfo } from '../../../types/trioTypes'
+import type { IObject } from '../../../types/generalTypes'
 import type { TParseUrlQueryResponse, TParseQueryData } from '@/js/types/routesTypes'
-import { useXhrStore } from './xhr'
-import { useItemStore } from './item'
-import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
+import { useXhrStore } from '../xhr'
+import { useItemStore } from '../item'
+import { useRoutesMainStore } from '../routes/routesMain'
 import normalizeTrio from './trioNormalizer'
 import { TFields } from '@/js/types/moduleFieldsTypes'
 
@@ -249,6 +249,16 @@ export const useTrioStore = defineStore('trio', () => {
       flipParam(sourceName, paramKey, selected, false)
     } else {
       flipParam(sourceName, paramKey, selected, true)
+    }
+  }
+
+  function addRemoveSearchParam(paramKey: string) {
+    if (selectedFilterParams.value.some(x => x === paramKey)) {
+      const i = selectedFilterParams.value.indexOf(paramKey)
+      selectedFilterParams.value.splice(i, 1)
+     
+    } else { 
+      selectedFilterParams.value.push(paramKey)
     }
   }
 
@@ -591,7 +601,7 @@ export const useTrioStore = defineStore('trio', () => {
         //clear CS searchText
         for (const [key, value] of Object.entries(trio.value.entities.groups)) {
           if (value.group_type_code === 'CS') {
-            value.params.forEach(x => trio.value.entities.params[x].name = '[empty]')
+            value.params.forEach(x => trio.value.entities.params[x].name = '')
           }
         }
         break
@@ -637,6 +647,7 @@ export const useTrioStore = defineStore('trio', () => {
     filtersToQueryObject,
     urlQueryObjectToApiFilters,
     setFilterSearchTerm,
+    addRemoveSearchParam,    
     copyCurrentToNew,
     saveItemTags,
     sync

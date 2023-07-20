@@ -47,14 +47,14 @@
 </template>
 
 <script lang="ts" setup>
+import { useTrioStore } from '../../../scripts/stores/trio/trio'
+import { TStoneFields } from '@/js/types/moduleFieldsTypes'
 import { onMounted, reactive, computed, ref } from "vue"
 import { storeToRefs } from 'pinia'
 import { useVuelidate } from "@vuelidate/core"
 import { required, numeric, minLength, maxLength, minValue, maxValue } from "@vuelidate/validators"
-import { TStoneFields } from '@/js/types/moduleFieldsTypes'
-import { useStoneStore } from '../../../scripts/stores/modules/stone'
 import { useItemStore } from '../../../scripts/stores/item'
-import { useTrioStore } from '../../../scripts/stores/trio'
+
 
 const props = defineProps<{
   isCreate: boolean

@@ -1,17 +1,19 @@
 // stores/media.js
-import { ref, computed } from 'vue'
-import { defineStore, storeToRefs } from 'pinia'
+import { TFields } from '@/js/types/moduleFieldsTypes'
 import { TMedia } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/routesTypes'
 import { TApiArray, TApiArrayMedia, TApiMediaOrNull, TApiPageMedia } from '@/js/types/collectionTypes'
+
+import { ref, computed } from 'vue'
+import { defineStore, storeToRefs } from 'pinia'
+
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import { useCollectionMediaStore } from '../../scripts/stores/collections/collectionMedia'
 import { useItemStore } from '../../scripts/stores/item'
-import { useTrioStore } from './trio'
-import { TFields } from '@/js/types/moduleFieldsTypes'
+
 
 export const useMediaStore = defineStore('media', () => {
   let { showSnackbar, } = useNotificationsStore()
@@ -20,7 +22,7 @@ export const useMediaStore = defineStore('media', () => {
   //both bucketUrl and mediaCollectionNames are initiated at app.init()
   const bucketUrl = ref("")
   const mediaCollectionNames = ref<string[]>([])
-  
+
   const showUploader = ref<boolean>(false)
 
   function initMedia(burl: string, media_collections: string[]) {

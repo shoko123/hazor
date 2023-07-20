@@ -43,7 +43,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../../../../scripts/stores/auth'
 import { useRoutesMainStore } from '../../../../../scripts/stores/routes/routesMain'
 import { useItemStore } from '../../../../../scripts/stores/item'
-import { useTrioStore } from '../../../../../scripts/stores/trio'
+import { useTrioStore } from '../../../../../scripts/stores/trio/trio'
 
 const { current } = storeToRefs(useRoutesMainStore())
 const { permissions } = storeToRefs(useAuthStore())

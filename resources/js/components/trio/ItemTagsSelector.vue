@@ -36,9 +36,8 @@
 
 <script lang="ts" setup >
 import { computed, ref } from 'vue'
-import { useTrioStore } from '../../scripts/stores/trio';
+import { useTrioStore } from '../../scripts/stores/trio/trio';
 import { useRouter } from 'vue-router'
-import { TModule } from '@/js/types/routesTypes';
 
 const router = useRouter()
 let trio = useTrioStore()

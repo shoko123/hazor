@@ -11,6 +11,6 @@
 <script lang="ts" setup >
 import { computed } from 'vue'
 import ItemCard from '../item-views/ItemCard.vue'
-import TagsForm from '../../selected_tags/TagsForm.vue'
+import TagsForm from '../../trio/TrioSelectedForm.vue'
 </script>
 

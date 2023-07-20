@@ -25,7 +25,7 @@
 
 <script lang="ts" setup >
 import { computed } from 'vue'
-import { useTrioStore } from '../../scripts/stores/trio';
+import { useTrioStore } from '../../scripts/stores/trio/trio';
 import { TrioSourceName } from '../../types/trioTypes'
 
 let { selectedTrio } = useTrioStore()

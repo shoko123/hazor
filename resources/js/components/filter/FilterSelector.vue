@@ -30,7 +30,7 @@
 
 <script lang="ts" setup >
 import { computed, ref } from 'vue'
-import { useTrioStore } from '../../scripts/stores/trio'
+import { useTrioStore } from '../../scripts/stores/trio/trio'
 import ParamsAsChips from './ParamsAsChips.vue'
 import ParamsAsTextSelectors from './ParamsAsTextSelectors.vue'
 let trio = useTrioStore()

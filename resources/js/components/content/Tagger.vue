@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup >
-import TagSelector from '../tagger/TagSelector.vue'
-import TagsForm from '../selected_tags/TagsForm.vue'
+import TagSelector from '../trio/ItemTagsSelector.vue'
+import TagsForm from '../trio/TrioSelectedForm.vue'
 import ItemCard from '../item/item-views/ItemCard.vue'
 </script>

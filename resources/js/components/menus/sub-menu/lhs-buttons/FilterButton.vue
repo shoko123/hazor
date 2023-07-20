@@ -12,7 +12,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
-import TagsForm from '../../../selected_tags/TagsForm.vue';
+import TagsForm from '../../../trio/TrioSelectedForm.vue'
 
 
 const router = useRouter()

@@ -13,6 +13,6 @@
 <script lang="ts" setup >
 import ItemCard from '../item-views/ItemCard.vue'
 import Collection from '../../collections/Collection.vue'
-import TagsForm from '../../selected_tags/TagsForm.vue'
+import TagsForm from '../../trio/TrioSelectedForm.vue'
 </script>
 

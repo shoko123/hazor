@@ -10,7 +10,7 @@ import { computed, } from 'vue'
 import { storeToRefs } from 'pinia'
 import WelcomeButton from '../lhs-buttons/WelcomeButton.vue'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
-import { useTrioStore } from '../../../../scripts/stores/trio';
+import { useTrioStore } from '../../../../scripts/stores/trio/trio'
 import { useRouter } from 'vue-router'
 import { useRoutesParserStore } from '../../../../scripts/stores/routes/routesParser'
 

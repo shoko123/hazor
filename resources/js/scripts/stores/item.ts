@@ -11,7 +11,7 @@ import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useModuleStore } from './module'
 import { useMediaStore } from './media'
-import { useTrioStore } from './trio'
+import { useTrioStore } from './trio/trio'
 import { useNotificationsStore } from './notifications'
 
 export const useItemStore = defineStore('item', () => {

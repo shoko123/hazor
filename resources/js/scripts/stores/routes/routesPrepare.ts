@@ -12,7 +12,7 @@ import { TLocusFields, TStoneFields, TFaunaFields, } from '@/js/types/moduleFiel
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useXhrStore } from '../xhr'
-import { useTrioStore } from '../trio'
+import { useTrioStore } from '../trio/trio'
 import { useCollectionsStore } from '../collections/collections'
 import { useModuleStore } from '../module'
 import { useNotificationsStore } from '../notifications'

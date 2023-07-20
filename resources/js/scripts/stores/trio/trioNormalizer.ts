@@ -1,6 +1,6 @@
 // stores/media.js
 import { normalize, schema } from 'normalizr';
-import { Trio } from '../../types/trioTypes'
+import { Trio } from '../../../types/trioTypes'
 
 export default function normalizeTrio(res: object): Trio {
   //console.log(`aux/normalizeGroups() payload: ${JSON.stringify(res, null, 2)}`);
@@ -24,7 +24,7 @@ export default function normalizeTrio(res: object): Trio {
         order: 0
       }
       if(parent.group_type_code === 'CS'){
-        param.name = "[empty]"
+        param.name = ""
       }
       return param
     },

@@ -134,7 +134,7 @@ abstract class ModelGroup
             "group_type_code" => "CS",
             "group_name" => $group_name,
             "column_name" => $group["column_name"],
-            "params" => [["name" => "term1"], ["name" => "term2"], ["name" => "term3"]]
+            "params" => [["name" => "term1"], ["name" => "term2"], ["name" => "term3"], ["name" => "term4"], ["name" => "term5"], ["name" => "term6"]]
         ];
     }
 
