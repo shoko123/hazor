@@ -11,7 +11,8 @@ import { TFields } from '@/js/types/moduleFieldsTypes'
 
 
 export const useTaggerStore = defineStore('tagger', () => {
-  const { selectedItemParams, selectedNewItemParams, trio, } = storeToRefs(useTrioStore())
+  const { selectedNewItemParams, trio, } = storeToRefs(useTrioStore())
+  let { fields, selectedItemParams } = storeToRefs(useItemStore())
   const { flipParam } = useTrioStore()
 
   function paramNewClicked(sourceName: TrioSourceName, paramKey: string, group: TGroup, selected: string[], isSelected: boolean) {
@@ -76,7 +77,7 @@ export const useTaggerStore = defineStore('tagger', () => {
 
   async function sync() {
     let { send } = useXhrStore()
-    let { fields } = storeToRefs(useItemStore())
+
     let { current } = storeToRefs(useRoutesMainStore())
     console.log(`trio.sync()`)
     let globalTagIds = <number[]>([])

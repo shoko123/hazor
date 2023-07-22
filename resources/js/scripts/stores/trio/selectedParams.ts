@@ -3,10 +3,11 @@ import { computed } from 'vue'
 import { TrioSourceName } from '../../../types/trioTypes'
 
 import { useTrioStore } from './trio'
+import { useItemStore } from '../item'
 
 export const useTrioSelectedStore = defineStore('trioSelected', () => {
-  const { selectedFilterParams, selectedItemParams, selectedNewItemParams, trio } = storeToRefs(useTrioStore())
-
+  const { selectedFilterParams, selectedNewItemParams, trio } = storeToRefs(useTrioStore())
+  const {  selectedItemParams } = storeToRefs(useItemStore())
   const selectedFilterTrio = computed(() => {
     return selectedTrio('Filter')
   })
@@ -39,7 +40,7 @@ export const useTrioSelectedStore = defineStore('trioSelected', () => {
       case 'New':
         selectedParams = selectedNewItemParams.value
         break
-    }params
+    }
 
     //organize all params into groups array, each item with the group's name and its params array
     selectedParams.forEach(x => {

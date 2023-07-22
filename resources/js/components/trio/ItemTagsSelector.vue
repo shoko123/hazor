@@ -36,12 +36,13 @@
 
 <script lang="ts" setup >
 import { computed, ref } from 'vue'
-import { useTrioStore } from '../../scripts/stores/trio/trio';
+import { useTrioStore } from '../../scripts/stores/trio/trio'
+import { useTaggerStore } from '../../scripts/stores/trio/tagger'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 let trio = useTrioStore()
-
+let tagger = useTaggerStore()
 const header = computed(() => {
   return 'Item Tags Selector'
 })
@@ -98,7 +99,7 @@ function paramClicked(paramIndex: number) {
 }
 
 async function submit() {
-  await trio.sync()
+  await tagger.sync()
   trio.clearSelected('New')
   router.go(-1) 
 }

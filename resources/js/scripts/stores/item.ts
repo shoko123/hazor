@@ -20,13 +20,13 @@ export const useItemStore = defineStore('item', () => {
   const { collection, itemByIndex, itemIndexById, next } = useCollectionsStore()
   const moduleStore = useModuleStore()
   const { setItemMedia } = useMediaStore()
-  const { saveItemTags } = useTrioStore()
   const { send } = useXhrStore()
   const { showSnackbar, showSpinner } = useNotificationsStore()
   let fields = ref<TFields | undefined>(undefined)
   let slug = ref<string | undefined>(undefined)
   let tag = ref<string | undefined>(undefined)
   let media1 = ref<TMedia>({ hasMedia: false, urls: { full: '', tn: '' } })
+  let selectedItemParams = ref<string[]>([])  
   let ready = ref<boolean>(false)
   const itemViewIndex = ref<number>(0)
   const itemIndex = ref<number>(-1)
@@ -52,7 +52,8 @@ export const useItemStore = defineStore('item', () => {
     slug.value = apiItem.slug
     tag.value = moduleStore.tagFromSlug(current.value.module, apiItem.slug)
     setItemMedia(apiItem.mediaArray, apiItem.mediaPage, apiItem.media1)
-    saveItemTags(apiItem.model_tags, apiItem.global_tags, apiItem.discrete_columns)
+    //saveItemTags(apiItem.model_tags, apiItem.global_tags, apiItem.discrete_columns)
+    selectedItemParams.value = [...apiItem.model_tags, ...apiItem.global_tags, ...apiItem.discrete_columns]
   }
 
   function itemClear() {
@@ -60,6 +61,7 @@ export const useItemStore = defineStore('item', () => {
     fields.value = undefined
     slug.value = undefined
     tag.value = undefined
+    selectedItemParams.value = []
     media1.value = { hasMedia: false, urls: { full: '', tn: '' } }
   }
 
@@ -136,6 +138,7 @@ export const useItemStore = defineStore('item', () => {
     id,
     derived,
     media1,
+    selectedItemParams,
     itemIndex,
     nextSlug,
     itemClear,

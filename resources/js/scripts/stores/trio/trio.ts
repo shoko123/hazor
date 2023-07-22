@@ -29,7 +29,6 @@ export const useTrioStore = defineStore('trio', () => {
   //It treats all groups, regardless of type [global/module tag, lookup, column discreate values, various bespoke filters],
   //in the same way.
   let selectedFilterParams = ref<string[]>([])
-  let selectedItemParams = ref<string[]>([])
   let selectedNewItemParams = ref<string[]>([])
 
   //index in visible categories
@@ -198,7 +197,7 @@ export const useTrioStore = defineStore('trio', () => {
 
   function selectedParamsKeysBySource(sourceName: TrioSourceName): string[] {
     return sourceName === 'Item' ?
-      selectedItemParams.value :
+      [] :
       (sourceName === 'New' ? selectedNewItemParams.value : selectedFilterParams.value)
   }
 
@@ -365,13 +364,7 @@ export const useTrioStore = defineStore('trio', () => {
     trio.value = normalizeTrio(res);
   }
 
-  function saveItemTags(modelTags: string[], globalTags: string[], discrete_columns: string[]) {
-    //verify that each of group.param[] exists [for this module/group] and save them
-    selectedItemParams.value = [...modelTags, ...globalTags, ...discrete_columns]
-  }
-
   function trioReset() {
-    selectedItemParams.value = []
     selectedNewItemParams.value = []
     selectedFilterParams.value = []
     groupIndex.value = 0
@@ -385,9 +378,6 @@ export const useTrioStore = defineStore('trio', () => {
     }
   }
 
-  function copyCurrentToNew() {
-    selectedNewItemParams.value = [...selectedItemParams.value]
-  }
 
   function filtersToQueryObject(): IObject {
     let query: IObject = {}
@@ -510,60 +500,6 @@ export const useTrioStore = defineStore('trio', () => {
     return { success: true, data: all }
   }
 
-  async function sync() {
-    let { send } = useXhrStore()
-    let { fields } = storeToRefs(useItemStore())
-    let { current } = storeToRefs(useRoutesMainStore())
-    console.log(`trio.sync()`)
-    let globalTagIds = <number[]>([])
-    let modelTagIds = <number[]>([])
-    let columns = <TColumnValueUpdateInfo[]>([])
-
-    selectedNewItemParams.value.forEach(paramKey => {
-      let group = trio.value.entities.groups[parseParamKey(paramKey, false)]
-      switch (group.group_type_code) {
-        case "TG":
-          globalTagIds.push(trio.value.entities.params[paramKey].id)
-          break
-        case "TM":
-          modelTagIds.push(trio.value.entities.params[paramKey].id)
-          break
-        case "CL":
-        case "CV":
-          let param = trio.value.entities.params[paramKey]
-          let column_name = (<TGroupValue>group).column_name
-          columns.push({ column_name, val: group.group_type_code === "CL" ? param.id : param.name })
-          break
-      }
-    })
-
-    let data = {
-      model: current.value.module,
-      id: (<TFields>fields.value).id,
-      ids: globalTagIds,
-      model_tag_ids: modelTagIds,
-      columns
-    }
-
-    console.log(`tags.sync() data: ${JSON.stringify(data, null, 2)}`)
-
-    await send('tags/sync', 'post', data)
-      .catch(err => {
-        console.log(`tags.sync() failed. err: ${JSON.stringify(err, null, 2)}`)
-        throw err
-      })
-    categoryIndex.value = 0
-    groupIndex.value = 0
-
-    //once back successfully from server, update locally
-    selectedItemParams.value = [...selectedNewItemParams.value]
-    let fieldsAsAnObject = fields.value as unknown as IObject
-    columns.forEach(x => {
-      fieldsAsAnObject[x.column_name] = x.val
-    })
-    clearSelected('New')
-  }
-
   function parseParamKey(paramKey: string, getParam = true): string {
     //console.log(`parseParamKey() key: ${paramKey} value: ${trio.value.entities.params[paramKey]}`)
     let pieces = paramKey.split('.')
@@ -596,7 +532,6 @@ export const useTrioStore = defineStore('trio', () => {
         break
 
       case 'Item':
-        selectedItemParams.value = []
         break
     }
   }
@@ -620,14 +555,10 @@ export const useTrioStore = defineStore('trio', () => {
     categoryIndex,
     groupIndex,
     selectedFilterParams,
-    selectedItemParams,
     selectedNewItemParams,
     filtersToQueryObject,
     urlQueryObjectToApiFilters,
     setFilterSearchTerm,
     addRemoveSearchParam,    
-    copyCurrentToNew,
-    saveItemTags,
-    sync
   }
 })

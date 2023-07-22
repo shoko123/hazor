@@ -43,7 +43,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../../../../scripts/stores/auth'
 import { useRoutesMainStore } from '../../../../../scripts/stores/routes/routesMain'
 import { useItemStore } from '../../../../../scripts/stores/item'
-import { useTrioStore } from '../../../../../scripts/stores/trio/trio'
+import { useTaggerStore } from '../../../../../scripts/stores/trio/tagger'
 
 const { current } = storeToRefs(useRoutesMainStore())
 const { permissions } = storeToRefs(useAuthStore())
@@ -77,7 +77,7 @@ function goToMedia() {
 
 function goToTagger() {
   console.log(`goToTagger`)
-  const { copyCurrentToNew } = useTrioStore()
+  const { copyCurrentToNew } = useTaggerStore()
   copyCurrentToNew()
   router.push({ name: 'tag', params: { module: current.value.url_module, slug: current.value.slug } })
 }
