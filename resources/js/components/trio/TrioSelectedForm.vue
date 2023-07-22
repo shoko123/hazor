@@ -1,16 +1,16 @@
 <template>
   <v-card class="elevation-12">
-    <v-card-title id="title" class="grey py-0 mb-4">{{ details.header }}</v-card-title>
+    <v-card-title id="title" class="grey py-0 mb-4">{{ d.header }}</v-card-title>
     <v-card-text>
-      <div v-if="!trio.length">{{ details.emptyTitle }}</div>
-      <v-list v-if="trio.length">
-        <v-list-item v-for="cat in trio">
-          <div class="font-weight-bold">{{ cat.catName }}</div>
+      <div v-if="!d.data.length">{{ d.emptyTitle }}</div>
+      <v-list v-if="d.data.length">
+        <v-list-item v-for="cat in d.data">
+          <div class="font-weight-bold">{{ cat.name }}</div>
           <v-list-item v-for="group in cat.groups">
             <v-list-item-title>
               <v-container fluid class="pa-0 ma-0">
                 <v-row class="pa-2 ma-2">
-                  <div>{{ group.groupName }}:</div>
+                  <div>{{ group.key }}:</div>
                   <v-chip v-for="param in group.params" class="ml-2 mb-2">{{ param }}</v-chip>
                 </v-row>
               </v-container>
@@ -25,29 +25,28 @@
 
 <script lang="ts" setup >
 import { computed } from 'vue'
-import { useTrioStore } from '../../scripts/stores/trio/trio';
-import { TrioSourceName } from '../../types/trioTypes'
+import { storeToRefs } from 'pinia'
+import type { TrioSourceName } from '../../types/trioTypes'
 
-let { selectedTrio } = useTrioStore()
+import { useTrioSelectedStore } from '../../scripts/stores/trio/selectedParams';
+
+let { selectedFilterTrio, selectedNewItemTrio, selectedItemTrio } = storeToRefs(useTrioSelectedStore())
+
 const props = defineProps<{
   source: TrioSourceName
 }>()
 
-const details = computed(() => {
+const d = computed(() => {
   switch (props.source) {
     case 'Filter':
-      return { header: `Selected Filters`, emptyTitle: `[ No filters selected ]` }
+      return { data: selectedFilterTrio.value, header: `Selected Filters`, emptyTitle: `[ No filters selected ]` }
 
     case 'Item':
-      return { header: `Tags for Item`, emptyTitle: `[ Item has no tags ]` }
+      return { data: selectedItemTrio.value, header: `Tags for Item`, emptyTitle: `[ Item has no tags ]` }
 
     case 'New':
-      return { header: `Selected Tags`, emptyTitle: `[ No tags selected ]` }
+      return { data: selectedNewItemTrio.value, header: `Selected Tags`, emptyTitle: `[ No tags selected ]` }
   }
-})
-
-const trio = computed(() => {
-  return selectedTrio(props.source)
 })
 
 </script>

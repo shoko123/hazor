@@ -202,28 +202,6 @@ export const useTrioStore = defineStore('trio', () => {
       (sourceName === 'New' ? selectedNewItemParams.value : selectedFilterParams.value)
   }
 
-  function selectedTrio(sourceName: TrioSourceName) {
-    if (trio.value.result.length === 0) { return [] }
-    //Assign each "selected" group to a category
-    let catsWithGroups: { catName: string, groups: TmpGroup[] }[] = []
-    let selectedGroupsKeys = availableGroupsKeys(sourceName, true)
-
-    selectedGroupsKeys.forEach(gk => {
-      let group = trio.value.entities.groups[gk]
-      let i = catsWithGroups.findIndex(c => {
-        return trio.value.entities.groups[gk].categoryKey === c.catName
-      })
-
-      let tmpGroup: TmpGroup = { groupName: gk, params: groupSelectedParamsNames(sourceName, gk), categoryKey: group.categoryKey, selectedCount: groupSelectedParamsCnt(sourceName, gk) }
-      if (i === -1) {
-        catsWithGroups.push({ catName: group.categoryKey, groups: [tmpGroup] })
-      } else {
-        catsWithGroups[i].groups.push(tmpGroup)
-      }
-    })
-    return catsWithGroups
-  }
-
   function paramClicked(sourceName: TrioSourceName, groupIndex: number, paramIndex: number) {
 
     let visParams = visibleParams(sourceName)
@@ -632,9 +610,9 @@ export const useTrioStore = defineStore('trio', () => {
   return {
     clearSelected,
     paramClicked,
+    flipParam,
     setTrio,
     trioReset,
-    selectedTrio,
     visibleCategories,
     visibleGroups,
     visibleParams,
