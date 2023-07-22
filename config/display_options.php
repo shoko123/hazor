@@ -3,7 +3,7 @@
 return [
     'itemsPerPage' => [
         'Image' => 18,
-        'Chip' => 100,
+        'Chip' => 250,
         'Table' => 1000
     ],
     'itemViews' => [

@@ -2,13 +2,14 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 
-import type { TGroupValue,  } from '../../../types/trioTypes'
+import type { TGroupValue, } from '../../../types/trioTypes'
 import type { IObject } from '../../../types/generalTypes'
 import type { TParseUrlQueryResponse, TParseQueryData } from '@/js/types/routesTypes'
 import { useTrioStore } from './trio'
 
 export const useFilterStore = defineStore('filter', () => {
-  const { selectedFilterParams, trio, } = storeToRefs(useTrioStore())
+  const trio = useTrioStore()
+  let selectedFilterParams = ref<string[]>([])
 
   function filtersToQueryObject(): IObject {
     let query: IObject = {}
@@ -43,7 +44,7 @@ export const useFilterStore = defineStore('filter', () => {
       //Verify that the group exists. 
       let groupKey = key.replace(/_/g, " ")
 
-      if (!trio.value.entities.groups.hasOwnProperty(groupKey)) {
+      if (!trio.trio.entities.groups.hasOwnProperty(groupKey)) {
         console.log(`Query parsing Error: "${key}" group doesn't exist. aborting... `)
         return {
           success: false,
@@ -53,7 +54,7 @@ export const useFilterStore = defineStore('filter', () => {
           }
         }
       }
-      let group = trio.value.entities.groups[groupKey]
+      let group = trio.trio.entities.groups[groupKey]
 
       //verify that params exist for this group 
       let underlinedParams = <string[]>value.split(',')
@@ -86,30 +87,33 @@ export const useFilterStore = defineStore('filter', () => {
         case 'TG':
           all.global_tag_ids.push(...params.map(x => {
             let paramKey = groupKey + '.' + x
-            return trio.value.entities.params[paramKey].id
+            return trio.trio.entities.params[paramKey].id
           }))
           break
         case 'TM':
           all.model_tag_ids.push(...params.map(x => {
             let paramKey = groupKey + '.' + x
-            return trio.value.entities.params[paramKey].id
+            return trio.trio.entities.params[paramKey].id
           }))
           break
         case 'CL':
           all.column_lookup_ids.push({
-            column_name: (<TGroupValue>trio.value.entities.groups[groupKey]).column_name,
+            column_name: (<TGroupValue>trio.trio.entities.groups[groupKey]).column_name,
             vals: params.map(x => {
               let paramKey = groupKey + '.' + x
-              return trio.value.entities.params[paramKey].id
+              return trio.trio.entities.params[paramKey].id
             })
           })
           break
         case 'CV':
         case 'CR':
-          all.column_values.push({ column_name: (<TGroupValue>trio.value.entities.groups[groupKey]).column_name, vals: params })
+          all.column_values.push({ column_name: (<TGroupValue>trio.trio.entities.groups[groupKey]).column_name, vals: params })
           break
         case 'CS':
-          all.column_search.push({ column_name: (<TGroupValue>trio.value.entities.groups[groupKey]).column_name, vals: params })
+          all.column_search.push({ column_name: (<TGroupValue>trio.trio.entities.groups[groupKey]).column_name, vals: params.map(x => {
+            let paramKey = groupKey + '.' + x
+            return trio.trio.entities.params[paramKey].name
+          }) })
           break
         case 'BF':
           switch (key) {
@@ -146,16 +150,22 @@ export const useFilterStore = defineStore('filter', () => {
     }
   }
 
-  function setFilterSearchTerm(paramKey: string, searchTerm: string) {
-    console.log(`setFilterSearchTerm(${paramKey}, ${searchTerm})`)
-    trio.value.entities.params[paramKey].name = searchTerm
+  function clearSelectedFilters() {
+    selectedFilterParams.value.forEach(x => {
+      let pieces = x.split('.')
+      if (trio.trio.entities.groups[pieces[0]].group_type_code == 'CS') {
+        trio.setFilterSearchTerm(x, "")
+      }
+    })
+    selectedFilterParams.value = []
   }
+
 
   return {
     selectedFilterParams,
     filtersToQueryObject,
     urlQueryObjectToApiFilters,
-    setFilterSearchTerm,
     addRemoveSearchParam,
+    clearSelectedFilters
   }
 })

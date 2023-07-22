@@ -61,6 +61,9 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
 
             case 'filter':
                 switch (from.name) {
+                    case 'home':
+                        return { success: true, data: ['module.load'] }
+                        
                     case 'index':
                         return { success: true, data: ['collection.clear', 'item.clear'] }
 

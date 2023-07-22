@@ -13,6 +13,7 @@ import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useXhrStore } from '../xhr'
 import { useTrioStore } from '../trio/trio'
+import { useFilterStore } from '../trio/filter'
 import { useCollectionsStore } from '../collections/collections'
 import { useModuleStore } from '../module'
 import { useNotificationsStore } from '../notifications'
@@ -30,6 +31,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let i = useItemStore();
   let r = useRoutesMainStore()
   let p = useRoutesParserStore()
+  let f = useFilterStore()
 
   async function prepareForNewRoute(module: TModule, query: LocationQuery, slug: string, plan: TPlanAction[]): Promise<TPrepareResponse> {
     for (const x of plan) {
@@ -143,7 +145,8 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
   async function loadMainCollection(module: TModule, query: LocationQuery) {
-    let queryRes = p.parseQuery(module, query)
+    let queryRes = f.urlQueryObjectToApiFilters(query)
+    //console.log(`loadMainCollection()  queryRes:  ${JSON.stringify(queryRes, null, 2)}`)
 
     if (!queryRes.success) {
       console.log(`parseQuery() failed`)

@@ -11,23 +11,17 @@ import { storeToRefs } from 'pinia'
 import WelcomeButton from '../lhs-buttons/WelcomeButton.vue'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 import { useTrioStore } from '../../../../scripts/stores/trio/trio'
+import { useFilterStore } from '../../../../scripts/stores/trio/filter'
 import { useRouter } from 'vue-router'
-import { useRoutesParserStore } from '../../../../scripts/stores/routes/routesParser'
 
 let { current } = storeToRefs(useRoutesMainStore())
 let trio = useTrioStore()
-
+let filter = useFilterStore()
 const router = useRouter()
-
-const name = computed(() => {
-  return current.value.module
-})
 
 function submit() {
   console.log(`filter.submit()`);
-  trio.groupIndex = 0
-  trio.categoryIndex = 0
-  const query = trio.filtersToQueryObject()
+  const query = filter.filtersToQueryObject()
   router.push({ name: 'index', params: { module: current.value.url_module }, query })
 }
 
@@ -37,5 +31,6 @@ async function getCount() {
 function clear() {
   console.log(`filter.clear()`);
   trio.clearSelected('Filter')
-};
+  filter.clearSelectedFilters()
+}
 </script>

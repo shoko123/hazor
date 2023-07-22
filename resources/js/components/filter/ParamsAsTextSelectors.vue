@@ -35,7 +35,6 @@
       </v-col>
       <v-col cols="12" sm="2">
         <v-btn @click="clearClicked">Clear</v-btn>
-
       </v-col>
     </v-row>
   </v-container>
@@ -44,12 +43,11 @@
 <script lang="ts" setup >
 import { computed, ref } from 'vue'
 import { useTrioStore } from '../../scripts/stores/trio/trio'
+import { useFilterStore } from '../../scripts/stores/trio/filter'
 
+let filter = useFilterStore()
 let trio = useTrioStore()
 let searchText = ref<string>("")
-let dialog = ref<boolean>(false)
-let dialogIndex = ref<number>(0)
-
 
 const params = computed(() => {
   //console.log(`TextSearch.params: ${JSON.stringify(trio.visibleParams('Filter'), null, 2)}`)
@@ -67,10 +65,10 @@ const search1 = computed({
     trio.setFilterSearchTerm(params.value[0].paramKey, searchText.value)
 
     if (currentIsEmpty && !newIsEmpty) {
-      trio.addRemoveSearchParam(params.value[0].paramKey)
+      filter.addRemoveSearchParam(params.value[0].paramKey)
     }
     if (!currentIsEmpty && newIsEmpty) {
-      trio.addRemoveSearchParam(params.value[0].paramKey)
+      filter.addRemoveSearchParam(params.value[0].paramKey)
     }
   }
 
@@ -87,10 +85,10 @@ const search2 = computed({
     trio.setFilterSearchTerm(params.value[1].paramKey, searchText.value)
 
     if (currentIsEmpty && !newIsEmpty) {
-      trio.addRemoveSearchParam(params.value[1].paramKey)
+      filter.addRemoveSearchParam(params.value[1].paramKey)
     }
     if (!currentIsEmpty && newIsEmpty) {
-      trio.addRemoveSearchParam(params.value[1].paramKey)
+      filter.addRemoveSearchParam(params.value[1].paramKey)
     }
   }
 
@@ -106,10 +104,10 @@ const search3 = computed({
     trio.setFilterSearchTerm(params.value[2].paramKey, searchText.value)
 
     if (currentIsEmpty && !newIsEmpty) {
-      trio.addRemoveSearchParam(params.value[2].paramKey)
+      filter.addRemoveSearchParam(params.value[2].paramKey)
     }
     if (!currentIsEmpty && newIsEmpty) {
-      trio.addRemoveSearchParam(params.value[2].paramKey)
+      filter.addRemoveSearchParam(params.value[2].paramKey)
     }
   }
 
@@ -125,10 +123,10 @@ const search4 = computed({
     trio.setFilterSearchTerm(params.value[3].paramKey, searchText.value)
 
     if (currentIsEmpty && !newIsEmpty) {
-      trio.addRemoveSearchParam(params.value[3].paramKey)
+      filter.addRemoveSearchParam(params.value[3].paramKey)
     }
     if (!currentIsEmpty && newIsEmpty) {
-      trio.addRemoveSearchParam(params.value[3].paramKey)
+      filter.addRemoveSearchParam(params.value[3].paramKey)
     }
   }
 
@@ -145,10 +143,10 @@ const search5 = computed({
     trio.setFilterSearchTerm(params.value[4].paramKey, searchText.value)
 
     if (currentIsEmpty && !newIsEmpty) {
-      trio.addRemoveSearchParam(params.value[4].paramKey)
+      filter.addRemoveSearchParam(params.value[4].paramKey)
     }
     if (!currentIsEmpty && newIsEmpty) {
-      trio.addRemoveSearchParam(params.value[4].paramKey)
+      filter.addRemoveSearchParam(params.value[4].paramKey)
     }
   }
 
@@ -164,10 +162,10 @@ const search6 = computed({
     trio.setFilterSearchTerm(params.value[5].paramKey, searchText.value)
 
     if (currentIsEmpty && !newIsEmpty) {
-      trio.addRemoveSearchParam(params.value[5].paramKey)
+      filter.addRemoveSearchParam(params.value[5].paramKey)
     }
     if (!currentIsEmpty && newIsEmpty) {
-      trio.addRemoveSearchParam(params.value[5].paramKey)
+      filter.addRemoveSearchParam(params.value[5].paramKey)
     }
   }
 
@@ -180,28 +178,6 @@ function clearClicked() {
   search4.value = ""
   search5.value = ""
   search6.value = ""  
-}
-
-function activate(activate: boolean, clear = false) {
-  console.log(`activate.clicked(${dialogIndex.value})`)
-
-  let paramKey = params.value[dialogIndex.value].paramKey
-  let isActivated = trio.selectedFilterParams.some(x => x === paramKey)
-
-  trio.setFilterSearchTerm(params.value[dialogIndex.value].paramKey, clear ? '[empty]' : ((searchText.value === '') ? '[empty]' : searchText.value))
-
-  if (clear) {
-    searchText.value = ""
-  }
-
-  if (activate && searchText.value === "") {
-    dialog.value = false
-    return
-  }
-  if ((activate && !isActivated) || (!activate && isActivated)) {
-    trio.paramClicked('Filter', trio.groupIndex, dialogIndex.value)
-  }
-  dialog.value = false
 }
 
 </script>

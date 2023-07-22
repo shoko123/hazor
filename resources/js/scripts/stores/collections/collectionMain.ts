@@ -8,7 +8,6 @@ import { useCollectionsStore } from './collections'
 import { useModuleStore } from '../module'
 import { useXhrStore } from '../xhr'
 import { useMediaStore } from '../media'
-import { useRoutesMainStore } from '../routes/routesMain'
 import { useNotificationsStore } from '../notifications'
 
 export const useCollectionMainStore = defineStore('collectionMain', () => {
@@ -16,13 +15,12 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     const { showSnackbar } = useNotificationsStore()
     const { buildMedia } = useMediaStore()
     const { tagFromSlug } = useModuleStore()
-    const { current } = storeToRefs(useRoutesMainStore()  )
     const c = useCollectionsStore()
 
     let extra = ref<TCollectionExtra>({
         length: 0,
         pageNoB1: 1,
-        views: ['Image', 'Chip', 'Table'],
+        views: ['Table', 'Image', 'Chip'],
         viewIndex: 0,
     })
 

@@ -4,10 +4,13 @@ import { TrioSourceName } from '../../../types/trioTypes'
 
 import { useTrioStore } from './trio'
 import { useItemStore } from '../item'
+import { useFilterStore } from './filter'
 
 export const useTrioSelectedStore = defineStore('trioSelected', () => {
-  const { selectedFilterParams, selectedNewItemParams, trio } = storeToRefs(useTrioStore())
+  const { selectedNewItemParams, trio } = storeToRefs(useTrioStore())
   const {  selectedItemParams } = storeToRefs(useItemStore())
+  const {  selectedFilterParams } = storeToRefs(useFilterStore())
+  
   const selectedFilterTrio = computed(() => {
     return selectedTrio('Filter')
   })

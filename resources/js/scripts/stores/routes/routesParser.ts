@@ -70,12 +70,5 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
         return store.slugParamsFromSlug(slug) 
     }
 
-    function parseQuery(module: TModule | null, urlQuery: LocationQuery): TParseUrlQueryResponse {
-        let res = trio.urlQueryObjectToApiFilters(urlQuery)
-        //console.log(`parseQuery() urlQuery: ${JSON.stringify(urlQuery, null, 2)}`);
-        //to.queryParams = urlQuery
-        return { success: true, data: res.data }
-    }
-
-    return { parseModule, parseSlug, parseQuery }
+    return { parseModule, parseSlug }
 })
