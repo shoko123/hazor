@@ -6,9 +6,6 @@ import normalizeTrio from './trioNormalizer'
 import { useFilterStore } from './filter'
 import { useTaggerStore } from './tagger'
 import { useRoutesMainStore } from '../routes/routesMain'
-type TViewParam = { paramKey: string, id: number, name: string, selected: boolean, modal: boolean }
-type TViewGroup = { groupKey: string, name: string, visible: boolean, params: string[], selectedCount: number, isTextSearch: boolean, required: boolean, multiple: boolean }
-type TViewCategory = { name: string, visible: boolean, selectedCount: number }
 
 export const useTrioStore = defineStore('trio', () => {
   const { selectedFilterParams } = storeToRefs(useFilterStore())
@@ -56,12 +53,11 @@ export const useTrioStore = defineStore('trio', () => {
     return current.value.name === 'tag'
   })
 
-  //A category is visible if at least one of its groups is available 
-  function visibleCategories(): TViewCategory[] {
-    let cats: { catName: string, grpKeys: string[], cnt: number }[] = []
-    let agk = availableGroupsKeys()
+ //A category is visible if at least one of its groups is available 
+  const visibleCategories = computed(() => {
+  let cats: { catName: string, grpKeys: string[], cnt: number }[] = []
 
-    agk.forEach(x => {
+    availableGroupsKeys.value.forEach(x => {
       let group = trio.value.entities.groups[x]
 
       //count
@@ -77,39 +73,30 @@ export const useTrioStore = defineStore('trio', () => {
     const res = cats.map(x => { return { name: x.catName, visible: true, selectedCount: x.cnt } })
     //console.log(`visibleCategories: ${JSON.stringify(res, null, 2)}`)
     return res
-  }
+  })
 
-  function visibleCategoriesKeys(): string[] {
-    let c = visibleCategories()
-    return c.map(x => x.name)
-  }
-
-  function availableGroupsKeys(onlySelected = false) {
+  const availableGroupsKeys = computed(() => {
     let agk = []
     for (const [key, value] of Object.entries(trio.value.entities.groups)) {
-      if (onlySelected) {
-        if (groupIsAvailable(key) && (groupSelectedParamsCnt(key) > 0)) {
-          agk.push(key)
-        }
-      } else {
         if (groupIsAvailable(key)) {
           agk.push(key)
         }
-      }
     }
     return agk
-  }
+  })
 
   //returns groups that belong to the currently selected category, and that are also available.
   //add counts
-  function visibleGroups(): TViewGroup[] {
+
+
+  const visibleGroups = computed(() => {
     if (trio.value.result.length === 0) { return [] }
 
-    let vc = visibleCategoriesKeys()
+    let vc = visibleCategories.value.map(x => x.name)
     let perCategoryGroupsKeys = trio.value.entities.categories[vc[categoryIndex.value]].groups
 
     //filter only available groups
-    let visibleGroupsKeys = perCategoryGroupsKeys.filter(x => groupIsAvailable(x))
+    let visibleGroupsKeys = perCategoryGroupsKeys.filter(x => availableGroupsKeys.value.includes(x))
 
     return visibleGroupsKeys.map(x => {
       let group = trio.value.entities.groups[x]
@@ -141,9 +128,7 @@ export const useTrioStore = defineStore('trio', () => {
         params: group.params
       }
     })
-  }
-
-
+  })
 
   //Is group available?.
   //if source is filter, all groups are available.
@@ -175,20 +160,19 @@ export const useTrioStore = defineStore('trio', () => {
     return selectedCount
   }
 
-  function visibleParams(): TViewParam[] {
+
+  const visibleParams = computed(() => {
     if (trio.value.result.length === 0) { return [] }
-    let visGroups = visibleGroups()
-    let paramKeys = visGroups[groupIndex.value].params
+    let paramKeys = visibleGroups.value[groupIndex.value].params
     return paramKeys.map(x => { return { ...trio.value.entities.params[x], selected: selected.value.includes(x) } })
-  }
+  })
 
   function paramClicked(groupIndex: number, paramIndex: number) {
-    let visParams = visibleParams()
-    let paramInfo = visParams[paramIndex]
+    let paramInfo = visibleParams.value[paramIndex]
     let group = trio.value.entities.groups[parseParamKey(paramInfo.paramKey, false)]
     let paramKey = paramInfo.paramKey
     const isSelected = selected.value.includes(paramInfo.paramKey)
-    console.log(`TRIO.click(${groupIndex}, ${paramIndex}): "${paramInfo.paramKey}" isFilter: ${isFilter.value} isCurrentlySelected: ${isSelected}\ngroup: ${JSON.stringify(group, null, 2)}`)
+    console.log(`TRIO.click(${groupIndex}, ${paramIndex}): "${paramInfo.paramKey}" isFilter: ${isFilter.value} isCurrentlySelected: ${isSelected}`)
 
     if (isFilter.value) {
       if (isSelected) {
