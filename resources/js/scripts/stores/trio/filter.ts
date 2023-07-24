@@ -17,7 +17,9 @@ export const useFilterStore = defineStore('filter', () => {
 
       let pieces = pk.split('.')
       let groupKeyUnderlined = pieces[0].replace(/ /g, "_")
-      let paramUnderlined = pieces[1].replace(/ /g, "_")
+      let paramUnderlined = trio.trio.entities.params[pk].name.replace(/ /g, "_")
+
+
 
       if (query.hasOwnProperty(groupKeyUnderlined)) {
         query[groupKeyUnderlined] += ',' + paramUnderlined
@@ -63,10 +65,13 @@ export const useFilterStore = defineStore('filter', () => {
         let pieces = x.split('.')
         return pieces[1]
       })
-      //console.log(`key: ${groupKey}\nparams: ${params}\npossibleParams: ${possibleParams}\ngroup: ${JSON.stringify(group, null, 2)}`);
 
-      params.forEach(x => {
-        if (group.group_type_code !== 'CS') {
+      //console.log(`key: ${groupKey}\nparams: ${params}\npossibleParams: ${possibleParams}\ngroup: ${JSON.stringify(group, null, 2)}`);
+      if (group.group_type_code === 'CS') {
+        //sanitize sql injections here
+        //console.log(`group type 'CS' group: ${groupKey} params: ${JSON.stringify(params, null, 2)}`)
+      } else {
+        params.forEach(x => {
           if (!possibleParams.some(y => y === x)) {
             console.log(`Query parsing Error: "${x}" param doesn't exist in group ${key}. aborting... `)
             return {
@@ -77,9 +82,8 @@ export const useFilterStore = defineStore('filter', () => {
               }
             }
           }
-        }
-      })
-
+        })
+      }
       console.log(`passed group+params existence`)
 
       //assign parameters to their correct 'filter' category
@@ -110,10 +114,9 @@ export const useFilterStore = defineStore('filter', () => {
           all.column_values.push({ column_name: (<TGroupValue>trio.trio.entities.groups[groupKey]).column_name, vals: params })
           break
         case 'CS':
-          all.column_search.push({ column_name: (<TGroupValue>trio.trio.entities.groups[groupKey]).column_name, vals: params.map(x => {
-            let paramKey = groupKey + '.' + x
-            return trio.trio.entities.params[paramKey].name
-          }) })
+          all.column_search.push({
+            column_name: (<TGroupValue>trio.trio.entities.groups[groupKey]).column_name, vals: params
+          })
           break
         case 'BF':
           switch (key) {
