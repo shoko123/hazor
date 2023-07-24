@@ -41,15 +41,15 @@ const header = computed(() => {
 })
 
 const cats = computed(() => {
-  return trio.visibleCategories('Filter')
+  return trio.visibleCategories()
 })
 
 const groups = computed(() => {
-  return trio.visibleGroups('Filter')
+  return trio.visibleGroups()
 })
 
 const params = computed(() => {
-  return trio.visibleParams('Filter')
+  return trio.visibleParams()
 })
 
 const categoryIndex = computed({

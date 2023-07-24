@@ -53,15 +53,15 @@ const groupHeader = computed(() => {
 })
 
 const cats = computed(() => {
-  return trio.visibleCategories('New')
+  return trio.visibleCategories()
 })
 
 const groups = computed(() => {
-  return trio.visibleGroups('New')
+  return trio.visibleGroups()
 })
 
 const params = computed(() => {
-  return trio.visibleParams('New')
+  return trio.visibleParams()
 })
 
 const categoryIndex = computed({

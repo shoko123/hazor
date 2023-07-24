@@ -13,7 +13,7 @@ import { useTrioStore } from '../../scripts/stores/trio/trio'
 let trio = useTrioStore()
 
 const params = computed(() => {
-  return trio.visibleParams('Filter')
+  return trio.visibleParams()
 })
 
 const selectedParamIndexes = computed({

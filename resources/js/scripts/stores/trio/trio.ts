@@ -12,7 +12,7 @@ type TViewCategory = { name: string, visible: boolean, selectedCount: number }
 
 export const useTrioStore = defineStore('trio', () => {
   const { selectedFilterParams } = storeToRefs(useFilterStore())
-  
+
   let trio = ref<Trio>({
     entities: {
       categories: {},
@@ -46,16 +46,26 @@ export const useTrioStore = defineStore('trio', () => {
     }
   })
 
+  const isFilter = computed(() => {
+    const { current } = storeToRefs(useRoutesMainStore())
+    return current.value.name === 'filter'
+  })
+
+  const isNewParams = computed(() => {
+    const { current } = storeToRefs(useRoutesMainStore())
+    return current.value.name === 'tag'
+  })
+
   //A category is visible if at least one of its groups is available 
-  function visibleCategories(sourceName: TrioSourceName): TViewCategory[] {
+  function visibleCategories(): TViewCategory[] {
     let cats: { catName: string, grpKeys: string[], cnt: number }[] = []
-    let agk = availableGroupsKeys(sourceName)
+    let agk = availableGroupsKeys()
 
     agk.forEach(x => {
       let group = trio.value.entities.groups[x]
 
       //count
-      let selectedCount = groupSelectedParamsCnt(sourceName, x)
+      let selectedCount = groupSelectedParamsCnt(x)
       //console.log(`cnt: ${selectedCount}`)
       let i = cats.findIndex(x => x.catName === group.categoryKey)
       if (i === -1) {
@@ -69,21 +79,37 @@ export const useTrioStore = defineStore('trio', () => {
     return res
   }
 
-  function visibleCategoriesKeys(sourceName: TrioSourceName): string[] {
-    let c = visibleCategories(sourceName)
-    return c.map(x => x.name)
+  function visibleCategoriesKeys(): string[] {
+    //let c = visibleCategories()
+    return visibleCategories().map(x => x.name)
+  }
+
+  function availableGroupsKeys(onlySelected = false) {
+    let agk = []
+    for (const [key, value] of Object.entries(trio.value.entities.groups)) {
+      if (onlySelected) {
+        if (groupIsAvailable(key) && (groupSelectedParamsCnt(key) > 0)) {
+          agk.push(key)
+        }
+      } else {
+        if (groupIsAvailable(key)) {
+          agk.push(key)
+        }
+      }
+    }
+    return agk
   }
 
   //returns groups that belong to the currently selected category, and that are also available.
   //add counts
-  function visibleGroups(sourceName: TrioSourceName): TViewGroup[] {
+  function visibleGroups(): TViewGroup[] {
     if (trio.value.result.length === 0) { return [] }
 
-    let vc = visibleCategoriesKeys(sourceName)
+    let vc = visibleCategoriesKeys()
     let perCategoryGroupsKeys = trio.value.entities.categories[vc[categoryIndex.value]].groups
 
     //filter only available groups
-    let visibleGroupsKeys = perCategoryGroupsKeys.filter(x => groupIsAvailable(sourceName, x))
+    let visibleGroupsKeys = perCategoryGroupsKeys.filter(x => groupIsAvailable(x))
 
     return visibleGroupsKeys.map(x => {
       let group = trio.value.entities.groups[x]
@@ -108,7 +134,7 @@ export const useTrioStore = defineStore('trio', () => {
         name: x,
         groupKey: x,
         visible: true,
-        selectedCount: groupSelectedParamsCnt(sourceName, x),
+        selectedCount: groupSelectedParamsCnt(x),
         isTextSearch: (group.group_type_code === 'CS'),
         required,
         multiple,
@@ -117,30 +143,16 @@ export const useTrioStore = defineStore('trio', () => {
     })
   }
 
-  function availableGroupsKeys(sourceName: TrioSourceName, onlySelected = false) {
-    let agk = []
-    for (const [key, value] of Object.entries(trio.value.entities.groups)) {
-      if (onlySelected) {
-        if (groupIsAvailable(sourceName, key) && (groupSelectedParamsCnt(sourceName, key) > 0)) {
-          agk.push(key)
-        }
-      } else {
-        if (groupIsAvailable(sourceName, key)) {
-          agk.push(key)
-        }
-      }
-    }
-    return agk
-  }
+
 
   //Is group available?.
   //if source is filter, all groups are available.
   //if source is 'New' don't show CS (textual search). Check if group available for current item scope.
   //if TM ot TG check dependency.
-  function groupIsAvailable(sourceName: TrioSourceName, groupKey: string) {
+  function groupIsAvailable(groupKey: string) {
     let g = trio.value.entities.groups[groupKey]
 
-    if (sourceName === 'New' && ["CS", "BF", "CR"].includes(g.group_type_code)) {
+    if (isNewParams.value && ["CS", "BF", "CR"].includes(g.group_type_code)) {
       return false
     }
 
@@ -155,7 +167,7 @@ export const useTrioStore = defineStore('trio', () => {
       })
   }
 
-  function groupSelectedParamsCnt(sourceName: TrioSourceName, groupKey: string) {
+  function groupSelectedParamsCnt(groupKey: string) {
     let selectedCount = selected.value.reduce((accumulator, param) => {
       let toAdd = (parseParamKey(param, false) === groupKey ? 1 : 0)
       return accumulator + toAdd
@@ -163,28 +175,24 @@ export const useTrioStore = defineStore('trio', () => {
     return selectedCount
   }
 
-  function visibleParams(sourceName: TrioSourceName): TViewParam[] {
+  function visibleParams(): TViewParam[] {
     if (trio.value.result.length === 0) { return [] }
-    let visGroups = visibleGroups(sourceName)
+    let visGroups = visibleGroups()
     let paramKeys = visGroups[groupIndex.value].params
     return paramKeys.map(x => { return { ...trio.value.entities.params[x], selected: selected.value.includes(x) } })
   }
 
   function paramClicked(sourceName: TrioSourceName, groupIndex: number, paramIndex: number) {
-
-    let visParams = visibleParams(sourceName)
+    let visParams = visibleParams()
     let paramInfo = visParams[paramIndex]
     let group = trio.value.entities.groups[parseParamKey(paramInfo.paramKey, false)]
 
     const isSelected = selected.value.includes(paramInfo.paramKey)
     console.log(`TRIO.click(${groupIndex}, ${paramIndex}): "${paramInfo.paramKey}"`)
-    switch (sourceName) {
-      case 'Filter':
-        return paramFilterClicked(sourceName, paramInfo.paramKey, group, selected.value, isSelected)
-      case 'New':
-        return paramNewClicked(sourceName, paramInfo.paramKey, group, selected.value, isSelected)
-      case 'Item':
-        console.log("Error in param - source name is 'Item'")
+    if (isFilter) {
+      return paramFilterClicked(sourceName, paramInfo.paramKey, group, selected.value, isSelected)
+    } else {
+      return paramNewClicked(sourceName, paramInfo.paramKey, group, selected.value, isSelected)
     }
   }
 

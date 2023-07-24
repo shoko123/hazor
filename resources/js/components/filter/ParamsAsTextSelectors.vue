@@ -51,7 +51,7 @@ let searchText = ref<string>("")
 
 const params = computed(() => {
   //console.log(`TextSearch.params: ${JSON.stringify(trio.visibleParams('Filter'), null, 2)}`)
-  return trio.visibleParams('Filter')
+  return trio.visibleParams()
 })
 
 const search1 = computed({
