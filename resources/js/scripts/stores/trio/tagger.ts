@@ -13,11 +13,8 @@ import { TFields } from '@/js/types/moduleFieldsTypes'
 export const useTaggerStore = defineStore('tagger', () => {
   const trio = useTrioStore()
   let { fields, selectedItemParams } = storeToRefs(useItemStore())
-  const { flipParam } = useTrioStore()
 
   let selectedNewItemParams = ref<string[]>([])
-
-  
 
   function copyCurrentToNew() {
     selectedNewItemParams.value = [...selectedItemParams.value]

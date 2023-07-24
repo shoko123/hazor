@@ -30,7 +30,7 @@ const selectedParamIndexes = computed({
 })
 
 function paramClicked(paramIndex: number) {
-    trio.paramClicked('Filter', trio.groupIndex, paramIndex)
+    trio.paramClicked(trio.groupIndex, paramIndex)
 }
 
 </script>

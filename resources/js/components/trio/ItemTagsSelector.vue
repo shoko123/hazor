@@ -95,7 +95,7 @@ const selected = computed({
 })
 
 function paramClicked(paramIndex: number) {
-  trio.paramClicked('New', trio.groupIndex, paramIndex)
+  trio.paramClicked(trio.groupIndex, paramIndex)
 }
 
 async function submit() {

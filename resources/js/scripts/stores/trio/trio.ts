@@ -80,8 +80,8 @@ export const useTrioStore = defineStore('trio', () => {
   }
 
   function visibleCategoriesKeys(): string[] {
-    //let c = visibleCategories()
-    return visibleCategories().map(x => x.name)
+    let c = visibleCategories()
+    return c.map(x => x.name)
   }
 
   function availableGroupsKeys(onlySelected = false) {
@@ -182,93 +182,83 @@ export const useTrioStore = defineStore('trio', () => {
     return paramKeys.map(x => { return { ...trio.value.entities.params[x], selected: selected.value.includes(x) } })
   }
 
-  function paramClicked(sourceName: TrioSourceName, groupIndex: number, paramIndex: number) {
+  function paramClicked(groupIndex: number, paramIndex: number) {
     let visParams = visibleParams()
     let paramInfo = visParams[paramIndex]
     let group = trio.value.entities.groups[parseParamKey(paramInfo.paramKey, false)]
-
+    let paramKey = paramInfo.paramKey
     const isSelected = selected.value.includes(paramInfo.paramKey)
-    console.log(`TRIO.click(${groupIndex}, ${paramIndex}): "${paramInfo.paramKey}"`)
-    if (isFilter) {
-      return paramFilterClicked(sourceName, paramInfo.paramKey, group, selected.value, isSelected)
-    } else {
-      return paramNewClicked(sourceName, paramInfo.paramKey, group, selected.value, isSelected)
-    }
-  }
+    console.log(`TRIO.click(${groupIndex}, ${paramIndex}): "${paramInfo.paramKey}" isFilter: ${isFilter.value} isCurrentlySelected: ${isSelected}\ngroup: ${JSON.stringify(group, null, 2)}`)
 
-  function paramFilterClicked(sourceName: TrioSourceName, paramKey: string, group: TGroup, selected: string[], isSelected: boolean) {
-    console.log(`filterClicked() group_type_code: ${group.group_type_code}, isSelected: ${isSelected}\nall selected: [${selected}]`)
-    if (isSelected) {
-      flipParam(sourceName, paramKey, selected, false)
+    if (isFilter.value) {
+      if (isSelected) {
+        unSelectParam(paramKey)
+      } else {
+        selectParam(paramKey)
+      }
     } else {
-      flipParam(sourceName, paramKey, selected, true)
-    }
-  }
-
-  function paramNewClicked(sourceName: TrioSourceName, paramKey: string, group: TGroup, selected: string[], isSelected: boolean) {
-    console.log(`NewClicked() group_type_code: ${group.group_type_code}, group name: ${group.group_name}, isSelected: ${isSelected}\nall selected: [${selected}]`)
-    switch (group.group_type_code) {
-      case "TG":
-      case "TM":
-        if ((<TGroupTag>group).multiple) {
-          if (isSelected) {
-            flipParam(sourceName, paramKey, selected, false)
-          } else {
-            flipParam(sourceName, paramKey, selected, true)
-          }
-        } else {
-          if (isSelected) {
-            flipParam(sourceName, paramKey, selected, false)
-          } else {
-            //if there is currently  a  selected one - unselect the currently selected and select the new one.
-            //if there isn't, select the new one.
-            const currentKey = selected.find(x => { return parseParamKey(x, false) === group.group_name })
-            if (currentKey !== undefined) {
-              flipParam(sourceName, currentKey, selected, false)
-              flipParam(sourceName, paramKey, selected, true)
+      switch (group.group_type_code) {
+        case "TG":
+        case "TM":
+          if ((<TGroupTag>group).multiple) {
+            if (isSelected) {
+              unSelectParam(paramKey)
             } else {
-              console.log("No param currently selected - selecting clicked")
-              flipParam(sourceName, paramKey, selected, true)
+              selectParam(paramKey)
+            }
+          } else {
+            if (isSelected) {
+              unSelectParam(paramKey)
+            } else {
+              //if there is currently  a  selected one - unselect the currently selected and select the new one.
+              //if there isn't, select the new one.
+              const currentKey = selected.value.find(x => { return parseParamKey(x, false) === group.group_name })
+              if (currentKey !== undefined) {
+                unSelectParam(currentKey)
+                selectParam(paramKey)
+              } else {
+                console.log("No param currently selected - selecting clicked")
+                selectParam(paramKey)
+              }
             }
           }
-        }
-        break
+          break
 
-      case "CL":
-      case "CV":
-        if (isSelected) {
-          //do nothing
-        } else {
-          //unselect the currently selected and select the new one
-          const currentKey = selected.find(x => { return parseParamKey(x, false) === group.group_name })
-          if (currentKey === undefined) {
-            console.log("Error in paramNewClicked - can't find a selected param in current group, wrong group_type_code")
-            return
+        case "CL":
+        case "CV":
+          if (isSelected) {
+            //do nothing
+          } else {
+            //unselect the currently selected and select the new one
+            const currentKey = selected.value.find(x => { return parseParamKey(x, false) === group.group_name })
+            if (currentKey === undefined) {
+              console.log("Error in paramNewClicked - can't find a selected param in current group, wrong group_type_code")
+              return
+            }
+            console.log(`newItemParams(CL or CV).clicked select: ${paramKey}, unSelect: ${currentKey}`)
+            unSelectParam(currentKey)
+            selectParam(paramKey)
           }
-          flipParam(sourceName, currentKey, selected, false)
-          flipParam(sourceName, paramKey, selected, true)
-
-        }
-        break
-      default:
-        console.log("Error in paramNewClicked - wrong group_type_code")
+          break
+        default:
+          console.log("Error in paramNewClicked - wrong group_type_code")
+      }
     }
   }
 
-  function flipParam(sourceName: TrioSourceName, paramKey: string, selectedParams: string[], select: boolean) {
-    if (select) {
-      selectedParams.push(paramKey)
-      selectedParams.sort((a, b) => { return trio.value.entities.params[a].order - trio.value.entities.params[b].order })
-    } else {
-      const i = selectedParams.indexOf(paramKey)
-      selectedParams.splice(i, 1)
-      clearDependecies(sourceName, paramKey)
-    }
+  function selectParam(paramKey: string) {
+    selected.value.push(paramKey)
+    selected.value.sort((a, b) => { return trio.value.entities.params[a].order - trio.value.entities.params[b].order })
+  }
 
+  function unSelectParam(paramKey: string) {
+    const i = selected.value.indexOf(paramKey)
+    selected.value.splice(i, 1)
+    clearDependecies(paramKey)
   }
 
   //When unselecting a param, we must check and possibly unselect dependencies.
-  function clearDependecies(sourceName: TrioSourceName, paramKey: string) {
+  function clearDependecies(paramKey: string) {
     console.log(`clearDependecies param: ${paramKey}`)
     //We assume that this param was already removed from paramClickedSource (selectedFilterParams/selectedNewItemParams).
 
@@ -318,7 +308,7 @@ export const useTrioStore = defineStore('trio', () => {
         console.log(`ERRRRR - trying to remove param ${x} which is NOT selected`)
       } else {
         selected.value.splice(i, 1)
-        clearDependecies(sourceName, x)
+        clearDependecies(x)
       }
     })
   }
@@ -363,7 +353,6 @@ export const useTrioStore = defineStore('trio', () => {
     selected,
     resetCategoryAndGroupIndices,
     paramClicked,
-    flipParam,
     setTrio,
     trioReset,
     visibleCategories,
