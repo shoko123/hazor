@@ -100,25 +100,32 @@ function paramClicked(paramIndex: number) {
 
 async function submit() {
   await tagger.sync()
-  trio.clearSelected('New')
+  trio.resetCategoryAndGroupIndices()
+  tagger.clearSelectedNewItemParams 
   router.go(-1) 
 }
 function cancel(paramIndex: number) {
   console.log(`cancelClicked`)
-  trio.clearSelected('New')
+  trio.resetCategoryAndGroupIndices()
+  tagger.clearSelectedNewItemParams
   router.go(-1)
 }
 
 function resetToItem() {
   console.log(`resetToItem`)  
-  trio.groupIndex = 0
-  trio.categoryIndex = 0
-  trio.copyCurrentToNew()  
+  trio.resetCategoryAndGroupIndices()
+  tagger.copyCurrentToNew()  
 }
 
 function clear() {
   console.log(`clear`)
-  trio.clearSelected('New')
+  trio.resetCategoryAndGroupIndices()
+  tagger.clearSelectedNewItemParams()
+}
+
+function resetIndices() {
+  trio.categoryIndex = 0
+  trio.groupIndex = 0
 }
 </script>
 <style scoped>

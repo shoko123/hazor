@@ -1,8 +1,8 @@
 <template>
   <v-btn class="primary--text" large variant="outlined" @click="submit">Submit</v-btn>
-  <v-btn class="primary--text" large variant="outlined" @click="getCount">Get Count</v-btn>  
+  <v-btn class="primary--text" large variant="outlined" @click="getCount">Get Count</v-btn>
   <v-btn class="primary--text" large variant="outlined" @click="clear">clear</v-btn>
-  <WelcomeButton/>
+  <WelcomeButton />
 </template>
 
 <script lang="ts" setup >
@@ -30,7 +30,7 @@ async function getCount() {
 }
 function clear() {
   console.log(`filter.clear()`);
-  trio.clearSelected('Filter')
+  trio.resetCategoryAndGroupIndices()
   filter.clearSelectedFilters()
 }
 </script>

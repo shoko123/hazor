@@ -11,68 +11,22 @@ import { TFields } from '@/js/types/moduleFieldsTypes'
 
 
 export const useTaggerStore = defineStore('tagger', () => {
-  const { selectedNewItemParams, trio, } = storeToRefs(useTrioStore())
+  const trio = useTrioStore()
   let { fields, selectedItemParams } = storeToRefs(useItemStore())
   const { flipParam } = useTrioStore()
 
-  function paramNewClicked(sourceName: TrioSourceName, paramKey: string, group: TGroup, selected: string[], isSelected: boolean) {
-    console.log(`NewClicked() group_type_code: ${group.group_type_code}, group name: ${group.group_name}, isSelected: ${isSelected}\nall selected: [${selected}]`)
-    switch (group.group_type_code) {
-      case "TG":
-      case "TM":
-        if ((<TGroupTag>group).multiple) {
-          if (isSelected) {
-            flipParam(sourceName, paramKey, selected, false)
-          } else {
-            flipParam(sourceName, paramKey, selected, true)
-          }
-        } else {
-          if (isSelected) {
-            flipParam(sourceName, paramKey, selected, false)
-          } else {
-            //if there is currently  a  selected one - unselect the currently selected and select the new one.
-            //if there isn't, select the new one.
-            const currentKey = selected.find(x => { return parseParamKey(x, false) === group.group_name })
-            if (currentKey !== undefined) {
-              flipParam(sourceName, currentKey, selected, false)
-              flipParam(sourceName, paramKey, selected, true)
-            } else {
-              console.log("No param currently selected - selecting clicked")
-              flipParam(sourceName, paramKey, selected, true)
-            }
-          }
-        }
-        break
+  let selectedNewItemParams = ref<string[]>([])
 
-      case "CL":
-      case "CV":
-        if (isSelected) {
-          //do nothing
-        } else {
-          //unselect the currently selected and select the new one
-          const currentKey = selected.find(x => { return parseParamKey(x, false) === group.group_name })
-          if (currentKey === undefined) {
-            console.log("Error in paramNewClicked - can't find a selected param in current group, wrong group_type_code")
-            return
-          }
-          flipParam(sourceName, currentKey, selected, false)
-          flipParam(sourceName, paramKey, selected, true)
-
-        }
-        break
-      default:
-        console.log("Error in paramNewClicked - wrong group_type_code")
-    }
-  }
+  
 
   function copyCurrentToNew() {
     selectedNewItemParams.value = [...selectedItemParams.value]
   }
 
   function parseParamKey(paramKey: string, getParam = true): string {
-    //console.log(`parseParamKey() key: ${paramKey} value: ${trio.value.entities.params[paramKey]}`)
+    //console.log(`parseParamKey() key: ${paramKey} value: ${trio.entities.params[paramKey]}`)
     let pieces = paramKey.split('.')
-    return getParam ? trio.value.entities.params[paramKey].name : pieces[0]
+    return getParam ? trio.trio.entities.params[paramKey].name : pieces[0]
   }
 
   async function sync() {
@@ -85,17 +39,17 @@ export const useTaggerStore = defineStore('tagger', () => {
     let columns = <TColumnValueUpdateInfo[]>([])
 
     selectedNewItemParams.value.forEach(paramKey => {
-      let group = trio.value.entities.groups[parseParamKey(paramKey, false)]
+      let group = trio.trio.entities.groups[parseParamKey(paramKey, false)]
       switch (group.group_type_code) {
         case "TG":
-          globalTagIds.push(trio.value.entities.params[paramKey].id)
+          globalTagIds.push(trio.trio.entities.params[paramKey].id)
           break
         case "TM":
-          modelTagIds.push(trio.value.entities.params[paramKey].id)
+          modelTagIds.push(trio.trio.entities.params[paramKey].id)
           break
         case "CL":
         case "CV":
-          let param = trio.value.entities.params[paramKey]
+          let param = trio.trio.entities.params[paramKey]
           let column_name = (<TGroupValue>group).column_name
           columns.push({ column_name, val: group.group_type_code === "CL" ? param.id : param.name })
           break
@@ -126,9 +80,21 @@ export const useTaggerStore = defineStore('tagger', () => {
     })
   }
 
+  //When clearing params, set columns lookup and value to default (index 0)
+  function clearSelectedNewItemParams() {
+    selectedNewItemParams.value = []
+    selectedItemParams.value.forEach(x => {
+      let pieces = x.split('.')
+      if (['CL', 'CV'].includes(trio.trio.entities.groups[pieces[0]].group_type_code)) {  
+          selectedNewItemParams.value.push(trio.trio.entities.groups[pieces[0]].params[0])     
+      }
+    })
+  }
+
   return {
+    selectedNewItemParams,
+    clearSelectedNewItemParams,
     copyCurrentToNew,
-    paramNewClicked,
     sync
   }
 })

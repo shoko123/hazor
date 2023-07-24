@@ -153,7 +153,7 @@ export const useFilterStore = defineStore('filter', () => {
   function clearSelectedFilters() {
     selectedFilterParams.value.forEach(x => {
       let pieces = x.split('.')
-      if (trio.trio.entities.groups[pieces[0]].group_type_code == 'CS') {
+      if (trio.trio.entities.groups[pieces[0]].group_type_code === 'CS') {
         trio.setFilterSearchTerm(x, "")
       }
     })

@@ -4,14 +4,15 @@ import { ref, computed } from 'vue'
 import type { TGroupTag, TGroup, Trio, TrioSourceName, TmpGroup, TGroupValue, TColumnValueUpdateInfo } from '../../../types/trioTypes'
 import normalizeTrio from './trioNormalizer'
 import { useFilterStore } from './filter'
-
+import { useTaggerStore } from './tagger'
+import { useRoutesMainStore } from '../routes/routesMain'
 type TViewParam = { paramKey: string, id: number, name: string, selected: boolean, modal: boolean }
 type TViewGroup = { groupKey: string, name: string, visible: boolean, params: string[], selectedCount: number, isTextSearch: boolean, required: boolean, multiple: boolean }
 type TViewCategory = { name: string, visible: boolean, selectedCount: number }
 
 export const useTrioStore = defineStore('trio', () => {
   const { selectedFilterParams } = storeToRefs(useFilterStore())
-
+  
   let trio = ref<Trio>({
     entities: {
       categories: {},
@@ -26,14 +27,24 @@ export const useTrioStore = defineStore('trio', () => {
   //It treats all groups, regardless of type [global/module tag, lookup, column discreate values, various bespoke filters],
   //in the same way.
 
-  let selectedNewItemParams = ref<string[]>([])
-
   //index in visible categories
   let categoryIndex = ref<number>(0)
 
   //index in visible groups
   let groupIndex = ref<number>(0)
 
+  const selected = computed(() => {
+    const { current } = storeToRefs(useRoutesMainStore())
+    const { selectedNewItemParams } = storeToRefs(useTaggerStore())
+    switch (current.value.name) {
+      case 'filter':
+        return selectedFilterParams.value
+      case 'tag':
+        return selectedNewItemParams.value
+      default:
+        return []
+    }
+  })
 
   //A category is visible if at least one of its groups is available 
   function visibleCategories(sourceName: TrioSourceName): TViewCategory[] {
@@ -55,7 +66,7 @@ export const useTrioStore = defineStore('trio', () => {
     })
     const res = cats.map(x => { return { name: x.catName, visible: true, selectedCount: x.cnt } })
     //console.log(`visibleCategories: ${JSON.stringify(res, null, 2)}`)
-    return res//cats.map(x => { return { name: x.catName, visible: true, selectedCount: x.cnt } })
+    return res
   }
 
   function visibleCategoriesKeys(sourceName: TrioSourceName): string[] {
@@ -127,7 +138,6 @@ export const useTrioStore = defineStore('trio', () => {
   //if source is 'New' don't show CS (textual search). Check if group available for current item scope.
   //if TM ot TG check dependency.
   function groupIsAvailable(sourceName: TrioSourceName, groupKey: string) {
-    let selectedParams = selectedParamsKeysBySource(sourceName)
     let g = trio.value.entities.groups[groupKey]
 
     if (sourceName === 'New' && ["CS", "BF", "CR"].includes(g.group_type_code)) {
@@ -141,13 +151,12 @@ export const useTrioStore = defineStore('trio', () => {
     let tagGroup = <TGroupTag>g
     return tagGroup.dependency === null ||
       tagGroup.dependency.some(x => {
-        return (selectedParams.includes(x))
+        return (selected.value.includes(x))
       })
   }
 
   function groupSelectedParamsCnt(sourceName: TrioSourceName, groupKey: string) {
-    let selectedKeys = selectedParamsKeysBySource(sourceName)
-    let selectedCount = selectedKeys.reduce((accumulator, param) => {
+    let selectedCount = selected.value.reduce((accumulator, param) => {
       let toAdd = (parseParamKey(param, false) === groupKey ? 1 : 0)
       return accumulator + toAdd
     }, 0);
@@ -157,15 +166,8 @@ export const useTrioStore = defineStore('trio', () => {
   function visibleParams(sourceName: TrioSourceName): TViewParam[] {
     if (trio.value.result.length === 0) { return [] }
     let visGroups = visibleGroups(sourceName)
-    let selected = selectedParamsKeysBySource(sourceName)
     let paramKeys = visGroups[groupIndex.value].params
-    return paramKeys.map(x => { return { ...trio.value.entities.params[x], selected: selected.includes(x) } })
-  }
-
-  function selectedParamsKeysBySource(sourceName: TrioSourceName): string[] {
-    return sourceName === 'Item' ?
-      [] :
-      (sourceName === 'New' ? selectedNewItemParams.value : selectedFilterParams.value)
+    return paramKeys.map(x => { return { ...trio.value.entities.params[x], selected: selected.value.includes(x) } })
   }
 
   function paramClicked(sourceName: TrioSourceName, groupIndex: number, paramIndex: number) {
@@ -174,14 +176,13 @@ export const useTrioStore = defineStore('trio', () => {
     let paramInfo = visParams[paramIndex]
     let group = trio.value.entities.groups[parseParamKey(paramInfo.paramKey, false)]
 
-    let selected = selectedParamsKeysBySource(sourceName)
-    const isSelected = selected.includes(paramInfo.paramKey)
+    const isSelected = selected.value.includes(paramInfo.paramKey)
     console.log(`TRIO.click(${groupIndex}, ${paramIndex}): "${paramInfo.paramKey}"`)
     switch (sourceName) {
       case 'Filter':
-        return paramFilterClicked(sourceName, paramInfo.paramKey, group, selected, isSelected)
+        return paramFilterClicked(sourceName, paramInfo.paramKey, group, selected.value, isSelected)
       case 'New':
-        return paramNewClicked(sourceName, paramInfo.paramKey, group, selected, isSelected)
+        return paramNewClicked(sourceName, paramInfo.paramKey, group, selected.value, isSelected)
       case 'Item':
         console.log("Error in param - source name is 'Item'")
     }
@@ -263,8 +264,6 @@ export const useTrioStore = defineStore('trio', () => {
     console.log(`clearDependecies param: ${paramKey}`)
     //We assume that this param was already removed from paramClickedSource (selectedFilterParams/selectedNewItemParams).
 
-    let selectedParams = selectedParamsKeysBySource(sourceName)
-
     //step 1 - collect all affected groups by unselecting this param
     let groupsToBeUnselectable: TGroupTag[] = []
     for (const [key, value] of Object.entries(trio.value.entities.groups)) {
@@ -281,7 +280,7 @@ export const useTrioStore = defineStore('trio', () => {
 
       //check if dependency holds or not
       let groupIstoBeUnselected = !group.dependency.some(x => {
-        return (selectedParams.includes(x))
+        return (selected.value.includes(x))
       })
 
       if (groupIstoBeUnselected) {
@@ -296,7 +295,7 @@ export const useTrioStore = defineStore('trio', () => {
     let paramsToBeUnselected: string[] = []
     groupsToBeUnselectable.forEach(x => {
       x.params.forEach(y => {
-        if (selectedParams.includes(y)) {
+        if (selected.value.includes(y)) {
           paramsToBeUnselected.push(y)
         }
       });
@@ -306,11 +305,11 @@ export const useTrioStore = defineStore('trio', () => {
 
     //step 3 - for each paramsToBeUnselected - remove from selected, call clearDependecies() recuresively
     paramsToBeUnselected.forEach(x => {
-      let i = selectedParams.findIndex((y) => y === x)
+      let i = selected.value.findIndex((y) => y === x)
       if (i === -1) {
         console.log(`ERRRRR - trying to remove param ${x} which is NOT selected`)
       } else {
-        selectedParams.splice(i, 1)
+        selected.value.splice(i, 1)
         clearDependecies(sourceName, x)
       }
     })
@@ -322,6 +321,7 @@ export const useTrioStore = defineStore('trio', () => {
   }
 
   function trioReset() {
+    const { selectedNewItemParams } = storeToRefs(useTaggerStore())
     selectedNewItemParams.value = []
     selectedFilterParams.value = []
     groupIndex.value = 0
@@ -341,27 +341,9 @@ export const useTrioStore = defineStore('trio', () => {
     return getParam ? trio.value.entities.params[paramKey].name : pieces[0]
   }
 
-  function clearSelected(sourceName: TrioSourceName) {
+  function resetCategoryAndGroupIndices() {
     groupIndex.value = 0
     categoryIndex.value = 0
-    switch (sourceName) {
-      case 'Filter':
-        break
-
-      case 'New':
-        const resetParams: string[] = []
-        selectedNewItemParams.value.forEach(x => {
-          let group = trio.value.entities.groups[parseParamKey(x, false)]
-          if (["CL", "CV"].includes(group.group_type_code)) {
-            resetParams.push(group.params[0])
-          }
-        })
-        selectedNewItemParams.value = resetParams
-        break
-
-      case 'Item':
-        break
-    }
   }
 
   function setFilterSearchTerm(paramKey: string, searchTerm: string) {
@@ -370,7 +352,8 @@ export const useTrioStore = defineStore('trio', () => {
   }
 
   return {
-    clearSelected,
+    selected,
+    resetCategoryAndGroupIndices,
     paramClicked,
     flipParam,
     setTrio,
@@ -381,8 +364,6 @@ export const useTrioStore = defineStore('trio', () => {
     trio,
     categoryIndex,
     groupIndex,
-    selectedFilterParams,
-    selectedNewItemParams,
     setFilterSearchTerm,
   }
 })
