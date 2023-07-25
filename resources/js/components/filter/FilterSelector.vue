@@ -2,15 +2,15 @@
   <v-card class="elevation-12">
     <v-card-title id="title" class="grey py-0 mb-4">{{ header }}</v-card-title>
     <v-card-text>
-      <v-tabs v-model="categoryIndex" class="primary">
-        <v-tab v-for="(cat, index) in cats" :key="index" color="purple"
+      <v-tabs v-model="catIndex" class="primary">
+        <v-tab v-for="(cat, index) in visibleCategories" :key="index" color="purple"
           :class="cat.selectedCount > 0 ? 'has-selected' : ''">
           {{ cat.selectedCount === 0 ? cat.name : `${cat.name}(${cat.selectedCount})` }}
         </v-tab>
       </v-tabs>
 
-      <v-tabs v-model="groupIndex">
-        <v-tab v-for="(group, index) in groups" :key="index" color="purple"
+      <v-tabs v-model="grpIndex">
+        <v-tab v-for="(group, index) in visibleGroups" :key="index" color="purple"
           :class="[group.selectedCount > 0 ? 'has-selected' : '', 'text-capitalize']">
           {{ group.selectedCount === 0 ? group.name : `${group.name}(${group.selectedCount})` }}
         </v-tab>
@@ -18,10 +18,10 @@
 
       <v-sheet elevation="10" class="ma-2">
         <div v-if="isColumnSearchGroup">
-          <ParamsAsTextSelectors/>
+          <ParamsAsTextSelectors />
         </div>
         <div v-else>
-          <ParamsAsChips/>
+          <ParamsAsChips />
         </div>
       </v-sheet>
     </v-card-text>
@@ -29,64 +29,39 @@
 </template>
 
 <script lang="ts" setup >
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useTrioStore } from '../../scripts/stores/trio/trio'
 import ParamsAsChips from './ParamsAsChips.vue'
 import ParamsAsTextSelectors from './ParamsAsTextSelectors.vue'
-let trio = useTrioStore()
-let searchText = ref<string>("")
-let modal = ref<boolean[]>([false, false, false])
+
+let { visibleCategories, visibleGroups, categoryIndex, groupIndex } = storeToRefs(useTrioStore())
+
 const header = computed(() => {
   return 'Filter Selector'
 })
 
-const cats = computed(() => {
-  return trio.visibleCategories
-})
-
-const groups = computed(() => {
-  return trio.visibleGroups
-})
-
-const params = computed(() => {
-  return trio.visibleParams
-})
-
-const categoryIndex = computed({
-  get: () => { return trio.categoryIndex },
+const catIndex = computed({
+  get: () => { return categoryIndex.value },
   set: val => {
     console.log(`categoryIndex set to ${val}`)
-    trio.groupIndex = 0
-    trio.categoryIndex = val
+    groupIndex.value = 0
+    categoryIndex.value = val
   }
 })
 
-const groupIndex = computed({
-  get: () => { return trio.groupIndex },
+const grpIndex = computed({
+  get: () => { return groupIndex.value },
   set: val => {
     console.log(`groupIndex set to ${val}`)
-    trio.groupIndex = val
+    groupIndex.value = val
   }
-})
-
-const selectedParamIndexes = computed({
-  get: () => {
-    let selected: number[] = []
-    params.value.forEach((x, index) => {
-      if (x.selected === true) {
-        selected.push(index)
-      }
-    })
-    return selected
-  },
-  set: val => { }
 })
 
 const isColumnSearchGroup = computed(() => {
-  if(groups.value.length === 0) return false
-  return groups.value[groupIndex.value].isTextSearch
+  if (visibleGroups.value.length === 0) return false
+  return visibleGroups.value[groupIndex.value].isTextSearch
 })
-
 
 </script>
 <style scoped>
@@ -99,5 +74,3 @@ const isColumnSearchGroup = computed(() => {
   background-color: grey;
 }
 </style>
-
-

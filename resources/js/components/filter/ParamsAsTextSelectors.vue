@@ -34,7 +34,7 @@
         </v-card>
       </v-col>
       <v-col cols="12" sm="2">
-        <v-btn @click="clearClicked">Clear</v-btn>
+        <v-btn @click="clearClicked" class="ml-2">Clear</v-btn>
       </v-col>
     </v-row>
   </v-container>
