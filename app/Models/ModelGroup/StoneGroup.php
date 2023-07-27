@@ -14,7 +14,7 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
             "group_type_code" => "CR",
             "table_name" => "stones",
             "column_name" => "area"
-        ],        
+        ],
         "Material" => [
             "group_type_code" => "CL",
             "table_name" => "stone_materials",
@@ -114,6 +114,19 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
             "group_type_code" => "CS",
             "column_name" => "notes",
         ],
+        "Order By" => [
+            "group_type_code" => "OB",
+            "options" => [
+                ["name" => "Area", "column_name" => "area"],
+                ["name" => "Locus", "column_name" => "locus"],
+                ["name" => "Basket", "column_name" => "basket"],
+                ["name" => "Stone No.", "column_name" => "stone_no"],
+                ["name" => "Year", "column_name" =>  "year"],
+                ["name" => "Material", "column_name" => "material_id"],
+                ["name" => "Base Typology", "column_name" =>  "base_type_id"]
+            ],
+        ],
+
     ];
 
     public function __construct()
@@ -139,11 +152,11 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
                 [
                     "Search-Basket",
                     "Search-Locus",
-                    "Search-Year",                    
+                    "Search-Year",
                     "Search-Description",
                     "Search-Notes"
                 ]
-            ], 
+            ],
             "Registration" => [
                 [
                     "Area",
@@ -178,12 +191,17 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
                 [
                     "Vessel Type",
                     "Passive Subtype",
-                    "Active Subtype",            
+                    "Active Subtype",
                     "Vessel Part",
                     "Vessel Base",
                     "Vessel Wall",
                     "Vessel Rim",
                     "Non-Processor Subtype"
+                ],
+            ],
+            "Order By" => [
+                [
+                    "Order By",
                 ],
             ]
         ];

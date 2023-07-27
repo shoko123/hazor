@@ -4,7 +4,7 @@
     <v-card-text>
       <div class="mb-2">
         <v-btn color="green" @click="submit">Submit</v-btn>
-        <v-btn class="ml-2" color="red" @click="cancel">cancel</v-btn>
+        <v-btn class="ml-2" color="red" @click="cancel">Cancel</v-btn>
         <v-btn class="ml-2" color="blue" @click="resetToItem">Reset To Item</v-btn>
         <v-btn class="ml-2" color="blue" @click="clear">Clear</v-btn>
       </div>

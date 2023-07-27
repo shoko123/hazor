@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 
-import type { TGroupValue, } from '../../../types/trioTypes'
+import type { TGroupValue, TGroupOrderBy, } from '../../../types/trioTypes'
 import type { IObject } from '../../../types/generalTypes'
 import type { TParseUrlQueryResponse, TParseQueryData } from '@/js/types/routesTypes'
 import { useTrioStore } from './trio'
@@ -11,6 +11,47 @@ export const useFilterStore = defineStore('filter', () => {
   const trio = useTrioStore()
   let selectedFilterParams = ref<string[]>([])
 
+  const orderSelectedNames = computed(() => {
+    let orderParamKeys = selectedFilterParams.value.filter(x => {
+      return (x.split('.')[0] === 'Order By')
+    })
+    let names = <string[]>orderParamKeys.map(y => (trio.trio.entities.params[y].name))
+    return names
+  })
+
+  const orderAllNames = computed(() => {
+    if(trio.trio.result.length === 0) { return []}
+    let orderGroup = <TGroupOrderBy>trio.trio.entities.groups['Order By']
+    return orderGroup.options.map(x => x.name)
+  })
+
+  const orderAvailableNames = computed(() => {
+    let osn = orderSelectedNames.value.map(x => x.slice(0, -2))
+    return orderAllNames.value.filter(x => !osn.includes(x))
+  })
+
+  function orderParamClicked(index: number, asc: boolean) {
+    let i = orderSelectedNames.value.length
+    let nameToSet = `${orderAvailableNames.value[index]}.${asc ? 'A' : 'D'}`
+    let paramKey = `Order By.ob${i + 1}`
+    console.log(`paramClicked(${index}) nameToSet: ${nameToSet} indexToset: ${i} paramKey: ${paramKey}`)
+    trio.setOrderByString(paramKey, nameToSet)
+    selectedFilterParams.value.push(paramKey)
+  }
+
+  function orderClear() {
+    let orderParamKeys = selectedFilterParams.value.filter(x => {
+      return (x.split('.')[0] === 'Order By')
+    })
+
+    console.log(`orderClear currently selected #: ${orderParamKeys.length}`)
+    orderParamKeys.forEach(x => {
+      trio.setOrderByString(x, "")
+      const i = selectedFilterParams.value.indexOf(x.slice(0, -2))
+      selectedFilterParams.value.splice(i, 1)
+    })
+  }
+
   function filtersToQueryObject(): IObject {
     let query: IObject = {}
     selectedFilterParams.value.forEach(pk => {
@@ -18,8 +59,6 @@ export const useFilterStore = defineStore('filter', () => {
       let pieces = pk.split('.')
       let groupKeyUnderlined = pieces[0].replace(/ /g, "_")
       let paramUnderlined = trio.trio.entities.params[pk].name.replace(/ /g, "_")
-
-
 
       if (query.hasOwnProperty(groupKeyUnderlined)) {
         query[groupKeyUnderlined] += ',' + paramUnderlined
@@ -154,6 +193,7 @@ export const useFilterStore = defineStore('filter', () => {
   }
 
   function clearSelectedFilters() {
+    console.log(`filter.clearSelectedFilters()`)
     selectedFilterParams.value.forEach(x => {
       let pieces = x.split('.')
       if (trio.trio.entities.groups[pieces[0]].group_type_code === 'CS') {
@@ -166,9 +206,14 @@ export const useFilterStore = defineStore('filter', () => {
 
   return {
     selectedFilterParams,
+    orderAllNames,
+    orderSelectedNames,
+    orderAvailableNames,
+    orderParamClicked,
+    orderClear,
     filtersToQueryObject,
     urlQueryObjectToApiFilters,
     addRemoveSearchParam,
-    clearSelectedFilters
+    clearSelectedFilters,
   }
 })

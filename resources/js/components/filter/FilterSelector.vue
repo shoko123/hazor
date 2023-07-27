@@ -17,8 +17,11 @@
       </v-tabs>
 
       <v-sheet elevation="10" class="ma-2">
-        <div v-if="isColumnSearchGroup">
+        <div v-if="isColumnSearch">
           <ParamsAsTextSelectors />
+        </div>
+        <div v-else-if="isOrderBy">
+          <ParamsAsOrderBy />
         </div>
         <div v-else>
           <ParamsAsChips />
@@ -34,7 +37,7 @@ import { storeToRefs } from 'pinia'
 import { useTrioStore } from '../../scripts/stores/trio/trio'
 import ParamsAsChips from './ParamsAsChips.vue'
 import ParamsAsTextSelectors from './ParamsAsTextSelectors.vue'
-
+import ParamsAsOrderBy from './ParamsAsOrderBy.vue'
 let { visibleCategories, visibleGroups, categoryIndex, groupIndex } = storeToRefs(useTrioStore())
 
 const header = computed(() => {
@@ -58,9 +61,14 @@ const grpIndex = computed({
   }
 })
 
-const isColumnSearchGroup = computed(() => {
+const isColumnSearch = computed(() => {
   if (visibleGroups.value.length === 0) return false
-  return visibleGroups.value[groupIndex.value].isTextSearch
+  return visibleGroups.value[groupIndex.value].groupType === 'CS'
+})
+
+const isOrderBy = computed(() => {
+  if (visibleGroups.value.length === 0) return false
+  return visibleGroups.value[groupIndex.value].groupType === 'OB'
 })
 
 </script>

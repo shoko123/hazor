@@ -31,28 +31,32 @@ abstract class ModelGroup
             throw new Exception("***MODEL INIT() ERROR*** Group * " . $group_name . " * NOT FOUND");
         }
         switch ($group["group_type_code"]) {
-                //global tags
-            case "TG":
+
+            case "TG": //tags global
                 return $this->getGlobalTagsGroupDetails($group_name, $group);
 
-                //model tags
-            case "TM":
+
+            case "TM": //tag smodel
                 return $this->getModelTagsGroupDetails($group_name, $group);
 
-                //column values
-            case "CV":
-            case "CR":                
+
+            case "CV": //column values
+            case "CR": //column registration
                 return $this->getColumnGroupDetails($group_name, $group);
 
-                //lookup values
-            case "CL":
+
+            case "CL": //column lookup values
                 return $this->getLookupGroupDetails($group_name, $group);
 
-            case "CS":
+            case "CS": //column search
                 return $this->getTextualSearchGroupDetails($group_name, $group);
 
-            case "BF":
+            case "BF": //bespoke
                 return $this->getBespokeFilterGroupDetails($group_name, $group);
+
+
+            case "OB": //order by values
+                return $this->getOrderByDetails($group_name, $group);
         }
         return [];
     }
@@ -147,6 +151,15 @@ abstract class ModelGroup
         $group["group_name"] = $group_name;
         return $group;
     }
+
+    private function getOrderByDetails($group_name, $group)
+    {
+        return array_merge($group, [
+            "params" => [["name" => "ob1"], ["name" => "ob2"], ["name" => "ob3"], ["name" => "ob4"]],
+            "group_name" => $group_name,
+        ]);
+    }
+
     public function buildTrio($cats): array
     {
         $trio = [];

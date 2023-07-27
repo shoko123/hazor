@@ -53,9 +53,9 @@ export const useTrioStore = defineStore('trio', () => {
     return current.value.name === 'tag'
   })
 
- //A category is visible if at least one of its groups is available 
+  //A category is visible if at least one of its groups is available 
   const visibleCategories = computed(() => {
-  let cats: { catName: string, grpKeys: string[], cnt: number }[] = []
+    let cats: { catName: string, grpKeys: string[], cnt: number }[] = []
 
     availableGroupsKeys.value.forEach(x => {
       let group = trio.value.entities.groups[x]
@@ -78,9 +78,9 @@ export const useTrioStore = defineStore('trio', () => {
   const availableGroupsKeys = computed(() => {
     let agk = []
     for (const [key, value] of Object.entries(trio.value.entities.groups)) {
-        if (groupIsAvailable(key)) {
-          agk.push(key)
-        }
+      if (groupIsAvailable(key)) {
+        agk.push(key)
+      }
     }
     return agk
   })
@@ -123,6 +123,7 @@ export const useTrioStore = defineStore('trio', () => {
         visible: true,
         selectedCount: groupSelectedParamsCnt(x),
         isTextSearch: (group.group_type_code === 'CS'),
+        groupType: group.group_type_code,
         required,
         multiple,
         params: group.params
@@ -141,7 +142,7 @@ export const useTrioStore = defineStore('trio', () => {
       return false
     }
 
-    if (["CS", "CL", "CV", "CR", "BF"].includes(g.group_type_code)) {
+    if (["CS", "CL", "CV", "CR", "BF", "OB"].includes(g.group_type_code)) {
       return true
     }
 
@@ -231,10 +232,24 @@ export const useTrioStore = defineStore('trio', () => {
   }
 
   function selectParam(paramKey: string) {
-    selected.value.push(paramKey)
-    selected.value.sort((a, b) => { return trio.value.entities.params[a].order - trio.value.entities.params[b].order })
+    //insert into ordered "selected" at the correct location
+    let orderNo = trio.value.entities.params[paramKey].order
+    let inserIndex = insertIndex(orderNo)
+    //console.log(`insertIndex: ${inserIndex}`)
+    selected.value.splice(inserIndex, 0, paramKey)
   }
 
+  function insertIndex(orderNo: number) {
+    let i = 0
+    while (i < selected.value.length) {
+      if (trio.value.entities.params[selected.value[i]].order > orderNo) {
+        return i
+      }
+      i++
+    }
+    return i
+  }
+  
   function unSelectParam(paramKey: string) {
     const i = selected.value.indexOf(paramKey)
     selected.value.splice(i, 1)
@@ -333,8 +348,12 @@ export const useTrioStore = defineStore('trio', () => {
     trio.value.entities.params[paramKey].name = searchTerm
   }
 
+  function setOrderByString(paramKey: string, name: string) {
+    console.log(`setOrderByTerm(${paramKey}, ${name})`)
+    trio.value.entities.params[paramKey].name = name
+  }
+
   return {
-    selected,
     resetCategoryAndGroupIndices,
     paramClicked,
     setTrio,
@@ -346,5 +365,6 @@ export const useTrioStore = defineStore('trio', () => {
     categoryIndex,
     groupIndex,
     setFilterSearchTerm,
+    setOrderByString
   }
 })

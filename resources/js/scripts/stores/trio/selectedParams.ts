@@ -61,7 +61,7 @@ export const useTrioSelectedStore = defineStore('trioSelected', () => {
       }
     })
 
-    //organize all groups into categgories array, each item with the category's's name and its groups array
+    //organize all groups into categgories array, each item with the category's name and its groups array
     groups.forEach(x => {
       let catKey = trio.value.entities.groups[x.key].categoryKey
       let i = cats.findIndex(c => {
