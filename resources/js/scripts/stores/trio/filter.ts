@@ -2,9 +2,9 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 
-import type { TGroupValue, TGroupOrderBy, } from '../../../types/trioTypes'
+import type { TGroupValue, TGroupOrderBy, TGroupOrderByOptionObject, } from '../../../types/trioTypes'
 import type { IObject } from '../../../types/generalTypes'
-import type { TParseUrlQueryResponse, TParseQueryData } from '@/js/types/routesTypes'
+import type { TParseUrlQueryResponse, TParseQueryData, TParsingError } from '@/js/types/routesTypes'
 import { useTrioStore } from './trio'
 
 export const useFilterStore = defineStore('filter', () => {
@@ -20,7 +20,7 @@ export const useFilterStore = defineStore('filter', () => {
   })
 
   const orderAllNames = computed(() => {
-    if(trio.trio.result.length === 0) { return []}
+    if (trio.trio.result.length === 0) { return [] }
     let orderGroup = <TGroupOrderBy>trio.trio.entities.groups['Order By']
     return orderGroup.options.map(x => x.name)
   })
@@ -78,7 +78,8 @@ export const useFilterStore = defineStore('filter', () => {
       column_values: [],
       column_lookup_ids: [],
       column_search: [],
-      bespoke: []
+      bespoke: [],
+      order_by: []
     }
 
     for (const [key, value] of Object.entries(qp)) {
@@ -87,14 +88,9 @@ export const useFilterStore = defineStore('filter', () => {
 
       if (!trio.trio.entities.groups.hasOwnProperty(groupKey)) {
         console.log(`Query parsing Error: "${key}" group doesn't exist. aborting... `)
-        return {
-          success: false,
-          data: {
-            error: 'BadQueryParams',
-            message: `Query parsing Error: "${key}" group doesn't exist. aborting... `
-          }
-        }
+        throw 'BadGroupNameParsingError'
       }
+
       let group = trio.trio.entities.groups[groupKey]
 
       //verify that params exist for this group 
@@ -106,23 +102,38 @@ export const useFilterStore = defineStore('filter', () => {
       })
 
       //console.log(`key: ${groupKey}\nparams: ${params}\npossibleParams: ${possibleParams}\ngroup: ${JSON.stringify(group, null, 2)}`);
-      if (group.group_type_code === 'CS') {
-        //sanitize sql injections here
-        //console.log(`group type 'CS' group: ${groupKey} params: ${JSON.stringify(params, null, 2)}`)
-      } else {
-        params.forEach(x => {
-          if (!possibleParams.some(y => y === x)) {
-            console.log(`Query parsing Error: "${x}" param doesn't exist in group ${key}. aborting... `)
-            return {
-              success: false,
-              data: {
-                error: 'BadQueryParams',
-                message: `Query parsing Error: "${x}" param doesn't exist in group ${key}. aborting... `
-              }
+
+      switch (group.group_type_code) {
+        case 'CS':
+          //sanitize sql injections here
+          //console.log(`group type 'CS' group: ${groupKey} params: ${JSON.stringify(params, null, 2)}`)
+          break
+
+        case 'OB':
+          let orderGroup = <TGroupOrderBy>trio.trio.entities.groups['Order By']
+          let options = orderGroup.options.map(x => x.name)
+
+          params.forEach(x => {
+            if (!['.A', '.D'].includes(x.slice(-2))) {
+              console.log(`Query parsing Error: "${x}" order param doesn't end with '.A' or '.D'. aborting... `)
+              throw 'OrderByFormatParsingError'
             }
-          }
-        })
+            if (!options.includes(x.slice(0, -2))) {
+              console.log(`Query parsing Error: "${x}" param doesn't exist in group ${key}. aborting... `)
+              throw 'OrderByBadNameParsingError'
+            }
+          })
+
+          break
+        default:
+          params.forEach(x => {
+            if (!possibleParams.includes(x)) {
+              console.log(`Query parsing Error: "${x}" param doesn't exist in group ${key}. aborting... `)
+              throw 'ParamNotInGroupParsingError'
+            }
+          })
       }
+
       console.log(`passed group+params existence`)
 
       //assign parameters to their correct 'filter' category
@@ -176,6 +187,18 @@ export const useFilterStore = defineStore('filter', () => {
                 }
               }
           }
+          break
+          
+        case 'OB':
+          console.log(`processing Order By group`)
+          let orderGroup = <TGroupOrderBy>trio.trio.entities.groups['Order By']
+          let options = orderGroup.options
+          params.forEach(x => {
+            let data = options.find(y => y.name === x.slice(0, -2));
+            all.order_by.push({
+              column_name: (<TGroupOrderByOptionObject>data).column_name, asc: x.slice(-1) === 'A'
+            })
+          })
       }
     }
 

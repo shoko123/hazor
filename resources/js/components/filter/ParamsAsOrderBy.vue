@@ -23,10 +23,10 @@
                 <tr v-for="(item, index) in orderAvailableNames" :key="item">
                   <td>{{ item }}</td>
                   <td>
-                    <v-btn prepend-icon="mdi-arrow-up" @click="orderParamClicked(index, true)"> Add </v-btn>
+                    <v-btn prepend-icon="mdi-arrow-up" :disabled="full" @click="orderParamClicked(index, true)"> Add </v-btn>
                   </td>
                   <td>
-                    <v-btn prepend-icon="mdi-arrow-down" @click="orderParamClicked(index, false)"> Add </v-btn>
+                    <v-btn prepend-icon="mdi-arrow-down" :disabled="full" @click="orderParamClicked(index, false)"> Add </v-btn>
                   </td>
                 </tr>
               </tbody>
@@ -41,16 +41,16 @@
       </v-col>
       <v-col cols="12" sm="3">
         <v-card class="mx-auto" variant="outlined">
-          <v-card-title class="header py-0 mb-4"> SELECTED</v-card-title>
+          <v-card-title class="header py-0 mb-4"> SELECTED (Max: 4)</v-card-title>
           <v-card-item>
             <v-table>
-              <thead>
+              <!-- <thead>
                 <tr>
                   <th class="text-left">
                     Name
                   </th>
                 </tr>
-              </thead>
+              </thead> -->
               <tbody>
                 <tr v-for="(item, index) in selected" :key="index">
                   <td>
@@ -77,6 +77,12 @@ let { orderParamClicked, orderClear } = useFilterStore()
 const selected = computed(() => {
   return orderSelectedNames.value.map(x => { return { name: x.slice(0, -2), asc: x.slice(-1) === 'A' } })
 })
+
+const full = computed(() => {
+  console.log(`full: ${orderSelectedNames.value.length === 4}`)
+  return orderSelectedNames.value.length === 4
+})
+
 </script>
 <style scoped>
 .header {

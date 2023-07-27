@@ -69,7 +69,8 @@ type TParseQueryData = {
     column_values: { column_name: string, vals: string[] }[],
     column_lookup_ids: { column_name: string, vals: number[] }[],
     column_search: { column_name: string, vals: string[] }[],
-    bespoke: { name: string, vals: string[] }[]
+    bespoke: { name: string, vals: string[] }[],
+    order_by:{ column_name: string, asc: boolean }[],
 }
 
 type TParseUrlQueryResponse = {

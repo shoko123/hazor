@@ -144,11 +144,16 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
   async function loadMainCollection(module: TModule, query: LocationQuery) {
-    let queryRes = f.urlQueryObjectToApiFilters(query)
-    //console.log(`loadMainCollection()  queryRes:  ${JSON.stringify(queryRes, null, 2)}`)
-
-    if (!queryRes.success) {
+    let queryRes
+    try {
+      queryRes = f.urlQueryObjectToApiFilters(query)
+      //console.log(`loadMainCollection()  queryRes:  ${JSON.stringify(queryRes, null, 2)}`)
+    }
+    catch (err) {
       console.log(`parseQuery() failed`)
+      throw err
+    }
+    if (!queryRes.success) {
       throw (<TParseErrorDetails>queryRes.data).error
     }
 
@@ -156,7 +161,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     console.log(`prepare.loadMainCollection()`)
     return xhr.send('model/index', 'post', { model: module, query: queryRes.data })
       .then(res => {
-        if(res.data.collection.length === 0){
+        if (res.data.collection.length === 0) {
           throw EmptyResultSetError
         }
         r.to.queryParams = query
@@ -173,7 +178,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
 
-  async function loadItem(module: TModule, slug: string, ) {
+  async function loadItem(module: TModule, slug: string,) {
     console.log(`prepare.loadItem() slug: ${slug}`)
     let sp = p.parseSlug(module, slug)
     if (!sp.success) {
