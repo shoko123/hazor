@@ -126,7 +126,6 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
                 ["name" => "Base Typology", "column_name" =>  "base_type_id"]
             ],
         ],
-
     ];
 
     public function __construct()
@@ -149,60 +148,48 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
     {
         $cats = [
             "Search" => [
-                [
-                    "Search-Basket",
-                    "Search-Locus",
-                    "Search-Year",
-                    "Search-Description",
-                    "Search-Notes"
-                ]
+                "Search-Basket",
+                "Search-Locus",
+                "Search-Year",
+                "Search-Description",
+                "Search-Notes"
             ],
             "Registration" => [
-                [
-                    "Area",
-                    "Media"
-                ],
+                "Area",
+                "Media"
             ],
             "Periods" => [
-                [
-                    "Periods (Top-Level)",
-                    "Neolithic Subperiods",
-                    "Bronze Subperiods",
-                    "Iron Subperiods",
-                    "Hellenistic Subperiods",
-                    "Roman Subperiods",
-                    "Early-Islamic Subperiods",
-                    "Medieval Subperiods",
-                    "Modern Subperiods"
-                ],
+                "Periods (Top-Level)",
+                "Neolithic Subperiods",
+                "Bronze Subperiods",
+                "Iron Subperiods",
+                "Hellenistic Subperiods",
+                "Roman Subperiods",
+                "Early-Islamic Subperiods",
+                "Medieval Subperiods",
+                "Modern Subperiods"
             ],
             "Basic Characteristics" => [
-                [
-                    "Material",
-                    "Life Stage",
-                    "Use Wear",
-                    "Morphology",
-                    "Profile",
-                    "Production",
-                    "Basic Typology"
-                ]
+                "Material",
+                "Life Stage",
+                "Use Wear",
+                "Morphology",
+                "Profile",
+                "Production",
+                "Basic Typology"
             ],
             "Typology" => [
-                [
-                    "Vessel Type",
-                    "Passive Subtype",
-                    "Active Subtype",
-                    "Vessel Part",
-                    "Vessel Base",
-                    "Vessel Wall",
-                    "Vessel Rim",
-                    "Non-Processor Subtype"
-                ],
+                "Vessel Type",
+                "Passive Subtype",
+                "Active Subtype",
+                "Vessel Part",
+                "Vessel Base",
+                "Vessel Wall",
+                "Vessel Rim",
+                "Non-Processor Subtype"
             ],
             "Order By" => [
-                [
-                    "Order By",
-                ],
+                "Order By",
             ]
         ];
 

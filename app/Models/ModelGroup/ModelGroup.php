@@ -163,7 +163,7 @@ abstract class ModelGroup
     public function buildTrio($cats): array
     {
         $trio = [];
-        foreach ($cats as $name => [$group_names]) {
+        foreach ($cats as $name => $group_names) {
             $category = ["name" => $name, "groups" => []];
             foreach ($group_names as $group_name) {
                 array_push($category["groups"], $this->getGroupDetails($group_name));

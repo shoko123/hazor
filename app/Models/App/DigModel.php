@@ -38,10 +38,17 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
     public function index($query)
     {
-        $this->builderIndexSelect();
+        $this->builderLoad();
         $this->applyFilters($query);
-        $this->builderOrder();
+
+        if (empty($query["order_by"])) {
+            $this->builderDefaultOrder();
+        } else {
+            $this->builderOrder($query["order_by"]);
+        }
+
         $collection = $this->builder->get();
+
         return  $collection->map(function ($item, $key) {
             return ["id" => $item->id, "slug" => $item->slug];
         });
@@ -196,6 +203,13 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         return $r;
     }
 
+    public function builderOrder(array $order_by)
+    {
+        foreach ($order_by as $key => $data) {
+            $this->builder->orderBy($data["column_name"], $data["asc"] ? 'asc' : 'desc');
+        }
+    }
+
     public function show(array $validated)
     {
         $this->builderItemSelect();
@@ -265,7 +279,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
     public function firstSlug()
     {
-        $this->builderIndexSelect();
+        $this->builderLoad();
         $item = $this->builder->where('id', '<', 10)->first();
         return $item["slug"];
     }

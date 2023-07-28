@@ -44,9 +44,14 @@ class Locus extends DigModel
     {
         return $this->area . '.' . $this->name;
     }
-    public function builderIndexSelect(): void
+    public function builderLoad(): void
     {
         $this->builder = $this->select('id', 'area', 'name');
+    }
+
+    public function builderDefaultOrder(): void
+    {
+        $this->builder->orderBy('id', 'asc');
     }
 
     public function builderPageTableSelect(): void
@@ -57,11 +62,6 @@ class Locus extends DigModel
     public function builderPageImageSelect(): void
     {
         $this->builder = $this->select('id', 'area', 'name', DB::raw('type AS short'))->with("media");
-    }
-
-    public function builderOrder(): void
-    {
-        $this->builder->orderBy('id', 'asc');
     }
 
     public function builderItemSelect(): void

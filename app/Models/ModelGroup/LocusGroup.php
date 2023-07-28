@@ -39,7 +39,16 @@ class LocusGroup extends ModelGroup implements ModelGroupInterface
         "Search-Stratum" => [
             "group_type_code" => "CS",
             "column_name" => "stratum",
-        ],        
+        ],
+        "Order By" => [
+            "group_type_code" => "OB",
+            "options" => [
+                ["name" => "Area", "column_name" => "area"],
+                ["name" => "Locus No", "column_name" => "locus_no"],
+                ["name" => "Locus Name", "column_name" => "name"],
+                ["name" => "Year", "column_name" =>  "year"],
+            ],
+        ],
     ];
 
     public function __construct()
@@ -62,17 +71,19 @@ class LocusGroup extends ModelGroup implements ModelGroupInterface
     {
         $cats = [
             "Registration" => [
-                ["Area", "Stratum"]
-            ], 
-            "Search" => [
-                [
-                    "Search-Name",
-                    "Search-Description",
-                    "Search-Square",
-                    "Search-Stratum",
-                    "Search-Type",
-                ]
+                "Area",
+                "Stratum"
             ],
+            "Search" => [
+                "Search-Name",
+                "Search-Description",
+                "Search-Square",
+                "Search-Stratum",
+                "Search-Type",
+            ],
+            "Order By" => [
+                "Order By",
+            ]            
         ];
 
         return $this->buildTrio($cats);

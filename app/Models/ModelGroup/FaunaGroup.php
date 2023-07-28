@@ -80,6 +80,15 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
             "dependency" => ["Element.Tooth"],
             "multiple" => true
         ],
+        "Order By" => [
+            "group_type_code" => "OB",
+            "options" => [
+                ["name" => "Area", "column_name" => "area"],
+                ["name" => "Locus", "column_name" => "locus"],
+                ["name" => "Basket", "column_name" => "basket"],
+                ["name" => "Label", "column_name" =>  "label"],
+            ],
+        ],        
     ];
 
     public function __construct()
@@ -103,20 +112,32 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
     {
         $cats = [
             "Basic Characteristics" => [
-                ["Life Stage", "Symmetry", "Weathering (Behrensmeyer 1978)"],
+                "Life Stage",
+                "Symmetry",
+                "Weathering (Behrensmeyer 1978)"
             ],
             "Taxon" => [
-                ["Base Taxon", "Bird", "Mammal"],
+                "Base Taxon",
+                "Bird",
+                "Mammal"
             ],
             "Element" => [
-                ["Element"],
+                "Element"
             ],
-            "Bone" => [
-                ["Fusion", "Breakage", "D&R (Grant 1982)", "Bone Name"],
+            "Bone" =>  [
+                "Fusion",
+                "Breakage",
+                "D&R (Grant 1982)",
+                "Bone Name"
             ],
             "Tooth" => [
-                ["Tooth Name", "Tooth Age", "Tooth Wear"],
-            ]
+                "Tooth Name",
+                "Tooth Age",
+                "Tooth Wear"
+            ],
+            "Order By" => [
+                "Order By",
+            ]            
         ];
 
         return $this->buildTrio($cats);

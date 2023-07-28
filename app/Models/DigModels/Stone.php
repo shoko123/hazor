@@ -60,9 +60,14 @@ class Stone extends FindModel
         return $this->basket . '.' . $this->stone_no;
     }
 
-    public function builderIndexSelect(): void
+    public function builderLoad(): void
     {
         $this->builder = $this->select('id', 'basket', 'stone_no');
+    }
+
+    public function builderDefaultOrder(): void
+    {
+        $this->builder->orderBy('basket', 'asc')->orderBy('stone_no', 'asc');
     }
 
     public function builderPageTableSelect(): void
@@ -80,11 +85,6 @@ class Stone extends FindModel
     public function builderPageImageSelect(): void
     {
         $this->builder = $this->select('id', 'basket', 'stone_no', DB::raw('description AS short'))->with("media");
-    }
-
-    public function builderOrder(): void
-    {
-        $this->builder->orderBy('id', 'asc');
     }
 
     public function builderItemSelect(): void

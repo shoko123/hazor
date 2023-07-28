@@ -59,11 +59,16 @@ class Fauna extends FindModel
         return $this->id;
     }
 
-    public function builderIndexSelect(): void
+    public function builderLoad(): void
     {
         $this->builder = $this->select('id');
     }
 
+    public function builderDefaultOrder(): void
+    {
+        $this->builder->orderBy('id', 'asc');
+    }
+    
     public function builderPageTableSelect(): void
     {
         $this->builder = $this->select('*');
@@ -74,10 +79,6 @@ class Fauna extends FindModel
         $this->builder = $this->select('id', DB::raw('snippet AS short'))->with("media");
     }
 
-    public function builderOrder(): void
-    {
-        $this->builder->orderBy('id', 'asc');
-    }
 
     public function builderItemSelect(): void
     {
