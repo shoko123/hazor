@@ -9,7 +9,7 @@ class Access
 {
     public function handle($request, Closure $next)
     {
-        if (!config('accessibility.accessibility.authenticatedUsersOnly') || $request->user('sanctum')) {
+        if (!env('ACCESSIBILITY_AUTHENTICATED_ONLY') || $request->user('sanctum')) {
             return $next($request);
         } else {
             return response()->json([

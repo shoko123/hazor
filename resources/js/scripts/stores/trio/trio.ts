@@ -132,20 +132,20 @@ export const useTrioStore = defineStore('trio', () => {
   })
 
   //Is group available?.
-  //if source is filter, all groups are available.
-  //if source is 'New' don't show CS (textual search). Check if group available for current item scope.
-  //if TM ot TG check dependency.
   function groupIsAvailable(groupKey: string) {
     let g = trio.value.entities.groups[groupKey]
 
-    if (isNewParams.value && ["CS", "BF", "CR"].includes(g.group_type_code)) {
+    //if source is 'New' don't show CS, CR, BF and OB groups.
+    if (isNewParams.value && ["CS", "BF", "CR", "OB"].includes(g.group_type_code)) {
       return false
     }
 
+    //if source is filter, and not TM or TG all these groups are available.
     if (["CS", "CL", "CV", "CR", "BF", "OB"].includes(g.group_type_code)) {
       return true
     }
 
+    //if TM ot TG check dependency. TODO  on NewTags check if available for scope (basket or artifact)
     let tagGroup = <TGroupTag>g
     return tagGroup.dependency === null ||
       tagGroup.dependency.some(x => {
@@ -249,7 +249,7 @@ export const useTrioStore = defineStore('trio', () => {
     }
     return i
   }
-  
+
   function unSelectParam(paramKey: string) {
     const i = selected.value.indexOf(paramKey)
     selected.value.splice(i, 1)

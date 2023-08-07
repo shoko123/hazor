@@ -4,23 +4,24 @@ namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+use App\Models\App\AppModel;
 use Exception;
 
 class AppController extends Controller
 {
     public function __construct()
     {
- 
     }
 
-    public function init(Request $r)
+    public function init()
     {
         return response()->json([
-            "accessibility" => config('accessibility.accessibility'),
-            "bucketUrl" =>  bucket_url(),
+            "accessibility" => [
+                'readOnly' => env('ACCESSIBILITY_READ_ONLY'),
+                'authenticatedUsersOnly' => env('ACCESSIBILITY_AUTHENTICATED_ONLY')
+            ],
+            "bucketUrl" =>  AppModel::bucket_url(),
             "media_collections"  => config('media-library.media_collections'),
             "itemsPerPage" => config('display_options.itemsPerPage'),
             "msg" => "AppController.init()",
@@ -29,7 +30,7 @@ class AppController extends Controller
 
     public function status()
     {
-        $tables = ['loci', 'fauna'];
+        $tables = ['loci', 'stones', 'fauna'];
         $totals = [];
         foreach ($tables as $t) {
             array_push($totals, [
@@ -41,9 +42,7 @@ class AppController extends Controller
         return response()->json([
             "msg" => "AppController.totals",
             "totals" => $totals,
-            "accessibility" => config('accessibility.accessibility'),
-            "bucketUrl" =>  bucket_url(),            
-
+            "bucketUrl" =>  AppModel::bucket_url(),
         ], 200);
     }
 }
