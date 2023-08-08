@@ -6,7 +6,7 @@
       </v-pagination>
       <!-- <v-spacer></v-spacer> -->
 
-      <v-btn v-if="!isEmpty" size="small" variant="outlined" @click="toggleDisplayOption()">view: {{ displayOption }}
+      <v-btn v-if="!isEmpty" :disabled="disableToggle" size="small" variant="outlined" @click="toggleCollectionDisplayOption()">view: {{ displayOption }}
       </v-btn>
 
     </v-toolbar>
@@ -109,11 +109,11 @@ const displayOption = computed(() => {
 })
 
 
-const disable = computed(() => {
-  return false
+const disableToggle = computed(() => {
+  return meta.value.views.length === 1
 })
 
-function toggleDisplayOption() {
+function toggleCollectionDisplayOption() {
   toggleCollectionView(props.source)
 }
 

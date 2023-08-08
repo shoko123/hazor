@@ -23,6 +23,7 @@
           </v-row>
 
           <v-row class="pt-2">
+
             <v-file-input v-model="images" multiple :show-size="1000" accept="image/png, image/jpeg, image/bmp"
               placeholder="Select images" prepend-icon="mdi-camera" @change="onInputChange" @click:clear="clear()"
               :label="fileInputLabel">
@@ -30,14 +31,23 @@
           </v-row>
 
           <v-row>
-            <v-select v-if="mediaReady" label="media collection type" :items="mediaCollections"
-              v-model="mediaCollection"></v-select>
-          </v-row>
+            <v-menu v-if="mediaReady">
+              <template v-slot:activator="{ props }">
+                <v-btn v-bind="props">
+                  Type: {{ mediaCollection }}
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item v-for="(item, index) in mediaCollectionNames" :key="index" :value="index"
+                  @click="setMediaCollectionName(item)">
+                  <v-list-item-title>{{ item }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
 
-          <v-row class="d-flex justify-left align-baseline pt-2" style="gap: 1rem">
-            <v-btn :disabled="!mediaReady" @click="upload">Upload</v-btn>
-            <v-btn :disabled="!mediaReady" @click="openMultiItemSelector">Upload as multi item media</v-btn>
-            <v-btn @click="cancel">Cancel</v-btn>
+            <v-btn v-if="mediaReady" @click="upload" class="ml-2">Upload</v-btn>
+            <v-btn v-if="mediaReady" @click="openMultiItemSelector" class="ml-2">Upload as multi item media</v-btn>
+            <v-btn @click="cancel" class="ml-2">Cancel</v-btn>
           </v-row>
         </v-container>
       </v-card-text>
@@ -84,23 +94,24 @@ function clear() {
 }
 
 //choose media collection
-const mediaCollections = computed<string[]>(() => {
+const mediaCollectionNames = computed<string[]>(() => {
   return m.mediaCollectionNames
 })
 
-const mediaCollection = computed({
-  get: () => { return mediaCollections.value[m.mediaCollectionIndex] },
-  set: val => {
-    m.mediaCollectionIndex = mediaCollections.value.indexOf(val)
-  }
+const mediaCollection = computed(() => {
+  return m.mediaCollectionName
 })
 
-async function upload() {
-  await m.upload()
+function setMediaCollectionName(val: string) {
+  m.mediaCollectionName = val
 }
 
 function openMultiItemSelector() {
 
+}
+
+async function upload() {
+  await m.upload()
 }
 
 function cancel() {

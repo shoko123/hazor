@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
-
 use Illuminate\Support\Facades\DB;
+
 use App\Models\App\AppModel;
-use Exception;
+use App\Models\Functional\MediaModel;
 
 class AppController extends Controller
 {
@@ -22,7 +22,7 @@ class AppController extends Controller
                 'authenticatedUsersOnly' => env('ACCESSIBILITY_AUTHENTICATED_ONLY')
             ],
             "bucketUrl" =>  AppModel::bucket_url(),
-            "media_collections"  => config('media-library.media_collections'),
+            "media_collections"  => MediaModel::media_collections(),
             "itemsPerPage" => config('display_options.itemsPerPage'),
             "msg" => "AppController.init()",
         ], 200);

@@ -23,6 +23,8 @@ export const useMediaStore = defineStore('media', () => {
   const bucketUrl = ref("")
   const mediaCollectionNames = ref<string[]>([])
 
+ //Media collection index (3 is the index of 'Photo' - quick and dirty)
+  const mediaCollectionName = ref("Photo")
   const showUploader = ref<boolean>(false)
 
   function initMedia(burl: string, media_collections: string[]) {
@@ -50,8 +52,7 @@ export const useMediaStore = defineStore('media', () => {
     }
   }
 
-  //Media collection index
-  const mediaCollectionIndex = ref(0)
+ 
 
   //upload
   const images = ref<File[]>([])
@@ -115,8 +116,8 @@ export const useMediaStore = defineStore('media', () => {
 
     const idAsString = (<TFields>i.fields).id as unknown as string
     fd.append("model", r.current.module);
-    fd.append("id", idAsString);
-    fd.append("media_collection_name", mediaCollectionNames.value[mediaCollectionIndex.value])
+    fd.append("model_id", idAsString);
+    fd.append("media_collection_name", mediaCollectionName.value)
 
     return send("media/upload", 'post', fd)
       .then((res) => {
@@ -136,8 +137,8 @@ export const useMediaStore = defineStore('media', () => {
     const r = useRoutesMainStore()
     const i = useItemStore()
 
-    console.log(`destroy() media_id: ${media_id}, model_type: ${r.current.module}, model_id: ${(<TFields>i.fields).id}`)
-    return send("media/destroy", 'post', { media_id, model_type: r.current.module, model_id: (<TFields>i.fields).id })
+    console.log(`destroy() media_id: ${media_id}, model: ${r.current.module}, model_id: ${(<TFields>i.fields).id}`)
+    return send("media/destroy", 'post', { media_id, model: r.current.module, model_id: (<TFields>i.fields).id })
       .then((res) => {
         showUploader.value = false
         showSnackbar("Media deleted successfully")
@@ -168,7 +169,7 @@ export const useMediaStore = defineStore('media', () => {
     buildMedia,
     showUploader,
     mediaCollectionNames,
-    mediaCollectionIndex,
+    mediaCollectionName,
     setItemMedia,
     upload,
     images,

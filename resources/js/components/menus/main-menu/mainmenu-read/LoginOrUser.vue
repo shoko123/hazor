@@ -1,5 +1,5 @@
 <template>
-  <v-btn v-if="showLoginButton" text @click="loginClick()">Login</v-btn>
+  <v-btn v-if="showLoginButton" @click="loginClick()">Login</v-btn>
   <v-menu v-if="auth.authenticated">
     <template v-slot:activator="{ props }">
       <v-btn v-bind="props">

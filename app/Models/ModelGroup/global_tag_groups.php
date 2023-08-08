@@ -1,11 +1,13 @@
 
 <?php
+
+use App\Models\Functional\MediaModel;
 function globalGroups()
 {
     return [
         "Media" => [
             "group_type_code" => "BF",
-            "params"  => config('media-library.media_collections')
+            "params"  => MediaModel::media_collections()
         ],
         "Scope" => [
             "group_type_code" => "BF",

@@ -16,6 +16,7 @@ import { useRouter } from 'vue-router'
 let { current } = storeToRefs(useRoutesMainStore())
 
 const { showUploader } = storeToRefs(useMediaStore())
+const { clear } = useMediaStore()
 const router = useRouter()
 
 const header = computed(() => {
@@ -31,6 +32,7 @@ function showUploader1() {
   showUploader.value = true
 }
 function back() {
+  clear()
   router.push({ name: 'show', params: { module: current.value.url_module, slug: current.value.slug } })
   showUploader.value = false
 }
