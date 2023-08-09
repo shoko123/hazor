@@ -31,19 +31,17 @@
           </v-row>
 
           <v-row>
-            <v-menu v-if="mediaReady">
-              <template v-slot:activator="{ props }">
-                <v-btn v-bind="props">
-                  Type: {{ mediaCollection }}
-                </v-btn>
-              </template>
-              <v-list>
-                <v-list-item v-for="(item, index) in mediaCollectionNames" :key="index" :value="index"
-                  @click="setMediaCollectionName(item)">
-                  <v-list-item-title>{{ item }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
+            <v-btn v-if="mediaReady">
+              Type: {{ mediaCollection }}
+              <v-menu activator="parent">
+                <v-list>
+                  <v-list-item v-for="(item, index) in mediaCollectionNames" :key="index" :value="item"
+                    @click="setMediaCollectionName(item)">
+                    <v-list-item-title>{{ item }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </v-btn>
 
             <v-btn v-if="mediaReady" @click="upload" class="ml-2">Upload</v-btn>
             <v-btn v-if="mediaReady" @click="openMultiItemSelector" class="ml-2">Upload as multi item media</v-btn>
