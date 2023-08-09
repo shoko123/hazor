@@ -47,6 +47,5 @@ function userOptionsClicked(item: TUserOption) {
       break;
   }
 }
-
 </script>
 
