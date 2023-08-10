@@ -6,7 +6,7 @@
 //activities (e.g. clear, copy current -> new,), before
 //proceeding to the new route.
 
-import type { TRouteInfo, TPlanAction, TPrepareResponse, TModule, TParseSlugData, TParseSlugResponse, TParseErrorDetails } from '@/js/types/routesTypes'
+import type { TRouteInfo, TPlanAction, TPrepareResponse, TModule, TParseSlugData, TParseQueryData, TParseErrorDetails } from '@/js/types/routesTypes'
 import type { RouteLocationNormalized, RouteLocationRaw, LocationQuery } from 'vue-router'
 import { TLocusFields, TStoneFields, TFaunaFields, } from '@/js/types/moduleFieldsTypes'
 import { ref } from 'vue'
@@ -33,7 +33,10 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let p = useRoutesParserStore()
   let f = useFilterStore()
 
-  async function prepareForNewRoute(module: TModule, query: LocationQuery, slug: string, plan: TPlanAction[]): Promise<TPrepareResponse> {
+  const fromUndef = ref<boolean>(false)
+
+  async function prepareForNewRoute(module: TModule, query: LocationQuery, slug: string, plan: TPlanAction[], fromUndefined: boolean): Promise<TPrepareResponse> {
+    fromUndef.value = fromUndefined
     for (const x of plan) {
       switch (x) {
         case 'module.load':
@@ -146,7 +149,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   async function loadMainCollection(module: TModule, query: LocationQuery) {
     let queryRes
     try {
-      queryRes = f.urlQueryObjectToApiFilters(query)
+      queryRes = f.urlQueryToFilters(query)
       //console.log(`loadMainCollection()  queryRes:  ${JSON.stringify(queryRes, null, 2)}`)
     }
     catch (err) {
@@ -156,10 +159,14 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     if (!queryRes.success) {
       throw (<TParseErrorDetails>queryRes.data).error
     }
+    let apiQuery = <TParseQueryData> queryRes.data
+    if(fromUndef.value){
+      f.setFiltersFromUrlQuery(apiQuery.selectedFilters)
+    }
 
     n.showSpinner(`Loading ${module} collection...`)
     console.log(`prepare.loadMainCollection()`)
-    return xhr.send('model/index', 'post', { model: module, query: queryRes.data })
+    return xhr.send('model/index', 'post', { model: module, query: apiQuery.apiFilters })
       .then(res => {
         if (res.data.collection.length === 0) {
           throw EmptyResultSetError

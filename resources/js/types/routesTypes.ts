@@ -63,14 +63,25 @@ type TParseSlugResponse = {
     data: TParseErrorDetails | TSlugParams
 }
 
-type TParseQueryData = {
+type TSelectedFilterFromQuery = {
+    param: string,
+    group_type_code: string,
+    extra: string
+}
+
+type TApiFilters = {
     model_tag_ids: number[],
-    global_tag_ids: number[],
-    column_values: { column_name: string, vals: string[] }[],
-    column_lookup_ids: { column_name: string, vals: number[] }[],
-    column_search: { column_name: string, vals: string[] }[],
-    bespoke: { name: string, vals: string[] }[],
-    order_by:{ column_name: string, asc: boolean }[],
+        global_tag_ids: number[],
+        column_values: { column_name: string, vals: string[] }[],
+        column_lookup_ids: { column_name: string, vals: number[] }[],
+        column_search: { column_name: string, vals: string[] }[],
+        bespoke: { name: string, vals: string[] }[],
+        order_by: { column_name: string, asc: boolean }[],
+}
+
+type TParseQueryData = {
+    apiFilters:TApiFilters,
+    selectedFilters: TSelectedFilterFromQuery[]
 }
 
 type TParseUrlQueryResponse = {
@@ -100,6 +111,8 @@ export {
     TParseUrlModuleResponse,
     TParseQueryData,
     TParseUrlQueryResponse,
+    TApiFilters,
+    TSelectedFilterFromQuery,
     TRouteEntityFlags,
     TPlanResponse,
     TPlanAction,

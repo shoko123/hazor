@@ -48,7 +48,6 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         let p = useRoutesPrepareStore()
         let { authenticated } = storeToRefs(useAuthStore())
 
-
         console.log(`handleRouteChange(${String(handle_from.name)} -> ${String(handle_to.name)})`)
 
         //authorize
@@ -83,7 +82,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             to.value.url_module = ''
         }
 
-        console.log(`after parse() to: ${JSON.stringify(to.value, null, 2)})`)
+        console.log(`after successful module parse. to: ${JSON.stringify(to.value, null, 2)})`)
 
         //verify that the transition is legal and prepare the plan required for a successful transition.
 
@@ -100,7 +99,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         isLoading.value = true
 
         try {
-            await p.prepareForNewRoute(to.value.module, handle_to.query, <string>handle_to.params.slug, <TPlanAction[]>planResponse.data)
+            await p.prepareForNewRoute(to.value.module, handle_to.query, <string>handle_to.params.slug, <TPlanAction[]>planResponse.data, handle_from.name === undefined)
             finalizeRouting(handle_to, handle_from)
 
             //console.log(`router.beforeEach returned ${JSON.stringify(res, null, 2)}`);
@@ -142,7 +141,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         current.value.name = <TName>handle_to.name
         current.value.module = to.value.module
         current.value.url_module = to.value.url_module
-        current.value.queryParams = current.value.name === 'index' ? handle_to.query : undefined
+        current.value.queryParams = ['index', 'show'].includes(current.value.name) ? handle_to.query : undefined
         current.value.url_full_path = handle_to.fullPath
         current.value.preLoginFullPath = to.value.url_module === 'auth' ? handle_from.fullPath: undefined
         
