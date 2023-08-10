@@ -1,7 +1,7 @@
 <template>
   <v-hover v-slot="{ isHovering, props }">
     <v-card v-bind="props" :color="isHovering ? 'blue' : undefined">
-      <v-img :src="media.urls.full" :lazy-src="media.urls.tn" aspect-ratio="1" :cover="cover" max-height="300" class="bg-grey-lighten-2">
+      <v-img :src="media.urls.full" :lazy-src="media.urls.tn" aspect-ratio="1" id="img" class="bg-grey-lighten-2">
         <v-btn v-if="showTag" class="text-subtitle-1 font-weight-medium black--text" color="grey">{{ tagText }}</v-btn>
         <v-card class="mx-auto" color="transparent" flat>
           <v-card-text class="text-body-1 white--text">
@@ -88,4 +88,9 @@ const overlay = computed(() => {
 })
 
 </script>
+<style scoped>
+#img {
+  border: 2px solid #555;
+}
 
+</style>

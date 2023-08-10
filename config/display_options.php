@@ -2,7 +2,7 @@
 
 return [
     'itemsPerPage' => [
-        'Image' => 18,
+        'Image' => 100,
         'Chip' => 250,
         'Table' => 1000
     ],

@@ -223,8 +223,13 @@ export const useFilterStore = defineStore('filter', () => {
     console.log(`filter.clearSelectedFilters()`)
     selectedFilterParams.value.forEach(x => {
       let pieces = x.split('.')
-      if (trio.trio.entities.groups[pieces[0]].group_type_code === 'CS') {
-        trio.setFilterSearchTerm(x, "")
+      switch (trio.trio.entities.groups[pieces[0]].group_type_code) {
+        case 'OB':
+          trio.setOrderByString(x, "")
+        case 'CS':
+          trio.setFilterSearchTerm(x, "")
+        default:
+        //nothing to do except remove from selectedFilters
       }
     })
     selectedFilterParams.value = []

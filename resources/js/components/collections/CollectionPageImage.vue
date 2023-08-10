@@ -1,5 +1,5 @@
 <template>
-  <v-row wrap>
+  <v-row wrap no-gutters>
     <v-col v-for="(item, index) in page" :key="index" cols="2">
       <MediaSquare v-bind="{
           source: source,
@@ -61,4 +61,3 @@ function details(item: TPageCMainVImage | TPageCMediaVImage) {
 
 }
 </script>
-
