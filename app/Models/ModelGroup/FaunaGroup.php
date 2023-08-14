@@ -10,6 +10,34 @@ require_once 'global_tag_groups.php';
 class FaunaGroup  extends ModelGroup implements ModelGroupInterface
 {
     static private $model_groups = [
+        "Search-Label" => [
+            "group_type_code" => "CS",
+            "column_name" => "label",
+        ],
+        "Search-Area" => [
+            "group_type_code" => "CS",
+            "column_name" => "area",
+        ],
+        "Search-Locus" => [
+            "group_type_code" => "CS",
+            "column_name" => "locus",
+        ],
+        "Search-Basket" => [
+            "group_type_code" => "CS",
+            "column_name" => "basket",
+        ],
+        "Search-Category" => [
+            "group_type_code" => "CS",
+            "column_name" => "item_category",
+        ],
+        "Search-Taxon" => [
+            "group_type_code" => "CS",
+            "column_name" => "taxon",
+        ],
+        "Search-Element" => [
+            "group_type_code" => "CS",
+            "column_name" => "element",
+        ],
         "Base Taxon" => [
             "group_type_code" => "CL",
             "table_name" => "fauna_taxa",
@@ -88,7 +116,7 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
                 ["name" => "Basket", "column_name" => "basket"],
                 ["name" => "Label", "column_name" =>  "label"],
             ],
-        ],        
+        ],
     ];
 
     public function __construct()
@@ -111,6 +139,15 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
     public function trio(): array
     {
         $cats = [
+            "Search" => [
+                "Search-Label",
+                "Search-Area",
+                "Search-Locus",
+                "Search-Basket",
+                "Search-Category",
+                "Search-Taxon",
+                "Search-Element",
+            ],            
             "Basic Characteristics" => [
                 "Life Stage",
                 "Symmetry",
@@ -137,7 +174,7 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
             ],
             "Order By" => [
                 "Order By",
-            ]            
+            ]
         ];
 
         return $this->buildTrio($cats);

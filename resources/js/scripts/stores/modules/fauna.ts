@@ -37,6 +37,7 @@ export const useFaunaStore = defineStore('fauna', () => {
       { title: 'Area', align: 'start', key: 'area' },
       { title: 'Locus', align: 'start', key: 'locus' },
       { title: 'Basket', align: 'start', key: 'basket' },
+      { title: 'Notes', align: 'start', key: 'notes' },      
       { title: 'Category', align: 'start', key: 'item_category' },
       { title: 'Tax1', align: 'start', key: 'biological_taxonomy' },
       { title: 'Tax2', align: 'start', key: 'has_taxonomic_identifier' },

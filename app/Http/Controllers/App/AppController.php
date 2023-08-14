@@ -17,11 +17,12 @@ class AppController extends Controller
     public function init()
     {
         return response()->json([
+            "appUrl" =>  env('APP_URL'),
+            "bucketUrl" =>  env('S3_BUCKET_URL'),            
             "accessibility" => [
                 'readOnly' => env('ACCESSIBILITY_READ_ONLY'),
                 'authenticatedUsersOnly' => env('ACCESSIBILITY_AUTHENTICATED_ONLY')
             ],
-            "bucketUrl" =>  AppModel::bucket_url(),
             "media_collections"  => MediaModel::media_collections(),
             "itemsPerPage" => config('display_options.itemsPerPage'),
             "msg" => "AppController.init()",
@@ -42,7 +43,8 @@ class AppController extends Controller
         return response()->json([
             "msg" => "AppController.totals",
             "totals" => $totals,
-            "bucketUrl" =>  AppModel::bucket_url(),
+            "bucketUrl" =>  env('S3_BUCKET_URL'),
+            "appUrl" => env('APP_URL')
         ], 200);
     }
 }

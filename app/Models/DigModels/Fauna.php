@@ -66,7 +66,7 @@ class Fauna extends FindModel
 
     public function builderDefaultOrder(): void
     {
-        $this->builder->orderBy('id', 'asc');
+        $this->builder->orderBy('label', 'asc');
     }
     
     public function builderPageTableSelect(): void

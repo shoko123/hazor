@@ -25,10 +25,11 @@ class CreateFaunaTables extends Migration
 
         Schema::create('fauna', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('label', 50)->nullable();
-            $table->string('area', 50)->nullable();
-            $table->string('locus', 50)->nullable();
-            $table->string('basket', 50)->nullable();
+            $table->unsignedMediumInteger('label')->nullable();
+            $table->string('area', 5)->nullable();
+            $table->unsignedMediumInteger('locus')->nullable();
+            $table->unsignedMediumInteger('basket')->nullable();
+            $table->string('notes', 45)->nullable();            
             $table->string('item_category', 50)->nullable();
             $table->string('biological_taxonomy', 50)->nullable();
             $table->string('has_taxonomic_identifier', 50)->nullable();
@@ -37,7 +38,6 @@ class CreateFaunaTables extends Migration
             $table->string('taxon')->nullable();
             $table->string('element', 50)->nullable();
             $table->string('fragment_present', 50)->nullable();
-            $table->unsignedSmallInteger('bone_number')->nullable();
             $table->string('snippet', 200)->nullable();
             $table->unsignedTinyInteger('taxon_id')->default(1);
             $table->unsignedTinyInteger('element_id')->default(1);
