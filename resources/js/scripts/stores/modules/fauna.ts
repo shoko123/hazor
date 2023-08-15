@@ -7,9 +7,27 @@ import { TParseSlugResponse } from '@/js/types/routesTypes'
 export const useFaunaStore = defineStore('fauna', () => {
 
   function slugParamsFromSlug(slug: string): TParseSlugResponse {
+
+    function isPositiveInteger(str: string) {
+      const number = Number(str);
+      const isInteger = Number.isInteger(number);
+      const isPositive = number > 0;
+
+      return isInteger && isPositive;
+    }
+
+    if (!isPositiveInteger(slug)) {
+      return {
+        success: false, data: {
+          error: "BadIdFormat",
+          message: "Slug is not a positive integer"
+        }
+      }
+    }
+
     return {
       success: true, data: {
-        id: slug as unknown as number
+        label: slug as unknown as number,
       }
     }
   }
@@ -32,12 +50,11 @@ export const useFaunaStore = defineStore('fauna', () => {
 
   const headers = computed(() => {
     return [
-      { title: 'ID', align: 'end', key: 'tag', },
-      { title: 'Label', align: 'end', key: 'label', },
+      { title: 'Label', align: 'end', key: 'tag', },
       { title: 'Area', align: 'start', key: 'area' },
       { title: 'Locus', align: 'start', key: 'locus' },
       { title: 'Basket', align: 'start', key: 'basket' },
-      { title: 'Notes', align: 'start', key: 'notes' },      
+      { title: 'Notes', align: 'start', key: 'notes' },
       { title: 'Category', align: 'start', key: 'item_category' },
       { title: 'Tax1', align: 'start', key: 'biological_taxonomy' },
       { title: 'Tax2', align: 'start', key: 'has_taxonomic_identifier' },

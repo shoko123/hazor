@@ -44,27 +44,32 @@ class Locus extends DigModel
     {
         return $this->area . '.' . $this->name;
     }
-    public function builderLoad(): void
+    public function builderIndexLoad(): void
     {
         $this->builder = $this->select('id', 'area', 'name');
     }
 
-    public function builderDefaultOrder(): void
+    public function builderIndexDefaultOrder(): void
     {
         $this->builder->orderBy('id', 'asc');
     }
 
-    public function builderPageTableSelect(): void
+    public function builderPageTableLoad(): void
     {
         $this->builder = $this->select('*');
     }
 
-    public function builderPageImageSelect(): void
+    public function builderPageImageLoad(): void
     {
         $this->builder = $this->select('id', 'area', 'name', DB::raw('type AS short'))->with("media");
     }
 
-    public function builderItemSelect(): void
+    public function builderShowLocate(array $v): void
+    {
+        $this->builder->where('area', '=', $v["params"]["area"])->where('name', '=', $v["params"]["name"]);
+    }
+
+    public function builderShowLoad(): void
     {
         $this->builder = self::with([
             'media',
@@ -73,14 +78,9 @@ class Locus extends DigModel
         ]);
     }
 
-    public function builderItemSelectCarousel(): void
+    public function builderShowCarouselLoad(): void
     {
         $this->builder = $this->select('id', 'area', 'name', DB::raw('type AS short'))->with("media");
-    }
-
-    public function builderItemLocate(array $v): void
-    {
-        $this->builder->where('area', '=', $v["params"]["area"])->where('name', '=', $v["params"]["name"]);
     }
 
     public function discreteColumns(Model $model): array

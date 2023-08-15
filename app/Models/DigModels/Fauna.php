@@ -56,31 +56,35 @@ class Fauna extends FindModel
 
     public function getSlugAttribute()
     {
-        return $this->id;
+        return $this->label;
     }
 
-    public function builderLoad(): void
+    public function builderIndexLoad(): void
     {
-        $this->builder = $this->select('id');
+        $this->builder = $this->select('id', 'label');
     }
 
-    public function builderDefaultOrder(): void
+    public function builderIndexDefaultOrder(): void
     {
         $this->builder->orderBy('label', 'asc');
     }
     
-    public function builderPageTableSelect(): void
+    public function builderPageTableLoad(): void
     {
         $this->builder = $this->select('*');
     }
 
-    public function builderPageImageSelect(): void
+    public function builderPageImageLoad(): void
     {
-        $this->builder = $this->select('id', DB::raw('snippet AS short'))->with("media");
+        $this->builder = $this->select('id', 'label', DB::raw('snippet AS short'))->with("media");
     }
 
+    public function builderShowLocate(array $v): void
+    {
+        $this->builder->where('label', '=', $v["params"]["label"]);
+    }
 
-    public function builderItemSelect(): void
+    public function builderShowLoad(): void
     {
         $this->builder = self::with([
             'media',
@@ -91,14 +95,9 @@ class Fauna extends FindModel
         ]);
     }
 
-    public function builderItemLocate(array $v): void
+    public function builderShowCarouselLoad(): void
     {
-        $this->builder->where('id', '=', $v["params"]["id"]);
-    }
-
-    public function builderItemSelectCarousel(): void
-    {
-        $this->builder =  $this->select('id', DB::raw('snippet AS short'))->with("media");
+        $this->builder =  $this->select('id', 'label', DB::raw('snippet AS short'))->with("media");
     }
 
     public function discreteColumns(Model $fields): array

@@ -55,6 +55,7 @@ const data: TFaunaFields = reactive({
   area: "",
   locus: "",
   basket: "",
+  notes: "",
   item_category: "",
   biological_taxonomy: "",
   has_taxonomic_identifier: "",
@@ -63,7 +64,6 @@ const data: TFaunaFields = reactive({
   taxon: "",
   element: "",
   fragment_present: "",
-  bone_number: "",
   snippet: "",
   taxon_id: 1,
   element_id: 1
@@ -76,6 +76,7 @@ const rules = computed(() => {
     area: {},
     locus: {},
     basket: {},
+    notes: {},
     item_category: {},
     biological_taxonomy: {},
     has_taxonomic_identifier: {},
@@ -84,7 +85,6 @@ const rules = computed(() => {
     taxon: {},
     element: {},
     fragment_present: {},
-    bone_number: {},
     snippet: {},
     taxon_id: {},
     element_id: {}

@@ -38,13 +38,13 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
     public function index($query)
     {
-        $this->builderLoad();
-        $this->applyFilters($query);
+        $this->builderIndexLoad();
+        $this->builderIndexApplyFilters($query);
 
         if (empty($query["order_by"])) {
-            $this->builderDefaultOrder();
+            $this->builderIndexDefaultOrder();
         } else {
-            $this->builderOrder($query["order_by"]);
+            $this->builderIndexOrder($query["order_by"]);
         }
 
         $collection = $this->builder->get();
@@ -54,7 +54,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         });
     }
 
-    public function applyFilters($query)
+    public function builderIndexApplyFilters($query)
     {
         if (!empty($query["model_tag_ids"])) {
             $this->applyModelTagFilters($query["model_tag_ids"]);
@@ -160,32 +160,26 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
     public function page($ids, $view): Collection
     {
-        $idsAsCommaSeperatedString = implode(',', $ids);
         switch ($view) {
             case 'Table':
-                $this->builderPageTableSelect();
+                $this->builderPageTableLoad();
                 break;
 
             case 'Image':
-                $this->builderPageImageSelect();
+                $this->builderPageImageLoad();
                 break;
         }
         $this->builder = $this->builder->whereIn('id', $ids);
-        $res = $this->builder->orderByRaw("FIELD(id, $idsAsCommaSeperatedString)")
+
+        $res = $this->builder->orderBy(DB::raw('FIELD(`id`, ' . implode(',', $ids) . ')'))
             ->get();
 
-        $r = collect([]);
         switch ($view) {
             case "Table":
                 return $res;
-                return  $r = $res->map(function ($item, $key) {
-                    return array_merge($item->toArray(), ["slug" => $item->slug1]);
-                });
-
-
 
             case "Image":
-
+                $r = collect([]);
                 $r = $res->map(function ($item, $key) {
                     $media = null;
                     if (!$item->media->isEmpty()) {
@@ -199,11 +193,11 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
                         "media1" => $media,
                     ];
                 });
+                return $r;
         }
-        return $r;
     }
 
-    public function builderOrder(array $order_by)
+    public function builderIndexOrder(array $order_by)
     {
         foreach ($order_by as $key => $data) {
             $this->builder->orderBy($data["column_name"], $data["asc"] ? 'asc' : 'desc');
@@ -212,8 +206,8 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
     public function show(array $validated)
     {
-        $this->builderItemSelect();
-        $this->builderItemLocate($validated);
+        $this->builderShowLoad();
+        $this->builderShowLocate($validated);
         $item = $this->builder->first();
 
 
@@ -260,7 +254,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
     public function carousel($id)
     {
-        $this->builderItemSelectCarousel();
+        $this->builderShowCarouselLoad();
         $item =  $this->builder->findOrFail($id);
 
         $media1 = null;
@@ -279,7 +273,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
     public function firstSlug()
     {
-        $this->builderLoad();
+        $this->builderIndexLoad();
         $item = $this->builder->where('id', '<', 10)->first();
         return $item["slug"];
     }

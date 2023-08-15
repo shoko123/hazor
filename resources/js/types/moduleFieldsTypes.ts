@@ -45,6 +45,7 @@ type TFaunaFields = {
         area: string,
         locus: string,
         basket: string,
+        notes: string,
         item_category: string,
         biological_taxonomy: string,
         has_taxonomic_identifier: string,
@@ -53,11 +54,11 @@ type TFaunaFields = {
         taxon: string,
         element: string,
         fragment_present: string,
-        bone_number: string,
         snippet: string,
         taxon_id: number
         element_id: number
 }
+
 type TFaunaField = keyof TFaunaFields
 
 type TFields = TLocusFields | TStoneFields | TFaunaFields

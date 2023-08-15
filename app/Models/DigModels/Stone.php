@@ -8,11 +8,9 @@ use App\Models\App\DigModel;
 use App\Models\App\FindModel;
 use App\Models\Tags\StoneTag;
 use App\Models\Tags\Tag;
-use App\Http\Requests\DigModelStoreRequest;
 use App\Models\Lookups\StoneBaseType;
 use App\Models\Lookups\StoneMaterial;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 
 class Stone extends FindModel
 {
@@ -60,17 +58,17 @@ class Stone extends FindModel
         return $this->basket . '.' . $this->stone_no;
     }
 
-    public function builderLoad(): void
+    public function builderIndexLoad(): void
     {
         $this->builder = $this->select('id', 'basket', 'stone_no');
     }
 
-    public function builderDefaultOrder(): void
+    public function builderIndexDefaultOrder(): void
     {
         $this->builder->orderBy('basket', 'asc')->orderBy('stone_no', 'asc');
     }
 
-    public function builderPageTableSelect(): void
+    public function builderPageTableLoad(): void
     {
         $this->builder = $this->select([
             'id', 'basket', 'stone_no', 'area', 'locus',
@@ -82,12 +80,17 @@ class Stone extends FindModel
         ]);
     }
 
-    public function builderPageImageSelect(): void
+    public function builderPageImageLoad(): void
     {
-        $this->builder = $this->select('id', 'basket', 'stone_no', DB::raw('description AS short'))->with("media");
+        $this->builder = $this->select('id', 'basket', 'stone_no', DB::raw("CONCAT(COALESCE(`type`,''),' ',description) AS short"))->with("media");
     }
 
-    public function builderItemSelect(): void
+    public function builderShowLocate(array $v): void
+    {
+        $this->builder->where('basket', '=', $v["params"]["basket"])->where('stone_no', '=', $v["params"]["stone_no"]);
+    }
+
+    public function builderShowLoad(): void
     {
         $this->builder = self::with([
             'media',
@@ -100,12 +103,7 @@ class Stone extends FindModel
         ]);
     }
 
-    public function builderItemLocate(array $v): void
-    {
-        $this->builder->where('basket', '=', $v["params"]["basket"])->where('stone_no', '=', $v["params"]["stone_no"]);
-    }
-
-    public function builderItemSelectCarousel(): void
+    public function builderShowCarouselLoad(): void
     {
         $this->builder =  $this->select('id', 'basket', 'stone_no', DB::raw('description AS short'))->with("media");
     }

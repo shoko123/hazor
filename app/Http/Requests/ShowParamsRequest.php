@@ -25,7 +25,7 @@ class ShowParamsRequest extends FormRequest
             'model' => 'required|in:Fauna',
             'id' => 'sometimes|required|exists:fauna,id',
             'slug' => 'string',                
-            'params.id' => 'exists:fauna,id',
+            'params.label' => 'exists:fauna,label',
         ]
     ];
 

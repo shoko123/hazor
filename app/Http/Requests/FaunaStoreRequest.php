@@ -6,6 +6,8 @@ use App\Http\Requests\DigModelStoreRequest;
 
 class FaunaStoreRequest extends DigModelStoreRequest
 {
+    //authorization done at DigModelStoreRequest.php
+
     private $rules = [];
 
     static  $base_rules = [
@@ -13,6 +15,7 @@ class FaunaStoreRequest extends DigModelStoreRequest
         'item.area' => 'max:20|nullable',
         'item.locus' => 'max:30|nullable',
         'item.basket' => 'max:30|nullable',
+        'item.notes' => 'max:45|nullable',        
         'item.stratum' => 'max:20|nullable',
         'item.item_category' => 'max:30|nullable',
         'item.biological_taxonomy' => 'max:100|nullable',
@@ -21,7 +24,6 @@ class FaunaStoreRequest extends DigModelStoreRequest
         'item.taxon' => 'max:30|nullable',
         'item.element' => 'max:30|nullable',
         'item.fragment_present' => 'max:30|nullable',
-        'item.bone_number' => 'max:40|nullable',
         'item.snippet' => 'max:200|nullable',
         'item.taxon_id' => 'max:10|nullable',
         'item.element_id' => 'max:10|nullable',
