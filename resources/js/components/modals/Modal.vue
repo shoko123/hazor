@@ -5,9 +5,7 @@
 </template>
 
 <script lang="ts" setup >
-import type { Component } from 'vue'
-import { computed } from 'vue'
-import { storeToRefs } from 'pinia'
+import { computed, type Component } from 'vue'
 import Carousel from './ModalCarousel.vue'
 import Picker from './ModalPicker.vue'
 import { useModalStore } from '../../scripts/stores/modals/modal'
@@ -15,14 +13,11 @@ import { useModalStore } from '../../scripts/stores/modals/modal'
 const m = useModalStore()
 
 const comp = computed<Component>(() => {
-
     switch (m.modalOwner) {
-        case 'Carousel':
-            return Carousel
         case 'Picker':
             return Picker
+        case 'Carousel':
         default:
-        console.log(`Modal.vue invalid modalOwner`)            
             return Carousel
     }
 })

@@ -8,6 +8,7 @@
         "sourceMap": true,
         "resolveJsonModule": true,
         "esModuleInterop": true,
+        "allowJs": true,
         "lib": [
             "esnext",
             "dom"
@@ -24,7 +25,6 @@
     },
     "vueCompilerOptions": {
         "target": 3,
-        "experimentalDisableTemplateSupport": true
       },
     "include": [
         "resources/**/*"
