@@ -55,7 +55,7 @@ export const useItemStore = defineStore('item', () => {
   }
 
  function saveMedia1(media: TMediaRecord[]) {
-    media1.value = media.length > 0 ? buildMedia(media[0]) : buildMedia(null)
+    media1.value = media.length > 0 ? buildMedia(media[0].urls) : buildMedia(null)
   }
 
   function itemClear() {

@@ -3,7 +3,7 @@ import { TModule } from '@/js/types/routesTypes'
 
 //raw api returned by both page (all collections) and item.show.
 type TMediaUrls = { full: string, tn: string }
-type TMediaRecord = TMediaUrls & { id: number, file_name: string }
+type TMediaRecord = {id: number, urls: TMediaUrls, file_name: string, order_column: number, title?: string, description?: string }
 
 
 //for consumption by frontend. May either have an actual item image, or a placeholder.
@@ -12,19 +12,7 @@ type TMediaOfItem = {
         urls: TMediaUrls,
 }
 
-//Params passed as props to MediaSquare, and Overlay components
-type TImageableDetailsMain = {
-        id: number,
-        slug: string,
-        tag: string,
-        description: string
-}
-
-type TImageableDetailsMedia = {
-        id: number,
-        description: string | null
-}
-type TImageableDetails = TImageableDetailsMain | TImageableDetailsMedia
+type TPageCMedia = TMediaRecord
 
 //Single carousel item, according to collectionName
 type TApiCarouselMain = {
@@ -69,9 +57,7 @@ type TCarousel = TCarouselMain | TCarouselMedia
 export {
         TMediaUrls,
         TMediaOfItem,
-        TImageableDetailsMain,
-        TImageableDetailsMedia,
-        TImageableDetails,
+        TPageCMedia,        
         TApiCarousel,
         TApiCarouselMedia,
         TApiCarouselMain,

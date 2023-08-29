@@ -4,15 +4,17 @@ namespace App\Models\App;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Exception;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+
 use App\Models\Interfaces\DigModelInterface;
-use Illuminate\Support\Collection;
 use App\Models\Functional\MediaModel;
-use Illuminate\Database\Eloquent\Builder;
 use App\Models\Tags\Tag;
-use Exception;
+
 
 abstract class DigModel extends Model implements HasMedia, DigModelInterface
 {

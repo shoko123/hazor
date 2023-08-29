@@ -73,12 +73,12 @@ class MediaModel
             if (empty($mc)) {
                 return null;
             } else {
-                return  ['id' => $mc[0]["id"], 'full' => $mc[0]->getPath(), 'tn' =>  $mc[0]->getPath('tn'), 'file_name' =>  $mc[0]["file_name"]];
+                return  ['id' => $mc[0]["id"], 'full' => $mc[0]->getPath(), 'urls' => ['tn' =>  $mc[0]->getPath('tn')], 'order_column' =>  $med["order_column"], 'file_name' =>  $mc[0]["file_name"]];
             }
         }
 
         $mapped = $mc->map(function ($med, $key) {
-            return ['id' => $med["id"], 'full' => $med->getPath(), 'tn' =>  $med->getPath('tn'), 'file_name' =>  $med["file_name"]];
+            return ['id' => $med["id"], 'urls' => ['full' => $med->getPath(), 'tn' =>  $med->getPath('tn')], 'order_column' =>  $med["order_column"], 'file_name' =>  $med["file_name"]];
         });
         
         return $mapped;

@@ -3,8 +3,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { TModule } from '../../../types/routesTypes'
-import { TMediaRecord } from '../../../types/mediaTypes'
-import { TPageCMediaVImage, TCollectionExtra, TCollectionView, TApiArray } from '@/js/types/collectionTypes'
+import { TMediaRecord, TPageCMedia } from '../../../types/mediaTypes'
+import { TCollectionExtra, TCollectionView, TApiArray } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections'
 import { useMediaStore } from '../media'
 
@@ -21,8 +21,6 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
 
     let array = ref<TMediaRecord[]>([])
 
-
-
     const collection = computed(() => {
         return {
             array: array.value,
@@ -31,13 +29,25 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
         }
     })
 
-    const page = computed<TPageCMediaVImage[]>(() => {
+    const page = computed<TPageCMedia[]>(() => {
         let ipp = c.getIpp('Image')
-        let start = ( extra.value.pageNoB1 - 1) * ipp
+        let start = (extra.value.pageNoB1 - 1) * ipp
         let slice = array.value.slice(start, start + ipp)
-        let res = slice.map(x => { return {id: x.id, media: buildMedia({full: x.full, tn: x.tn}), tag: "tag",description: "LLLLL",}})
+        let res = slice.map(x => {
+            let media = buildMedia({ full: x.urls.full, tn: x.urls.tn })
+            return {
+                id: x.id,
+                urls: {full: media.urls.full,
+                tn: media.urls.tn },
+                file_name: x.file_name,
+                order_column: x.order_column,
+                description: "LLLLL",
+                
+            }
+        })
         return res
     })
+
     function setArray(data: TApiArray[]) {
         array.value = <TMediaRecord[]>data
         extra.value.length = data.length

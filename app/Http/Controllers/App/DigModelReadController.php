@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\App\DigModel;
 use App\Http\Requests\ShowParamsRequest;
+use App\Http\Requests\PageRequest;
 
 class DigModelReadController extends Controller
 {
@@ -22,10 +23,12 @@ class DigModelReadController extends Controller
         ], 200);
     }
 
-    public function page(Request $r, DigModel $m)
+   
+    public function page(PageRequest $r, DigModel $m)
     {
+        $validated = $r->validated();
         return response()->json([
-            "page" => $m->page($r["ids"], $r["view"]),
+            "page" => $m->page($validated["ids"], $validated["view"]),
         ], 200);
     }
 

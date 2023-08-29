@@ -12,7 +12,6 @@
 
 <script lang="ts" setup >
 import { TCollectionName } from '../../types/collectionTypes'
-import { TImageableDetailsMedia } from '../../types/mediaTypes'
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
@@ -23,7 +22,6 @@ const router = useRouter()
 const props = defineProps<{
   source: TCollectionName,
   itemIndex: number,
-  details: TImageableDetailsMedia
 }>()
 
 onMounted(() => {

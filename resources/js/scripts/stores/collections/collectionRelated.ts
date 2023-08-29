@@ -3,7 +3,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { TModule } from '../../../types/routesTypes'
-import { TApiPageMedia, TCollectionExtra, TPageItem, TCollectionView, TPageCMainVImage, TApiArrayMedia, TApiPageMainImage, TApiPageMainTable, TApiArray, TApiPage } from '@/js/types/collectionTypes'
+import { TCollectionExtra, TPageItem, TCollectionView, TPageCMainVImage, TApiArrayMedia, TApiPageMainImage, TApiPageMainTable, TApiArray, TApiPage } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections'
 import { useRoutesMainStore } from '../routes/routesMain'
 import { useXhrStore } from '../xhr'

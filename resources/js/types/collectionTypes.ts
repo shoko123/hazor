@@ -1,6 +1,6 @@
 // collectionTypes.ts
 
-import { TMediaOfItem, TMediaRecord, TMediaUrls } from '@/js/types/mediaTypes'
+import { TMediaOfItem, TMediaRecord, TMediaUrls, TPageCMedia } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/routesTypes'
 
 type TCollectionView = 'Image' | 'Chip' | 'Table'
@@ -81,11 +81,8 @@ type TApiPageMainTable = {
         description: string,
 }
 
-type TApiPageMedia = TMediaUrls & { id: number, description: string }
-
 type TApiPage = TApiPageMainImage |
         TApiPageMainTable |
-        TApiPageMedia |
         TApiArrayMain |
         TApiPageTableLocus |
         TApiPageTableStone |
@@ -114,15 +111,8 @@ type TPageCMainVTable = {
         description: string
 }
 
-type TPageCMediaVImage = {
-        id: number,
-        media: TMediaOfItem,
-        tag: string,
-        description: string
-}
-
 //union of the above
-type TPageItem = TPageCMainVImage | TPageCMainVTable | TPageVChip | TPageCMediaVImage
+type TPageItem = TPageCMainVImage | TPageCMainVTable | TPageVChip | TPageCMedia
 
 //internal collection data
 type TCollectionExtra = {
@@ -159,12 +149,10 @@ export {
         TApiPageMainImage,
         TApiPageMainTable,
         TApiPageTableLocus,
-        TApiPageMedia,
         TApiPage,
         TPageVChip,
         TPageCMainVImage,
         TPageCMainVTable,
-        TPageCMediaVImage,
         TPageItem,
         TMediaUrls,
 

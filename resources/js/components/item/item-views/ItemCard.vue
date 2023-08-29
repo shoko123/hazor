@@ -11,9 +11,6 @@
             <MediaSquare v-bind="{
                 source: 'media',
                 itemIndex: 0,
-                media: media,
-                details: mediaDetails,
-                size: 250,
               }"></MediaSquare>
           </v-col>
         </v-row>
@@ -66,18 +63,6 @@ const hasMedia = computed(() => {
   return i.media1.hasMedia
 })
 
-const media = computed(() => {
-  return i.media1
-})
-
-const mediaDetails = computed(() => {
-  return {
-    id: 5,
-    collection_name: "photos",
-    order_column: 1,
-    description: null
-  }
-})
 
 </script>
 <style scoped>

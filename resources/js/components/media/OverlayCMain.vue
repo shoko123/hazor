@@ -3,7 +3,7 @@
     <!-- <v-card-text class="text-body-1 white--text"> {{text}}
     </v-card-text> -->
     <v-card-actions>
-      <v-btn class="but" @click="goTo(<TImageableDetailsMain>details)">Visit</v-btn>
+      <v-btn class="but" @click="goToItem()">Visit</v-btn>
       <v-btn class="but" @click="openModalCarousel()">Lightbox</v-btn>
     </v-card-actions>
   </v-card>
@@ -13,20 +13,22 @@
 
 <script lang="ts" setup >
 import { computed, onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-import { TCollectionName } from '../../types/collectionTypes'
-import { TImageableDetailsMain } from '../../types/mediaTypes'
+import { TCollectionName, TPageCMainVImage } from '../../types/collectionTypes'
+import { useCollectionsStore } from '../../scripts/stores/collections/collections'
+import { useCollectionMainStore } from '../../scripts/stores/collections/collectionMain'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
-import { storeToRefs } from 'pinia'
+
 import type { LocationQueryRaw } from 'vue-router'
+let { getIpp } = useCollectionsStore()
 
-
+const main = storeToRefs(useCollectionMainStore())
 const router = useRouter()
 const props = defineProps<{
   source: TCollectionName,
   itemIndex: number,
-  details: TImageableDetailsMain
 }>()
 
 let { current } = storeToRefs(useRoutesMainStore())
@@ -36,12 +38,12 @@ onMounted(() => {
 
 const { open } = useCarouselStore()
 
-const text = computed(() => {
-  if (props.details.description === null) {
-    return "";
-  } else {
-    return props.details.description.length < 101 ? props.details.description : props.details.description.substr(0, 100) + "...";
-  }
+const record = computed(() => {
+  
+  let ipp = getIpp(main.extra.value.views[main.extra.value.viewIndex])
+  let indexInPage = props.itemIndex % ipp
+  let record = main.page.value[indexInPage]
+  return record
 })
 
 function openModalCarousel() {
@@ -49,11 +51,10 @@ function openModalCarousel() {
   open(props.source, props.itemIndex )
 }
 
-function goTo(item: TImageableDetailsMain) {
-  console.log(`goto item: ${JSON.stringify(item, null, 2)}`)
+function goToItem() {
+  //console.log(`goto item: ${JSON.stringify(item, null, 2)}`)
   let queryParams = current.value.queryParams
-  router.push({ name: 'show', params: { module: current.value.url_module, slug: item.slug }, query: <LocationQueryRaw>queryParams})
-  //router.push({ name: 'index', params: { module: current.value.url_module }, query: query })
+  router.push({ name: 'show', params: { module: current.value.url_module, slug: record.value.slug }, query: <LocationQueryRaw>queryParams})
 }
 
 
