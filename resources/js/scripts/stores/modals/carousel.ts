@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { TCollectionName, TApiArrayMain, TApiArrayMedia, TApiArray } from '@/js/types/collectionTypes'
-import { TCarousel, TCarouselMedia, TCarouselMain, TApiCarouselMain, TApiCarouselMedia, TMedia } from '@/js/types/mediaTypes'
+import { TCarousel, TCarouselMedia, TCarouselMain, TApiCarouselMain, TApiCarouselMedia, TMediaOfItem } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/routesTypes'
 
 
@@ -25,7 +25,7 @@ export const useCarouselStore = defineStore('carousel', () => {
   let isOpen = ref<boolean>(false)
   let collectionName = ref<TCollectionName>('main')
   let index = ref<number>(-1)
-  let media = ref<TMedia>({ hasMedia: false, urls: { full: "", tn: "" } })
+  let media = ref<TMediaOfItem>({ hasMedia: false, urls: { full: "", tn: "" } })
 
   let mainDetails = ref<TCarouselMain>({
     id: 0,
@@ -106,7 +106,7 @@ export const useCarouselStore = defineStore('carousel', () => {
         break
       case 'media':
         url = 'media/carousel'
-        data["id"] = <TApiArrayMedia>item
+        data["id"] =item["id"]
         break
     }
 

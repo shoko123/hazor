@@ -1,14 +1,15 @@
 
 //showTypes.ts
 //types returned from 'show' api route
-import { TApiArrayMedia, TApiMedia, TApiMediaOrNull, TApiPageMedia } from "./collectionTypes"
+import { TApiArrayMedia, TMediaUrls, TApiPageMedia } from "./collectionTypes"
+import { TMediaRecord } from "./mediaTypes"
 import { TFields } from "./moduleFieldsTypes"
 
 type TApiItemShow = {
         tag: string,
         fields: TFields,
-        media: TApiMediaOrNull[],
-        media1: TApiMedia,
+        media: TMediaRecord[],
+        media1: TMediaUrls,
         mediaPage: TApiPageMedia[],
         mediaArray: TApiArrayMedia[],        
         model_tags: any[],

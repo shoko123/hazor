@@ -2,13 +2,14 @@
 import { TModule } from '@/js/types/routesTypes'
 
 //raw api returned by both page (all collections) and item.show.
-type TApiMedia = { full: string, tn: string }
-type TApiMediaOrNull = TApiMedia | null
+type TMediaUrls = { full: string, tn: string }
+type TMediaRecord = TMediaUrls & { id: number, file_name: string }
+
 
 //for consumption by frontend. May either have an actual item image, or a placeholder.
-type TMedia = {
+type TMediaOfItem = {
         hasMedia: boolean,
-        urls: { full: string, tn: string },
+        urls: TMediaUrls,
 }
 
 //Params passed as props to MediaSquare, and Overlay components
@@ -30,7 +31,7 @@ type TApiCarouselMain = {
         id: number,
         slug: string,
         description: string,
-        media: TApiMediaOrNull,
+        media: TMediaUrls | null,
         module: TModule
 }
 
@@ -66,9 +67,8 @@ type TCarousel = TCarouselMain | TCarouselMedia
 
 
 export {
-        TApiMedia,
-        TApiMediaOrNull,
-        TMedia,
+        TMediaUrls,
+        TMediaOfItem,
         TImageableDetailsMain,
         TImageableDetailsMedia,
         TImageableDetails,
@@ -78,4 +78,5 @@ export {
         TCarouselMain,
         TCarouselMedia,
         TCarousel,
+        TMediaRecord
 }

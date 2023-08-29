@@ -29,8 +29,7 @@ import OverlayRelated from './OverlayRelated.vue'
 import OverlayCMedia from './OverlayCMedia.vue'
 import OverlayMediaEdit from './OverlayMediaEdit.vue'
 import OverlayCMain from './OverlayCMain.vue'
-import { ItemNotFoundError } from '@/js/scripts/setups/routes/errors'
-import { TMedia } from '@/js/types/mediaTypes'
+import { TMediaOfItem } from '@/js/types/mediaTypes'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 
 
@@ -38,7 +37,7 @@ let { current } = storeToRefs(useRoutesMainStore())
 const props = defineProps<{
   source: TCollectionName,
   itemIndex: number,
-  media: TMedia
+  media: TMediaOfItem
   details: TImageableDetails
   size?: number
 }>()

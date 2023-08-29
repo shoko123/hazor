@@ -1,8 +1,8 @@
 // stores/media.js
 import { TFields } from '@/js/types/moduleFieldsTypes'
-import { TMedia } from '@/js/types/mediaTypes'
+import { TMediaOfItem, TMediaRecord } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/routesTypes'
-import { TApiArray, TApiArrayMedia, TApiMediaOrNull, TApiPageMedia } from '@/js/types/collectionTypes'
+import { TMediaUrls } from '@/js/types/collectionTypes'
 
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
@@ -32,7 +32,7 @@ export const useMediaStore = defineStore('media', () => {
     mediaCollectionNames.value = media_collections
   }
 
-  function buildMedia(apiMedia: TApiMediaOrNull, module?: TModule): TMedia {
+  function buildMedia(apiMedia: TMediaUrls | null, module?: TModule): TMediaOfItem {
     if (apiMedia === null || apiMedia === undefined) {
       return {
         hasMedia: false,
@@ -122,7 +122,7 @@ export const useMediaStore = defineStore('media', () => {
     return send("media/upload", 'post', fd)
       .then((res) => {
         showUploader.value = false
-        setItemMedia(res.data.mediaArray, res.data.mediaPage, res.data.media1)
+        setItemMedia(res.data.media)
         clear()
         showSnackbar("Media uploaded successfully")
       })
@@ -136,41 +136,33 @@ export const useMediaStore = defineStore('media', () => {
   async function destroy(media_id: number) {
     const r = useRoutesMainStore()
     const i = useItemStore()
-
     console.log(`destroy() media_id: ${media_id}, model: ${r.current.module}, model_id: ${(<TFields>i.fields).id}`)
     return send("media/destroy", 'post', { media_id, model: r.current.module, model_id: (<TFields>i.fields).id })
       .then((res) => {
         showUploader.value = false
         showSnackbar("Media deleted successfully")
-        setItemMedia(res.data.mediaArray, res.data.mediaPage, res.data.media1)
+        setItemMedia(res.data.media)
       })
       .catch((err) => {
         console.log(`media.dstroy failed! err:\n ${JSON.stringify(err, null, 2)}`)
       })
   }
 
-  function setItemMedia(array: TApiArrayMedia[], page: TApiPageMedia[], media1: TApiMediaOrNull) {
+  function setItemMedia(media: TMediaRecord[]) {
     let i = useItemStore()
-    let c = useCollectionsStore()
     let cm = useCollectionMediaStore()
-    i.media1 = buildMedia(media1)
-
-    c.setArray('media', array)
-    if (array.length > 0) {
-      cm.savePage(page, true)
-    } else {
-      c.clear(['media'])
-    }
+    i.media1 = media.length > 0 ? buildMedia(media[0]) : buildMedia(null)
+    cm.setArray(media)
   }
 
   return {
     initMedia,
     bucketUrl,
     buildMedia,
+    setItemMedia,
     showUploader,
     mediaCollectionNames,
     mediaCollectionName,
-    setItemMedia,
     upload,
     images,
     imagesAsBrowserReadable,

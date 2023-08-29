@@ -15,6 +15,7 @@ import { useXhrStore } from '../xhr'
 import { useTrioStore } from '../trio/trio'
 import { useFilterStore } from '../trio/filter'
 import { useCollectionsStore } from '../collections/collections'
+import { useMediaStore } from '../media'
 import { useModuleStore } from '../module'
 import { useNotificationsStore } from '../notifications'
 import { useItemStore } from '../item'
@@ -23,15 +24,16 @@ import { useRoutesParserStore } from './routesParser'
 import { EmptyResultSetError } from '../../setups/routes/errors'
 
 export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
-  let xhr = useXhrStore();
-  let n = useNotificationsStore();
-  let m = useModuleStore();
+  let xhr = useXhrStore()
+  let n = useNotificationsStore()
+  let m = useModuleStore()
   let c = useCollectionsStore()
-  let t = useTrioStore();
   let i = useItemStore();
   let r = useRoutesMainStore()
   let p = useRoutesParserStore()
   let f = useFilterStore()
+  let { trioReset, setTrio } = useTrioStore()
+  let { setItemMedia } = useMediaStore()
 
   const fromUndef = ref<boolean>(false)
 
@@ -46,7 +48,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'module.clear':
-          t.trioReset()
+          trioReset()
           break
 
         case 'collection.item.load':
@@ -109,7 +111,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
   async function loadTrio(module: TModule) {
-    t.trioReset()
+    trioReset()
     n.showSpinner('Loading module data ...')
     return xhr.send('model/init', 'post', { model: module })
       .then(res => {
@@ -118,7 +120,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
         m.counts = res.data.counts
         m.itemViews = res.data.itemViews
         c.clear(['main', 'media', 'related'])
-        t.setTrio(res.data.trio)
+        setTrio(res.data.trio)
         return true
       })
       .catch(err => {
@@ -159,8 +161,8 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     if (!queryRes.success) {
       throw (<TParseErrorDetails>queryRes.data).error
     }
-    let apiQuery = <TParseQueryData> queryRes.data
-    if(fromUndef.value){
+    let apiQuery = <TParseQueryData>queryRes.data
+    if (fromUndef.value) {
       f.setFiltersFromUrlQuery(apiQuery.selectedFilters)
     }
 
@@ -201,7 +203,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       //let idResData = <TParseSlugData>sp.data
       r.to.slug = res.data.slug
       r.to.idParams = res.data.id_params
-
+      setItemMedia(res.data.media)
       i.saveItem(res.data)
       n.showSpinner(false)
       return true

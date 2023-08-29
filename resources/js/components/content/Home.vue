@@ -11,13 +11,13 @@
 <script setup lang="ts" >
 import { computed } from 'vue'
 import { useMediaStore } from '../../scripts/stores/media'
-import { TMedia } from '../../types/mediaTypes'
+import { TMediaOfItem } from '../../types/mediaTypes'
 import { storeToRefs } from 'pinia'
 let { bucketUrl } = storeToRefs( useMediaStore())
 
 const media = computed(() => {
  
-  let c: Array<TMedia> = [];
+  let c: Array<TMediaOfItem> = [];
   for (let i = 1; i <= 6; i++) {
     c.push({
       hasMedia: true,

@@ -25,13 +25,9 @@ class MediaModel
 
     public static function page(array $ids, $view): Collection
     {
-        $idsAsCommaSeperatedString = implode(",", $ids);
-
         $res = SpatieMedia::whereIn('id', $ids)
-            ->orderByRaw("FIELD(id, $idsAsCommaSeperatedString)")
+            ->orderByRaw('FIELD(`id`, ' . implode(',', $ids) . ')')
             ->get();
-
-
         $m = new Collection([]);
         foreach ($res as $med) {
             $m->push(['full' => $med->getPath(), 'tn' =>  $med->getPath('tn'), 'id' => $med['id']]);
@@ -71,33 +67,21 @@ class MediaModel
         }
     }
 
-
     public static function getMedia(MediaCollection $mc, bool $just1 = false)
     {
-        $ordered =  collect([]);
-
-        //foreach ($collection_order as $collection_name) {
-        foreach (self::media_collections() as $collection_name) {
-            foreach ($mc as $med) {
-                if ($med->collection_name === $collection_name) {
-                    $ordered->push(['full' => $med->getPath(), 'tn' =>  $med->getPath('tn'), 'id' => $med['id'], 'description' => $med['description']]);
-                }
+        if ($just1) {
+            if (empty($mc)) {
+                return null;
+            } else {
+                return  ['id' => $mc[0]["id"], 'full' => $mc[0]->getPath(), 'tn' =>  $mc[0]->getPath('tn'), 'file_name' =>  $mc[0]["file_name"]];
             }
         }
 
-        if ($just1) {
-            return  count($mc) === 0 ? null : $ordered[0];
-        }
-
-        $page  = $ordered->take(18);
-        $page->all();
-        $media1 = count($mc) === 0 ? null : $page[0];
-
-        $ordered->transform(function ($item, $key) {
-            return $item['id'];
+        $mapped = $mc->map(function ($med, $key) {
+            return ['id' => $med["id"], 'full' => $med->getPath(), 'tn' =>  $med->getPath('tn'), 'file_name' =>  $med["file_name"]];
         });
-
-        return ['media1' => $media1, 'mediaPage' => $page, 'mediaArray' => $ordered];
+        
+        return $mapped;
     }
 
     public static function destroy(array $r)

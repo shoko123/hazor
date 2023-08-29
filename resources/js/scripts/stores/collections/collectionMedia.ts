@@ -3,16 +3,12 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { TModule } from '../../../types/routesTypes'
-import { TApiArrayMedia, TApiPageMedia, TPageCMediaVImage, TCollectionExtra, TPageItem, TCollectionView, TApiArray, TApiPage } from '@/js/types/collectionTypes'
+import { TMediaRecord } from '../../../types/mediaTypes'
+import { TPageCMediaVImage, TCollectionExtra, TCollectionView, TApiArray } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections'
-import { useRoutesMainStore } from '../routes/routesMain'
-import { useXhrStore } from '../xhr'
 import { useMediaStore } from '../media'
-import { useNotificationsStore } from '../notifications'
 
 export const useCollectionMediaStore = defineStore('collectionMedia', () => {
-    const { send } = useXhrStore()
-    const { showSnackbar } = useNotificationsStore()
     const { buildMedia } = useMediaStore()
     const c = useCollectionsStore()
 
@@ -23,20 +19,27 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
         viewIndex: 0,
     })
 
-    let array = ref<TApiArrayMedia[]>([])
+    let array = ref<TMediaRecord[]>([])
 
-    let page = ref<TPageCMediaVImage[]>([])
+
 
     const collection = computed(() => {
         return {
             array: array.value,
-            page: page.value,//computedPage.value,
+            page: page.value,
             extra: extra.value
         }
     })
 
+    const page = computed<TPageCMediaVImage[]>(() => {
+        let ipp = c.getIpp('Image')
+        let start = ( extra.value.pageNoB1 - 1) * ipp
+        let slice = array.value.slice(start, start + ipp)
+        let res = slice.map(x => { return {id: x.id, media: buildMedia({full: x.full, tn: x.tn}), tag: "tag",description: "LLLLL",}})
+        return res
+    })
     function setArray(data: TApiArray[]) {
-        array.value = <TApiArrayMedia[]>data
+        array.value = <TMediaRecord[]>data
         extra.value.length = data.length
     }
 
@@ -45,50 +48,14 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
         let start = (pageNoB1 - 1) * ipp
 
         console.log(`collectionMedia.loadPage() view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1} module: ${module} `);
-
-        //savePage(array.value.slice(start, start + ipp), view, module)
         extra.value.pageNoB1 = pageNoB1
         extra.value.viewIndex = extra.value.views.indexOf(view)
-        let slice = array.value.slice(start, start + ipp)
-
-        //////////////
-        return await send('media/page', 'post', { ids: slice.map(x => x) })
-            .then(res => {
-                console.log(`media.page() returned (success)`)
-                savePage(res.data.res, false)
-                extra.value.pageNoB1 = pageNoB1
-                extra.value.viewIndex = extra.value.views.indexOf(view)
-                return true
-            })
-            .catch(err => {
-                showSnackbar(`media.loadPage() failed`)
-                console.log(`media.loadPage failed. err: ${JSON.stringify(err, null, 2)}`)
-                return false
-            })
-            .finally(() => {
-                console.log(`media.loadPage() finally`)
-                return true
-            })
+        return true
 
     }
-
-    function savePage(apiPage: TApiPageMedia[], setPageNoTo1: boolean) {
-        let toSave = (<TApiPageMedia[]>apiPage).map(x => {
-            const media = buildMedia(x)
-            const item = { id: x.id, description: x.description, tag: "media tag" }
-            return { ...item, media: media }
-        })
-        page.value = <TPageCMediaVImage[]>toSave
-        if (setPageNoTo1) {
-            extra.value.pageNoB1 = 1
-        }
-        //console.log(`media.savePage() length: ${toSave.length}`)
-    }
-
-
 
     function itemIndexById(id: number) {
-        let index = array.value.findIndex(x => x === id)
+        let index = array.value.findIndex(x => x["id"] === id)
         //console.log(`itemIndexById(id:${id}) index: ${index}`)
         return index
 
@@ -98,14 +65,13 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
         return page.value.some((x) => x.id === id)
     }
 
-    function itemByIndex(index: number): TApiArray {
+    function itemByIndex(index: number): TMediaRecord {
         return array.value[index]
 
     }
 
     function clear() {
         array.value = []
-        page.value = []
         extra.value.viewIndex = 0
         extra.value.pageNoB1 = 1
         extra.value.length = 0
@@ -116,7 +82,6 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
         array,
         page,
         loadPage,
-        savePage,
         itemIndexById,
         setArray,
         collection,

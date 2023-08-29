@@ -1,6 +1,6 @@
 // collectionTypes.ts
 
-import { TMedia, TApiMedia, TApiMediaOrNull } from '@/js/types/mediaTypes'
+import { TMediaOfItem, TMediaRecord, TMediaUrls } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/routesTypes'
 
 type TCollectionView = 'Image' | 'Chip' | 'Table'
@@ -10,7 +10,7 @@ type TItemPerPagePerView = { Image: number, Chip: number, Table: number }
 
 //array types
 type TApiArrayMain = { id: number, slug: string }
-type TApiArrayMedia = number
+type TApiArrayMedia = TMediaRecord
 type TApiArrayRelated = { module: TModule, id: number, slug: string }
 
 type TApiArray = TApiArrayMain | TApiArrayMedia | TApiArrayRelated
@@ -22,7 +22,7 @@ type TApiPageMainImage = {
         id: number,
         slug: string,
         description: string,
-        media1: TApiMediaOrNull
+        media1: TMediaUrls | null
 }
 
 type TApiPageTableLocus = {
@@ -81,7 +81,7 @@ type TApiPageMainTable = {
         description: string,
 }
 
-type TApiPageMedia = TApiMedia & { id: number, description: string }
+type TApiPageMedia = TMediaUrls & { id: number, description: string }
 
 type TApiPage = TApiPageMainImage |
         TApiPageMainTable |
@@ -104,7 +104,7 @@ type TPageCMainVImage = {
         slug: string,
         tag: string,
         description: string
-        media: TMedia
+        media: TMediaOfItem
 }
 
 type TPageCMainVTable = {
@@ -116,7 +116,7 @@ type TPageCMainVTable = {
 
 type TPageCMediaVImage = {
         id: number,
-        media: TMedia,
+        media: TMediaOfItem,
         tag: string,
         description: string
 }
@@ -166,6 +166,6 @@ export {
         TPageCMainVTable,
         TPageCMediaVImage,
         TPageItem,
-        TApiMedia,
-        TApiMediaOrNull
+        TMediaUrls,
+
 }

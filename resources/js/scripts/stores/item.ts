@@ -1,6 +1,6 @@
 // stores/media.js
 import type { TFields } from '@/js/types/moduleFieldsTypes'
-import type { TMedia } from '@/js/types/mediaTypes'
+import type { TMediaOfItem, TMediaRecord } from '@/js/types/mediaTypes'
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { TApiItemShow, TApiItemUpdate } from '@/js/types/itemTypes'
@@ -19,13 +19,13 @@ export const useItemStore = defineStore('item', () => {
   const { current, to } = storeToRefs(useRoutesMainStore())
   const { collection, itemByIndex, itemIndexById, next } = useCollectionsStore()
   const moduleStore = useModuleStore()
-  const { setItemMedia } = useMediaStore()
+  const { buildMedia } = useMediaStore()
   const { send } = useXhrStore()
   const { showSnackbar, showSpinner } = useNotificationsStore()
   let fields = ref<TFields | undefined>(undefined)
   let slug = ref<string | undefined>(undefined)
   let tag = ref<string | undefined>(undefined)
-  let media1 = ref<TMedia>({ hasMedia: false, urls: { full: '', tn: '' } })
+  let media1 = ref<TMediaOfItem>({ hasMedia: false, urls: { full: '', tn: '' } })
   let selectedItemParams = ref<string[]>([])  
   let ready = ref<boolean>(false)
   const itemViewIndex = ref<number>(0)
@@ -51,9 +51,11 @@ export const useItemStore = defineStore('item', () => {
     fields.value = apiItem.fields
     slug.value = apiItem.slug
     tag.value = moduleStore.tagFromSlug(current.value.module, apiItem.slug)
-    setItemMedia(apiItem.mediaArray, apiItem.mediaPage, apiItem.media1)
-    //saveItemTags(apiItem.model_tags, apiItem.global_tags, apiItem.discrete_columns)
     selectedItemParams.value = [...apiItem.model_tags, ...apiItem.global_tags, ...apiItem.discrete_columns]
+  }
+
+ function saveMedia1(media: TMediaRecord[]) {
+    media1.value = media.length > 0 ? buildMedia(media[0]) : buildMedia(null)
   }
 
   function itemClear() {
@@ -145,6 +147,7 @@ export const useItemStore = defineStore('item', () => {
     itemViewIndex,
     setItemViewIndex,
     saveItem,
+    saveMedia1,
     upload,
     destroy
   }

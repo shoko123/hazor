@@ -1,6 +1,6 @@
 <template>
   <v-app-bar-title>
-    <v-btn :to="{ name: 'home' }">Hazor Groundstones ({{ module }})</v-btn>
+    <v-btn :to="{ name: 'home' }">Hazor ({{ module }})</v-btn>
   </v-app-bar-title>
   <v-btn :to="{ name: 'home' }">Home</v-btn>
   <v-btn :disabled="disableLinks" :to="{ name: 'welcome', params: { module: 'loci' } }">Loci</v-btn>

@@ -212,16 +212,10 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
 
         $discrete_columns = $this->discreteColumns($item);
-        //media: order by collection_name, order_column (done in MediaModel)
-        $mediaPage = collect([]);
-        $media1 = null;
         $mediaArray = [];
 
         if (!$item->media->isEmpty()) {
-            $res = MediaModel::getMedia($item->media);
-            $mediaPage = $res['mediaPage'];
-            $mediaArray = $res['mediaArray'];
-            $media1 = $res['media1'];
+            $mediaArray = MediaModel::getMedia($item->media);
         }
 
         //model tags (discrete)        
@@ -242,9 +236,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
         return [
             "fields" => $item->makeHidden('slug'),
-            "media1" => $media1,
-            "mediaPage" => $mediaPage,
-            "mediaArray" => $mediaArray,
+            "media" => $mediaArray,
             "global_tags" => $global_tags,
             "model_tags" => $model_tags,
             "discrete_columns" => $discrete_columns,
