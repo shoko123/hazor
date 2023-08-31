@@ -1,11 +1,9 @@
 <template>
-  <div id="home">
-    <v-carousel height="100%" continuos cycle>
+    <v-carousel height="96vh" continuos cycle>
       <v-carousel-item v-for="(media1, i) in media" :key="i" :src="media1.urls.full" :lazy-src="media1.urls.tn"
-        :cover="true">
+        cover>
       </v-carousel-item>
     </v-carousel>
-  </div>
 </template>
 
 <script setup lang="ts" >
@@ -31,8 +29,3 @@ const media = computed(() => {
 });
 </script>
 
-<style scoped>
-#home {
-  height: 95vh;
-}
-</style>

@@ -33,8 +33,4 @@ const item = computed(() => {
 })
 
 </script>
-<style scoped>
-#title {
-  background-color: grey;
-}
-</style>
+

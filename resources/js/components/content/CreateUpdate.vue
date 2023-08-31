@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-card class="elevation-12">
-      <v-card-title id="title" class="grey py-0 mb-4">{{ title }}</v-card-title>
+      <v-card-title class="bg-grey text-black py-0 mb-4">{{ title }}</v-card-title>
       <v-card-text>
         <component :is="module" :isCreate=props.isCreate>
           <template #data="{ v$, data, id }">
@@ -121,8 +121,5 @@ const cancel = () => {
 }
 
 </script>
-<style scoped>
-#title {
-  background-color: grey;
-}
-</style>
+
+

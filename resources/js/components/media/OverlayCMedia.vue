@@ -3,7 +3,7 @@
     <!-- <v-card-text class="text-body-1 white--text"> {{text}}
     </v-card-text> -->
     <v-card-actions>
-      <v-btn class="but" @click="openModalCarousel()">Lightbox</v-btn>
+      <v-btn class="bg-grey-lighten-1" @click="openModalCarousel()">Lightbox</v-btn>
     </v-card-actions>
   </v-card>
   <!--h5 v-if="hasMedia">{{ text }}</h5-->
@@ -37,9 +37,3 @@ function openModalCarousel() {
 }
 
 </script>
-
-<style scoped>
-.but {
-  background-color: rgb(118, 127, 123);
-}
-</style>

@@ -3,7 +3,7 @@
     <v-row no-gutters>
       <v-col cols="12" sm="6">
         <v-card class="mx-auto" variant="outlined">
-          <v-card-title class="header py-0 mb-4"> OPTIONS</v-card-title>
+          <v-card-title class="bg-grey text-black py-0 mb-4"> OPTIONS</v-card-title>
           <v-card-item>
             <v-table>
               <thead>
@@ -84,10 +84,5 @@ const full = computed(() => {
 })
 
 </script>
-<style scoped>
-.header {
-  background-color: grey;
-}
-</style>
 
 

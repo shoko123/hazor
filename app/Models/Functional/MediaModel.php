@@ -61,7 +61,7 @@ class MediaModel
             if (empty($mc)) {
                 return null;
             } else {
-                return  ['id' => $mc[0]["id"], 'full' => $mc[0]->getPath(), 'urls' => ['tn' =>  $mc[0]->getPath('tn')], 'order_column' =>  $mc["order_column"], 'file_name' =>  $mc[0]["file_name"]];
+                return  ['full' => $mc[0]->getPath(), 'tn' =>  $mc[0]->getPath('tn')];
             }
         }
 

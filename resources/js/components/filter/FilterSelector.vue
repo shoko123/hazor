@@ -1,6 +1,6 @@
 <template>
   <v-card class="elevation-12">
-    <v-card-title id="title" class="grey py-0 mb-4">{{ header }}</v-card-title>
+    <v-card-title class="bg-grey text-black py-0 mb-4">{{ header }}</v-card-title>
     <v-card-text>
       <v-tabs v-model="catIndex" class="primary">
         <v-tab v-for="(cat, index) in visibleCategories" :key="index" color="purple"
@@ -76,9 +76,5 @@ const isOrderBy = computed(() => {
 .has-selected {
   background-color: rgb(212, 235, 244);
   margin: 2px;
-}
-
-#title {
-  background-color: grey;
 }
 </style>

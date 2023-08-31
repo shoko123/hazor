@@ -44,11 +44,4 @@ function btnClicked(item: any) {
   let queryParams = current.value.queryParams
   router.push({ name: 'show', params: { module: current.value.url_module, slug: item.raw.slug }, query: <LocationQueryRaw>queryParams})  
 }
-
 </script>
-
-<style scoped>
-#table {
-  height: 80vh;
-}
-</style>

@@ -107,8 +107,3 @@ async function itemDelete() {
 }
 
 </script>
-<style scoped>
-.min_width {
-  min-width: 400px;
-}
-</style>

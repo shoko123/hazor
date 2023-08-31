@@ -1,6 +1,6 @@
 <template>
   <v-card class="elevation-12">
-    <v-card-title id="title" class="grey py-0 mb-4">{{ header }}</v-card-title>
+    <v-card-title class="bg-grey text-black py-0 mb-4">{{ header }}</v-card-title>
     <v-card-text>
       <div class="mb-2">
         <v-btn color="green" @click="submit">Submit</v-btn>
@@ -122,9 +122,5 @@ function clear() {
 .has-selected {
   background-color: rgb(212, 235, 244);
   margin: 2px;
-}
-
-#title {
-  background-color: grey;
 }
 </style>
