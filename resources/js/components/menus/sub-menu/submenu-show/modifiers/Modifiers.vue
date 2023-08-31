@@ -43,11 +43,13 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../../../../scripts/stores/auth'
 import { useRoutesMainStore } from '../../../../../scripts/stores/routes/routesMain'
 import { useItemStore } from '../../../../../scripts/stores/item'
+import { useCollectionMediaStore } from '../../../../../scripts/stores/collections/collectionMedia'
 import { useTaggerStore } from '../../../../../scripts/stores/trio/tagger'
 
 const { current } = storeToRefs(useRoutesMainStore())
 const { permissions } = storeToRefs(useAuthStore())
-const i = useItemStore()
+const { array } = storeToRefs(useCollectionMediaStore())
+const { destroy } = useItemStore()
 const router = useRouter()
 
 const module = computed(() => {
@@ -83,7 +85,7 @@ function goToTagger() {
 }
 
 async function itemDelete() {
-  if (i.media1.hasMedia) {
+  if (array.value.length > 0) {
     alert(`Delete aborted. Please delete related media!`)
     return
   }
@@ -92,7 +94,7 @@ async function itemDelete() {
 
   let slug = null;
   try {
-    slug = await i.destroy()
+    slug = await destroy()
   } catch (error) {
     console.log(`Delete item failed error: ${error}`)
     return

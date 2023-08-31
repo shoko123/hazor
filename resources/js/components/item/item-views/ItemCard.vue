@@ -9,9 +9,9 @@
           </v-col>
           <v-col lg="3" class="px-1">
             <MediaSquare v-bind="{
-                source: 'media',
-                itemIndex: 0,
-              }"></MediaSquare>
+              source: 'media',
+              itemIndex: 0,
+            }"></MediaSquare>
           </v-col>
         </v-row>
       </div>
@@ -29,7 +29,7 @@ import { computed } from 'vue'
 import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
 import { storeToRefs } from 'pinia'
 import { useItemStore } from '../../../scripts/stores/item'
-import { useMediaStore } from '../../../scripts/stores/media'
+import { useCollectionMediaStore } from '../../../scripts/stores/collections/collectionMedia'
 
 import MediaSquare from '../../media/MediaSquare.vue'
 import LocusForm from '../../modules/loci/LocusForm.vue'
@@ -37,7 +37,8 @@ import StoneForm from '../../modules/stones/StoneForm.vue'
 import FaunaForm from '../../modules/fauna/FaunaForm.vue'
 
 
-let i = useItemStore()
+
+let { array } = storeToRefs(useCollectionMediaStore())
 let { tag } = storeToRefs(useItemStore())
 let { getModule } = useRoutesMainStore()
 
@@ -60,7 +61,7 @@ const title = computed(() => {
 })
 
 const hasMedia = computed(() => {
-  return i.media1.hasMedia
+  return array.value.length > 0
 })
 
 

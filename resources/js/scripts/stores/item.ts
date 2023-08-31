@@ -25,7 +25,6 @@ export const useItemStore = defineStore('item', () => {
   let fields = ref<TFields | undefined>(undefined)
   let slug = ref<string | undefined>(undefined)
   let tag = ref<string | undefined>(undefined)
-  let media1 = ref<TMediaOfItem>({ hasMedia: false, urls: { full: '', tn: '' } })
   let selectedItemParams = ref<string[]>([])  
   let ready = ref<boolean>(false)
   const itemViewIndex = ref<number>(0)
@@ -54,17 +53,12 @@ export const useItemStore = defineStore('item', () => {
     selectedItemParams.value = [...apiItem.model_tags, ...apiItem.global_tags, ...apiItem.discrete_columns]
   }
 
- function saveMedia1(media: TMediaRecord[]) {
-    media1.value = media.length > 0 ? buildMedia(media[0].urls) : buildMedia(null)
-  }
-
   function itemClear() {
     itemIndex.value = -1
     fields.value = undefined
     slug.value = undefined
     tag.value = undefined
     selectedItemParams.value = []
-    media1.value = { hasMedia: false, urls: { full: '', tn: '' } }
   }
 
   function nextSlug(isRight: boolean) {
@@ -139,7 +133,6 @@ export const useItemStore = defineStore('item', () => {
     fields,
     id,
     derived,
-    media1,
     selectedItemParams,
     itemIndex,
     nextSlug,
@@ -147,7 +140,6 @@ export const useItemStore = defineStore('item', () => {
     itemViewIndex,
     setItemViewIndex,
     saveItem,
-    saveMedia1,
     upload,
     destroy
   }

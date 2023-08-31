@@ -82,7 +82,10 @@ class Stone extends FindModel
 
     public function builderPageImageLoad(): void
     {
-        $this->builder = $this->select('id', 'basket', 'stone_no', DB::raw("CONCAT(COALESCE(`type`,''),' ',description) AS short"))->with("media");
+        $this->builder = $this->select('id', 'basket', 'stone_no', DB::raw("CONCAT(COALESCE(`type`,''),' ',description) AS short"))
+            ->with(['media' => function ($query) {
+                $query->select('*')->orderBy('order_column');
+            }]);
     }
 
     public function builderShowLocate(array $v): void

@@ -15,7 +15,7 @@ class Locus extends DigModel
     protected $guarded = [];
     protected $table = 'loci';
     protected $appends = ['slug'];
-    
+
     public function __construct()
     {
         DigModel::__construct('Locus');
@@ -61,7 +61,10 @@ class Locus extends DigModel
 
     public function builderPageImageLoad(): void
     {
-        $this->builder = $this->select('id', 'area', 'name', DB::raw('type AS short'))->with("media");
+        $this->builder = $this->select('id', 'area', 'name', DB::raw('type AS short'))
+            ->with(['media' => function ($query) {
+                $query->select('*')->orderBy('order_column');
+            }]);
     }
 
     public function builderShowLocate(array $v): void
@@ -72,7 +75,9 @@ class Locus extends DigModel
     public function builderShowLoad(): void
     {
         $this->builder = self::with([
-            'media',
+            'media' => function ($query) {
+                $query->select('*')->orderBy('order_column');
+            },
             'model_tags.tag_group',
             'global_tags.tag_group',
         ]);

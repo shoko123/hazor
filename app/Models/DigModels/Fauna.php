@@ -68,7 +68,7 @@ class Fauna extends FindModel
     {
         $this->builder->orderBy('label', 'asc');
     }
-    
+
     public function builderPageTableLoad(): void
     {
         $this->builder = $this->select('*');
@@ -76,7 +76,10 @@ class Fauna extends FindModel
 
     public function builderPageImageLoad(): void
     {
-        $this->builder = $this->select('id', 'label', DB::raw('snippet AS short'))->with("media");
+        $this->builder = $this->select('id', 'label', DB::raw('snippet AS short'))
+            ->with(['media' => function ($query) {
+                $query->select('*')->orderBy('order_column');
+            }]);
     }
 
     public function builderShowLocate(array $v): void
@@ -87,7 +90,9 @@ class Fauna extends FindModel
     public function builderShowLoad(): void
     {
         $this->builder = self::with([
-            'media',
+            'media' => function ($query) {
+                $query->select('*')->orderBy('order_column');
+            },
             'model_tags.tag_group',
             'global_tags.tag_group',
             'base_taxon',

@@ -53,9 +53,7 @@ export const useMediaStore = defineStore('media', () => {
   }
  
   function setItemMedia(media: TMediaRecord[]) {
-    let i = useItemStore()
     let cm = useCollectionMediaStore()
-    i.media1 = media.length > 0 ? buildMedia(media[0].urls) : buildMedia(null)
     cm.setArray(media)
   }
 
