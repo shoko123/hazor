@@ -1,12 +1,11 @@
 <template>
   <v-card class="elevation-12">
-    <v-toolbar id="collection" density="compact" :height="50">
+    <v-toolbar class="bg-grey text-black" density="compact" :height="50">
       <v-toolbar-title>{{ header }}</v-toolbar-title>
       <v-pagination v-if="paginator.show" v-model="page" :length="paginator.pages" :total-visible="16">
       </v-pagination>
-      <!-- <v-spacer></v-spacer> -->
 
-      <v-btn v-if="!isEmpty" :disabled="disableToggle" size="small" variant="outlined" @click="toggleCollectionDisplayOption()">view: {{ displayOption }}
+      <v-btn v-if="showBtnViewToggle" size="small" variant="outlined" @click="toggleCollectionDisplayOption()">view: {{ displayOption }}
       </v-btn>
 
     </v-toolbar>
@@ -42,11 +41,6 @@ const c = computed(() => {
 const meta = computed(() => {
   return c.value.meta
 })
-
-const isEmpty = computed(() => {
-  return meta.value.length === 0
-})
-
 
 const page = computed({
   get: () => { return paginator.value.page },
@@ -104,13 +98,11 @@ const collectionPage = computed<Component>(() => {
   }
 })
 
+const showBtnViewToggle = computed(() => {
+  return meta.value.length > 0 && meta.value.views.length > 1
+})
 const displayOption = computed(() => {
   return meta.value.view
-})
-
-
-const disableToggle = computed(() => {
-  return meta.value.views.length === 1
 })
 
 function toggleCollectionDisplayOption() {
@@ -118,9 +110,5 @@ function toggleCollectionDisplayOption() {
 }
 
 </script>
-<style scoped>
-#collection {
-  background-color: grey;
-}
-</style>
+
 

@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="pa-1">
     <v-card class="elevation-12">
-      <v-toolbar id="title" density="compact" :height="50">
+      <v-toolbar class="bg-grey text-black" density="compact" :height="50">
         <v-toolbar-title> {{ header }}</v-toolbar-title>
       </v-toolbar>
 
@@ -24,7 +24,7 @@
 
           <v-row class="pt-2">
 
-            <v-file-input v-model="images" multiple :show-size="1000" accept="image/png, image/jpeg, image/bmp"
+            <v-file-input id="fileInput" v-model="images" multiple :show-size="1000" accept="image/png, image/jpeg, image/bmp"
               placeholder="Select images" prepend-icon="mdi-camera" @change="onInputChange" @click:clear="clear()"
               :label="fileInputLabel">
             </v-file-input>
@@ -45,7 +45,7 @@
 
             <v-btn v-if="mediaReady" @click="upload" class="ml-2">Upload</v-btn>
             <v-btn v-if="mediaReady" @click="openMultiItemSelector" class="ml-2">Upload as multi item media</v-btn>
-            <v-btn @click="cancel" class="ml-2">Cancel</v-btn>
+            <v-btn @click="clear" class="ml-2">Cancel</v-btn>
           </v-row>
         </v-container>
       </v-card-text>
@@ -54,9 +54,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useMediaStore } from '../../scripts/stores/media'
 
+onMounted(() => {
+  document.getElementById('fileInput')?.click()
+})
 const m = useMediaStore()
 
 const mediaReady = computed(() => {
@@ -112,14 +115,4 @@ async function upload() {
   await m.upload()
 }
 
-function cancel() {
-  clear()
-  m.showUploader = false
-}
 </script>
-
-<style scoped>
-#title {
-  background-color: grey;
-}
-</style>

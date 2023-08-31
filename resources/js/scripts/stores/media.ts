@@ -109,6 +109,7 @@ export const useMediaStore = defineStore('media', () => {
   function clear() {
     images.value = []
     imagesAsBrowserReadable.value = []
+    showUploader.value = false
     orderChanged.value = false
   }
 
@@ -159,7 +160,7 @@ export const useMediaStore = defineStore('media', () => {
 
   const orderChanged = ref(false)
 
-  function reorder() {
+  async function reorder() {
     const r = useRoutesMainStore()
     const i = useItemStore()
     let cm = useCollectionMediaStore()

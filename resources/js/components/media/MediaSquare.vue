@@ -1,7 +1,7 @@
 <template>
   <v-hover v-slot="{ isHovering, props }">
-    <v-card v-bind="props" :color="isHovering ? 'blue' : undefined">
-      <v-img :src="urls?.full" :lazy-src="urls?.tn" aspect-ratio="1" id="img" class="bg-grey-lighten-2">
+    <v-card v-bind="props" variant="outlined"  class="ml-1 mb-1">
+      <v-img :src="urls?.full" :lazy-src="urls?.tn" aspect-ratio="1" class="bg-grey-lighten-2">
         <v-btn v-if="showTag" class="text-subtitle-1 font-weight-medium black--text" color="grey">{{ tagText }}</v-btn>
         <v-card class="mx-auto" color="transparent" flat>
           <v-card-text class="text-body-1 white--text">
@@ -17,24 +17,20 @@
   </v-hover>
 </template>
 
-
 <script lang="ts" setup >
 import { computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { TCollectionName, TPageCMainVImage } from '../../types/collectionTypes'
-
 import { TMediaRecord } from '../../types/mediaTypes'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import { useCollectionMainStore } from '../../scripts/stores/collections/collectionMain'
 import { useCollectionMediaStore } from '../../scripts/stores/collections/collectionMedia'
 import { useCollectionRelatedStore } from '../../scripts/stores/collections/collectionRelated'
-
+import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import OverlayRelated from './OverlayRelated.vue'
 import OverlayCMedia from './OverlayCMedia.vue'
 import OverlayMediaEdit from './OverlayMediaEdit.vue'
 import OverlayCMain from './OverlayCMain.vue'
-import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
-
 
 let { current } = storeToRefs(useRoutesMainStore())
 let { getIpp } = useCollectionsStore()
@@ -48,7 +44,7 @@ const props = defineProps<{
 }>()
 
 onMounted(() => {
-  console.log(`MediaSquare.onMounted props: ${JSON.stringify(props, null, 2)}`)
+  //console.log(`MediaSquare.onMounted props: ${JSON.stringify(props, null, 2)}`)
 })
 
 const collection = computed(() => {
@@ -112,7 +108,6 @@ const urls = computed(() => {
       default:
         return { full: "", tn: ""}
   }
-
 })
 const overlayText = computed(() => {
   switch (props.source) {
@@ -136,8 +131,4 @@ const overlay = computed(() => {
 })
 
 </script>
-<style scoped>
-#img {
-  border: 2px solid #555;
-}
-</style>
+

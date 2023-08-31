@@ -7,10 +7,11 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
+import { useItemStore } from '../../../../scripts/stores/item'
 let rm = useRoutesMainStore()
-
+let it = useItemStore()
 const header = computed(() => {
-  const itemText = `${rm.current.module} ${rm.current.slug}`
+  const itemText = `${rm.current.module} ${it.tag}`
   switch (rm.current.name) {
     case 'media':
       return `** Dig ** : Media Editor for ${itemText}`

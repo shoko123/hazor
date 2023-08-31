@@ -10,10 +10,16 @@
 import { computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import Collection from "../collections/Collection.vue"
+import { useCollectionMediaStore } from '../../scripts/stores/collections/collectionMedia'
 import { useMediaStore } from '../../scripts/stores/media'
 import MediaUploader from "./MediaUploader.vue"
 
+onMounted(() => {
+  let { array } = storeToRefs(useCollectionMediaStore())
+  if (array.value.length === 0) {
+    showUploader.value = true
+  }
+})
+
 let { showUploader } = storeToRefs(useMediaStore())
-
-
 </script>
