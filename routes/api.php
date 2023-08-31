@@ -45,8 +45,7 @@ Route::group(['middleware' => ['read.accessibility']], function () {
     Route::post('model/carousel', [DigModelReadController::class, 'carousel']);
     Route::post('model/firstSlug', [DigModelReadController::class, 'firstSlug']);    
     Route::post('registrar/loci-for-area-season', [RegistrarController::class, 'loci-for-area-season']);
-    Route::post('media/carousel', [MediaController::class, 'carousel']);    
-    Route::post('media/page', [MediaController::class, 'page']);     
+    Route::post('media/carousel', [MediaController::class, 'carousel']);         
     Route::post('registrar/finds-for-locus', [RegistrarController::class, 'finds-for-locus']);
 });
 
@@ -56,6 +55,7 @@ Route::group(['middleware' => ['read.accessibility']], function () {
     Route::post('media/upload', [MediaController::class, 'upload']);
     Route::post('media/destroy', [MediaController::class, 'destroy']);
     Route::post('media/edit', [MediaController::class, 'edit']);
+    Route::post('media/reorder', [MediaController::class, 'reorder']);
     Route::post('model/store', [DigModelStoreController::class, 'store']);
     Route::put('model/store', [DigModelStoreController::class, 'store']);
     Route::post('model/destroy', [DigModelDestroyController::class, 'destroy']);

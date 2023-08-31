@@ -6,7 +6,7 @@ import { computed } from 'vue'
 
 import { useRoutesMainStore } from './routes/routesMain'
 
-type TMainMenu = 'Read' | 'Media' | 'Modify' | 'Admin'
+type TMainMenu = 'Read' | 'Modify' | 'Admin'
 export const useMenusStore = defineStore('menus', () => {
   let rms = useRoutesMainStore()
 
@@ -14,7 +14,6 @@ export const useMenusStore = defineStore('menus', () => {
     switch (rms.current.name) {
       case 'home':
       case 'login':
-      case 'media':
       case 'create':
       case 'update':
       case 'tag':
@@ -36,8 +35,6 @@ export const useMenusStore = defineStore('menus', () => {
         return 'Read'
 
       case 'media':
-        return 'Media'
-
       case 'create':
       case 'update':
       case 'tag':

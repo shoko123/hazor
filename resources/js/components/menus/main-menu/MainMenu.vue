@@ -13,7 +13,7 @@ import { useMenusStore } from '../../../scripts/stores/menus'
 import Read from './mainmenu-read/MainMenuRead.vue'
 import Modify from './mainmenu-modify/MainMenuModify.vue'
 import Admin from './mainmenu-admin/MainMenuAdmin.vue'
-import Media from './mainmenu-media/MainMenuMedia.vue'
+
 const { mainMenuType } = storeToRefs(useMenusStore())
 
 const menu = computed(() => {
@@ -24,11 +24,9 @@ const menu = computed(() => {
             return Modify
         case 'Admin':
             return Admin
-        case 'Media':
-            return Media
         default:
             console.log(`Bad Props to MainMenu`)
-            return Media
+            return Read
     }
 })
 
@@ -37,7 +35,6 @@ const color = computed(() => {
         case 'Read':
             return 'primary'
         case 'Modify':
-        case 'Media':
             return 'orange'
         case 'Admin':
             return 'red'

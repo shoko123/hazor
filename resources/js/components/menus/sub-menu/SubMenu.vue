@@ -12,6 +12,7 @@ import SubWelcome from './submenu-welcome/SubMenuWelcome.vue'
 import SubIndex from './submenu-index/SubMenuIndex.vue'
 import SubMenuFilter from './submenu-filter/SubMenuFilter.vue'
 import SubMenuShow from './submenu-show/SubMenuShow.vue'
+import SubMenuMedia from './submenu-media/SubMenuMedia.vue'
 import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
 
 const { current } = storeToRefs(useRoutesMainStore())
@@ -26,6 +27,8 @@ const sub = computed(() => {
             return SubMenuFilter
         case 'show':
             return SubMenuShow
+        case 'media':
+            return SubMenuMedia
         default:
             return SubWelcome
 

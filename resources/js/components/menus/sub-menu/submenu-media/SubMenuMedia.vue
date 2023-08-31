@@ -1,9 +1,7 @@
 <template>
-  <v-app-bar-title>
-    {{ header }}
-    <v-btn :disabled="disableShowUploaderButton" @click="showUploader1" variant="outlined">Upload files</v-btn>
-    <v-btn @click="back" variant="outlined">Back to Item</v-btn>
-  </v-app-bar-title>
+    <v-btn :disabled="disableShowUploaderButton" @click="showUp" variant="outlined">Upload files</v-btn>
+    <v-btn @click="back" variant="outlined">Go Back</v-btn>
+    <v-btn  @click="reorderBackend" variant="outlined">Save Order</v-btn>
 </template>
 
 <script lang="ts" setup>
@@ -16,20 +14,23 @@ import { useRouter } from 'vue-router'
 let { current } = storeToRefs(useRoutesMainStore())
 
 const { showUploader } = storeToRefs(useMediaStore())
-const { clear } = useMediaStore()
+const { clear, reorder } = useMediaStore()
 const router = useRouter()
 
-const header = computed(() => {
-  return `** Dig ** : Media Editor for ${current.value.module} ${current.value.slug}`
-})
+
 
 const disableShowUploaderButton = computed(() => {
   return showUploader.value
 })
 
 
-function showUploader1() {
+function showUp() {
   showUploader.value = true
+}
+
+function reorderBackend() {
+  console.log("Reorder")
+  reorder()
 }
 function back() {
   clear()
@@ -37,4 +38,3 @@ function back() {
   showUploader.value = false
 }
 </script>
-

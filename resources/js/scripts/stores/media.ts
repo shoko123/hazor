@@ -10,7 +10,7 @@ import { defineStore, storeToRefs } from 'pinia'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
-import { useCollectionsStore } from '../../scripts/stores/collections/collections'
+
 import { useCollectionMediaStore } from '../../scripts/stores/collections/collectionMedia'
 import { useItemStore } from '../../scripts/stores/item'
 
@@ -51,8 +51,14 @@ export const useMediaStore = defineStore('media', () => {
       }
     }
   }
-
  
+  function setItemMedia(media: TMediaRecord[]) {
+    let i = useItemStore()
+    let cm = useCollectionMediaStore()
+    i.media1 = media.length > 0 ? buildMedia(media[0].urls) : buildMedia(null)
+    cm.setArray(media)
+  }
+
 
   //upload
   const images = ref<File[]>([])
@@ -103,6 +109,7 @@ export const useMediaStore = defineStore('media', () => {
   function clear() {
     images.value = []
     imagesAsBrowserReadable.value = []
+    orderChanged.value = false
   }
 
   async function upload() {
@@ -122,7 +129,7 @@ export const useMediaStore = defineStore('media', () => {
     return send("media/upload", 'post', fd)
       .then((res) => {
         showUploader.value = false
-        setItemMedia(res.data.media)
+        setItemMedia(res.data)
         clear()
         showSnackbar("Media uploaded successfully")
       })
@@ -132,7 +139,7 @@ export const useMediaStore = defineStore('media', () => {
       })
   }
 
-
+//destroy
   async function destroy(media_id: number) {
     const r = useRoutesMainStore()
     const i = useItemStore()
@@ -141,18 +148,31 @@ export const useMediaStore = defineStore('media', () => {
       .then((res) => {
         showUploader.value = false
         showSnackbar("Media deleted successfully")
-        setItemMedia(res.data.media)
+        setItemMedia(res.data)
       })
       .catch((err) => {
         console.log(`media.dstroy failed! err:\n ${JSON.stringify(err, null, 2)}`)
       })
   }
 
-  function setItemMedia(media: TMediaRecord[]) {
-    let i = useItemStore()
+  //reorder media
+
+  const orderChanged = ref(false)
+
+  function reorder() {
+    const r = useRoutesMainStore()
+    const i = useItemStore()
     let cm = useCollectionMediaStore()
-    i.media1 = media.length > 0 ? buildMedia(media[0].urls) : buildMedia(null)
-    cm.setArray(media)
+    let ordered = cm.array.map((x, index) => {return {id: x.id, order: index + 1}})
+    console.log(`reorder()  model: ${r.current.module}, id: ${i.fields?.id} ,ordered: ${JSON.stringify(ordered, null, 2)}`)
+    return send("media/reorder", 'post', { model: r.current.module, model_id: i.fields?.id, ordered })
+    .then((res) => {
+      showUploader.value = false
+      showSnackbar("Reorder completed successfully")
+    })
+    .catch((err) => {
+      console.log(`media.reorder failed! err:\n ${JSON.stringify(err, null, 2)}`)
+    })
   }
 
   return {
@@ -169,6 +189,8 @@ export const useMediaStore = defineStore('media', () => {
     onInputChange,
     mediaReady,
     clear,
-    destroy
+    destroy,
+    orderChanged,
+    reorder
   }
 })

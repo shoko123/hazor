@@ -37,12 +37,14 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
             let media = buildMedia({ full: x.urls.full, tn: x.urls.tn })
             return {
                 id: x.id,
-                urls: {full: media.urls.full,
-                tn: media.urls.tn },
+                urls: {
+                    full: media.urls.full,
+                    tn: media.urls.tn
+                },
                 file_name: x.file_name,
                 order_column: x.order_column,
                 description: "LLLLL",
-                
+
             }
         })
         return res
@@ -51,6 +53,12 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     function setArray(data: TApiArray[]) {
         array.value = <TMediaRecord[]>data
         extra.value.length = data.length
+    }
+
+    function switchArrayItems(indexA: number, indexB: number) {
+        let temp = { ...array.value[indexA] }
+        array.value[indexA] = { ...array.value[indexB] }
+        array.value[indexB] = { ...temp }
     }
 
     async function loadPage(pageNoB1: number, view: TCollectionView, module: TModule): Promise<boolean> {
@@ -77,7 +85,6 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
 
     function itemByIndex(index: number): TMediaRecord {
         return array.value[index]
-
     }
 
     function clear() {
@@ -94,6 +101,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
         loadPage,
         itemIndexById,
         setArray,
+        switchArrayItems,        
         collection,
         itemIsInPage,
         itemByIndex,
