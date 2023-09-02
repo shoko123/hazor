@@ -8,8 +8,6 @@ use Exception;
 
 use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
-use Illuminate\Database\Eloquent\Collection;
-
 
 class MediaModel
 {
@@ -20,7 +18,7 @@ class MediaModel
 
     static public function media_collections()
     {
-        return ['Plan', 'Drawing', 'Photo and Drawing', 'Photo', 'Misc'];
+        return ['Photo', 'Drawing', 'Photo and Drawing', 'Plan', 'Misc'];
     }
 
     public static function carousel($id)
@@ -30,9 +28,12 @@ class MediaModel
             'id' => $id,
             'full' => $media->getPath(),
             'tn' =>  $media->getPath('tn'),
-            'description' => $media->description,
+            'size' => $media->size,
             'collection_name' => $media->collection_name,
-            'order_column' => $media->order_column
+            'file_name' => $media->file_name,
+            'order_column' => $media->order_column,
+            'title' => "Fake Title",
+            'text' => "Fake Text",
         ];
     }
 
@@ -43,6 +44,7 @@ class MediaModel
 
             //attach media to item
             foreach ($r["media_files"] as $key => $media_file) {
+                $meta = exif_read_data($media_file);
                 $item
                     ->addMedia($media_file)
                     ->toMediaCollection($r["media_collection_name"]);
@@ -99,10 +101,10 @@ class MediaModel
 
         foreach ($m["ordered"] as $possible) {
             $record = SpatieMedia::findOrFail($possible["id"]);
-            //if ($record["order_column"] !== $possible["order"]) {
+            if ($record["order_column"] !== $possible["order"]) {
                 $record["order_column"] = $possible["order"];
                 $record->save();
-            //}
+            }
         }
 
         //get updated media for item

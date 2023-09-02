@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { TCollectionName, TApiArrayMain, TApiArrayMedia, TApiArray } from '@/js/types/collectionTypes'
-import { TCarousel, TCarouselMedia, TCarouselMain, TApiCarouselMain, TApiCarouselMedia, TMediaOfItem } from '@/js/types/mediaTypes'
+import { TMediaRecord, TCarouselMain, TApiCarouselMain, TApiCarouselMedia, TMediaOfItem } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/routesTypes'
 
 
@@ -20,27 +20,13 @@ export const useCarouselStore = defineStore('carousel', () => {
   const { showSpinner } = useNotificationsStore()
   const { current } = storeToRefs(useRoutesMainStore())
   const { buildMedia } = useMediaStore()
- const { tagFromSlug } = useModuleStore()
+  const { tagFromSlug } = useModuleStore()
 
   let isOpen = ref<boolean>(false)
   let collectionName = ref<TCollectionName>('main')
   let index = ref<number>(-1)
   let media = ref<TMediaOfItem>({ hasMedia: false, urls: { full: "", tn: "" } })
-
-  let mainDetails = ref<TCarouselMain>({
-    id: 0,
-    slug: "",
-    tag: "",
-    description: "",
-    module: undefined
-  })
-
-  let mediaDetails = ref<TCarouselMedia>({
-    id: 0,
-    description: "",
-    collection_name: "",
-    order_column: 0
-  })
+  let itemDetails = ref<TCarouselMain | TMediaRecord | null>(null)
 
   const carouselHeader = computed(() => {
     if (!isOpen.value) { return undefined }
@@ -48,25 +34,13 @@ export const useCarouselStore = defineStore('carousel', () => {
     let text = ""
     switch (collectionName.value) {
       case 'main':
-        text = `${current.value.module} result set. Showing item "${mainDetails.value.tag}"`
+        text = `${current.value.module} result set. Showing item "${(<TCarouselMain>itemDetails.value)?.tag}"`
         break
       case 'media':
         text = `Media for ${current.value.module} "${current.value.slug}"`
         break
     }
     return text + ` [${index.value + 1}/${collection.value.array.length}]`
-  })
-
-  const carouselItemDetails = computed<TCarouselMain | TCarouselMedia | undefined>(() => {
-    if (!isOpen.value) { return undefined }
-    switch (collectionName.value) {
-      case 'main':
-        return mainDetails.value
-      case 'media':
-        return mediaDetails.value
-      default:
-        return undefined
-    }
   })
 
   const carouselGeneralDetails = computed(() => {
@@ -94,7 +68,6 @@ export const useCarouselStore = defineStore('carousel', () => {
   }
 
   async function load(item: TApiArray) {
-
     let url = ""
     let data = { model: "", id: 0 }
     switch (collectionName.value) {
@@ -106,7 +79,7 @@ export const useCarouselStore = defineStore('carousel', () => {
         break
       case 'media':
         url = 'media/carousel'
-        data["id"] =item["id"]
+        data["id"] = item["id"]
         break
     }
 
@@ -126,35 +99,35 @@ export const useCarouselStore = defineStore('carousel', () => {
 
   function saveMain(data: TApiCarouselMain) {
     media.value = buildMedia(data.media, current.value.module)
-    mainDetails.value.id = data.id
-    mainDetails.value.slug = data.slug
-    mainDetails.value.tag = tagFromSlug(current.value.module, data.slug)
-    mainDetails.value.description = data.description    
-    mediaDetails.value.description = ""
-    mediaDetails.value.id = 0
-    mediaDetails.value.collection_name = ""
-    mediaDetails.value.order_column= 0
+    itemDetails.value = {
+      id: data.id,
+      slug: data.slug,
+      tag: tagFromSlug(current.value.module, data.slug),
+      description: data.description,
+      module: data.module
+    }
   }
+
   function saveMedia(data: TApiCarouselMedia) {
     media.value = buildMedia({ full: data.full, tn: data.tn })
-    mediaDetails.value.description = data.description
-    mediaDetails.value.id = data.id
-    mediaDetails.value.collection_name = data.collection_name
-    mediaDetails.value.order_column= data.order_column
-
-    mainDetails.value.id = 0
-    mainDetails.value.slug = ""
-    mainDetails.value.tag = ""
-    mainDetails.value.module = undefined
-    mainDetails.value.description = ""
+    itemDetails.value = {
+      id: data.id,
+      urls: { full: data.full, tn: data.tn },
+      size: (data.size / 1000000).toFixed(2).toString() + 'MB',
+      collection_name: data.collection_name,
+      file_name: data.file_name,
+      order_column: data.order_column,
+      title: data.title,
+      text: data.text
+    }
   }
 
   async function close() {
     //if current carouselItem is in currently loaded page - close, otherwise, load relevant page
     switch (collectionName.value) {
       case 'main':
-        if (!c.itemIsInPage(mainDetails.value.id)) {        
-          const index = c.itemIndexById(mainDetails.value.id)
+        if (!c.itemIsInPage(<number>itemDetails.value?.id)) {
+          const index = c.itemIndexById(<number>itemDetails.value?.id)
           await c.loadPageByItemIndex(collectionName.value, 'Image', index, current.value.module)
             .then(res => {
               console.log(`carousel.close() loaded a new page`)
@@ -180,10 +153,8 @@ export const useCarouselStore = defineStore('carousel', () => {
     isOpen,
     collectionName,
     media,
-    mainDetails,
-    mediaDetails,
+    itemDetails,
     carouselHeader,
-    carouselItemDetails,
     carouselGeneralDetails,
     open,
     close,

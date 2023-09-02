@@ -2,9 +2,9 @@
   <v-hover v-slot="{ isHovering, props }">
     <v-card v-bind="props" variant="outlined"  class="ml-1 mb-1">
       <v-img :src="urls?.full" :lazy-src="urls?.tn" aspect-ratio="1" class="bg-grey-lighten-2">
-        <v-btn v-if="showTag" class="text-subtitle-1 font-weight-medium black--text" color="grey">{{ tagText }}</v-btn>
+        <v-btn v-if="showTag" class="text-subtitle-1 font-weight-medium text-black" color="grey">{{ tagText }}</v-btn>
         <v-card class="mx-auto" color="transparent" flat>
-          <v-card-text class="text-body-1 white--text">
+          <v-card-text class="text-body-1 text-black">
             {{ overlayText }}</v-card-text>
         </v-card>
         <v-overlay v-if="isHovering">

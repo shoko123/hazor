@@ -14,16 +14,10 @@
       <v-card-text>
         <v-row>
           <v-card width="80%" height="92vh">
-            <ImageZoom/>
-            <!-- <v-img :src="urls.full" :lazy-src="urls.tn" aspect-ratio="1" height="97vh" :cover="cover" class="bg-grey-lighten-2">
-            </v-img> -->
+            <ImageZoom />
           </v-card>
           <v-card width="20%" class="bg-purple-lighten-5">
-            <v-card-title class="ma-2 text--body-1 bold"> {{ description }}</v-card-title>
-            <v-card-text>
-              <v-row class="text-body-1">
-                {{ description }}</v-row>
-            </v-card-text>
+            <component :is="carouselForm" />
           </v-card>
         </v-row>
       </v-card-text>
@@ -32,22 +26,22 @@
 </template>
 
 <script lang="ts" setup >
-
-import { computed } from 'vue'
+import { type Component, computed } from 'vue'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 import ImageZoom from './ImageZoom.vue'
+import CarouselFormMain from './CarouselFormMain.vue'
+import CarouselFormMedia from './CarouselFormMedia.vue'
 
 const c = useCarouselStore()
-const itemDetails = computed(() => {
-  return c.carouselItemDetails
-})
 
-const description = computed(() => {
-  return itemDetails.value?.description === null ? '[no description]' : itemDetails.value?.description
-})
-
-const urls = computed(() => {
-  return c.media.urls
+const carouselForm = computed<Component>(() => {
+  switch (c.collectionName) {
+    case 'main':
+      return CarouselFormMain
+    case 'media':
+    default:
+      return CarouselFormMedia
+  }
 })
 
 const carouselHeader = computed(() => {

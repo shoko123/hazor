@@ -23,7 +23,7 @@ export const useMediaStore = defineStore('media', () => {
   const bucketUrl = ref("")
   const mediaCollectionNames = ref<string[]>([])
 
- //Media collection index (3 is the index of 'Photo' - quick and dirty)
+ //Media collection index
   const mediaCollectionName = ref("Photo")
   const showUploader = ref<boolean>(false)
 
