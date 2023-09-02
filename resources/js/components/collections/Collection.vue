@@ -45,7 +45,7 @@ const meta = computed(() => {
 const page = computed({
   get: () => { return paginator.value.page },
   set: val => {
-    console.log(`Collection.page.set to ${val}`)
+    //console.log(`Collection.page.set to ${val}`)
     loadPage(props.source, val, meta.value.view, getModule())
   }
 })

@@ -12,15 +12,12 @@ export const router = createRouter({
 
 router.onError.bind(navigationErrorHandler)
 
-console.log("setups.vue-router")
-
 router.beforeEach(async (to, from) => {
   const { handleRouteChange }= useRoutesMainStore()
   const m = useMainStore()
   if (!m.initialized) {
     console.log(`vue-router beforeEach app is not initialized calling appInit()`)
     await m.appInit()
-    console.log(`store(main) appInit returned`)
   }
 
   try {

@@ -73,7 +73,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
 
                 await send('model/page', 'post', { model: module, view: view, ids })
                     .then(res => {
-                        console.log(`model.page() returned (success)`)
+                        //console.log(`model.page() returned (success)`)
                         savePage(res.data.page, view, module)
                         extra.value.pageNoB1 = pageNoB1
                         extra.value.viewIndex = extra.value.views.indexOf(view)
@@ -85,7 +85,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
                         return false
                     })
                     .finally(() => {
-                        console.log(`main.loadPage() finally`)
+                        //console.log(`main.loadPage() finally`)
                         return true
                     })
                 return true

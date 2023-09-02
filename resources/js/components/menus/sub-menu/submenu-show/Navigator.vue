@@ -1,5 +1,4 @@
 <template>
-
   <v-btn @click="next(false)" icon="mdi-arrow-left" color="primary"> </v-btn>
 
   <Picker />
@@ -53,15 +52,13 @@ const header = computed(() => {
 function next(isRight: boolean) {
   let { nextSlug } = useItemStore()
   let slug = nextSlug(isRight)
-  console.log(`goTo ${slug}`)
-  router.push({ name: 'show', params: { module: current.value.url_module, slug: slug } })  
+  router.push({ name: 'show', params: { module: current.value.url_module, slug: slug } })
 }
 
 
 </script>
 
 <style scoped>
-
 .min_width {
   min-width: 500px;
 }

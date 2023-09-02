@@ -5,6 +5,9 @@
      <v-row no-gutters class="text-h5">
       Media for {{ module }} "{{ tag }}"
     </v-row>
+    <v-row wrap no-gutters>
+      <v-textarea v-model="short" label="Description" class="mr-1" rows="3" readonly filled></v-textarea>
+    </v-row>
       <v-row no-gutters>
       <v-text-field v-model="media.file_name" label="File Name" class="mr-1" readonly filled> </v-text-field>
     </v-row>
@@ -13,9 +16,7 @@
       <v-text-field v-model="media.size" label="Size" class="mr-1" readonly filled></v-text-field>
     </v-row>
   
-    <v-row wrap no-gutters>
-      <v-text-field v-model="short" label="Item Description" class="mr-1" readonly filled></v-text-field>
-    </v-row>
+    
   </v-card-text>
   <v-card-actions>
     <v-btn @click="goto" variant="outlined">Go To "{{ tag }}"</v-btn>

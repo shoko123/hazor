@@ -15,12 +15,12 @@ import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 import Zoomy from './zoomy/Zoomy.js'
 
 onMounted(() => {
-    console.log(`ImageZoom.mount`)
+    //console.log(`ImageZoom.mount`)
     zm.value = new Zoomy('zoomy', options);
 })
 
 onBeforeUnmount(() => {
-    console.log(`ImageZoom.unmount`)
+    //console.log(`ImageZoom.unmount`)
     zm.value?.detach()
     zm.value = null
 })
@@ -35,7 +35,7 @@ const options = {
 const { media } = storeToRefs(useCarouselStore())
 
 watch(media, () => {
-    console.log('ImagZoom.media changed')
+    //console.log('ImageZoom.media changed')
     zm.value = new Zoomy('zoomy', options)
 })
 

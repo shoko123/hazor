@@ -19,14 +19,14 @@ export const useItemStore = defineStore('item', () => {
   const { current, to } = storeToRefs(useRoutesMainStore())
   const { collection, itemByIndex, itemIndexById, next } = useCollectionsStore()
   const moduleStore = useModuleStore()
-  const { buildMedia } = useMediaStore()
+  const { setItemMedia } = useMediaStore()
   const { send } = useXhrStore()
   const { showSnackbar, showSpinner } = useNotificationsStore()
   let fields = ref<TFields | undefined>(undefined)
   let slug = ref<string | undefined>(undefined)
   let tag = ref<string | undefined>(undefined)
   let short = ref<string | undefined>(undefined)
-  let selectedItemParams = ref<string[]>([])  
+  let selectedItemParams = ref<string[]>([])
   let ready = ref<boolean>(false)
   const itemViewIndex = ref<number>(0)
   const itemIndex = ref<number>(-1)
@@ -73,9 +73,8 @@ export const useItemStore = defineStore('item', () => {
       newIndex = (itemIndex.value === 0) ? length - 1 : itemIndex.value - 1
     }
 
-    //TODO change id to slug
     const mainArrayItem = <TApiArrayMain>itemByIndex('main', newIndex)
-    console.log(`nextSlug: ${mainArrayItem.slug}`)
+    //console.log(`nextSlug: ${mainArrayItem.slug}`)
     return mainArrayItem.slug
   }
 
@@ -90,6 +89,7 @@ export const useItemStore = defineStore('item', () => {
       })
 
     if (isCreate) {
+      setItemMedia([])
       saveItem(res.data)
       let newIndex = pushToArray({ "id": res.data.fields.id, "slug": res.data.slug })
       itemIndex.value = newIndex

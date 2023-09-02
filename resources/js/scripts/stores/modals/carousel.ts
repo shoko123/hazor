@@ -43,6 +43,12 @@ export const useCarouselStore = defineStore('carousel', () => {
     return text + ` [${index.value + 1}/${collection.value.array.length}]`
   })
 
+  const arrayLength = computed(() => {
+    if (!isOpen.value) { return 0 }
+    let collection = c.collection(<TCollectionName>collectionName.value)
+    return collection.value.array.length
+  })
+
   const carouselGeneralDetails = computed(() => {
     if (!isOpen.value) { return undefined }
 
@@ -55,7 +61,7 @@ export const useCarouselStore = defineStore('carousel', () => {
   async function open(source: TCollectionName, openIndex: number) {
     collectionName.value = source
     let item = c.itemByIndex(source, openIndex)
-    console.log(`carousel.open() source: ${collectionName.value} index: ${openIndex} item: ${JSON.stringify(item, null, 2)}`)
+    //console.log(`carousel.open() source: ${collectionName.value} index: ${openIndex} item: ${JSON.stringify(item, null, 2)}`)
     await load(c.itemByIndex(source, openIndex))
     index.value = openIndex
     isOpen.value = true
@@ -83,7 +89,7 @@ export const useCarouselStore = defineStore('carousel', () => {
         break
     }
 
-    console.log(`carousel.load() url: ${url}. data: ${JSON.stringify(data, null, 2)}`)
+    //console.log(`carousel.load() url: ${url}. data: ${JSON.stringify(data, null, 2)}`)
     let res = await send(url, 'post', data)
 
     switch (collectionName.value) {
@@ -152,6 +158,7 @@ export const useCarouselStore = defineStore('carousel', () => {
   return {
     isOpen,
     collectionName,
+    arrayLength,
     media,
     itemDetails,
     carouselHeader,

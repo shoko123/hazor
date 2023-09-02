@@ -106,7 +106,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           throw 'RoutingBadActionError'
       }
     }
-    console.log(`PrepareForNewRoute() success after completing queue`)
+    //console.log(`PrepareForNewRoute() success after completing queue`)
     return { success: true }
   }
 
@@ -116,7 +116,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     return xhr.send('model/init', 'post', { model: module })
       .then(res => {
         //console.log(`auth.response is ${JSON.stringify(res, null, 2)}`)
-        console.log(`model(${module}).init() returned (success)`)
+        //console.log(`model(${module}).init() returned (success)`)
         m.counts = res.data.counts
         m.itemViews = res.data.itemViews
         c.clear(['main', 'media', 'related'])
@@ -144,8 +144,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       .catch(err => {
         throw err;
       });
-    console.log(`loadCollectionAndItem done!`)
-
+    //console.log(`loadCollectionAndItem done!`)
   }
 
   async function loadMainCollection(module: TModule, query: LocationQuery) {
@@ -167,7 +166,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     }
 
     n.showSpinner(`Loading ${module} collection...`)
-    console.log(`prepare.loadMainCollection()`)
+    //console.log(`prepare.loadMainCollection()`)
     return xhr.send('model/index', 'post', { model: module, query: apiQuery.apiFilters })
       .then(res => {
         if (res.data.collection.length === 0) {
@@ -175,7 +174,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
         }
         r.to.queryParams = query
         c.setArray('main', res.data.collection)
-        console.log(`collection loaded successfully`)
+        //console.log(`collection loaded successfully`)
       })
       .catch(err => {
         console.log(`loadMainCollection() failed. err: ${JSON.stringify(err, null, 2)}`)
@@ -188,7 +187,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
 
   async function loadItem(module: TModule, slug: string,) {
-    console.log(`prepare.loadItem() slug: ${slug}`)
+    //console.log(`prepare.loadItem() slug: ${slug}`)
     let sp = p.parseSlug(module, slug)
     if (!sp.success) {
       console.log(`parseSlug() failed`)
@@ -209,14 +208,14 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       return true
 
     } catch (err) {
-      console.log(`loadItem() failed`)
+      console.log(`*********** loadItem() failed **************`)
       n.showSpinner(false)
       throw err
     }
   }
 
   async function loadPage(firstPage: boolean): Promise<void> {
-    console.log(`prepare.loadPage()`)
+    //console.log(`prepare.loadPage()`)
     return await c.loadPageByItemIndex('main', c.collection('main').value.meta.view, firstPage ? 0 : i.itemIndex, r.to.module)
   }
 

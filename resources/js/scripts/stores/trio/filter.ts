@@ -71,7 +71,7 @@ export const useFilterStore = defineStore('filter', () => {
   }
 
   function urlQueryToFilters(qp: IObject): TParseUrlQueryResponse {
-    console.log(`urlQueryToFilters().urlQuery: ${JSON.stringify(qp, null, 2)}`);
+    //console.log(`urlQueryToFilters().urlQuery: ${JSON.stringify(qp, null, 2)}`);
     let all: TApiFilters = {
       model_tag_ids: [],
       global_tag_ids: [],
@@ -206,7 +206,7 @@ export const useFilterStore = defineStore('filter', () => {
       }
     }
 
-    console.log(`urlQueryToFilters()\nquery: ${JSON.stringify(all, null, 2)}`);
+    //console.log(`urlQueryToFilters()\nquery: ${JSON.stringify(all, null, 2)}`);
     return { success: true, data: { apiFilters: all, selectedFilters } }
   }
 
@@ -236,7 +236,7 @@ export const useFilterStore = defineStore('filter', () => {
   }
 
   function setFiltersFromUrlQuery(filters: TSelectedFilterFromQuery[]) {
-    console.log(`filter.setFiltersFromUrlQuery()`)
+    //console.log(`filter.setFiltersFromUrlQuery()`)
     filters.forEach(x => {
       switch (x.group_type_code) {
         case 'OB':

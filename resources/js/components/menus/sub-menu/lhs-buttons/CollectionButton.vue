@@ -20,7 +20,7 @@ const tip = computed(() => {
 })
 
 function toCollection() {
-  console.log(`toCollection()`)
+  //console.log(`toCollection()`)
   router.push({ name: 'index', params: { module: getUrlModule() } })
 }
 </script>

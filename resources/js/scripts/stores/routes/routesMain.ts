@@ -82,7 +82,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             to.value.url_module = ''
         }
 
-        console.log(`after successful module parse. to: ${JSON.stringify(to.value, null, 2)})`)
+        //console.log(`after successful module parse. to: ${JSON.stringify(to.value, null, 2)})`)
 
         //verify that the transition is legal and prepare the plan required for a successful transition.
 
@@ -94,7 +94,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             return goHome()
         }
 
-        console.log(`Plan successful: ${JSON.stringify(planResponse.data, null, 2)}`)
+        //console.log(`Plan successful: ${JSON.stringify(planResponse.data, null, 2)}`)
         //prepare - access server and load stuff (async)
         isLoading.value = true
 
@@ -158,7 +158,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
                 current.value.idParams = undefined
         }
 
-        console.log(`finalizing routing. current: ${JSON.stringify(current.value)}`)
+        //console.log(`finalizing routing. current: ${JSON.stringify(current.value)}`)
         //current.value = Object.assign(to.value);
         //current.value = JSON.parse(JSON.stringify(to.value))
     }

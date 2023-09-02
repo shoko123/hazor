@@ -75,7 +75,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         let ipp = getIpp(view)
         let start = (pageNoB1 - 1) * ipp;
 
-        console.log(`loadPage() source: ${name}  module: ${module} view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1}`);
+        //console.log(`loadPage() source: ${name}  module: ${module} view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1}`);
 
         let c = getCollection(name)
         await c.loadPage(pageNoB1, view, module)
@@ -85,7 +85,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     async function loadPageByItemIndex(collectionName: TCollectionName, view: TCollectionView, index: number, module: TModule,) {
         let ipp = getIpp(view)
         let pageNoB0 = Math.floor(index / ipp)
-        console.log(`loadPageByItemIndex() collectionName: ${collectionName} view: ${view} index: ${index} module: ${module}`)
+        //console.log(`loadPageByItemIndex() collectionName: ${collectionName} view: ${view} index: ${index} module: ${module}`)
         await loadPage(collectionName, pageNoB0 + 1, view, module)
     }
 
@@ -97,7 +97,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         let newViewIndex = (meta.viewIndex + 1) % meta.views.length
         let newView = meta.views[newViewIndex]
         let index = meta.firstItemNo - 1
-        console.log(`toggleCollectionView() collection: ${name}  module: ${module} views: ${meta.views}  current view: ${currentView}  new view: ${newView} index: ${index}`);
+        //console.log(`toggleCollectionView() collection: ${name}  module: ${module} views: ${meta.views}  current view: ${currentView}  new view: ${newView} index: ${index}`);
         await loadPageByItemIndex(name, newView, index, module)
     }
 

@@ -67,7 +67,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
         let ipp = c.getIpp(view)
         let start = (pageNoB1 - 1) * ipp
 
-        console.log(`collectionMedia.loadPage() view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1} module: ${module} `);
+        //console.log(`collectionMedia.loadPage() view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1} module: ${module} `);
         extra.value.pageNoB1 = pageNoB1
         extra.value.viewIndex = extra.value.views.indexOf(view)
         return true

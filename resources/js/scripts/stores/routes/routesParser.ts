@@ -24,7 +24,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
     let trio = useTrioStore()
 
     function parseModule(module: string): TParseUrlModuleResponse {
-        console.log(`parseModule() module: "${module}"`)
+        //console.log(`parseModule() module: "${module}"`)
         switch (module) {
             case "admin":
             case "auth":
@@ -49,7 +49,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
 
 
     function parseSlug(module: TModule, slug: string): TParseSlugResponse {
-        console.log(`parseSlug() module: ${module}, slug: ${slug}`);
+        //console.log(`parseSlug() module: ${module}, slug: ${slug}`);
         let store
         switch (module) {
             case "Locus":

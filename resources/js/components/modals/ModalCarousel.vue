@@ -6,8 +6,8 @@
       <v-toolbar height="36" class="bg-grey-lighten-1">
         <v-toolbar-title>{{ carouselHeader }}</v-toolbar-title>
         <v-spacer />
-        <v-btn size="small" @click="nextClicked(false)" icon="mdi-arrow-left"></v-btn>
-        <v-btn size="small" @click="nextClicked(true)" icon="mdi-arrow-right"> </v-btn>
+        <v-btn v-if="showNextArrows" size="small" @click="nextClicked(false)" icon="mdi-arrow-left"></v-btn>
+        <v-btn v-if="showNextArrows" size="small" @click="nextClicked(true)" icon="mdi-arrow-right"> </v-btn>
         <v-btn size="small" @click="closeCarousel" icon="mdi-close"> </v-btn>
       </v-toolbar>
 
@@ -46,6 +46,11 @@ const carouselForm = computed<Component>(() => {
 
 const carouselHeader = computed(() => {
   return c.carouselHeader
+})
+
+
+const showNextArrows = computed(() => {
+  return c.arrayLength > 1
 })
 
 async function nextClicked(next: boolean) {
