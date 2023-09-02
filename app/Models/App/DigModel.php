@@ -237,12 +237,13 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         unset($item->model_tags);
 
         return [
-            "fields" => $item->makeHidden('slug'),
+            "fields" => $item->makeHidden(['slug', 'short']),
             "media" => $mediaArray,
             "global_tags" => $global_tags,
             "model_tags" => $model_tags,
             "discrete_columns" => $discrete_columns,
             "slug" => $item->slug,
+            "short" => $item->short,
         ];
     }
 
@@ -304,7 +305,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
         if ($methodIsPost) {
             return [
-                "fields" => $item->makeHidden('slug'),
+                "fields" => $item->makeHidden('slug', 'short'),
                 "media1" => null,
                 "mediaPage" => [],
                 "mediaArray" => [],

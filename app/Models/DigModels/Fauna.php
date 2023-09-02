@@ -18,7 +18,7 @@ class Fauna extends FindModel
     protected $table = 'fauna';
     public $timestamps = false;
     protected $guarded = [];
-    protected $appends = ['slug'];
+    protected $appends = ['slug', 'short'];
 
     public function __construct()
     {
@@ -59,6 +59,11 @@ class Fauna extends FindModel
         return $this->label;
     }
 
+    public function getShortAttribute()
+    {
+        return $this->snippet;
+    }    
+
     public function builderIndexLoad(): void
     {
         $this->builder = $this->select('id', 'label');
@@ -76,7 +81,7 @@ class Fauna extends FindModel
 
     public function builderPageImageLoad(): void
     {
-        $this->builder = $this->select('id', 'label', DB::raw('snippet AS short'))
+        $this->builder = $this->select('id', 'label', 'snippet')
             ->with(['media' => function ($query) {
                 $query->select('*')->orderBy('order_column');
             }]);
@@ -102,7 +107,7 @@ class Fauna extends FindModel
 
     public function builderShowCarouselLoad(): void
     {
-        $this->builder =  $this->select('id', 'label', DB::raw('snippet AS short'))->with("media");
+        $this->builder =  $this->select('id', 'label', 'snippet')->with("media");
     }
 
     public function discreteColumns(Model $fields): array

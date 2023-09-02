@@ -17,7 +17,7 @@ class Stone extends FindModel
     public $timestamps = false;
     protected $guarded = [];
     protected $table = 'stones';
-    protected $appends = ['slug'];
+    protected $appends = ['slug', 'short'];
 
     public function __construct()
     {
@@ -58,6 +58,12 @@ class Stone extends FindModel
         return $this->basket . '.' . $this->stone_no;
     }
 
+    public function getShortAttribute()
+    {
+        $short = is_null($this->type) ? "" : $this->type . '. ';
+        return $short . $this->description;
+    }
+
     public function builderIndexLoad(): void
     {
         $this->builder = $this->select('id', 'basket', 'stone_no');
@@ -82,7 +88,7 @@ class Stone extends FindModel
 
     public function builderPageImageLoad(): void
     {
-        $this->builder = $this->select('id', 'basket', 'stone_no', DB::raw("CONCAT(COALESCE(`type`,''),' ',description) AS short"))
+        $this->builder = $this->select('id', 'basket', 'stone_no', 'type', 'description')
             ->with(['media' => function ($query) {
                 $query->select('*')->orderBy('order_column');
             }]);
@@ -108,7 +114,7 @@ class Stone extends FindModel
 
     public function builderShowCarouselLoad(): void
     {
-        $this->builder =  $this->select('id', 'basket', 'stone_no', DB::raw('description AS short'))->with("media");
+        $this->builder =  $this->select('id', 'basket', 'stone_no', 'type', 'description')->with("media");
     }
 
     public function discreteColumns(Model $fields): array

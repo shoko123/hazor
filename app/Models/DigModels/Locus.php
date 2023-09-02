@@ -14,7 +14,7 @@ class Locus extends DigModel
     public $timestamps = false;
     protected $guarded = [];
     protected $table = 'loci';
-    protected $appends = ['slug'];
+    protected $appends = ['slug', 'short'];
 
     public function __construct()
     {
@@ -44,6 +44,14 @@ class Locus extends DigModel
     {
         return $this->area . '.' . $this->name;
     }
+
+    public function getShortAttribute()
+    { 
+        $short = is_null($this->type) ? "": 'Type: ' . $this->type . '. ';
+        $short .= empty($this->cross_ref) ? "" : 'Ref: ' . $this->cross_ref;
+        return $short;
+    }
+    
     public function builderIndexLoad(): void
     {
         $this->builder = $this->select('id', 'area', 'name');
@@ -61,7 +69,7 @@ class Locus extends DigModel
 
     public function builderPageImageLoad(): void
     {
-        $this->builder = $this->select('id', 'area', 'name', DB::raw('type AS short'))
+        $this->builder = $this->select('id', 'area', 'name', 'type', 'cross_ref')
             ->with(['media' => function ($query) {
                 $query->select('*')->orderBy('order_column');
             }]);
@@ -85,7 +93,7 @@ class Locus extends DigModel
 
     public function builderShowCarouselLoad(): void
     {
-        $this->builder = $this->select('id', 'area', 'name', DB::raw('type AS short'))->with("media");
+        $this->builder = $this->select('id', 'area', 'name', 'type', 'cross_ref')->with("media");
     }
 
     public function discreteColumns(Model $model): array
