@@ -25,6 +25,7 @@ export const useItemStore = defineStore('item', () => {
   let fields = ref<TFields | undefined>(undefined)
   let slug = ref<string | undefined>(undefined)
   let tag = ref<string | undefined>(undefined)
+  let short = ref<string | undefined>(undefined)
   let selectedItemParams = ref<string[]>([])  
   let ready = ref<boolean>(false)
   const itemViewIndex = ref<number>(0)
@@ -49,6 +50,7 @@ export const useItemStore = defineStore('item', () => {
   function saveItem(apiItem: TApiItemShow) {
     fields.value = apiItem.fields
     slug.value = apiItem.slug
+    short.value = apiItem.short
     tag.value = moduleStore.tagFromSlug(current.value.module, apiItem.slug)
     selectedItemParams.value = [...apiItem.model_tags, ...apiItem.global_tags, ...apiItem.discrete_columns]
   }
@@ -57,6 +59,7 @@ export const useItemStore = defineStore('item', () => {
     itemIndex.value = -1
     fields.value = undefined
     slug.value = undefined
+    short.value = undefined
     tag.value = undefined
     selectedItemParams.value = []
   }
@@ -129,6 +132,7 @@ export const useItemStore = defineStore('item', () => {
   return {
     slug,
     tag,
+    short,
     ready,
     fields,
     id,

@@ -27,7 +27,7 @@ type TPageCMedia = TMediaRecord
 type TApiCarouselMain = {
         id: number,
         slug: string,
-        description: string,
+        short: string,
         media: TMediaUrls,
         module: TModule
 }
@@ -51,22 +51,9 @@ type TCarouselMain = {
         id: number,
         slug: string,
         tag: string,
-        description: string,
+        short: string,
         module: TModule | undefined
 }
-
-
-// type TCarouselMedia = {
-//         id: number,
-//         full: string,
-//         tn: string,
-//         size: number,
-//         collection_name: string,
-//         file_name: string,
-//         order_column: number,
-//         title: string,
-//         text: string,
-// }
 
 type TCarousel = TCarouselMain | TMediaRecord
 

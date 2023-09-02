@@ -12,10 +12,9 @@
       <v-text-field v-model="media.collection_name" label="Group" class="mr-1" readonly filled></v-text-field>
       <v-text-field v-model="media.size" label="Size" class="mr-1" readonly filled></v-text-field>
     </v-row>
-
   
     <v-row wrap no-gutters>
-      <v-text-field v-model="media.title" label="Item Description" class="mr-1" readonly filled></v-text-field>
+      <v-text-field v-model="short" label="Item Description" class="mr-1" readonly filled></v-text-field>
     </v-row>
   </v-card-text>
   <v-card-actions>
@@ -45,6 +44,9 @@ const tag = computed(() => {
   return i.tag
 })
 
+const short = computed(() => {
+  return i.short
+})
 const module = computed(() => {
   return routeInfo.value.module
 })

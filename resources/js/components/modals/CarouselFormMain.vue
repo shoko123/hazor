@@ -3,7 +3,7 @@
 <template>
   <v-card-text>
     <v-row class="text-body-1">
-     {{item?.description}}</v-row>
+     {{item?.short}}</v-row>
   </v-card-text>
   <v-card-actions>
     <v-btn @click="clicked" variant="outlined">{{ item?.tag }}</v-btn>

@@ -99,7 +99,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
             case 'Image':
                 toSave = (<TApiPageMainImage[]>apiPage).map(x => {
                     const media = buildMedia(x.media1, module)
-                    const item = { id: x.id, slug: x.slug, tag: tagFromSlug(module, x.slug), description: x.description }
+                    const item = { id: x.id, slug: x.slug, tag: tagFromSlug(module, x.slug), short: x.short }
                     return { ...item, media: media }
                 })
                 page.value = <TPageCMainVImage[]>toSave

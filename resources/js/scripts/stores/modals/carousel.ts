@@ -103,7 +103,7 @@ export const useCarouselStore = defineStore('carousel', () => {
       id: data.id,
       slug: data.slug,
       tag: tagFromSlug(current.value.module, data.slug),
-      description: data.description,
+      short: data.short,
       module: data.module
     }
   }

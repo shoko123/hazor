@@ -112,7 +112,7 @@ const urls = computed(() => {
 const overlayText = computed(() => {
   switch (props.source) {
     case 'main':
-      return  mainRecord.value?.description
+      return  mainRecord.value?.short
 
     case 'media':
       return ``

@@ -12,6 +12,7 @@ type TApiItemShow = {
         global_tags: any[],
         discrete_columns: string[]
         slug: string,
+        short: string,
         extra: any
 }
 type TApiItemUpdate = {

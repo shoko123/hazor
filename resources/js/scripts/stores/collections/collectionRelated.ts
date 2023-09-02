@@ -63,7 +63,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     }
 
     function itemIndexById(id: number) {
-        let index = array.value.findIndex(x => x === id)
+        let index = array.value.findIndex(x => x.id === id)
         return index
     }
 

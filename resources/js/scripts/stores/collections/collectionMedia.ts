@@ -41,10 +41,12 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
                     full: media.urls.full,
                     tn: media.urls.tn
                 },
+                size: x.size,
+                collection_name: x.collection_name,
                 file_name: x.file_name,
                 order_column: x.order_column,
-                description: "LLLLL",
-
+                title: "LLLLL",
+                text: "LLLLL",
             }
         })
         return res
