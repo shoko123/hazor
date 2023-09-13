@@ -20,7 +20,7 @@
   </v-card-text>
   <v-card-actions>
     <v-btn @click="goto" variant="outlined">Go To "{{ tag }}"</v-btn>
-    <v-btn @click="download" variant="outlined">Download</v-btn>
+    <!-- <v-btn @click="download" variant="outlined">Download</v-btn> -->
   </v-card-actions>
 </template>
 

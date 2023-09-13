@@ -55,6 +55,7 @@ INSERT INTO `stone_tags` VALUES
 (522,'Axe',5,17),
 (523,'Hoe',5,18),
 (524,'Digging Stick Weight',5,19),
+(525,'Rubber',5,20),
 
 (604,'Architectural',6,1),
 (605,'Socket',6,2),
