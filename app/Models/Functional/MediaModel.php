@@ -51,22 +51,23 @@ class MediaModel
             }
 
             $mediaCollection = SpatieMedia::where('model_id', '=', $r["model_id"])->where('model_type', '=', $r["model"])->get();
-            return self::getMedia($mediaCollection);
+            return self::getUrlsOfAll($mediaCollection);
         } catch (Exception $error) {
             throw new Exception('Failed to upload media. error: ' . $error);
         }
     }
 
-    public static function getMedia(MediaCollection $mc, bool $just1 = false)
+    public static function getUrlsOfOne(MediaCollection $mc)
     {
-        if ($just1) {
-            if (empty($mc)) {
-                return null;
-            } else {
-                return  ['full' => $mc[0]->getPath(), 'tn' =>  $mc[0]->getPath('tn')];
-            }
+        if (empty($mc)) {
+            return null;
+        } else {
+            return  ['full' => $mc[0]->getPath(), 'tn' =>  $mc[0]->getPath('tn')];
         }
+    }
 
+    public static function getUrlsOfAll(MediaCollection $mc)
+    {
         $mapped = $mc->map(function ($med, $key) {
             return ['id' => $med["id"], 'urls' => ['full' => $med->getPath(), 'tn' =>  $med->getPath('tn')], 'order_column' =>  $med["order_column"], 'file_name' =>  $med["file_name"]];
         });
@@ -89,7 +90,7 @@ class MediaModel
 
         //get updated media for item
         $mediaCollection = SpatieMedia::where('model_id', '=', $r["model_id"])->where('model_type', '=', $r["model"])->get();
-        return self::getMedia($mediaCollection);
+        return self::getUrlsOfAll($mediaCollection);
     }
 
     public static function reorder(array $m)
@@ -111,6 +112,6 @@ class MediaModel
         $mediaCollection = SpatieMedia::where('model_id', '=', $m["model_id"])
             ->where('model_type', '=', $m["model"])
             ->orderBy('order_column', 'asc')->get();
-        return self::getMedia($mediaCollection);
+        return self::getUrlsOfAll($mediaCollection);
     }
 }

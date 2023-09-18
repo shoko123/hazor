@@ -1,6 +1,6 @@
 <template>
   <v-hover v-slot="{ isHovering, props }">
-    <v-card v-bind="props" variant="outlined"  class="ml-1 mb-1">
+    <v-card v-bind="props" variant="outlined" class="ml-1 mb-1">
       <v-img :src="urls?.full" :lazy-src="urls?.tn" aspect-ratio="1" class="bg-grey-lighten-2">
         <v-btn v-if="showTag" class="text-subtitle-1 font-weight-medium text-black" color="grey">{{ tagText }}</v-btn>
         <v-card class="mx-auto" color="transparent" flat>
@@ -20,7 +20,7 @@
 <script lang="ts" setup >
 import { computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { TCollectionName, TPageCMainVImage } from '../../types/collectionTypes'
+import { TCollectionName, TPageCMainVImage, TPageCRelatedVMedia } from '../../types/collectionTypes'
 import { TMediaRecord } from '../../types/mediaTypes'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import { useCollectionMainStore } from '../../scripts/stores/collections/collectionMain'
@@ -68,7 +68,7 @@ const record = computed(() => {
 })
 
 const mainRecord = computed(() => {
-  if(props.source !== 'main') {
+  if (props.source !== 'main') {
     return null
   }
   let ma = record.value as TPageCMainVImage
@@ -76,13 +76,20 @@ const mainRecord = computed(() => {
 })
 
 const mediaRecord = computed(() => {
-  if(props.source !== 'media') {
+  if (props.source !== 'media') {
     return null
   }
   let ma = record.value as TMediaRecord
   return ma
 })
 
+const relatedRecord = computed(() => {
+  if (props.source !== 'related') {
+    return null
+  }
+  let ma = record.value as TPageCRelatedVMedia
+  return ma
+})
 const showTag = computed(() => {
   return props.source === 'main'
 })
@@ -105,14 +112,17 @@ const urls = computed(() => {
     case 'media':
       return mediaRecord.value?.urls
 
-      default:
-        return { full: "", tn: ""}
+    case 'related':
+      return relatedRecord.value?.media.urls
+      
+    default:
+      return { full: "", tn: "" }
   }
 })
 const overlayText = computed(() => {
   switch (props.source) {
     case 'main':
-      return  mainRecord.value?.short
+      return mainRecord.value?.short
 
     case 'media':
       return ``

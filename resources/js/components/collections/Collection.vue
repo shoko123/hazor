@@ -72,7 +72,7 @@ const header = computed(() => {
     case 'media':
       return `Item media: ${pageInfoAsText.value}`
     case 'related':
-      return ``
+      return `related items`
   }
 })
 

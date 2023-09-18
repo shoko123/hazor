@@ -208,17 +208,13 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
     public function show(array $validated)
     {
-        $this->builderShowLoad();
+        $this->builderView0Load();
         $this->builderShowLocate($validated);
         $item = $this->builder->first();
-
+        $related = $this->builderView0PostLoad($item);
 
         $discrete_columns = $this->discreteColumns($item);
-        $mediaArray = [];
-
-        if (!$item->media->isEmpty()) {
-            $mediaArray = MediaModel::getMedia($item->media);
-        }
+        $mediaArray = MediaModel::getUrlsOfAll($item->media);
 
         //model tags (discrete)        
         $model_tags = $item->model_tags->map(function ($tag, int $key) {
@@ -244,6 +240,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             "discrete_columns" => $discrete_columns,
             "slug" => $item->slug,
             "short" => $item->short,
+            "related" => $related
         ];
     }
 
@@ -252,16 +249,11 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         $this->builderShowCarouselLoad();
         $item =  $this->builder->findOrFail($id);
 
-        $media1 = null;
-        if (!$item->media->isEmpty()) {
-            $media1 = MediaModel::getMedia($item->media, true);
-        }
-
         return [
             "id" => $id,
             "slug" => $item["slug"],
             "short" => $item["short"],
-            "media" => $media1,
+            "media" => count($item->media) === 0 ? null : MediaModel::getUrlsOfOne($item->media),//MediaModel::getUrlsOfOne($item->media),
             "module" => $this->eloquent_model_name
         ];
     }

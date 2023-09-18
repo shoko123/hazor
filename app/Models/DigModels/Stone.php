@@ -10,7 +10,10 @@ use App\Models\Tags\StoneTag;
 use App\Models\Tags\Tag;
 use App\Models\Lookups\StoneBaseType;
 use App\Models\Lookups\StoneMaterial;
+use App\Models\DigModels\Locus;
+use App\Models\Functional\MediaModel;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\JoinClause;
 
 class Stone extends FindModel
 {
@@ -44,15 +47,6 @@ class Stone extends FindModel
         return $this->belongsTo(StoneMaterial::class, 'material_id');
     }
 
-    public function init(): array
-    {
-        return [
-            "message" => $this->eloquent_model_name . '.init()',
-            "counts" => ["items" => $this->count(), "media" => DB::table('media')->where('model_type', 'Stone')->count(),],
-            "itemViews" => config('display_options.itemViews.Stone'),
-        ];
-    }
-
     public function getSlugAttribute()
     {
         return $this->basket . '.' . $this->stone_no;
@@ -62,6 +56,15 @@ class Stone extends FindModel
     {
         $short = is_null($this->type) ? "" : $this->type . '. ';
         return $short . $this->description;
+    }
+
+    public function init(): array
+    {
+        return [
+            "message" => $this->eloquent_model_name . '.init()',
+            "counts" => ["items" => $this->count(), "media" => DB::table('media')->where('model_type', 'Stone')->count(),],
+            "itemViews" => config('display_options.itemViews.Stone'),
+        ];
     }
 
     public function builderIndexLoad(): void
@@ -108,8 +111,40 @@ class Stone extends FindModel
             'model_tags.tag_group',
             'global_tags.tag_group',
             'material',
-            'baseType'
+            'baseType',
         ]);
+    }
+
+    public function builderView0Load(): void
+    {
+        $this->builder = self::with([
+            'media' => function ($query) {
+                $query->orderBy('order_column');
+            },
+            'model_tags.tag_group',
+            'global_tags.tag_group',
+            'material',
+            'baseType',
+        ])
+            ->leftJoin('loci', function (JoinClause $join) {
+                $join->on('loci.name', '=', 'stones.locus')->on('loci.area', '=', 'stones.area');
+            })->select('stones.*', 'loci.id AS locus_id');
+    }
+
+    public function builderView0PostLoad(object $item): array
+    {
+        //if no related locus found, unset $item.locus_id and return "empty" related values
+        if (is_null($item["locus_id"])) {
+            unset($item->locus_id);
+            return [];
+        }
+
+
+        /////////////////////////
+        $lm = new Locus;
+        $related = $lm->meAndRelated($item->locus_id);
+        unset($item->locus_id);
+        return $related;
     }
 
     public function builderShowCarouselLoad(): void

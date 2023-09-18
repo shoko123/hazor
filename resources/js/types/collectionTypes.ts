@@ -11,7 +11,16 @@ type TItemPerPagePerView = { Image: number, Chip: number, Table: number }
 //array types
 type TApiArrayMain = { id: number, slug: string }
 type TApiArrayMedia = TMediaRecord
-type TApiArrayRelated = { module: TModule, id: number, slug: string }
+type TApiArrayRelated = {
+        relation_name: string,
+        module: TModule,
+        id: number,
+        slug: string,
+        short: string,
+        media: TMediaUrls | null
+}
+
+
 
 type TApiArray = TApiArrayMain | TApiArrayMedia | TApiArrayRelated
 
@@ -111,8 +120,24 @@ type TPageCMainVTable = {
         description: string
 }
 
+type TPageCRelatedVMedia = {
+        relation_name: string,
+        module: TModule,
+        id: number,
+        slug: string,
+        tag: string
+        short: string,
+        media: TMediaOfItem
+}
+type TPageCRelatedVChip = {
+        relation_name: string,
+        module: TModule,
+        id: number,
+        slug: string,
+        tag: string
+}
 //union of the above
-type TPageItem = TPageCMainVImage | TPageCMainVTable | TPageVChip | TPageCMedia
+type TPageItem = TPageCMainVImage | TPageCMainVTable | TPageVChip | TPageCMedia | TPageCRelatedVMedia | TPageCRelatedVChip
 
 //internal collection data
 type TCollectionExtra = {
@@ -153,6 +178,8 @@ export {
         TPageVChip,
         TPageCMainVImage,
         TPageCMainVTable,
+        TPageCRelatedVMedia,
+        TPageCRelatedVChip,
         TPageItem,
         TMediaUrls,
 
