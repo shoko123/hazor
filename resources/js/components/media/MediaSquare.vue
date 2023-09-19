@@ -1,7 +1,8 @@
 <template>
   <v-hover v-slot="{ isHovering, props }">
     <v-card v-bind="props" variant="outlined" class="ml-1 mb-1">
-      <v-img :src="urls?.full" :lazy-src="urls?.tn" aspect-ratio="1" class="bg-grey-lighten-2">
+      <!-- <v-img :src="urls?.full" :lazy-src="urls?.tn" aspect-ratio="1" class="bg-grey-lighten-2"></v-img> -->
+      <v-img :src="urls?.tn" :lazy-src="urls?.tn" aspect-ratio="1" class="bg-grey-lighten-2">
         <v-btn v-if="showTag" class="text-subtitle-1 font-weight-medium text-black" color="grey">{{ tagText }}</v-btn>
         <v-card class="mx-auto" color="transparent" flat>
           <v-card-text class="text-body-1 text-black">
@@ -91,13 +92,16 @@ const relatedRecord = computed(() => {
   return ma
 })
 const showTag = computed(() => {
-  return props.source === 'main'
+  return ['main', 'related'].includes(props.source)
 })
 
 const tagText = computed(() => {
   switch (props.source) {
     case 'main':
       return mainRecord.value?.tag
+
+    case 'related':
+      return relatedRecord.value?.relation_name
 
     default:
       return ""
@@ -114,7 +118,7 @@ const urls = computed(() => {
 
     case 'related':
       return relatedRecord.value?.media.urls
-      
+
     default:
       return { full: "", tn: "" }
   }
@@ -126,6 +130,9 @@ const overlayText = computed(() => {
 
     case 'media':
       return ``
+
+    case 'related':
+      return `${relatedRecord.value?.module} ${relatedRecord.value?.tag}.  ${relatedRecord.value?.short}`
   }
 })
 

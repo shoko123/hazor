@@ -5,7 +5,8 @@
       <v-pagination v-if="paginator.show" v-model="page" :length="paginator.pages" :total-visible="16">
       </v-pagination>
 
-      <v-btn v-if="showBtnViewToggle" size="small" variant="outlined" @click="toggleCollectionDisplayOption()">view: {{ displayOption }}
+      <v-btn v-if="showBtnViewToggle" size="small" variant="outlined" @click="toggleCollectionDisplayOption()">view: {{
+        displayOption }}
       </v-btn>
 
     </v-toolbar>
@@ -18,22 +19,21 @@
 </template>
 
 <script lang="ts" setup >
-import type { Component } from 'vue'
-import { computed } from 'vue'
+import { type Component, computed } from 'vue'
+import { defineStore, storeToRefs } from 'pinia'
 import { TCollectionName } from '@/js/types/collectionTypes'
 import CollectionPageImage from './CollectionPageImage.vue'
 import CollectionPageChips from './CollectionPageChips.vue'
 import CollectionPageTable from './CollectionPageTable.vue'
-import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain';
+import { useItemStore } from '../../scripts/stores/item';
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 
 const props = defineProps<{
   source: TCollectionName
 }>()
 
-let { getModule } = useRoutesMainStore()
 let { collection, loadPage, toggleCollectionView } = useCollectionsStore()
-
+let { tag, derived } = storeToRefs(useItemStore())
 const c = computed(() => {
   return collection(props.source).value
 })
@@ -46,7 +46,7 @@ const page = computed({
   get: () => { return paginator.value.page },
   set: val => {
     //console.log(`Collection.page.set to ${val}`)
-    loadPage(props.source, val, meta.value.view, getModule())
+    loadPage(props.source, val, meta.value.view, derived.value.module)
   }
 })
 
@@ -65,14 +65,14 @@ const pageInfoAsText = computed(() => {
 
 
 const header = computed(() => {
-  const module = getModule()
+  
   switch (props.source) {
     case 'main':
-      return `${module} query results: ${pageInfoAsText.value}`
+      return `${derived.value.module} query results: ${pageInfoAsText.value}`
     case 'media':
-      return `Item media: ${pageInfoAsText.value}`
+      return `${derived.value.module} "${tag.value}" - media: ${pageInfoAsText.value}`
     case 'related':
-      return `related items`
+      return `${derived.value.module} "${tag.value}" - related items: ${pageInfoAsText.value}`
   }
 })
 

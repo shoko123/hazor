@@ -102,19 +102,6 @@ class Stone extends FindModel
         $this->builder->where('basket', '=', $v["params"]["basket"])->where('stone_no', '=', $v["params"]["stone_no"]);
     }
 
-    public function builderShowLoad(): void
-    {
-        $this->builder = self::with([
-            'media' => function ($query) {
-                $query->select('*')->orderBy('order_column');
-            },
-            'model_tags.tag_group',
-            'global_tags.tag_group',
-            'material',
-            'baseType',
-        ]);
-    }
-
     public function builderView0Load(): void
     {
         $this->builder = self::with([
@@ -139,8 +126,6 @@ class Stone extends FindModel
             return [];
         }
 
-
-        /////////////////////////
         $lm = new Locus;
         $related = $lm->meAndRelated($item->locus_id);
         unset($item->locus_id);

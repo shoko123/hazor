@@ -3,6 +3,8 @@
 namespace App\Models\DigModels;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Query\JoinClause;
+use Illuminate\Database\Eloquent\Model;
 use App\Models\App\FindModel;
 use App\Models\App\DigModel;
 use App\Models\Tags\FaunaTag;
@@ -10,8 +12,6 @@ use App\Models\Tags\Tag;
 use App\Models\Lookups\FaunaElement;
 use App\Models\Lookups\FaunaTaxon;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 
 class Fauna extends FindModel
 {
@@ -62,7 +62,7 @@ class Fauna extends FindModel
     public function getShortAttribute()
     {
         return $this->snippet;
-    }    
+    }
 
     public function builderIndexLoad(): void
     {
@@ -92,18 +92,36 @@ class Fauna extends FindModel
         $this->builder->where('label', '=', $v["params"]["label"]);
     }
 
-    public function builderShowLoad(): void
+    public function builderView0Load(): void
     {
         $this->builder = self::with([
             'media' => function ($query) {
-                $query->select('*')->orderBy('order_column');
+                $query->orderBy('order_column');
             },
             'model_tags.tag_group',
             'global_tags.tag_group',
             'base_taxon',
             'element_tag',
-        ]);
+        ])
+            ->leftJoin('loci', function (JoinClause $join) {
+                $join->on('loci.name', '=', 'fauna.locus')->on('loci.area', '=', 'fauna.area');
+            })->select('fauna.*', 'loci.id AS locus_id');
     }
+
+    public function builderView0PostLoad(object $item): array
+    {
+        //if no related locus found, unset $item.locus_id and return "empty" related values
+        if (is_null($item["locus_id"])) {
+            unset($item->locus_id);
+            return [];
+        }
+
+        $lm = new Locus;
+        $related = $lm->meAndRelated($item->locus_id);
+        unset($item->locus_id);
+        return $related;
+    }
+
 
     public function builderShowCarouselLoad(): void
     {

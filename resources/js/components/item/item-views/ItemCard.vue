@@ -26,7 +26,6 @@
 <script lang="ts" setup >
 import type { Component } from 'vue'
 import { computed } from 'vue'
-import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
 import { storeToRefs } from 'pinia'
 import { useItemStore } from '../../../scripts/stores/item'
 import { useCollectionMediaStore } from '../../../scripts/stores/collections/collectionMedia'
@@ -39,11 +38,10 @@ import FaunaForm from '../../modules/fauna/FaunaForm.vue'
 
 
 let { array } = storeToRefs(useCollectionMediaStore())
-let { tag } = storeToRefs(useItemStore())
-let { getModule } = useRoutesMainStore()
+let { derived, tag } = storeToRefs(useItemStore())
 
 const itemForm = computed<Component>(() => {
-  switch (getModule()) {
+  switch (derived.value.module) {
     case 'Locus':
       return LocusForm
     case 'Stone':
@@ -57,13 +55,12 @@ const itemForm = computed<Component>(() => {
 })
 
 const title = computed(() => {
-  return `${getModule()}  ${tag.value} details`
+  return `${derived.value.module} "${tag.value}" - details`
 })
 
 const hasMedia = computed(() => {
   return array.value.length > 0
 })
-
 
 </script>
 

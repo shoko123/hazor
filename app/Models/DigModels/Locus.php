@@ -84,35 +84,74 @@ class Locus extends DigModel
         $this->builder->where('area', '=', $v["params"]["area"])->where('name', '=', $v["params"]["name"]);
     }
 
-    public function builderShowLoad(): void
+    public function builderView0Load(): void
     {
         $this->builder = self::with([
             'media' => function ($query) {
-                $query->select('*')->orderBy('order_column');
+                $query->orderBy('order_column');
             },
             'model_tags.tag_group',
             'global_tags.tag_group',
         ]);
     }
 
-    public function meAndRelated(int $id)
+    public function builderView0PostLoad(object $item): array
+    {
+        return $this->relatedFinds($item);        
+    }
+
+    protected function relatedFinds(object $item): array
     {
         $related = [];
+        $stones = Stone::with([
+            'media' => function ($query) {
+                $query->orderBy('order_column');
+            }
+        ])->where('locus', '=', $item["name"])->where('area', '=', $item["area"])
+            ->orderBy('basket')->orderBy('stone_no')
+            ->get();
+
+        foreach ($stones as $item) {
+            array_push($related, [
+                "relation_name" => "Finds in Locus",
+                "module" => "Stone",
+                "id" => $item["id"],
+                "slug" => $item["slug"],
+                "short" => $item["short"],
+                "media" => count($item->media) === 0 ? null : MediaModel::getUrlsOfOne($item->media),
+            ]);
+        }
+
+        $fauna = Fauna::with([
+            'media' => function ($query) {
+                $query->orderBy('order_column');
+            }
+        ])->where('locus', '=', $item["name"])->where('area', '=', $item["area"])
+            ->orderBy('label')
+            ->get();
+
+        foreach ($fauna as $item) {
+            array_push($related, [
+                "relation_name" => "Finds in Locus",
+                "module" => "Fauna",
+                "id" => $item["id"],
+                "slug" => $item["slug"],
+                "short" => $item["short"],
+                "media" => count($item->media) === 0 ? null : MediaModel::getUrlsOfOne($item->media),
+            ]);
+        }
+        return $related;
+    }
+
+    public function meAndRelated(int $id)
+    {
         $locus = $this->builder = self::with([
             'media' => function ($query) {
                 $query->orderBy('order_column');
             }
         ])->findOrFail($id);
 
-        $ret_locus = [
-            "id" => $id,
-            "slug" => $locus["slug"],
-            "short" => $locus["short"],
-            "media" => count($locus->media) === 0 ? null : MediaModel::getUrlsOfOne($locus->media),
-            "module" => "Locus"
-        ];
-
-        array_push($related, [
+        $related_locus = [
             "relation_name" => "Locus",
             "module" => "Locus",
             "id" => $id,
@@ -120,38 +159,11 @@ class Locus extends DigModel
             "short" => $locus["short"],
             "media" => count($locus->media) === 0 ? null : MediaModel::getUrlsOfOne($locus->media),
             "module" => "Locus"
-        ]);
-        // return [
-        //     ["name" => "meAndRelated", "isArray" => true, "value" => $ret_locus],
-        // ];
-
-
-        $stones = Stone::with([
-            'media' => function ($query) {
-                $query->orderBy('order_column');
-            }
-        ])->where('locus', '=', $locus["name"])->where('area', '=', $locus["area"])
-        ->orderBy('basket')->orderBy('stone_no')
-            ->get();
-
-        $ret_stones = [];
-        foreach ($stones as $st) {
-            array_push($related, [
-                "relation_name" => "Finds in Locus",
-                "module" => "Stone",
-                "id" => $st["id"],
-                "slug" => $st["slug"],
-                "short" => $st["short"],
-                "media" => count($st->media) === 0 ? null : MediaModel::getUrlsOfOne($st->media),
-            ]);
-        }
-
-            return $related;
-
-        return [
-            ["name" => "locus", "isArray" => false, "value" => $ret_locus],
-            ["name" => "locus_finds", "isArray" => true, "value" => $ret_stones],
         ];
+
+        $related_finds = $this->relatedFinds(($locus));     
+        array_unshift($related_finds, $related_locus);   
+        return $related_finds;
     }
 
     public function builderShowCarouselLoad(): void
