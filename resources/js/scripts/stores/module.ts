@@ -49,19 +49,7 @@ export const useModuleStore = defineStore('module', () => {
     }
   }
   const getCurrentStore = computed(() => {
- switch (current.value.module) {
-        case 'Locus':
-          return useLocusStore()
-  
-        case 'Stone':
-          return useStoneStore()
-  
-        case 'Fauna':
-          return useFaunaStore()
-  
-        default:
-          return useFaunaStore()
-      }    
+    return getStore(current.value.module)
   })
   
 

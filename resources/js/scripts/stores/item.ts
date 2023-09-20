@@ -35,16 +35,17 @@ export const useItemStore = defineStore('item', () => {
     return typeof fields.value === 'undefined' ? -1 : (<TFields>fields.value).id
   })
 
-
-  const getItemViewIndex = computed(() => {
-    return itemViewIndex.value
-  })
-
   function setItemViewIndex(index: number) {
     itemViewIndex.value = index
   }
   const derived = computed(() => {
-    return { module: current.value.module, slug: current.value.slug }
+    return {
+      module: current.value.module,
+      slug: current.value.slug,
+      tag: tag.value,
+      moduleAndTag: `${current.value.module} "${tag.value}"`,
+      short: short.value
+    }
   })
 
   function saveItem(apiItem: TApiItemShow) {

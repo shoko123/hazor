@@ -17,7 +17,7 @@ type TApiArrayRelated = {
         id: number,
         slug: string,
         short: string,
-        media: TMediaUrls | null
+        media: TMediaUrls
 }
 
 

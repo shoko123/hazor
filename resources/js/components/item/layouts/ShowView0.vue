@@ -1,4 +1,5 @@
 <template>
+  <Collection source="media" class="mb-2" />  
   <v-row wrap dense>
     <v-col md="12" lg="9" class="d-flex flex-column">
       <ItemCard class="mb-2" />
@@ -7,8 +8,8 @@
       <TagsForm source="Item"></TagsForm>
     </v-col>
   </v-row>
-  <Collection source="related" />
-  <Collection source="media" class="mt-2" />
+  <Collection source="related"/>
+
 </template>
 
 <script lang="ts" setup >

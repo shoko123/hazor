@@ -31,13 +31,15 @@ import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 import ImageZoom from './ImageZoom.vue'
 import CarouselFormMain from './CarouselFormMain.vue'
 import CarouselFormMedia from './CarouselFormMedia.vue'
-
+import CarouselFormRelated from './CarouselFormRelated.vue'
 const c = useCarouselStore()
 
 const carouselForm = computed<Component>(() => {
   switch (c.collectionName) {
     case 'main':
       return CarouselFormMain
+    case 'related':
+      return CarouselFormRelated
     case 'media':
     default:
       return CarouselFormMedia

@@ -1,24 +1,21 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { TCollectionName, TApiArrayMain, TApiArrayMedia, TApiArray } from '@/js/types/collectionTypes'
-import { TMediaRecord, TCarouselMain, TApiCarouselMain, TApiCarouselMedia, TMediaOfItem } from '@/js/types/mediaTypes'
-import { TModule } from '@/js/types/routesTypes'
-
-
+import { TCollectionName, TApiArrayMain, TApiArrayRelated, TApiArray } from '@/js/types/collectionTypes'
+import { TMediaRecord, TCarouselMain, TCarouselRelated, TApiCarouselMain, TApiCarouselMedia, TMediaOfItem } from '@/js/types/mediaTypes'
 import { useCollectionsStore } from '../collections/collections'
 import { useXhrStore } from '../xhr'
 import { useNotificationsStore } from '../notifications'
 import { useMediaStore } from '../media'
 import { useModuleStore } from '../module'
-import { useRoutesMainStore } from '../routes/routesMain'
+import { useItemStore } from '../item'
 
 
 export const useCarouselStore = defineStore('carousel', () => {
   let c = useCollectionsStore()
   const { send } = useXhrStore()
   const { showSpinner } = useNotificationsStore()
-  const { current } = storeToRefs(useRoutesMainStore())
+  const { derived } = storeToRefs(useItemStore())
   const { buildMedia } = useMediaStore()
   const { tagFromSlug } = useModuleStore()
 
@@ -26,7 +23,7 @@ export const useCarouselStore = defineStore('carousel', () => {
   let collectionName = ref<TCollectionName>('main')
   let index = ref<number>(-1)
   let media = ref<TMediaOfItem>({ hasMedia: false, urls: { full: "", tn: "" } })
-  let itemDetails = ref<TCarouselMain | TMediaRecord | null>(null)
+  let itemDetails = ref<TCarouselMain | TMediaRecord | TCarouselRelated | null>(null)
 
   const carouselHeader = computed(() => {
     if (!isOpen.value) { return undefined }
@@ -34,13 +31,30 @@ export const useCarouselStore = defineStore('carousel', () => {
     let text = ""
     switch (collectionName.value) {
       case 'main':
-        text = `${current.value.module} result set. Showing item "${(<TCarouselMain>itemDetails.value)?.tag}"`
+        text = `${derived.value.module} result set. Showing item "${(<TCarouselMain>itemMain.value)?.tag}"`
+        break
+      case 'related':
+        text = `${derived.value.moduleAndTag} related items: (Relation: "${(<TCarouselRelated>itemDetails.value)?.relation_name}", item: ${(<TCarouselRelated>itemDetails.value)?.module} "${(<TCarouselRelated>itemDetails.value)?.tag}")`
         break
       case 'media':
-        text = `Media for ${current.value.module} "${current.value.slug}"`
+        text = `Media for ${derived.value.module} "${derived.value.slug}"`
         break
     }
     return text + ` [${index.value + 1}/${collection.value.array.length}]`
+  })
+
+  const itemMain = computed(() => {
+    if (!isOpen.value || collectionName.value !== 'main') { return null }
+    return <TCarouselMain>itemDetails.value
+  })
+
+  const itemRelated = computed(() => {
+    if (!isOpen.value || collectionName.value !== 'related') { return null }
+    return <TCarouselRelated>itemDetails.value
+  })
+ const itemMedia = computed(() => {
+    if (!isOpen.value || collectionName.value !== 'media') { return null }
+    return <TMediaRecord>itemDetails.value
   })
 
   const arrayLength = computed(() => {
@@ -76,41 +90,36 @@ export const useCarouselStore = defineStore('carousel', () => {
   async function load(item: TApiArray) {
     let url = ""
     let data = { model: "", id: 0 }
-    switch (collectionName.value) {
-      case 'main':
-        url = 'model/carousel'
-        data["model"] = current.value.module
-        data["id"] = (<TApiArrayMain>item).id
 
-        break
-      case 'media':
-        url = 'media/carousel'
-        data["id"] = item["id"]
-        break
+    if (collectionName.value === 'related') {
+      media.value = buildMedia((<TApiArrayRelated>item).media, (<TApiArrayRelated>item).module)
+      itemDetails.value = { ...(<TApiArrayRelated>item), tag: tagFromSlug(derived.value.module, (<TApiArrayRelated>item).slug), media: media.value }
+    } else {
+      url = collectionName.value === 'main' ? 'model/carousel' : 'media/carousel'
+      data["model"] = derived.value.module
+      data["id"] = collectionName.value === 'main' ? (<TApiArrayMain>item).id : item["id"]
+      showSpinner(`Loading item`)
+      let res = await send(url, 'post', data)
+      if (collectionName.value === 'main') {
+        saveMain(res.data)
+      } else {
+        saveMedia(res.data)
+      }
     }
 
     //console.log(`carousel.load() url: ${url}. data: ${JSON.stringify(data, null, 2)}`)
-    let res = await send(url, 'post', data)
-
-    switch (collectionName.value) {
-      case 'main':
-        saveMain(res.data)
-        break
-      case 'media':
-        saveMedia(res.data)
-        break
-    }
     showSpinner(false)
   }
 
   function saveMain(data: TApiCarouselMain) {
-    media.value = buildMedia(data.media, current.value.module)
+    media.value = buildMedia(data.media, derived.value.module)
     itemDetails.value = {
+      module: data.module,
       id: data.id,
       slug: data.slug,
-      tag: tagFromSlug(current.value.module, data.slug),
+      tag: tagFromSlug(derived.value.module, data.slug),
       short: data.short,
-      module: data.module
+      media: media.value
     }
   }
 
@@ -134,7 +143,7 @@ export const useCarouselStore = defineStore('carousel', () => {
       case 'main':
         if (!c.itemIsInPage(<number>itemDetails.value?.id)) {
           const index = c.itemIndexById(<number>itemDetails.value?.id)
-          await c.loadPageByItemIndex(collectionName.value, 'Image', index, current.value.module)
+          await c.loadPageByItemIndex(collectionName.value, 'Image', index, derived.value.module)
             .then(res => {
               console.log(`carousel.close() loaded a new page`)
             })
@@ -161,6 +170,9 @@ export const useCarouselStore = defineStore('carousel', () => {
     arrayLength,
     media,
     itemDetails,
+    itemMain,
+    itemRelated,
+    itemMedia,
     carouselHeader,
     carouselGeneralDetails,
     open,

@@ -1,17 +1,17 @@
 // mediaTypes.ts
 import { TModule } from '@/js/types/routesTypes'
-
+import { TPageCRelatedVMedia } from '@/js/types/collectionTypes'
 //raw api returned by both page (all collections) and item.show.
 type TMediaUrls = { full: string, tn: string }
-type TMediaRecord = { 
-        id: number, 
-        urls: TMediaUrls, 
-        size: string, 
-        collection_name: string, 
-        file_name: string, 
-        order_column: number, 
-        title?: string, 
-        text?: string 
+type TMediaRecord = {
+        id: number,
+        urls: TMediaUrls,
+        size: string,
+        collection_name: string,
+        file_name: string,
+        order_column: number,
+        title?: string,
+        text?: string
 }
 
 
@@ -52,12 +52,12 @@ type TCarouselMain = {
         slug: string,
         tag: string,
         short: string,
+        media: TMediaOfItem,
         module: TModule | undefined
 }
 
-type TCarousel = TCarouselMain | TMediaRecord
-
-
+type TCarouselRelated = TPageCRelatedVMedia
+type TCarousel = TCarouselMain | TMediaRecord | TCarouselRelated
 
 export {
         TMediaUrls,
@@ -67,7 +67,7 @@ export {
         TApiCarouselMedia,
         TApiCarouselMain,
         TCarouselMain,
-        //TCarouselMedia,
+        TMediaRecord,
+        TCarouselRelated,
         TCarousel,
-        TMediaRecord
 }
