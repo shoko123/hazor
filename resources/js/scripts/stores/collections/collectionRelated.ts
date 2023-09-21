@@ -94,6 +94,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
         extra,
         array,
         page,
+        loadPage,
         itemIndexById,
         setArray,
         collection,

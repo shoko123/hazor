@@ -3,7 +3,7 @@
     <v-card class="elevation-12">
       <v-card-title class="bg-grey text-black py-0 mb-4">{{ title }}</v-card-title>
       <v-card-text>
-        <component :is="module" :isCreate=props.isCreate>
+        <component :is="formNew" :isCreate=props.isCreate>
           <template #data="{ v$, data, id }">
             <v-btn @click="submit(v$, data, id)" variant="outlined">Submit</v-btn>
             <v-btn @click="cancel" variant="outlined" class="ml-1">Cancel</v-btn>
@@ -16,37 +16,38 @@
 
 <script lang="ts" setup>
 
-import type { Component } from 'vue'
-import type { Validation } from "@vuelidate/core"
-import { TApiItemShow, TApiItemUpdate } from '@/js/types/itemTypes'
-import { computed, ref } from 'vue'
+import { type Component } from 'vue'
+import { type Validation } from "@vuelidate/core"
+import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useRouter } from 'vue-router'
+
+import { type TApiItemShow } from '@/js/types/itemTypes'
+import StoneNew from '../modules/stones/StoneNew.vue'
+import FaunaNew from '../modules/fauna/FaunaNew.vue'
+import LocusNew from '../modules/loci/LocusNew.vue'
+
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useItemStore } from '../../scripts/stores/item'
 import { TFields } from '@/js/types/moduleFieldsTypes'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
-import StoneNew from '../modules/stones/StoneNew.vue'
-import FaunaNew from '../modules/fauna/FaunaNew.vue'
-import LocusNew from '../modules/loci/LocusNew.vue'
 import { useLocusStore } from '../../scripts/stores/modules/locus'
 import { useStoneStore } from '../../scripts/stores/modules/stone'
 import { useFaunaStore } from '../../scripts/stores/modules/fauna'
-let router = useRouter()
 
-let { showSnackbar } = useNotificationsStore()
-let { upload } = useItemStore()
 const props = defineProps<{
   isCreate: boolean
 }>()
 
+let { showSnackbar } = useNotificationsStore()
+let { upload } = useItemStore()
+let { routerPush } = useRoutesMainStore()
 let { current } = storeToRefs(useRoutesMainStore())
 
 const title = computed(() => {
   return props.isCreate ? "Create" : "Update"
 })
 
-const module = computed<Component>(() => {
+const formNew = computed<Component>(() => {
   switch (current.value.module) {
     case 'Locus':
       return LocusNew
@@ -79,8 +80,6 @@ function beforeStore(isCreate: boolean, fields: TFields) {
   return store.beforeStore(props.isCreate, fields)
 }
 
-const child = ref(null)
-
 async function submit(v$: Validation, data: TFields, id?: number) {
   //console.log(`CreateUpdate.submit() data: ${JSON.stringify(data, null, 2)}`)
 
@@ -109,15 +108,15 @@ async function submit(v$: Validation, data: TFields, id?: number) {
 
   //console.log(`CreateUpdate.after upload() res: ${JSON.stringify(slug, null, 2)}`)
   if (props.isCreate) {
-    router.push({ name: 'show', params: { module: current.value.url_module, slug: (<TApiItemShow>itemDetails).slug } })
+    routerPush('show', (<TApiItemShow>itemDetails).slug)
   } else {
-    router.push({ name: 'show', params: { module: current.value.url_module, slug: current.value.slug } })
+    routerPush('show', <string>current.value.slug)
   }
 }
 
 const cancel = () => {
   console.log(`cancel`)
-  router.go(-1)
+  routerPush('back1')
 }
 
 </script>

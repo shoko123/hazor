@@ -10,24 +10,16 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 import TagsForm from '../../../trio/TrioSelectedForm.vue'
 
-
-const router = useRouter()
-const { getUrlModule } = useRoutesMainStore()
+const { routerPush } = useRoutesMainStore()
 
 const tip = computed(() => {
   return `Go to filters`
 })
 
-const count = computed(() => {
-  return false
-})
-
 function toFilter() {
-  console.log(`toFilter()`)
-  router.push({ name: 'filter', params: { module: getUrlModule() } })  
+  routerPush('filter') 
 }
 </script>

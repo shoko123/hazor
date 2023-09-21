@@ -2,10 +2,10 @@
 //handles the entire routing mechanism - parsing, loading resources, error handling
 
 import { ref } from 'vue'
-import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
+import { defineStore, storeToRefs } from 'pinia'
+import { useRouter, type LocationQueryRaw, type RouteLocationNormalized, type RouteLocationRaw } from 'vue-router'
 import type { TParseModuleData, TRouteInfo, TName, TParseErrorDetails, TPlanAction, TPrepareError, TModule, TUrlModule } from '../../../types/routesTypes';
 
-import { defineStore, storeToRefs } from 'pinia'
 
 import { useRoutesParserStore } from './routesParser';
 import { useRoutesPlanTransitionStore } from './routesPlanTransition';
@@ -16,6 +16,17 @@ import { EmptyResultSetError } from '../../setups/routes/errors';
 
 
 export const useRoutesMainStore = defineStore('routesMain', () => {
+
+    const urlModuleFromModule: { [key in TModule]: string; } = {
+        Home: 'home',
+        Auth: 'auth',
+        Admin: 'admin',
+        Locus: 'loci',
+        Fauna: 'fauna',
+        Stone: "stones"
+    }
+
+    let router = useRouter()
     const { parseModule } = useRoutesParserStore()
     const { planTransition } = useRoutesPlanTransitionStore()
 
@@ -143,8 +154,8 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         current.value.url_module = to.value.url_module
         current.value.queryParams = ['index', 'show'].includes(current.value.name) ? handle_to.query : undefined
         current.value.url_full_path = handle_to.fullPath
-        current.value.preLoginFullPath = to.value.url_module === 'auth' ? handle_from.fullPath: undefined
-        
+        current.value.preLoginFullPath = to.value.url_module === 'auth' ? handle_from.fullPath : undefined
+
         switch (handle_to.name) {
             case 'show':
             case 'update':
@@ -193,6 +204,44 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     }
 
 
+    function routerPush(routeName: string, slug: string = "none", module: TModule | "current" = "current", keepQuery: boolean = true) {
+        switch (routeName) {
+            case ('back1'):
+                router.go(-1)
+                break
 
-    return { isLoading, getModule, getUrlModule, getToModule, getRouteInfo, getToRouteInfo, toAndCurrentAreTheSameModule, current, to, handleRouteChange }
+            case 'home':
+            case 'dashboard':
+                router.push({ name: routeName })
+                break
+
+            case 'login':
+            case 'register':
+                router.push({ name: routeName, params: { module: 'auth' } })
+                break
+
+            case 'index':
+            case 'welcome':
+            case 'filter':
+            case 'create':
+                let urlModule = (module === "current") ? getUrlModule() : urlModuleFromModule[module]
+                router.push({ name: routeName, params: { module: urlModule } })
+                break
+
+            case 'show':
+                let urlModule2 = (module === "current") ? getUrlModule() : urlModuleFromModule[module]
+                let query = keepQuery ? current.value.queryParams : ""
+                router.push({ name: 'show', params: { module: urlModule2, slug: slug }, query: <LocationQueryRaw>query })
+                break
+
+            case 'update':
+            case 'media':
+            case 'tag':
+                router.push({ name: routeName, params: { module: getUrlModule(), slug: slug } })
+                break
+        }
+    }
+
+
+    return { isLoading, getModule, getUrlModule, getToModule, getRouteInfo, getToRouteInfo, toAndCurrentAreTheSameModule, current, to, handleRouteChange, routerPush }
 })

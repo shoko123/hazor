@@ -39,23 +39,23 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useRouter } from 'vue-router'
+
 import { useAuthStore } from '../../../../../scripts/stores/auth'
 import { useRoutesMainStore } from '../../../../../scripts/stores/routes/routesMain'
 import { useItemStore } from '../../../../../scripts/stores/item'
 import { useCollectionMediaStore } from '../../../../../scripts/stores/collections/collectionMedia'
 import { useTaggerStore } from '../../../../../scripts/stores/trio/tagger'
 
+const { routerPush } = useRoutesMainStore()
 const { current } = storeToRefs(useRoutesMainStore())
 const { permissions } = storeToRefs(useAuthStore())
 const { array } = storeToRefs(useCollectionMediaStore())
+const { derived } = storeToRefs(useItemStore())
 const { destroy } = useItemStore()
-const router = useRouter()
 
 const module = computed(() => {
   return current.value.module
 })
-
 
 function isAllowed(action: string) {
   const term = current.value.module + '-' + action
@@ -64,24 +64,24 @@ function isAllowed(action: string) {
 
 function itemCreate() {
   console.log(`itemCreate`)
-  router.push({ name: 'create', params: { module: current.value.url_module } })
+  routerPush('create')
 }
 
 function itemUpdate() {
   console.log(`itemUpdate`)
-  router.push({ name: 'update', params: { module: current.value.url_module, slug: current.value.slug } })
+  routerPush('update', <string>derived.value.slug)
 }
 
 function goToMedia() {
   console.log(`goToMedia`)
-  router.push({ name: 'media', params: { module: current.value.url_module, slug: current.value.slug } })
+  routerPush('media', <string>derived.value.slug)
 }
 
 function goToTagger() {
   console.log(`goToTagger`)
   const { copyCurrentToNew } = useTaggerStore()
   copyCurrentToNew()
-  router.push({ name: 'tag', params: { module: current.value.url_module, slug: current.value.slug } })
+  routerPush('tag', <string>derived.value.slug)
 }
 
 async function itemDelete() {
@@ -101,10 +101,10 @@ async function itemDelete() {
   }
 
   if (slug !== null) {
-    router.push({ name: 'show', params: { module: current.value.url_module, slug: <string>slug } })
+    routerPush('show', slug)
   } else {
     console.log(`Last item in array deleted - goto Welcome page`)
-    router.push({ name: 'welcome', params: { module: current.value.url_module } })
+    routerPush('welcome', 'none')
   }
 }
 

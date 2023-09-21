@@ -1,65 +1,27 @@
 <template>
   <v-btn @click="next(false)" icon="mdi-arrow-left" color="primary"> </v-btn>
-
-  <Picker />
-
+  <v-btn large  variant="outlined" >{{ tag }}</v-btn>
   <v-btn @click="next(true)" icon="mdi-arrow-right" color="primary"></v-btn>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
-
 import { storeToRefs } from 'pinia'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
-import { useCollectionsStore } from '../../../../scripts/stores/collections/collections'
+import { useCollectionMainStore } from '../../../../scripts/stores/collections/collectionMain'
 import { useItemStore } from '../../../../scripts/stores/item'
-import Picker from "./picker/Picker.vue"
+let { nextSlug } = useItemStore()
+let { derived, itemIndex } = storeToRefs(useItemStore())
+const { routerPush } = useRoutesMainStore()
+let { extra } = storeToRefs( useCollectionMainStore())
 
-const { current } = storeToRefs(useRoutesMainStore())
-
-const router = useRouter()
-
-
-
-
-
-const disableAdjacents = computed(() => {
-  return false
+const tag = computed(() => {
+  return `${derived.value.module} ${derived.value.tag} (${itemIndex.value + 1}/${extra.value.length})`
 })
-
-const isLocus = computed(() => {
-  return false
-})
-
-const isFind = computed(() => {
-  return `I am the "Show" submenu`
-})
-
-const isAreaSeason = computed(() => {
-  return `I am the "Show" submenu`
-})
-
-const item = computed(() => {
-  return `I am the "Show" submenu`
-})
-
-const header = computed(() => {
-  return `I am the "Show" submenu`
-})
-
 
 function next(isRight: boolean) {
-  let { nextSlug } = useItemStore()
-  let slug = nextSlug(isRight)
-  router.push({ name: 'show', params: { module: current.value.url_module, slug: slug } })
+   routerPush('show', nextSlug(isRight))   
 }
 
 
 </script>
-
-<style scoped>
-.min_width {
-  min-width: 500px;
-}
-</style>

@@ -6,15 +6,13 @@
 </template>
 
 <script lang="ts" setup >
-import type { LocationQueryRaw } from 'vue-router'
 import { VDataTableVirtual } from 'vuetify/labs/VDataTable'
 import { computed } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useRouter } from 'vue-router'
-import { TCollectionName, TPageCMainVTable, TApiPageTableLocus } from '@/js/types/collectionTypes'
+import { TCollectionName } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useModuleStore } from '../../scripts/stores/module'
+
 const props = defineProps<{
   source: TCollectionName
   pageNoB1: number
@@ -22,9 +20,7 @@ const props = defineProps<{
 
 let { collection } = useCollectionsStore()
 let { getCurrentStore } = useModuleStore()
-let { current } = storeToRefs(useRoutesMainStore())
-
-const router = useRouter()
+let { routerPush } = useRoutesMainStore()
 
 const heads = computed(() => {
   const store = getCurrentStore
@@ -40,8 +36,6 @@ const page = computed(() => {
 })
 
 function btnClicked(item: any) {
-  //console.log(`Button Clicked() item: ${JSON.stringify(item, null, 2)}`)
-  let queryParams = current.value.queryParams
-  router.push({ name: 'show', params: { module: current.value.url_module, slug: item.raw.slug }, query: <LocationQueryRaw>queryParams})  
+  routerPush('show', item.raw.slug)
 }
 </script>

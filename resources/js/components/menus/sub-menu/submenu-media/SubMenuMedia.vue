@@ -9,13 +9,12 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 import { useMediaStore } from '../../../../scripts/stores/media'
-import { useRouter } from 'vue-router'
+import { useItemStore } from '../../../../scripts/stores/item'
 
-let { current } = storeToRefs(useRoutesMainStore())
+const { routerPush } = useRoutesMainStore()
+const { derived } = storeToRefs(useItemStore())
 const { showUploader, orderChanged } = storeToRefs(useMediaStore())
 const { clear, reorder } = useMediaStore()
-
-const router = useRouter()
 
 const disableShowUploaderButton = computed(() => {
   return showUploader.value
@@ -32,12 +31,11 @@ function showUpldr() {
 async function reorderAndBack() {
   console.log("Reorder")
   await reorder()
-  router.push({ name: 'show', params: { module: current.value.url_module, slug: current.value.slug } })
   clear()
-
+  routerPush('show', <string>derived.value.slug) 
 }
 function back() {
-  router.push({ name: 'show', params: { module: current.value.url_module, slug: current.value.slug } })
   clear()
+  routerPush('show', <string>derived.value.slug)   
 }
 </script>

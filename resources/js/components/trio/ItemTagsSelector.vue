@@ -38,9 +38,9 @@ import { computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useTrioStore } from '../../scripts/stores/trio/trio'
 import { useTaggerStore } from '../../scripts/stores/trio/tagger'
-import { useRouter } from 'vue-router'
+import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 
-const router = useRouter()
+const { routerPush } = useRoutesMainStore()
 let { visibleCategories, visibleGroups, visibleParams, categoryIndex, groupIndex } = storeToRefs(useTrioStore())
 let { resetCategoryAndGroupIndices, paramClicked } = useTrioStore()
 let { sync, clearSelectedNewItemParams, copyCurrentToNew } = useTaggerStore()
@@ -94,14 +94,14 @@ async function submit() {
   })
   resetCategoryAndGroupIndices()
   clearSelectedNewItemParams
-  router.go(-1)
+  routerPush('back1')
 }
 
 function cancel(paramIndex: number) {
   console.log(`cancelClicked`)
   resetCategoryAndGroupIndices()
   clearSelectedNewItemParams()
-  router.go(-1)
+  routerPush('back1')
 }
 
 function resetToItem() {

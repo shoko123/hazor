@@ -16,7 +16,6 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../../../scripts/stores/auth';
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain';
 import { storeToRefs } from 'pinia'
@@ -24,7 +23,7 @@ import { storeToRefs } from 'pinia'
 type TUserOption = 'Dashboard' | 'Logout'
 
 let auth = useAuthStore()
-const router = useRouter()
+let { routerPush } = useRoutesMainStore()
 let { current } = storeToRefs(useRoutesMainStore())
 
 let options: TUserOption[] = ['Dashboard', 'Logout']
@@ -34,7 +33,7 @@ const showLoginButton = computed(() => {
 })
 
 function loginClick() {
-  router.push({ name: 'login', params: { module: 'auth' } })
+  routerPush('login')
 }
 
 function userOptionsClicked(item: TUserOption) {
