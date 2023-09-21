@@ -16,12 +16,12 @@ import { useRouter } from 'vue-router'
 
 let { current } = storeToRefs(useRoutesMainStore())
 let trio = useTrioStore()
-let filter = useFilterStore()
+let { filtersToQueryObject, clearSelectedFilters } = useFilterStore()
 const router = useRouter()
 
 function submit() {
   console.log(`filter.submit()`);
-  const query = filter.filtersToQueryObject()
+  const query = filtersToQueryObject()
   router.push({ name: 'index', params: { module: current.value.url_module }, query })
 }
 
@@ -31,6 +31,6 @@ async function getCount() {
 function clear() {
   console.log(`filter.clear()`);
   trio.resetCategoryAndGroupIndices()
-  filter.clearSelectedFilters()
+  clearSelectedFilters()
 }
 </script>

@@ -11,11 +11,15 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
         let to = { name: handle_to.name, module: <string>handle_to.params.module, slug: handle_to.params.slug }
         let from = { name: handle_from.name, module: <string>handle_from.params.module, slug: handle_from.params.slug }
         if(from.name === undefined) { from.name = 'home'}
-        let changed = { module: false, name: false, slug: false }
+        let changed = { module: false, name: false, slug: false, query: false }
 
         changed.module = (to.module !== from.module)
         changed.name = (to.name !== from.name)
         changed.slug = (to.slug !== from.slug)
+        changed.query = JSON.stringify(handle_to.query) !== JSON.stringify(handle_from.query)
+
+        //console.log(`changes: ${JSON.stringify(changed, null, 2)}`)
+
         if (['auth', 'admin'].includes(to.module) ||
             ['auth', 'admin'].includes(from.module)) {
             return { success: true, data: [] }
@@ -108,7 +112,11 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                             return { success: true, data: ['item.clear', 'collection.clear', 'module.clear', 'module.load', 'collection.item.load', 'item.setIndexInCollection'] }
                         }
                         if (changed.slug) {
-                            return { success: true, data: ['item.load', 'item.setIndexInCollection'] }
+                            if (changed.query) {                            
+                                return { success: true, data: ['item.clear', 'collection.clear', 'collection.item.load', 'item.setIndexInCollection'] }
+                            } else {
+                                return { success: true, data: ['item.load', 'item.setIndexInCollection'] }
+                            }
                         }
                         return { success: false, data: 'BadTransition' }
 

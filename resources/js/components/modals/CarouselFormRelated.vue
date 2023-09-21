@@ -6,7 +6,7 @@
       {{ item?.short }}</v-row>
   </v-card-text>
   <v-card-actions>
-    <v-btn @click="clicked" variant="outlined">{{ item?.module }} {{ item?.tag }}</v-btn>
+    <v-btn @click="goToItem" variant="outlined">{{ item?.module }} {{ item?.tag }}</v-btn>
   </v-card-actions>
 </template>
 
@@ -20,17 +20,22 @@ import { type TCarouselRelated } from '@/js/types/mediaTypes'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 
-const { routerPush } = useRoutesMainStore()
+const { moveFromItemToItem } = useRoutesMainStore()
 const { close } = useCarouselStore()
 const { itemDetails } = storeToRefs(useCarouselStore())
-
 
 const item = computed(() => {
   return <TCarouselRelated | null>itemDetails.value
 })
 
-async function clicked() {
+async function goToItem() {
+  let details = {
+    slug: <string>item.value?.slug,
+    id: <number>item.value?.id,
+    module: <TModule>item.value?.module
+  }
   await close()
-  routerPush('show', <string>item.value?.slug, <TModule>item.value?.module)
+  moveFromItemToItem(details.slug, details.id, details.module)
 }
+
 </script>

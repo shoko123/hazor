@@ -13,7 +13,8 @@ import { useRoutesPrepareStore } from './routesPrepare';
 import { useAuthStore } from '../auth';
 import { useNotificationsStore } from '../notifications';
 import { EmptyResultSetError } from '../../setups/routes/errors';
-
+import { useCollectionMainStore } from '../collections/collectionMain'
+import { useFilterStore } from '../trio/filter'
 
 export const useRoutesMainStore = defineStore('routesMain', () => {
 
@@ -29,6 +30,8 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     let router = useRouter()
     const { parseModule } = useRoutesParserStore()
     const { planTransition } = useRoutesPlanTransitionStore()
+    //following two are used by moveToItem()
+
 
     const current = ref<TRouteInfo>({
         url_module: undefined,
@@ -105,7 +108,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             return goHome()
         }
 
-        //console.log(`Plan successful: ${JSON.stringify(planResponse.data, null, 2)}`)
+        console.log(`Plan successful: ${JSON.stringify(planResponse.data, null, 2)}`)
         //prepare - access server and load stuff (async)
         isLoading.value = true
 
@@ -205,6 +208,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
 
     function routerPush(routeName: string, slug: string = "none", module: TModule | "current" = "current", keepQuery: boolean = true) {
+        let urlModule, query = null
         switch (routeName) {
             case ('back1'):
                 router.go(-1)
@@ -220,18 +224,25 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
                 router.push({ name: routeName, params: { module: 'auth' } })
                 break
 
-            case 'index':
+
+
             case 'welcome':
             case 'filter':
             case 'create':
-                let urlModule = (module === "current") ? getUrlModule() : urlModuleFromModule[module]
+                urlModule = (module === "current") ? getUrlModule() : urlModuleFromModule[module]
                 router.push({ name: routeName, params: { module: urlModule } })
                 break
 
+            case 'index':
+                urlModule = (module === "current") ? getUrlModule() : urlModuleFromModule[module]
+                query = keepQuery ? current.value.queryParams : ""
+                router.push({ name: 'index', params: { module: urlModule }, query: <LocationQueryRaw>query })
+                break
+
             case 'show':
-                let urlModule2 = (module === "current") ? getUrlModule() : urlModuleFromModule[module]
-                let query = keepQuery ? current.value.queryParams : ""
-                router.push({ name: 'show', params: { module: urlModule2, slug: slug }, query: <LocationQueryRaw>query })
+                urlModule = (module === "current") ? getUrlModule() : urlModuleFromModule[module]
+                query = keepQuery ? current.value.queryParams : ""
+                router.push({ name: 'show', params: { module: urlModule, slug: slug }, query: <LocationQueryRaw>query })
                 break
 
             case 'update':
@@ -242,6 +253,28 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         }
     }
 
-
-    return { isLoading, getModule, getUrlModule, getToModule, getRouteInfo, getToRouteInfo, toAndCurrentAreTheSameModule, current, to, handleRouteChange, routerPush }
+    function moveFromItemToItem(slug: string, id: number, module: TModule | "current" = "current") {
+        const { itemIndexById } = useCollectionMainStore()
+        const { clearSelectedFilters } = useFilterStore()
+        console.log(`GoToItem from.module: ${current.value.module} from.slug: ${current.value.slug}`)
+        console.log(`GoToItem to.module: ${module} to.slug: ${slug} to.id: ${id}`)
+        if (current.value.module === module) {
+            if (current.value.slug === slug) {
+                console.log(`GoTo same item - ignore`)
+                return
+            }
+            if (itemIndexById(id) !== -1) {
+                console.log(`GoTo item that is already in the current collection - go!`)
+                routerPush('show', slug, module)
+            } else {
+                console.log(`GoTo item that is NOT in the current collection - remove filters and reload collection!`)
+                clearSelectedFilters()
+                routerPush('show', slug, module, false)
+            }
+        } else {
+            console.log(`GoTo item in a different module`)
+            routerPush('show', slug, module, false)
+        }
+    }
+    return { isLoading, getModule, getUrlModule, getToModule, getRouteInfo, getToRouteInfo, toAndCurrentAreTheSameModule, current, to, handleRouteChange, routerPush, moveFromItemToItem }
 })
