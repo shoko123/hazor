@@ -1,18 +1,17 @@
 // routesStore.js
 //handles the entire routing mechanism - parsing, loading resources, error handling
 
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useRouter, type LocationQueryRaw, type RouteLocationNormalized, type RouteLocationRaw } from 'vue-router'
 import type { TParseModuleData, TRouteInfo, TName, TParseErrorDetails, TPlanAction, TPrepareError, TModule, TUrlModule } from '../../../types/routesTypes';
 
-
-import { useRoutesParserStore } from './routesParser';
-import { useRoutesPlanTransitionStore } from './routesPlanTransition';
-import { useRoutesPrepareStore } from './routesPrepare';
-import { useAuthStore } from '../auth';
-import { useNotificationsStore } from '../notifications';
-import { EmptyResultSetError } from '../../setups/routes/errors';
+import { useRoutesParserStore } from './routesParser'
+import { useRoutesPlanTransitionStore } from './routesPlanTransition'
+import { useRoutesPrepareStore } from './routesPrepare'
+import { useAuthStore } from '../auth'
+import { useNotificationsStore } from '../notifications'
+import { EmptyResultSetError } from '../../setups/routes/errors'
 import { useCollectionMainStore } from '../collections/collectionMain'
 import { useFilterStore } from '../trio/filter'
 
@@ -30,8 +29,6 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     let router = useRouter()
     const { parseModule } = useRoutesParserStore()
     const { planTransition } = useRoutesPlanTransitionStore()
-    //following two are used by moveToItem()
-
 
     const current = ref<TRouteInfo>({
         url_module: undefined,
@@ -57,9 +54,13 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
     const isLoading = ref(false)
 
+    const inTransition = computed<boolean>(() => {
+        return isLoading.value
+    })
+
     async function handleRouteChange(handle_to: RouteLocationNormalized, handle_from: RouteLocationNormalized): Promise<RouteLocationRaw | boolean> {
-        let n = useNotificationsStore()
-        let p = useRoutesPrepareStore()
+        let { showSnackbar } = useNotificationsStore()
+        let { prepareForNewRoute } = useRoutesPrepareStore()
         let { authenticated } = storeToRefs(useAuthStore())
 
         console.log(`handleRouteChange(${String(handle_from.name)} -> ${String(handle_to.name)})`)
@@ -71,7 +72,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         }
 
         if (!authorize(handle_to.path)) {
-            n.showSnackbar('Unauthorized; redirected to Login Page')
+            showSnackbar('Unauthorized; redirected to Login Page')
             return { name: 'login', params: { module: 'auth' } }
         }
 
@@ -88,7 +89,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             }
             else {
                 console.log(`parseModule returned ${JSON.stringify(res, null, 2)}`)
-                n.showSnackbar(`${(<TParseErrorDetails>res.data).message}; redirected to Home Page`)
+                showSnackbar(`${(<TParseErrorDetails>res.data).message}; redirected to Home Page`)
                 return goHome()
             }
         } else {
@@ -104,7 +105,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
         if (!planResponse.success) {
             console.log("plan failed...")
-            n.showSnackbar(`Routes transition error ${planResponse.data}; redirected to Home Page`)
+            showSnackbar(`Routes transition error ${planResponse.data}; redirected to Home Page`)
             return goHome()
         }
 
@@ -113,7 +114,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         isLoading.value = true
 
         try {
-            await p.prepareForNewRoute(to.value.module, handle_to.query, <string>handle_to.params.slug, <TPlanAction[]>planResponse.data, handle_from.name === undefined)
+            await prepareForNewRoute(to.value.module, handle_to.query, <string>handle_to.params.slug, <TPlanAction[]>planResponse.data, handle_from.name === undefined)
             finalizeRouting(handle_to, handle_from)
 
             //console.log(`router.beforeEach returned ${JSON.stringify(res, null, 2)}`);
@@ -124,10 +125,10 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             isLoading.value = false
             if (err === EmptyResultSetError && handle_from.name === 'filter') {
                 console.log(`EMPTY ERROR`)
-                n.showSnackbar('No results returned. Please modify query and resubmit!')
+                showSnackbar('No results returned. Please modify query and resubmit!')
                 return { name: 'filter' }
             }
-            n.showSnackbar('Unexpected Error - redirceted to Home page')
+            showSnackbar('Unexpected Error - redirceted to Home page')
             console.log(`unexpected prepare() error: ${JSON.stringify(err, null, 2)} redirect to home`);
             return goHome()
         }
@@ -256,6 +257,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     function moveFromItemToItem(slug: string, id: number, module: TModule | "current" = "current") {
         const { itemIndexById } = useCollectionMainStore()
         const { clearSelectedFilters } = useFilterStore()
+        let { showSnackbar } = useNotificationsStore()
         console.log(`GoToItem from.module: ${current.value.module} from.slug: ${current.value.slug}`)
         console.log(`GoToItem to.module: ${module} to.slug: ${slug} to.id: ${id}`)
         if (current.value.module === module) {
@@ -269,6 +271,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             } else {
                 console.log(`GoTo item that is NOT in the current collection - remove filters and reload collection!`)
                 clearSelectedFilters()
+                showSnackbar(`Filters removed and result set reloaded`)
                 routerPush('show', slug, module, false)
             }
         } else {
@@ -276,5 +279,5 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             routerPush('show', slug, module, false)
         }
     }
-    return { isLoading, getModule, getUrlModule, getToModule, getRouteInfo, getToRouteInfo, toAndCurrentAreTheSameModule, current, to, handleRouteChange, routerPush, moveFromItemToItem }
+    return { inTransition, getModule, getUrlModule, getToModule, getRouteInfo, getToRouteInfo, toAndCurrentAreTheSameModule, current, to, handleRouteChange, routerPush, moveFromItemToItem }
 })
