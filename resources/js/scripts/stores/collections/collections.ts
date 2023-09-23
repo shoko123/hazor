@@ -2,7 +2,7 @@
 //handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { TCollectionName, TCollectionView, TCollectionMeta, TItemPerPagePerView, TApiArray, TApiPage} from '@/js/types/collectionTypes'
+import { TCollectionName, TCollectionView, TCollectionMeta, TItemPerPagePerView, TApiArray, TCView } from '@/js/types/collectionTypes'
 import { TModule } from '../../../types/routesTypes'
 import { useRoutesMainStore } from '../routes/routesMain'
 import { useXhrStore } from '../xhr'
@@ -10,8 +10,8 @@ import { useNotificationsStore } from '../notifications'
 import { useCollectionMainStore } from './collectionMain'
 import { useCollectionMediaStore } from './collectionMedia'
 import { useCollectionRelatedStore } from './collectionRelated'
-export const useCollectionsStore = defineStore('collections', () => {
 
+export const useCollectionsStore = defineStore('collections', () => {
 
     let itemsPerPagePerView = ref({
         Image: 0,
@@ -48,7 +48,7 @@ export const useCollectionsStore = defineStore('collections', () => {
 
         //console.log(`collectionMeta("${name}")`)
         let view = extra.views[extra.viewIndex]
-        let ipp = getIpp(view)
+        let ipp = c.ipp //getIpp(view)
         let noOfPages = Math.floor(extra.length / ipp) + (extra.length % ipp === 0 ? 0 : 1)
 
         return {
@@ -71,10 +71,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         c.setArray(data)
     }
 
-    async function loadPage(name: TCollectionName, pageNoB1: number, view: TCollectionView, module: TModule): Promise<boolean> {
-        let ipp = getIpp(view)
-        let start = (pageNoB1 - 1) * ipp;
-
+    async function loadPage(name: TCollectionName, pageNoB1: number, view: TCView, module: TModule): Promise<boolean> {
         //console.log(`loadPage() source: ${name}  module: ${module} view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1}`);
 
         let c = getCollection(name)
@@ -82,8 +79,8 @@ export const useCollectionsStore = defineStore('collections', () => {
         return true
     }
 
-    async function loadPageByItemIndex(collectionName: TCollectionName, view: TCollectionView, index: number, module: TModule,) {
-        let ipp = getIpp(view)
+    async function loadPageByItemIndex(collectionName: TCollectionName, view: TCView, index: number, module: TModule,) {
+        let ipp = view.ipp
         let pageNoB0 = Math.floor(index / ipp)
         //console.log(`loadPageByItemIndex() collectionName: ${collectionName} view: ${view} index: ${index} module: ${module}`)
         await loadPage(collectionName, pageNoB0 + 1, view, module)
@@ -97,8 +94,10 @@ export const useCollectionsStore = defineStore('collections', () => {
         let newViewIndex = (meta.viewIndex + 1) % meta.views.length
         let newView = meta.views[newViewIndex]
         let index = meta.firstItemNo - 1
-        //console.log(`toggleCollectionView() collection: ${name}  module: ${module} views: ${meta.views}  current view: ${currentView}  new view: ${newView} index: ${index}`);
+        console.log(`toggleCollectionView() collection: ${name}  module: ${module} views: ${meta.views}  current view: ${currentView}  new view: ${newView} index: ${index}`);
         await loadPageByItemIndex(name, newView, index, module)
+        let c = getCollection(name)
+        c.extra.viewIndex = newViewIndex
     }
 
     function itemIndexById(id: number) {
@@ -116,7 +115,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         return c.itemByIndex(index)
     }
 
-    function next(name: TCollectionName, index: number, isRight: boolean): {item: TApiArray, index: number} {
+    function next(name: TCollectionName, index: number, isRight: boolean): { item: TApiArray, index: number } {
         let c = getCollection(name)
         let length = c.collection.extra.length
         let newIndex
@@ -126,10 +125,10 @@ export const useCollectionsStore = defineStore('collections', () => {
         } else {
             newIndex = (index === 0) ? length - 1 : index - 1
         }
-        return {item: c.array[newIndex], index: newIndex}
+        return { item: c.array[newIndex], index: newIndex }
     }
 
-    function clear(collections : TCollectionName[]) {
+    function clear(collections: TCollectionName[]) {
         collections.forEach(x => {
             let c = getCollection(<TCollectionName>x)
             return c.clear()
@@ -185,7 +184,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         }
     })
 
-    function collection(name: TCollectionName) { 
+    function collection(name: TCollectionName) {
         switch (name) {
             case 'main':
                 return mainCollection
@@ -206,7 +205,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     // mainCollection, mediaCollection, main and media for debug only.
     //Note : computed collection will only e reactive only if state (main, media) is exposed.
     return {
-        getIpp,
+        //getIpp,
         collection,
         mainCollection,
         mediaCollection,

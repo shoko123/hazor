@@ -65,7 +65,6 @@ const pageInfoAsText = computed(() => {
 
 
 const header = computed(() => {
-  
   switch (props.source) {
     case 'main':
       return `${derived.value.module} query results: ${pageInfoAsText.value}`
@@ -85,7 +84,7 @@ const paginator = computed(() => {
 })
 
 const collectionPage = computed<Component>(() => {
-  switch (meta.value.view) {
+  switch (meta.value.view.name) {
     case 'Image':
       return CollectionPageImage
     case 'Chip':
@@ -102,7 +101,7 @@ const showBtnViewToggle = computed(() => {
   return meta.value.length > 0 && meta.value.views.length > 1
 })
 const displayOption = computed(() => {
-  return meta.value.view
+  return meta.value.view.name
 })
 
 function toggleCollectionDisplayOption() {

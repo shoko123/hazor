@@ -6,6 +6,7 @@ import { TModule } from '@/js/types/routesTypes'
 type TCollectionView = 'Image' | 'Chip' | 'Table'
 type TCollectionName = 'main' | 'media' | 'related'
 
+type TCView = { name: TCollectionView, ipp: number }
 type TItemPerPagePerView = { Image: number, Chip: number, Table: number }
 
 //array types
@@ -143,14 +144,14 @@ type TPageItem = TPageCMainVImage | TPageCMainVTable | TPageVChip | TPageCMedia 
 type TCollectionExtra = {
         length: number,
         pageNoB1: number,
-        views: TCollectionView[],
+        views: TCView[],
         viewIndex: number,
 }
 
 type TCollectionMeta = {
-        views: TCollectionView[],
+        views: TCView[],
         viewIndex: number,
-        view: TCollectionView,
+        view: TCView,
         itemsPerPage: number,
         pageNoB1: number,
         noOfItems: number,
@@ -164,6 +165,7 @@ type TCollectionMeta = {
 export {
         TCollectionName,
         TCollectionView,
+        TCView,
         TItemPerPagePerView,
         TCollectionExtra,
         TCollectionMeta,
@@ -182,5 +184,4 @@ export {
         TPageCRelatedVChip,
         TPageItem,
         TMediaUrls,
-
 }

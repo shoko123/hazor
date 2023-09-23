@@ -34,7 +34,6 @@ import OverlayMediaEdit from './OverlayMediaEdit.vue'
 import OverlayCMain from './OverlayCMain.vue'
 
 let { current } = storeToRefs(useRoutesMainStore())
-let { getIpp } = useCollectionsStore()
 const main = storeToRefs(useCollectionMainStore())
 const media = storeToRefs(useCollectionMediaStore())
 const related = storeToRefs(useCollectionRelatedStore())
@@ -62,7 +61,8 @@ const collection = computed(() => {
 })
 
 const record = computed(() => {
-  let ipp = getIpp(collection.value.extra.value.views[collection.value.extra.value.viewIndex])
+  let ipp = collection.value.ipp.value
+  //let ipp = getIpp(collection.value.extra.value.views[collection.value.extra.value.viewIndex])
   let indexInPage = props.itemIndex % ipp
   let record = collection.value.page.value[indexInPage]
   return record
@@ -111,13 +111,13 @@ const tagText = computed(() => {
 const urls = computed(() => {
   switch (props.source) {
     case 'main':
-      return mainRecord.value?.media.urls
+      return mainRecord.value?.media?.urls
 
     case 'media':
       return mediaRecord.value?.urls
 
     case 'related':
-      return relatedRecord.value?.media.urls
+      return relatedRecord.value?.media?.urls
 
     default:
       return { full: "", tn: "" }

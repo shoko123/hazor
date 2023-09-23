@@ -35,7 +35,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let f = useFilterStore()
   let { trioReset, setTrio } = useTrioStore()
   let { setItemMedia } = useMediaStore()
- let { setArray } = useCollectionRelatedStore()
+  let { setArray } = useCollectionRelatedStore()
   const fromUndef = ref<boolean>(false)
 
   async function prepareForNewRoute(module: TModule, query: LocationQuery, slug: string, plan: TPlanAction[], fromUndefined: boolean): Promise<TPrepareResponse> {

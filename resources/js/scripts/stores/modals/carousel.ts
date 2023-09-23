@@ -4,6 +4,7 @@ import { defineStore, storeToRefs } from 'pinia'
 import { TCollectionName, TApiArrayMain, TApiArrayRelated, TApiArray } from '@/js/types/collectionTypes'
 import { TMediaRecord, TCarouselMain, TCarouselRelated, TApiCarouselMain, TApiCarouselMedia, TMediaOfItem } from '@/js/types/mediaTypes'
 import { useCollectionsStore } from '../collections/collections'
+import { useCollectionMainStore } from '../collections/collectionMain'
 import { useXhrStore } from '../xhr'
 import { useNotificationsStore } from '../notifications'
 import { useMediaStore } from '../media'
@@ -13,6 +14,7 @@ import { useItemStore } from '../item'
 
 export const useCarouselStore = defineStore('carousel', () => {
   let c = useCollectionsStore()
+  let { extra } = storeToRefs(useCollectionMainStore())
   const { send } = useXhrStore()
   const { showSpinner } = useNotificationsStore()
   const { derived } = storeToRefs(useItemStore())
@@ -52,7 +54,7 @@ export const useCarouselStore = defineStore('carousel', () => {
     if (!isOpen.value || collectionName.value !== 'related') { return null }
     return <TCarouselRelated>itemDetails.value
   })
- const itemMedia = computed(() => {
+  const itemMedia = computed(() => {
     if (!isOpen.value || collectionName.value !== 'media') { return null }
     return <TMediaRecord>itemDetails.value
   })
@@ -139,11 +141,15 @@ export const useCarouselStore = defineStore('carousel', () => {
 
   async function close() {
     //if current carouselItem is in currently loaded page - close, otherwise, load relevant page
+
     switch (collectionName.value) {
+
       case 'main':
+        let view = extra.value.views[extra.value.viewIndex]
+
         if (!c.itemIsInPage(<number>itemDetails.value?.id)) {
           const index = c.itemIndexById(<number>itemDetails.value?.id)
-          await c.loadPageByItemIndex(collectionName.value, 'Image', index, derived.value.module)
+          await c.loadPageByItemIndex(collectionName.value, view, index, derived.value.module)
             .then(res => {
               console.log(`carousel.close() loaded a new page`)
             })

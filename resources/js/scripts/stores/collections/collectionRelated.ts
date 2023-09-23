@@ -3,7 +3,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { TModule } from '../../../types/routesTypes'
-import { TCollectionExtra, TCollectionView, TPageCMainVImage, TApiArrayRelated, TApiArray, TPageCRelatedVMedia } from '@/js/types/collectionTypes'
+import { TCollectionExtra, TCollectionView, TPageCMainVImage, TApiArrayRelated, TCView, TApiArray, TPageCRelatedVMedia } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections'
 import { useRoutesMainStore } from '../routes/routesMain'
 import { useXhrStore } from '../xhr'
@@ -17,19 +17,24 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     const { buildMedia } = useMediaStore()
     const c = useCollectionsStore()
     const { tagFromSlug } = useModuleStore() 
+
     let extra = ref<TCollectionExtra>({
         length: 0,
         pageNoB1: 1,
-        views: ['Image'],
+        views: <TCView[]>[{ name: 'Table', ipp: 500} , { name: 'Image', ipp: 36}, { name: 'Chip', ipp: 200}],
         viewIndex: 0,
     })
 
     let array = ref<TApiArrayRelated[]>([])
 
+    const ipp = computed(() => {
+        return  extra.value.views[extra.value.viewIndex].ipp     
+    })
+
     const page = computed<TPageCRelatedVMedia[]>(() => {
-        let ipp = c.getIpp('Image')
-        let start = (extra.value.pageNoB1 - 1) * ipp
-        let slice = array.value.slice(start, start + ipp)
+        //let ipp = c.getIpp('Image')
+        let start = (extra.value.pageNoB1 - 1) * ipp.value
+        let slice = array.value.slice(start, start + ipp.value)
         let res = slice.map(x => {
             let media = buildMedia(x.media, x.module)
             return {
@@ -58,15 +63,16 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
         extra.value.length = data.length
     }
 
-    async function loadPage(pageNoB1: number, view: TCollectionView, module: TModule): Promise<boolean> {
-        let ipp = c.getIpp(view)
+    async function loadPage(pageNoB1: number, view: TCView, module: TModule): Promise<boolean> {
+        let ipp = view.ipp
         let start = (pageNoB1 - 1) * ipp
 
         console.log(`collectionRelated.loadPage() view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1} module: ${module} `);
 
         //savePage(array.value.slice(start, start + ipp), view, module)
         extra.value.pageNoB1 = pageNoB1
-        extra.value.viewIndex = extra.value.views.indexOf(view)
+        //extra.value.viewIndex = viewIndex
+        //extra.value.viewIndex = extra.value.views.indexOf(view)
         return true
     }
 
@@ -92,8 +98,10 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
 
     return {
         extra,
+        ipp,
         array,
         page,
+
         loadPage,
         itemIndexById,
         setArray,

@@ -25,8 +25,8 @@ const props = defineProps<{
   itemIndex: number,
 }>()
 
-const main = storeToRefs(useCollectionMainStore())
-let { getIpp } = useCollectionsStore()
+const main = useCollectionMainStore()
+//let { getIpp } = useCollectionsStore()
 let { routerPush } = useRoutesMainStore()
 onMounted(() => {
   //console.log(`Overlay.onMounted props: ${JSON.stringify(props, null, 2)}`)
@@ -35,9 +35,10 @@ onMounted(() => {
 const { open } = useCarouselStore()
 
 const record = computed(() => {
-  let ipp = getIpp(main.extra.value.views[main.extra.value.viewIndex])
+  let ipp = main.ipp
+  //let ipp = getIpp(main.extra.value.views[main.extra.value.viewIndex])
   let indexInPage = props.itemIndex % ipp
-  let record = main.page.value[indexInPage]
+  let record = main.page[indexInPage]
   return record
 })
 

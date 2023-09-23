@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { TModule } from '../../../types/routesTypes'
 import { TMediaRecord, TPageCMedia } from '../../../types/mediaTypes'
-import { TCollectionExtra, TCollectionView, TApiArray } from '@/js/types/collectionTypes'
+import { TCollectionExtra, TCView, TApiArray } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections'
 import { useMediaStore } from '../media'
 
@@ -15,7 +15,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     let extra = ref<TCollectionExtra>({
         length: 0,
         pageNoB1: 1,
-        views: ['Image'],
+        views: [{name: 'Image', ipp: 36}],
         viewIndex: 0,
     })
 
@@ -29,10 +29,14 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
         }
     })
 
+    const ipp = computed(() => {
+        return  extra.value.views[extra.value.viewIndex].ipp     
+    })
+
     const page = computed<TPageCMedia[]>(() => {
-        let ipp = c.getIpp('Image')
-        let start = (extra.value.pageNoB1 - 1) * ipp
-        let slice = array.value.slice(start, start + ipp)
+        //let ipp = c.getIpp('Image')
+        let start = (extra.value.pageNoB1 - 1) * ipp.value
+        let slice = array.value.slice(start, start + ipp.value)
         let res = slice.map(x => {
             let media = buildMedia({ full: x.urls.full, tn: x.urls.tn })
             return {
@@ -63,13 +67,14 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
         array.value[indexB] = { ...temp }
     }
 
-    async function loadPage(pageNoB1: number, view: TCollectionView, module: TModule): Promise<boolean> {
-        let ipp = c.getIpp(view)
+    async function loadPage(pageNoB1: number, view: TCView, module: TModule): Promise<boolean> {
+        let ipp = view.ipp
         let start = (pageNoB1 - 1) * ipp
 
         //console.log(`collectionMedia.loadPage() view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1} module: ${module} `);
         extra.value.pageNoB1 = pageNoB1
-        extra.value.viewIndex = extra.value.views.indexOf(view)
+        //extra.value.viewIndex = viewIndex
+        //extra.value.viewIndex = extra.value.views.indexOf(view)
         return true
 
     }
@@ -98,6 +103,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
 
     return {
         extra,
+        ipp,
         array,
         page,
         loadPage,

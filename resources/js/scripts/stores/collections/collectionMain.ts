@@ -2,7 +2,7 @@
 //handles all collections and loading of pages
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
-import { TCollectionExtra, TApiArray, TApiArrayMain, TApiPageMainImage, TApiPageTableLocus, TApiPageMainTable, TApiPage, TPageItem, TCollectionView, TPageCMainVImage, TPageCMainVTable, TPageVChip } from '@/js/types/collectionTypes'
+import { TCollectionExtra, TApiArray, TApiArrayMain, TApiPageMainImage, TApiPageTableLocus, TCView, TApiPage, TPageItem, TCollectionView, TPageCMainVImage, TPageCMainVTable, TPageVChip } from '@/js/types/collectionTypes'
 import { TModule } from '../../../types/routesTypes'
 import { useCollectionsStore } from './collections'
 import { useModuleStore } from '../module'
@@ -20,7 +20,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     let extra = ref<TCollectionExtra>({
         length: 0,
         pageNoB1: 1,
-        views: ['Table', 'Image', 'Chip'],
+        views: <TCView[]>[{ name: 'Table', ipp: 500} , { name: 'Image', ipp: 36}, { name: 'Chip', ipp: 200}],
         viewIndex: 0,
     })
 
@@ -36,23 +36,27 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         }
     })
 
+    const ipp = computed(() => {
+        return  extra.value.views[extra.value.viewIndex].ipp     
+    })
+
     function setArray(data: TApiArray[]) {
         array.value = <TApiArrayMain[]>data
         extra.value.length = data.length
     }
 
-    async function loadPage(pageNoB1: number, view: TCollectionView, module: TModule): Promise<boolean> {
-        let ipp = c.getIpp(view)
+    async function loadPage(pageNoB1: number, view: TCView, module: TModule): Promise<boolean> {
+        let ipp = view.ipp
         let start = (pageNoB1 - 1) * ipp
 
         console.log(`collectionMain.loadPage() view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1} module: ${module} `);
 
-        switch (view) {
+        switch (view.name) {
             //if 'Chip' do nothing - page will be extracted from array
             case 'Chip':
                 //savePage(array.value.slice(start, start + ipp), view, module)
                 extra.value.pageNoB1 = pageNoB1
-                extra.value.viewIndex = extra.value.views.indexOf(view)
+                //extra.value.viewIndex = viewIndex
                 let slice = array.value.slice(start, start + ipp)
                 savePage(slice, view, module)
                 return true
@@ -71,12 +75,12 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
 
 
 
-                await send('model/page', 'post', { model: module, view: view, ids })
+                await send('model/page', 'post', { model: module, view: view.name, ids })
                     .then(res => {
                         //console.log(`model.page() returned (success)`)
                         savePage(res.data.page, view, module)
                         extra.value.pageNoB1 = pageNoB1
-                        extra.value.viewIndex = extra.value.views.indexOf(view)
+                        //extra.value.viewIndex = viewIndex
                         return true
                     })
                     .catch(err => {
@@ -92,10 +96,10 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         }
     }
 
-    function savePage(apiPage: TApiPage[], view: TCollectionView, module: TModule): void {
+    function savePage(apiPage: TApiPage[], view: TCView, module: TModule): void {
         let toSave = []
 
-        switch (view) {
+        switch (view.name) {
             case 'Image':
                 toSave = (<TApiPageMainImage[]>apiPage).map(x => {
                     const media = buildMedia(x.media1, module)
@@ -155,6 +159,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
 
     return {
         extra,
+        ipp,
         array,
         page,
         loadPage,
