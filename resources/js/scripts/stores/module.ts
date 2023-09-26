@@ -17,7 +17,6 @@ export const useModuleStore = defineStore('module', () => {
   const { current } = storeToRefs(useRoutesMainStore())
 
   let counts = ref({ items: 0, media: 0 })
-  const itemViews = ref<string[]>([])
 
   const backgroundImage = computed(() => {
     let module = current.value.module
@@ -52,5 +51,5 @@ export const useModuleStore = defineStore('module', () => {
     return getStore(current.value.module)
   })
 
-  return { counts, backgroundImage, itemViews, getCurrentModuleStore, tagFromSlug }
+  return { counts, backgroundImage, getCurrentModuleStore, tagFromSlug }
 })

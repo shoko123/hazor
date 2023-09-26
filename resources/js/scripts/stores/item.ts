@@ -1,10 +1,9 @@
 // stores/media.js
 import type { TFields } from '@/js/types/moduleFieldsTypes'
-import type { TMediaOfItem, TMediaRecord } from '@/js/types/mediaTypes'
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { TApiItemShow, TApiItemUpdate } from '@/js/types/itemTypes'
-import { TApiArrayMedia, TApiArrayMain } from '@/js/types/collectionTypes'
+import { TApiItemShow } from '@/js/types/itemTypes'
+import { TApiArrayMain } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections/collections'
 import { useCollectionMainStore } from './collections/collectionMain'
 import { useRoutesMainStore } from './routes/routesMain'
@@ -22,22 +21,31 @@ export const useItemStore = defineStore('item', () => {
   const { setItemMedia } = useMediaStore()
   const { send } = useXhrStore()
   const { showSnackbar, showSpinner } = useNotificationsStore()
+
   let fields = ref<TFields | undefined>(undefined)
   let slug = ref<string | undefined>(undefined)
   let tag = ref<string | undefined>(undefined)
   let short = ref<string | undefined>(undefined)
   let selectedItemParams = ref<string[]>([])
   let ready = ref<boolean>(false)
+
+  const itemViews = ref<string[]>([])
   const itemViewIndex = ref<number>(0)
+
   const itemIndex = ref<number>(-1)
 
   const id = computed(() => {
     return typeof fields.value === 'undefined' ? -1 : (<TFields>fields.value).id
   })
 
+  const itemView = computed(() => {
+    return itemViews.value[itemViewIndex.value]
+  })
+
   function setItemViewIndex(index: number) {
     itemViewIndex.value = index
   }
+
   const derived = computed(() => {
     return {
       module: current.value.module,
@@ -142,7 +150,9 @@ export const useItemStore = defineStore('item', () => {
     itemIndex,
     nextSlug,
     itemClear,
+    itemViews,
     itemViewIndex,
+    itemView,
     setItemViewIndex,
     saveItem,
     upload,

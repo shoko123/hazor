@@ -31,25 +31,23 @@
 <script lang="ts" setup>
 
 import { computed } from 'vue'
-import { storeToRefs } from 'pinia'
 import { useItemStore } from '../../../../scripts/stores/item'
-import { useModuleStore } from '../../../../scripts/stores/module'
 
 import Navigator from './Navigator.vue'
 import Modifiers from './modifiers/Modifiers.vue'
 import WelcomeButton from '../lhs-buttons/WelcomeButton.vue'
 import FilterButton from '../lhs-buttons/FilterButton.vue'
 import CollectionButton from '../lhs-buttons/CollectionButton.vue'
-const { itemViews } = storeToRefs(useModuleStore())
+
 
 let is = useItemStore()
 
 const displayOptions = computed(() => {
-  return itemViews.value
+  return is.itemViews
 })
 
 const itemViewText = computed(() => {
-  return itemViews.value.length === 0 ? '' : itemViews.value[is.itemViewIndex]
+  return is.itemViews.length === 0 ? '' : is.itemView
 })
 
 function setItemViewIndex(index: number) {
