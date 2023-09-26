@@ -54,9 +54,9 @@ export const useLocusStore = defineStore('locus', () => {
       { title: 'Type', align: 'start', key: 'type' },
       { title: 'Cross Reference', align: 'start', key: 'cross_ref' },
       { title: 'Description', align: 'start', key: 'description' },
-      { title: 'Stratum', align: 'end', key: 'stratum' },
+      { title: 'Stratum', align: 'start', key: 'stratum' },
       { title: 'Square', align: 'start', key: 'square' },
-      { title: 'Elevation', align: 'end', key: 'elevation' },
+      { title: 'Elevation', align: 'start', key: 'elevation' },
 
     ]
   })

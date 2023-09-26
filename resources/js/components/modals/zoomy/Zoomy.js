@@ -332,6 +332,9 @@ export default class Zoomy {
 		['mousemove', 'mouseup', 'mouseout'].forEach(
 			event => document.removeEventListener(event, this.handleMouseEvents)
 		);
+
+		//This is my additional in order to reset transforms when loading a new image.
+		this.el.style.transform = 'none'
 	}
 
 	/**

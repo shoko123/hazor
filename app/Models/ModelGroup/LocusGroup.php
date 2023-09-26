@@ -28,6 +28,10 @@ class LocusGroup extends ModelGroup implements ModelGroupInterface
             "group_type_code" => "CS",
             "column_name" => "description",
         ],
+        "Search-Cross-Reference" => [
+            "group_type_code" => "CS",
+            "column_name" => "cross_ref",
+        ],        
         "Search-Type" => [
             "group_type_code" => "CS",
             "column_name" => "type",
@@ -77,6 +81,7 @@ class LocusGroup extends ModelGroup implements ModelGroupInterface
             "Search" => [
                 "Search-Name",
                 "Search-Description",
+                "Search-Cross-Reference",
                 "Search-Square",
                 "Search-Stratum",
                 "Search-Type",

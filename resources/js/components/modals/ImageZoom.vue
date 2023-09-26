@@ -36,6 +36,7 @@ const { media } = storeToRefs(useCarouselStore())
 
 watch(media, () => {
     //console.log('ImageZoom.media changed')
+    zm.value?.detach()
     zm.value = new Zoomy('zoomy', options)
 })
 
