@@ -10,7 +10,6 @@ import { useCollectionsStore } from './collections/collections'
 export const useMainStore = defineStore('main', () => {
   const { initMedia } = useMediaStore()
   const a = useAuthStore()
-  const { setItemsPerPage } = useCollectionsStore()
   const { send } = useXhrStore()
 
   let initialized = ref(false)
@@ -22,7 +21,6 @@ export const useMainStore = defineStore('main', () => {
         console.log(`app.init() Setting basic configs: ${JSON.stringify(res.data, null, 2)}`)
         initMedia(res.data.bucketUrl, res.data.media_collections)
         a.accessibility = res.data.accessibility
-        setItemsPerPage(res.data.itemsPerPage)
         initialized.value = true
       })
       .catch(err => {

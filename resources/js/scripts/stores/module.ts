@@ -48,11 +48,9 @@ export const useModuleStore = defineStore('module', () => {
         return useFaunaStore()
     }
   }
-  const getCurrentStore = computed(() => {
+  const getCurrentModuleStore = computed(() => {
     return getStore(current.value.module)
   })
-  
 
-
-  return { counts, backgroundImage, itemViews, getCurrentStore, tagFromSlug }
+  return { counts, backgroundImage, itemViews, getCurrentModuleStore, tagFromSlug }
 })

@@ -3,50 +3,91 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { TModule } from '../../../types/routesTypes'
-import { TCollectionExtra, TCollectionView, TPageCMainVImage, TApiArrayRelated, TCView, TApiArray, TPageCRelatedVMedia } from '@/js/types/collectionTypes'
+import { TCollectionExtra, TCollectionView, TPageCMainVImage, TApiArrayRelated, TCView, TApiArray, TPageCRelatedVMedia, TPageCRelatedVChip, TPageCRelatedVTable } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections'
-import { useRoutesMainStore } from '../routes/routesMain'
 import { useXhrStore } from '../xhr'
 import { useMediaStore } from '../media'
 import { useNotificationsStore } from '../notifications'
 import { useModuleStore } from '../module'
 
 export const useCollectionRelatedStore = defineStore('collectionRelated', () => {
-    const { send } = useXhrStore()
-    const { showSnackbar } = useNotificationsStore()
+
     const { buildMedia } = useMediaStore()
     const c = useCollectionsStore()
-    const { tagFromSlug } = useModuleStore() 
+    const { tagFromSlug } = useModuleStore()
+
 
     let extra = ref<TCollectionExtra>({
         length: 0,
         pageNoB1: 1,
-        views: <TCView[]>[{ name: 'Table', ipp: 500} , { name: 'Image', ipp: 36}, { name: 'Chip', ipp: 200}],
+        views: <TCView[]>[{ name: 'Table', ipp: 25 }, { name: 'Image', ipp: 36 }, { name: 'Chip', ipp: 200 }],
         viewIndex: 0,
     })
 
     let array = ref<TApiArrayRelated[]>([])
 
     const ipp = computed(() => {
-        return  extra.value.views[extra.value.viewIndex].ipp     
+        return extra.value.views[extra.value.viewIndex].ipp
     })
 
-    const page = computed<TPageCRelatedVMedia[]>(() => {
+    //headers for the related.Table view
+    const headers = computed(() => {
+        return [
+            { title: 'Tag', align: 'start', key: 'tag' },
+            { title: 'Relation', align: 'start', key: 'relation_name', },
+            { title: 'Short Description', align: 'start', key: 'short' },
+        ]
+    })
+
+    const page = computed<TPageCRelatedVMedia[] | TPageCRelatedVTable[] | TPageCRelatedVChip[]>(() => {
         //let ipp = c.getIpp('Image')
         let start = (extra.value.pageNoB1 - 1) * ipp.value
         let slice = array.value.slice(start, start + ipp.value)
-        let res = slice.map(x => {
-            let media = buildMedia(x.media, x.module)
-            return {
-                relation_name: x.relation_name,
-                module: x.module,
-                id: x.id,
-                slug: x.slug,
-                tag: tagFromSlug(x.module, x.slug),
-                short: x.short,
-                media
-            }
-        })
+        let res = []
+
+        switch (extra.value.views[extra.value.viewIndex].name) {
+            case 'Table':
+                res = slice.map(x => {
+                    let media = buildMedia(x.media, x.module)
+                    return {
+                        relation_name: x.relation_name,
+                        module: x.module,
+                        id: x.id,
+                        slug: x.slug,
+                        tag: `${x.module} ${tagFromSlug(x.module, x.slug)}`,
+                        short: x.short,
+                    }
+                })
+                break
+
+            case 'Image':
+                res = slice.map(x => {
+                    let media = buildMedia(x.media, x.module)
+                    return {
+                        relation_name: x.relation_name,
+                        module: x.module,
+                        id: x.id,
+                        slug: x.slug,
+                        tag: tagFromSlug(x.module, x.slug),
+                        short: x.short,
+                        media
+                    }
+                })
+                break
+
+            case 'Chip':
+                res = slice.map(x => {
+                    return {
+                        relation_name: x.relation_name,
+                        module: x.module,
+                        id: x.id,
+                        slug: x.slug,
+                        tag: `${x.module} ${tagFromSlug(x.module, x.slug)}`,
+                    }
+                })
+                break
+        }
+
         return res
     })
 
@@ -68,11 +109,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
         let start = (pageNoB1 - 1) * ipp
 
         console.log(`collectionRelated.loadPage() view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1} module: ${module} `);
-
-        //savePage(array.value.slice(start, start + ipp), view, module)
         extra.value.pageNoB1 = pageNoB1
-        //extra.value.viewIndex = viewIndex
-        //extra.value.viewIndex = extra.value.views.indexOf(view)
         return true
     }
 
@@ -82,7 +119,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     }
 
     function itemIsInPage(id: number) {
-        return page.value.some((x) => (<TPageCMainVImage>x).id === id)
+        return page.value.some((x) => x.id === id)
     }
 
     function itemByIndex(index: number): TApiArray {
@@ -101,7 +138,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
         ipp,
         array,
         page,
-
+        headers,
         loadPage,
         itemIndexById,
         setArray,

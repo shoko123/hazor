@@ -19,8 +19,7 @@ const props = defineProps<{
 }>()
 
 const { collection } = useCollectionsStore()
-const { routerPush } = useRoutesMainStore()
-
+const { routerPush, moveFromItemToItem } = useRoutesMainStore()
 
 const c = computed(() => {
   return collection(props.source).value
@@ -31,7 +30,15 @@ const page = computed(() => {
 })
 
 function goTo(item: any) {
-  routerPush('show', item.slug)
+  switch (props.source) {
+    case 'main':
+      routerPush('show', item.slug)
+      break
+
+    case 'related':
+      moveFromItemToItem(item.slug, item.id, item.module)
+      break
+  }
 }
 </script>
 

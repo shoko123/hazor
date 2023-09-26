@@ -19,7 +19,6 @@ import { useMediaStore } from '../media'
 import { useModuleStore } from '../module'
 import { useNotificationsStore } from '../notifications'
 import { useItemStore } from '../item'
-import { useCollectionRelatedStore } from '../collections/collectionRelated'
 import { useRoutesMainStore } from './routesMain'
 import { useRoutesParserStore } from './routesParser'
 import { EmptyResultSetError } from '../../setups/routes/errors'
@@ -35,7 +34,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   let f = useFilterStore()
   let { trioReset, setTrio } = useTrioStore()
   let { setItemMedia } = useMediaStore()
-  let { setArray } = useCollectionRelatedStore()
   const fromUndef = ref<boolean>(false)
 
   async function prepareForNewRoute(module: TModule, query: LocationQuery, slug: string, plan: TPlanAction[], fromUndefined: boolean): Promise<TPrepareResponse> {
@@ -121,6 +119,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
         m.counts = res.data.counts
         m.itemViews = res.data.itemViews
         c.clear(['main', 'media', 'related'])
+
         setTrio(res.data.trio)
         return true
       })
@@ -200,11 +199,10 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     try {
       let res = await xhr.send('model/show', 'post', { model: module, slug: slug, params: sp.data })
       //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
-      //let idResData = <TParseSlugData>sp.data
       r.to.slug = res.data.slug
       r.to.idParams = res.data.id_params
       setItemMedia(res.data.media)
-      setArray(res.data.related)
+      c.setArray('related', res.data.related)
       i.saveItem(res.data)
       n.showSpinner(false)
       return true

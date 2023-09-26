@@ -2,33 +2,16 @@
 //handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { TCollectionName, TCollectionView, TCollectionMeta, TItemPerPagePerView, TApiArray, TCView } from '@/js/types/collectionTypes'
+import { TCollectionName, TCollectionMeta, TApiArray, TCView } from '@/js/types/collectionTypes'
 import { TModule } from '../../../types/routesTypes'
-import { useRoutesMainStore } from '../routes/routesMain'
 import { useXhrStore } from '../xhr'
+import { useRoutesMainStore } from '../routes/routesMain'
 import { useNotificationsStore } from '../notifications'
 import { useCollectionMainStore } from './collectionMain'
 import { useCollectionMediaStore } from './collectionMedia'
 import { useCollectionRelatedStore } from './collectionRelated'
 
 export const useCollectionsStore = defineStore('collections', () => {
-
-    let itemsPerPagePerView = ref({
-        Image: 0,
-        Chip: 0,
-        Table: 0
-    })
-
-    function getIpp(view: TCollectionView): number {
-        return itemsPerPagePerView.value[view]
-    }
-
-    function setItemsPerPage(ipp: TItemPerPagePerView) {
-        itemsPerPagePerView.value['Image'] = ipp["Image"]
-        itemsPerPagePerView.value['Chip'] = ipp["Chip"]
-        itemsPerPagePerView.value['Table'] = ipp["Table"]
-    }
-
     function getCollection(source: TCollectionName) {
         switch (source) {
             case 'main':
@@ -193,24 +176,13 @@ export const useCollectionsStore = defineStore('collections', () => {
             case 'media':
                 return mediaCollection
         }
-
-        // let c = getCollection(name)
-        // return {
-        //     array: c.array,
-        //     page: c.page,
-        //     meta: collectionMeta(name)
-        // }
     }
 
     // mainCollection, mediaCollection, main and media for debug only.
     //Note : computed collection will only e reactive only if state (main, media) is exposed.
     return {
-        //getIpp,
         collection,
-        mainCollection,
-        mediaCollection,
         itemByIndex,
-        setItemsPerPage,
         setArray,
         loadPage,
         toggleCollectionView,

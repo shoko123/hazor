@@ -22,9 +22,9 @@ const props = defineProps<{
 
 const m = useMediaStore()
 const cm = useCollectionMediaStore()
-const { getIpp } = useCollectionsStore()
+//const { getIpp } = useCollectionsStore()
 const record = computed(() => {
-  let ipp = getIpp(cm.extra.views[0])
+  let ipp =cm.ipp// getIpp(cm.extra.views[0])
   let indexInPage = props.itemIndex % ipp
   let record = cm.page[indexInPage]
   return record
@@ -47,6 +47,7 @@ function switchMedia(withLeft: boolean) {
 function edit() {
   console.log(`edit${5}`)
 }
+
 function deleteMedia() {
   if (!confirm("Are you sure you want to delete this media item?")) { return }
   m.destroy(record.value.id)

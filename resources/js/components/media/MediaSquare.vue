@@ -62,7 +62,6 @@ const collection = computed(() => {
 
 const record = computed(() => {
   let ipp = collection.value.ipp.value
-  //let ipp = getIpp(collection.value.extra.value.views[collection.value.extra.value.viewIndex])
   let indexInPage = props.itemIndex % ipp
   let record = collection.value.page.value[indexInPage]
   return record

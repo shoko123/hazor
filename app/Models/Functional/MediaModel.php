@@ -44,7 +44,7 @@ class MediaModel
 
             //attach media to item
             foreach ($r["media_files"] as $key => $media_file) {
-                $meta = exif_read_data($media_file);
+                //$meta = exif_read_data($media_file);
                 $item
                     ->addMedia($media_file)
                     ->toMediaCollection($r["media_collection_name"]);

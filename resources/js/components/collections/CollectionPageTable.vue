@@ -1,6 +1,6 @@
 <template>
-  <v-data-table-virtual :headers="(heads as any)" :items="page" class="elevation-1" height="80vh" item-value="slug"
-    fixed-header><template v-slot:item.tag="{ item }">
+  <v-data-table-virtual v-if="collectionIsNotEmpty" :headers="(heads as any)" :items="page" class="elevation-1"
+    height="80vh" item-value="slug" fixed-header><template v-slot:item.tag="{ item }">
       <v-btn @click="btnClicked(item)">{{ item.columns.tag }}</v-btn>
     </template></v-data-table-virtual>
 </template>
@@ -8,9 +8,12 @@
 <script lang="ts" setup >
 import { VDataTableVirtual } from 'vuetify/labs/VDataTable'
 import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import { TCollectionName } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
+import { useCollectionRelatedStore } from '../../scripts/stores/collections/collectionRelated'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
+
 import { useModuleStore } from '../../scripts/stores/module'
 
 const props = defineProps<{
@@ -19,12 +22,17 @@ const props = defineProps<{
 }>()
 
 let { collection } = useCollectionsStore()
-let { getCurrentStore } = useModuleStore()
-let { routerPush } = useRoutesMainStore()
+let { getCurrentModuleStore } = useModuleStore()
+let { routerPush, moveFromItemToItem } = useRoutesMainStore()
+const { headers } = storeToRefs(useCollectionRelatedStore())
 
 const heads = computed(() => {
-  const store = getCurrentStore
-  return store.headers
+  if (props.source === 'main') {
+    const store = getCurrentModuleStore
+    return store.headers
+  } else {
+    return headers.value
+  }
 })
 
 const c = computed(() => {
@@ -35,7 +43,17 @@ const page = computed(() => {
   return c.value.page //as TPageCMainVTable[]
 })
 
+
+const collectionIsNotEmpty = computed(() => {
+  return page.value.length > 0 //as TPageCMainVTable[]
+})
+
 function btnClicked(item: any) {
-  routerPush('show', item.raw.slug)
+  //console.log(`pageTable.btnClicked() item: ${JSON.stringify(item, null, 2)}`)
+  if (props.source === 'main') {
+    routerPush('show', item.raw.slug)
+  } else {
+    moveFromItemToItem(item.raw.slug, item.raw.id, item.raw.module)
+  }
 }
 </script>

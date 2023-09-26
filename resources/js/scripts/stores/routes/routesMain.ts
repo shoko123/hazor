@@ -258,18 +258,17 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         const { itemIndexById } = useCollectionMainStore()
         const { clearSelectedFilters } = useFilterStore()
         let { showSnackbar } = useNotificationsStore()
-        console.log(`GoToItem from.module: ${current.value.module} from.slug: ${current.value.slug}`)
-        console.log(`GoToItem to.module: ${module} to.slug: ${slug} to.id: ${id}`)
+        console.log(`moveFromItemToItem "${current.value.module} ${current.value.slug}" -> "${module} ${slug}" (id: ${id})`)
         if (current.value.module === module) {
             if (current.value.slug === slug) {
-                console.log(`GoTo same item - ignore`)
+                console.log(`moveTo same item - ignore`)
                 return
             }
             if (itemIndexById(id) !== -1) {
-                console.log(`GoTo item that is already in the current collection - go!`)
+                console.log(`moveTo item that is already in the current collection - go!`)
                 routerPush('show', slug, module)
             } else {
-                console.log(`GoTo item that is NOT in the current collection - remove filters and reload collection!`)
+                console.log(`moveTo item that is NOT in the current collection - remove filters and reload collection!`)
                 clearSelectedFilters()
                 showSnackbar(`Filters removed and result set reloaded`)
                 routerPush('show', slug, module, false)

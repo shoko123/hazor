@@ -24,7 +24,6 @@ class AppController extends Controller
                 'authenticatedUsersOnly' => env('ACCESSIBILITY_AUTHENTICATED_ONLY')
             ],
             "media_collections"  => MediaModel::media_collections(),
-            "itemsPerPage" => config('display_options.itemsPerPage'),
             "msg" => "AppController.init()",
         ], 200);
     }

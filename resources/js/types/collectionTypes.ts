@@ -7,7 +7,6 @@ type TCollectionView = 'Image' | 'Chip' | 'Table'
 type TCollectionName = 'main' | 'media' | 'related'
 
 type TCView = { name: TCollectionView, ipp: number }
-type TItemPerPagePerView = { Image: number, Chip: number, Table: number }
 
 //array types
 type TApiArrayMain = { id: number, slug: string }
@@ -20,8 +19,6 @@ type TApiArrayRelated = {
         short: string,
         media: TMediaUrls
 }
-
-
 
 type TApiArray = TApiArrayMain | TApiArrayMedia | TApiArrayRelated
 
@@ -99,7 +96,6 @@ type TApiPage = TApiPageMainImage |
         TApiPageTableFauna
 
 //conversions ready for consumption for 'Media', 'Chip', and 'Table' views
-
 type TPageVChip = {
         id: number,
         slug: string,
@@ -130,8 +126,17 @@ type TPageCRelatedVMedia = {
         short: string,
         media: TMediaOfItem
 }
-type TPageCRelatedVChip = {
+
+type TPageCRelatedVTable = {
         relation_name: string,
+        module: TModule,
+        id: number,
+        slug: string,
+        tag: string
+        short: string,
+}
+
+type TPageCRelatedVChip = {
         module: TModule,
         id: number,
         slug: string,
@@ -166,7 +171,6 @@ export {
         TCollectionName,
         TCollectionView,
         TCView,
-        TItemPerPagePerView,
         TCollectionExtra,
         TCollectionMeta,
         TApiArrayMain,
@@ -181,6 +185,7 @@ export {
         TPageCMainVImage,
         TPageCMainVTable,
         TPageCRelatedVMedia,
+        TPageCRelatedVTable,
         TPageCRelatedVChip,
         TPageItem,
         TMediaUrls,
