@@ -2,7 +2,10 @@
 
 <template>
     <div id="zoomy-container" height="100vh">
-        <v-img id="zoomy" :src="urls.full" :lazy-src="urls.tn" aspect-ratio="1" height="95vh" :cover=false>
+        <v-img id="zoomy" :src="urls.full" :lazy-src="urls.tn" aspect-ratio="1" height="95vh" :cover="isFiller">
+            <v-overlay v-model="isFiller" contained class="align-center justify-center">
+                <div class="text-white text-h2">No Media Available</div>
+            </v-overlay>
         </v-img>
     </div>
 </template>
@@ -16,7 +19,10 @@ import Zoomy from './zoomy/Zoomy.js'
 
 onMounted(() => {
     //console.log(`ImageZoom.mount`)
-    zm.value = new Zoomy('zoomy', options);
+
+    if (media.value.hasMedia) {
+        zm.value = new Zoomy('zoomy', options);
+    }
 })
 
 onBeforeUnmount(() => {
@@ -37,11 +43,22 @@ const { media } = storeToRefs(useCarouselStore())
 watch(media, () => {
     //console.log('ImageZoom.media changed')
     zm.value?.detach()
-    zm.value = new Zoomy('zoomy', options)
+
+    if (media.value.hasMedia) {
+        zm.value = new Zoomy('zoomy', options)
+    } else {
+        zm.value?.detach()
+        zm.value = null
+    }
 })
 
 const urls = computed(() => {
     return media.value?.urls
 })
 
+
+const isFiller = computed({
+    get: () => { return !media.value?.hasMedia },
+    set: val => { }
+})
 </script>

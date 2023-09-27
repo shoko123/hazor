@@ -1,10 +1,8 @@
 <template>
-  <v-card class="mx-auto" color="transparent" flat>
-    <v-card-actions>
-      <v-btn class="bg-grey-lighten-1" @click="goToItem()">Visit</v-btn>
-      <v-btn class="bg-grey-lighten-1" @click="openModalCarousel()">Lightbox</v-btn>
-    </v-card-actions>
-  </v-card>
+  <div d-flex>
+    <v-btn class="ml-2 bg-grey-lighten-1" @click="goToItem()">Visit</v-btn>
+    <v-btn class="ml-2 bg-grey-lighten-1" @click="openModalCarousel()">Lightbox</v-btn>
+  </div>
 </template>
     
 

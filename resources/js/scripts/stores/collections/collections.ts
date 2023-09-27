@@ -77,7 +77,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         let newViewIndex = (meta.viewIndex + 1) % meta.views.length
         let newView = meta.views[newViewIndex]
         let index = meta.firstItemNo - 1
-        console.log(`toggleCollectionView() collection: ${name}  module: ${module} views: ${meta.views}  current view: ${currentView}  new view: ${newView} index: ${index}`);
+        console.log(`toggleCollectionView() collection: ${name}  module: ${module} views: ${meta.itemsPerPage}  current view: ${currentView.name}  new view: ${newView.name} index: ${index}`);
         await loadPageByItemIndex(name, newView, index, module)
         let c = getCollection(name)
         c.extra.viewIndex = newViewIndex

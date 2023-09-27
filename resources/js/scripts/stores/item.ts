@@ -51,7 +51,7 @@ export const useItemStore = defineStore('item', () => {
       module: current.value.module,
       slug: current.value.slug,
       tag: tag.value,
-      moduleAndTag: `${current.value.module} "${tag.value}"`,
+      moduleAndTag: `${current.value === undefined ? "": current.value.module} ${tag.value === undefined ? "": tag.value}`,
       short: short.value
     }
   })

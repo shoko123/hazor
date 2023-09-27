@@ -33,13 +33,13 @@ export const useCarouselStore = defineStore('carousel', () => {
     let text = ""
     switch (collectionName.value) {
       case 'main':
-        text = `${derived.value.module} result set. Showing item "${(<TCarouselMain>itemMain.value)?.tag}"`
+        text = `${derived.value.module} result set. Showing "${(<TCarouselMain>itemMain.value)?.module} ${(<TCarouselMain>itemMain.value)?.tag}"`
         break
       case 'related':
-        text = `${derived.value.moduleAndTag} related items: (Relation: "${(<TCarouselRelated>itemDetails.value)?.relation_name}", item: ${(<TCarouselRelated>itemDetails.value)?.module} "${(<TCarouselRelated>itemDetails.value)?.tag}")`
+        text = `"${derived.value.moduleAndTag}" related items: ("${(<TCarouselRelated>itemDetails.value)?.module} ${(<TCarouselRelated>itemDetails.value)?.tag}" relation: ${(<TCarouselRelated>itemDetails.value)?.relation_name})`
         break
       case 'media':
-        text = `Media for ${derived.value.module} "${derived.value.slug}"`
+        text = `Media for "${derived.value.moduleAndTag}"`
         break
     }
     return text + ` [${index.value + 1}/${collection.value.array.length}]`

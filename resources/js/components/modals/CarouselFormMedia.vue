@@ -3,7 +3,7 @@
 <template>
   <v-card-text v-if="itemMedia">
      <v-row no-gutters class="text-h5">
-      Media for {{ derived.moduleAndTag }}
+      Media for "{{ derived.moduleAndTag }}"
     </v-row>
     <v-row wrap no-gutters>
       <v-textarea v-model="derived.short" label="Description" class="mr-1" rows="3" readonly filled></v-textarea>

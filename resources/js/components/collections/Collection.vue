@@ -1,7 +1,9 @@
 <template>
   <v-card class="elevation-12">
     <v-toolbar class="bg-grey text-black" density="compact" :height="50">
+
       <v-toolbar-title>{{ header }}</v-toolbar-title>
+
       <v-pagination v-if="paginator.show" v-model="page" :length="paginator.pages" :total-visible="16">
       </v-pagination>
 
@@ -34,6 +36,7 @@ const props = defineProps<{
 
 let { collection, loadPage, toggleCollectionView } = useCollectionsStore()
 let { tag, derived } = storeToRefs(useItemStore())
+
 const c = computed(() => {
   return collection(props.source).value
 })
@@ -69,9 +72,9 @@ const header = computed(() => {
     case 'main':
       return `${derived.value.module} query results: ${pageInfoAsText.value}`
     case 'media':
-      return `${derived.value.module} "${tag.value}" - media: ${pageInfoAsText.value}`
+      return `"${derived.value.moduleAndTag}" - media: ${pageInfoAsText.value}`
     case 'related':
-      return `${derived.value.module} "${tag.value}" - related items: ${pageInfoAsText.value}`
+      return `"${derived.value.moduleAndTag}" - related items: ${pageInfoAsText.value}`
   }
 })
 

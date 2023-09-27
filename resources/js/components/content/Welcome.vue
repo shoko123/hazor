@@ -41,7 +41,7 @@ const module = computed(() => {
 })
 
 const text = computed(() => {
-  return `some text`
+  return ``//`some text`
 })
 
 </script>

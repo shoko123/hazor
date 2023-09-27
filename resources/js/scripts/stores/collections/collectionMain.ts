@@ -49,7 +49,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         let ipp = view.ipp
         let start = (pageNoB1 - 1) * ipp
 
-        console.log(`collectionMain.loadPage() view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1} module: ${module} `);
+        console.log(`collectionMain.loadPage() view: ${view.name} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1} module: ${module} `);
 
         switch (view.name) {
             //if 'Chip' do nothing - page will be extracted from array

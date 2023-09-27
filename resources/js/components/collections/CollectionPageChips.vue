@@ -1,6 +1,6 @@
 <template>
   <v-row wrap>
-    <v-chip v-for="(item, index) in page" :key="index" class="font-weight-normal ma-2 body-1" @click="goTo(item)">{{
+    <v-chip v-for="(item, index) in page" :key="index" :disabled="rms.inTransition" class="font-weight-normal ma-2 body-1" @click="goTo(item)">{{
       item.tag
     }}</v-chip>
   </v-row>
@@ -19,7 +19,7 @@ const props = defineProps<{
 }>()
 
 const { collection } = useCollectionsStore()
-const { routerPush, moveFromItemToItem } = useRoutesMainStore()
+const rms = useRoutesMainStore()
 
 const c = computed(() => {
   return collection(props.source).value
@@ -32,11 +32,11 @@ const page = computed(() => {
 function goTo(item: any) {
   switch (props.source) {
     case 'main':
-      routerPush('show', item.slug)
+      rms.routerPush('show', item.slug)
       break
 
     case 'related':
-      moveFromItemToItem(item.slug, item.id, item.module)
+      rms.moveFromItemToItem(item.slug, item.id, item.module)
       break
   }
 }

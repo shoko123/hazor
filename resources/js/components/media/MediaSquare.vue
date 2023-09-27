@@ -1,7 +1,6 @@
 <template>
   <v-hover v-slot="{ isHovering, props }">
     <v-card v-bind="props" variant="outlined" class="ml-1 mb-1">
-      <!-- <v-img :src="urls?.full" :lazy-src="urls?.tn" aspect-ratio="1" class="bg-grey-lighten-2"></v-img> -->
       <v-img :src="urls?.tn" :lazy-src="urls?.tn" aspect-ratio="1" class="bg-grey-lighten-2">
         <v-btn v-if="showTag" class="text-subtitle-1 font-weight-medium text-black" color="grey">{{ tagText }}</v-btn>
         <v-card class="mx-auto" color="transparent" flat>
@@ -23,7 +22,6 @@ import { computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { TCollectionName, TPageCMainVImage, TPageCRelatedVMedia } from '../../types/collectionTypes'
 import { TMediaRecord } from '../../types/mediaTypes'
-import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import { useCollectionMainStore } from '../../scripts/stores/collections/collectionMain'
 import { useCollectionMediaStore } from '../../scripts/stores/collections/collectionMedia'
 import { useCollectionRelatedStore } from '../../scripts/stores/collections/collectionRelated'
@@ -34,9 +32,9 @@ import OverlayMediaEdit from './OverlayMediaEdit.vue'
 import OverlayCMain from './OverlayCMain.vue'
 
 let { current } = storeToRefs(useRoutesMainStore())
-const main = storeToRefs(useCollectionMainStore())
-const media = storeToRefs(useCollectionMediaStore())
-const related = storeToRefs(useCollectionRelatedStore())
+const main = useCollectionMainStore()
+const media = useCollectionMediaStore()
+const related = useCollectionRelatedStore()
 
 const props = defineProps<{
   source: TCollectionName,
@@ -61,9 +59,9 @@ const collection = computed(() => {
 })
 
 const record = computed(() => {
-  let ipp = collection.value.ipp.value
+  let ipp = collection.value.ipp
   let indexInPage = props.itemIndex % ipp
-  let record = collection.value.page.value[indexInPage]
+  let record = collection.value.page[indexInPage]
   return record
 })
 
@@ -90,6 +88,7 @@ const relatedRecord = computed(() => {
   let ma = record.value as TPageCRelatedVMedia
   return ma
 })
+
 const showTag = computed(() => {
   return ['main', 'related'].includes(props.source)
 })
@@ -122,6 +121,7 @@ const urls = computed(() => {
       return { full: "", tn: "" }
   }
 })
+
 const overlayText = computed(() => {
   switch (props.source) {
     case 'main':
