@@ -43,17 +43,17 @@ export const useStoneStore = defineStore('stone', () => {
   const headers = computed(() => {
     return [
       { title: 'Name', align: 'start', key: 'tag', },
-      { title: 'Area', align: 'end', key: 'area' },
-      { title: 'Locus', align: 'end', key: 'locus' },
+      { title: 'Area', align: 'start', key: 'area' },
+      { title: 'Locus', align: 'start', key: 'locus' },
       { title: 'Year', align: 'end', key: 'year' },
-      { title: 'Type', align: 'end', key: 'type' },
+      { title: 'Type', align: 'start', key: 'type' },
       { title: 'Description', key: 'description',align: 'start',  sortable: false, },
-      { title: 'Base Type', align: 'end', key: 'base_type' },
-      { title: 'Material Code', align: 'end', key: 'material_code' },
-      { title: 'Material', align: 'end', key: 'material' },
-      { title: 'Prov Notes', align: 'end', key: 'prove_notes' },
-      { title: 'Notes', align: 'end', key: 'notes' },
-      { title: 'Publication', align: 'end', key: 'publication' },
+      { title: 'Base Type', align: 'start', key: 'base_type' },
+      { title: 'Material Code', align: 'start', key: 'material_code' },
+      { title: 'Material', align: 'start', key: 'material' },
+      { title: 'Prov Notes', align: 'start', key: 'prove_notes' },
+      { title: 'Notes', align: 'start', key: 'notes' },
+      { title: 'Publication', align: 'start', key: 'publication' },
       { title: 'Date', align: 'end', key: 'date' },
     ]
   })

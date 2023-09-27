@@ -2,10 +2,7 @@
 
 <template>
   <v-card-text>
-    <v-row class="text-body-1">
-      "{{ cs.itemMain?.module }} {{ cs.itemMain?.tag }}" Description:</v-row>
-    <v-row class="text-body-1">
-      {{ cs.itemMain?.short }}</v-row>
+    <v-row class="text-body-1"> {{ cs.itemMain?.short }}</v-row>
   </v-card-text>
   <v-card-actions>
     <v-btn @click="clicked" variant="outlined">{{ cs.itemMain?.module }} {{ cs.itemMain?.tag }}</v-btn>

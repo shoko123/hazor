@@ -4,7 +4,7 @@
 
       <v-toolbar-title>{{ header }}</v-toolbar-title>
 
-      <v-pagination v-if="paginator.show" v-model="page" :length="paginator.pages" :total-visible="16">
+      <v-pagination v-if="paginator.show" v-model="page" :length="paginator.pages" :total-visible="12">
       </v-pagination>
 
       <v-btn v-if="showBtnViewToggle" size="small" variant="outlined" @click="toggleCollectionDisplayOption()">view: {{
@@ -55,26 +55,26 @@ const page = computed({
 
 const pageInfoAsText = computed(() => {
   if (meta.value.length === 0) {
-    return `[Empty]`
+    return `(Empty)`
   }
   if (meta.value.length === 1) {
-    return `item(1)`
+    return `(1)`
   }
   if (meta.value.noOfPages === 1) {
-    return `items(${meta.value.firstItemNo} - ${meta.value.lastItemNo}/${meta.value.noOfItems})`
+    return `(${meta.value.firstItemNo}-${meta.value.lastItemNo}/${meta.value.noOfItems})`
   }
-  return `page(${meta.value.pageNoB1}/${meta.value.noOfPages}), items(${meta.value.firstItemNo} - ${meta.value.lastItemNo}/${meta.value.noOfItems})`
+  return ` - Showing page (${meta.value.pageNoB1}/${meta.value.noOfPages}), items (${meta.value.firstItemNo}-${meta.value.lastItemNo}/${meta.value.noOfItems})`
 })
 
 
 const header = computed(() => {
   switch (props.source) {
     case 'main':
-      return `${derived.value.module} query results: ${pageInfoAsText.value}`
+      return `${derived.value.module} Query Results ${pageInfoAsText.value}`
     case 'media':
-      return `"${derived.value.moduleAndTag}" - media: ${pageInfoAsText.value}`
+      return `${derived.value.moduleAndTag} - Media ${pageInfoAsText.value}`
     case 'related':
-      return `"${derived.value.moduleAndTag}" - related items: ${pageInfoAsText.value}`
+      return `${derived.value.moduleAndTag} - Related ${pageInfoAsText.value}`
   }
 })
 

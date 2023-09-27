@@ -55,7 +55,7 @@ const itemForm = computed<Component>(() => {
 })
 
 const title = computed(() => {
-  return `"${derived.value.moduleAndTag}" - details`
+  return `${derived.value.moduleAndTag} - Details`
 })
 
 const hasMedia = computed(() => {

@@ -54,8 +54,7 @@ class Stone extends FindModel
 
     public function getShortAttribute()
     {
-        $short = is_null($this->type) ? "" : $this->type . '. ';
-        return $short . $this->description;
+        return is_null($this->type) ? "TBD" : $this->type;
     }
 
     public function init(): array

@@ -43,7 +43,7 @@ const d = computed(() => {
       return { data: selectedFilterTrio.value, header: `Selected Filters`, emptyTitle: `[ No filters selected ]` }
 
     case 'Item':
-      return { data: selectedItemTrio.value, header: `"${derived.value.moduleAndTag}"" - tags`, emptyTitle: `[ Item has no tags ]` }
+      return { data: selectedItemTrio.value, header: `${derived.value.moduleAndTag} - Tags`, emptyTitle: `[ Item has no tags ]` }
 
     case 'New':
       return { data: selectedNewItemTrio.value, header: `Selected Tags`, emptyTitle: `[ No tags selected ]` }
