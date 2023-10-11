@@ -52,11 +52,9 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         preLoginFullPath: undefined
     })
 
-    const isLoading = ref(false)
+    const inTransition = ref(false)
 
-    const inTransition = computed<boolean>(() => {
-        return isLoading.value
-    })
+
 
     async function handleRouteChange(handle_to: RouteLocationNormalized, handle_from: RouteLocationNormalized): Promise<RouteLocationRaw | boolean> {
         let { showSnackbar } = useNotificationsStore()
@@ -111,18 +109,18 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
         console.log(`Plan successful: ${JSON.stringify(planResponse.data, null, 2)}`)
         //prepare - access server and load stuff (async)
-        isLoading.value = true
+        inTransition.value = true
 
         try {
             await prepareForNewRoute(to.value.module, handle_to.query, <string>handle_to.params.slug, <TPlanAction[]>planResponse.data, handle_from.name === undefined)
             finalizeRouting(handle_to, handle_from)
 
             //console.log(`router.beforeEach returned ${JSON.stringify(res, null, 2)}`);
-            isLoading.value = false
+            inTransition.value = false
             return true
         }
         catch (err) {
-            isLoading.value = false
+            inTransition.value = false
             if (err === EmptyResultSetError && handle_from.name === 'filter') {
                 console.log(`EMPTY ERROR`)
                 showSnackbar('No results returned. Please modify query and resubmit!')
@@ -180,7 +178,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
     function goHome() {
         console.log(`goHome`)
-        isLoading.value = false
+        inTransition.value = false
         return { name: 'home' }
     }
 

@@ -19,12 +19,12 @@ const routes = [
   },
   {
     path: '/:module(auth)/login',
-    component: () => import('@/components/content/auth/Login.vue'),
+    component: () => import('@/components/content/auth/AuthMain.vue'),
     name: 'login',
   },
   {
     path: '/:module(auth)/register',
-    component: () => import('@/components/content/auth/Login.vue'),
+    component: () => import('@/components/content/auth/AuthMain.vue'),
     name: 'register',
   },
   {

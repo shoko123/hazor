@@ -11,8 +11,9 @@ use App\Http\Controllers\App\AppController;
 use App\Http\Controllers\App\RegistrarController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\App\DigModelStoreController;
-use App\Http\Controllers\Dig\FaunaController;
-use App\Http\Controllers\Dig\StoneController;
+use App\Http\Controllers\DigModels\FaunaController;
+use App\Http\Controllers\DigModels\StoneController;
+use App\Http\Controllers\DigModels\LocusController;
 /*
 |--------------------------------------------------------------------------
 | API Routes

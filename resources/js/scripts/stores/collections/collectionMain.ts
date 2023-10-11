@@ -20,7 +20,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     let extra = ref<TCollectionExtra>({
         length: 0,
         pageNoB1: 1,
-        views: <TCView[]>[{ name: 'Table', ipp: 500} , { name: 'Image', ipp: 36}, { name: 'Chip', ipp: 200}],
+        views: <TCView[]>[ { name: 'Image', ipp: 36}, { name: 'Table', ipp: 500} ,{ name: 'Chip', ipp: 200}],
         viewIndex: 0,
     })
 

@@ -13,6 +13,7 @@ export const useMenusStore = defineStore('menus', () => {
   const hasSubMenu = computed(() => {
     switch (rms.current.name) {
       case 'home':
+      case 'register':
       case 'login':
       case 'create':
       case 'update':
@@ -39,7 +40,7 @@ export const useMenusStore = defineStore('menus', () => {
       case 'update':
       case 'tag':
         return 'Modify'
-        
+
       default:
         return 'Read'
     }

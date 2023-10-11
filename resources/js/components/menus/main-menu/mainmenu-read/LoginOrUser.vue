@@ -29,7 +29,7 @@ let { current } = storeToRefs(useRoutesMainStore())
 let options: TUserOption[] = ['Dashboard', 'Logout']
 
 const showLoginButton = computed(() => {
-  return !auth.authenticated && current.value.name !== 'login'
+  return !auth.authenticated && !['login', 'register'].includes(current.value.name)
 })
 
 function loginClick() {

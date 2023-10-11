@@ -1,65 +1,126 @@
 <template>
-  <v-img id=img :src="backgroundImage?.fullUrl" :lazy-src="backgroundImage?.tnUrl" :cover="true">
-    <v-container fill-height fluid>
-      <v-row align="center" justify="center">
-        <v-col>
-          <v-card class="mx-auto" width="30%">
-            <v-toolbar dark color="primary">
-              <v-toolbar-title>Login</v-toolbar-title>
-            </v-toolbar>
-            <v-card-text>
-              <v-form @submit.prevent="loginRedirect">
-                <v-text-field prepend-icon="mdi-account" name="email" email="email" v-model="loginForm.email">
-                </v-text-field>
-                <v-text-field prepend-icon="mdi-lock" name="password" label="password" type="password"
-                  v-model="loginForm.password">
-                </v-text-field>
-                <v-card-actions>
-                  <v-row justify="center">
-                    <v-btn type="submit" primary>Login</v-btn>
-                  </v-row>
-                </v-card-actions>
-              </v-form>
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-img>
+  <v-card class="mx-auto" elevation="8" max-width="448" rounded="lg">
+    <v-toolbar dark color="primary" density="compact" :height="50">
+      <v-toolbar-title>User Login Form</v-toolbar-title>
+    </v-toolbar>
+    <v-card-text class="pa-12 pb-8">
+      <div class="text-subtitle-1 text-medium-emphasis">Email</div>
+
+      <v-text-field v-model="data.email" :error-messages="emailErrors" density="compact" placeholder="Email address"
+        prepend-inner-icon="mdi-email-outline" variant="outlined"></v-text-field>
+
+      <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
+        Password
+
+        <a class="text-caption text-decoration-none text-blue" href="#" rel="noopener noreferrer" target="_blank">
+          Forgot login password?</a>
+      </div>
+
+      <v-text-field v-model="data.password" :error-messages="passwordErrors"
+        :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'" density="compact"
+        placeholder="Enter your password" prepend-inner-icon="mdi-lock-outline" variant="outlined"
+        @click:append-inner="visible = !visible"></v-text-field>
+
+      <v-card class="mb-12" color="surface-variant" variant="tonal">
+        <v-card-text class="text-medium-emphasis text-caption">
+          Warning: After 3 consecutive failed login attempts, you account will be temporarily locked for three
+          hours. If you must login now, you can also click "Forgot login password?" below to reset the login
+          password.
+        </v-card-text>
+      </v-card>
+
+      <v-btn @click="loginRedirect" block class="mb-8" color="blue" size="large" variant="tonal">
+        Log In
+      </v-btn>
+
+      <v-card-text class="text-center">
+        <a class="text-blue text-decoration-none" @click="goToRegister">
+          Not Registered?<v-icon icon="mdi-chevron-right"></v-icon>
+        </a>
+      </v-card-text>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script setup lang="ts" >
-import { computed } from 'vue'
+import { computed, ref, reactive } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '../../../scripts/stores/auth'
 import { useNotificationsStore } from '../../../scripts/stores/notifications';
-import { useModuleStore } from '../../../scripts/stores/module'
 import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
 import { router } from '../../../scripts/setups/vue-router'
 
 let { showSpinner, showSnackbar } = useNotificationsStore()
 let auth = useAuthStore()
-let { backgroundImage } = storeToRefs(useModuleStore())
 let { current } = storeToRefs(useRoutesMainStore())
+let { routerPush } = useRoutesMainStore()
+import { useVuelidate } from "@vuelidate/core"
+import { required, email, minLength, helpers, minValue, maxValue } from "@vuelidate/validators"
 
-const loginForm = computed(() => {
-  return auth.loginForm
+const data = reactive({
+  email: "",
+  password: "",
 })
 
+const rules = computed(() => {
+  return {
+    email: { required, email },
+    password: {
+      required,
+      minLength: minLength(8),
+      containsPasswordRequirement: helpers.withMessage(
+        () => `The password requires an uppercase, lowercase, and a number`,
+        (value) => /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])/.test(<string>value)
+      ),
+    },
+  }
+})
+
+const v$ = useVuelidate(rules, data)
+
+const emailErrors = computed(() => {
+  return <string>(v$.value.email.$error ? v$.value.email.$errors[0].$message : undefined)
+})
+
+const passwordErrors = computed(() => {
+  return <string>(v$.value.password.$error ? v$.value.password.$errors[0].$message : undefined)
+})
+
+const visible = ref(false)
+
+
 async function loginRedirect() {
-  showSpinner('Logging in ...')
-  let res = await auth.login()
+  //showSpinner('Logging in ...')
+
+  await v$.value.$validate();
+  console.log(`after validate() errors: ${JSON.stringify(v$.value.$errors, null, 2)}`)
+  if (v$.value.$error || v$.value.$silentErrors.length > 0) {
+
+    showSnackbar("Please correct the marked errors!", "orange")
+    console.log(`validation errors: ${JSON.stringify(v$.value.$errors, null, 2)}`)
+    console.log(`validation silent errors: ${JSON.stringify(v$.value.$silentErrors, null, 2)}`)
+    return
+  }
+
+  let res = await auth.login(data)
   showSpinner(false)
   if (res) {
     showSnackbar('Successfully logged-in!')
     console.log(`Login success push to preLoginPath: ${current.value.preLoginFullPath}`)
-    router.push(<string>current.value.preLoginFullPath)
+    if (current.value.preLoginFullPath == '/auth/register') {
+      routerPush('home')
+    } else {
+      router.push(<string>current.value.preLoginFullPath)
+    }
   } else {
     showSnackbar('Login or server access error! Please try again!')
   }
   return
 }
 
+function goToRegister() {
+  routerPush('register')
+}
 </script>
 <style scoped>
 #img {
