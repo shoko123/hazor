@@ -11,7 +11,11 @@ const app = createApp(App)
     .use(vuetify)
 
 let xhr = useXhrStore()
-xhr.setBaseUrl(`${window.location.protocol}//${window.location.host}`)
+await xhr.setAxios()
+
+
+
+
 
 router.isReady().then(() => {
     app.mount('#app')

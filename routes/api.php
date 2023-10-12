@@ -30,11 +30,8 @@ Route::get('app/init', [AppController::class, 'init']);
 Route::post('test/status', [TestController::class, 'status']);
 Route::post('test/run', [TestController::class, 'run']);
 
-//authentication routes
-Route::post('auth/login', [AuthController::class, 'login']);
-Route::get('auth/me', [AuthController::class, 'me'])->middleware('auth:sanctum');
-Route::post('auth/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-//Route::post('auth/register', [AuthController::class, 'register']);
+//authentication routes handled by Fortify
+
 
 //read only APIs. Accessible when config.accessibility.authenticatedUsersOnly is false, or authenticated.
 Route::group(['middleware' => ['read.accessibility']], function () {
@@ -51,7 +48,7 @@ Route::group(['middleware' => ['read.accessibility']], function () {
 });
 
 //mutator APIs
-//Route::group(['middleware' => ['auth:sanctum']], function () {
+Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('tags/sync', [TagController::class, 'sync']);   
     Route::post('media/upload', [MediaController::class, 'upload']);
     Route::post('media/destroy', [MediaController::class, 'destroy']);
@@ -68,4 +65,4 @@ Route::group(['middleware' => ['read.accessibility']], function () {
     Route::put('stones/store', [StoneController::class, 'store'])->middleware('can:Stone-update');
     Route::post('fauna/store', [FaunaController::class, 'store'])->middleware('can:Fauna-create');
     Route::put('fauna/store', [FaunaController::class, 'store'])->middleware('can:Fauna-update');
-//});
+});

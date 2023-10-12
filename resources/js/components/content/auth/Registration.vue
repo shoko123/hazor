@@ -45,6 +45,17 @@
       </v-card-text>
     </v-card-text>
   </v-card>
+
+  <v-dialog v-model="dialog" persistent width="auto">
+    <v-card>
+      <v-card-text>
+        {{ successText }}
+      </v-card-text>
+      <v-card-actions>
+        <v-btn color="primary" block @click="goToLogin">to Login</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup lang="ts" >
@@ -70,6 +81,8 @@ const data = reactive({
   password_confirmation: "",
 })
 
+const dialog = ref(false)
+const theEmail = ref("")
 
 const rules = computed(() => {
   return {
@@ -120,21 +133,25 @@ async function register() {
     return
   }
 
-  return
 
-  showSpinner('Yes ...')
+  theEmail.value = data.email
+  showSpinner('Registering ...')
   let res = await auth.register(data)
   showSpinner(false)
   if (res) {
-    showSnackbar('Registration successful!')
-    console.log(`Redirect to login page`)
-    //router.push(<string>current.value.preLoginFullPath)
+    dialog.value = true
   } else {
     showSnackbar('Registration failed!')
   }
 }
 
+const successText = computed(() => {
+  return `Registration successful. A verification email was sent to "${theEmail.value}".
+  After verifying your email, please click below to head to the login page.`
+})
+
 async function goToLogin() {
+  dialog.value = false
   routerPush('login')
 }
 

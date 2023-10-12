@@ -25,19 +25,13 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function register(form: TRgistrationForm): Promise<boolean> {
     //clear user
-    axios.defaults.headers.common["Authorization"] = ``
     user.value = null
     //console.log(`auth.login() form: ${JSON.stringify(loginForm.value, null, 2)}`)
 
     try {
       let res = await send('auth/register', 'post', form)
-      if (res.data.user !== null) {
-        user.value = res.data.user
-        axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.user.token}`
-        return true
-      } else {
-        return false
-      }
+      
+      return true
     } catch (err) {
       console.log(`The Application encounter a problem connecting with the Server`)
       return false
@@ -46,7 +40,6 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function login(form: TLoginForm): Promise<boolean> {
     //clear user
-    axios.defaults.headers.common["Authorization"] = ``
     user.value = null
     //console.log(`auth.login() form: ${JSON.stringify(loginForm.value, null, 2)}`)
 
@@ -54,7 +47,6 @@ export const useAuthStore = defineStore('auth', () => {
       let res = await send('auth/login', 'post', form)
       if (res.data.user !== null) {
         user.value = res.data.user
-        axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.user.token}`
         return true
       } else {
         return false
@@ -80,7 +72,6 @@ export const useAuthStore = defineStore('auth', () => {
       })
       .finally(() => {
         //clear user
-        axios.defaults.headers.common["Authorization"] = ``
         user.value = null
         showSpinner(false)
       })
