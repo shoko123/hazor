@@ -46,14 +46,14 @@
     </v-card-text>
   </v-card>
 
-  <v-dialog v-model="dialog" persistent width="auto">
+  <v-dialog v-model="dialog" persistent width="500">
     <v-card>
       <v-card-text>
         {{ successText }}
       </v-card-text>
-      <v-card-actions>
+      <!-- <v-card-actions>
         <v-btn color="primary" block @click="goToLogin">to Login</v-btn>
-      </v-card-actions>
+      </v-card-actions> -->
     </v-card>
   </v-dialog>
 </template>
@@ -147,7 +147,7 @@ async function register() {
 
 const successText = computed(() => {
   return `Registration successful. A verification email was sent to "${theEmail.value}".
-  After verifying your email, please click below to head to the login page.`
+  Please close the current tab to terminate this session and activate your email link.`
 })
 
 async function goToLogin() {

@@ -10,7 +10,6 @@ type TLoginForm = {
       type TUser = {
         'name': string,
         'id': number,
-        'token': string,
         'permissions': string[]
       }
 

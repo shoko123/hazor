@@ -9,11 +9,13 @@ use App\Http\Controllers\App\TagController;
 use App\Http\Controllers\App\MediaController;
 use App\Http\Controllers\App\AppController;
 use App\Http\Controllers\App\RegistrarController;
-use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\About\PermissionController;
 use App\Http\Controllers\App\DigModelStoreController;
 use App\Http\Controllers\DigModels\FaunaController;
 use App\Http\Controllers\DigModels\StoneController;
 use App\Http\Controllers\DigModels\LocusController;
+use Spatie\Permission\Contracts\Permission;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -30,8 +32,8 @@ Route::get('app/init', [AppController::class, 'init']);
 Route::post('test/status', [TestController::class, 'status']);
 Route::post('test/run', [TestController::class, 'run']);
 
-//authentication routes handled by Fortify
-
+//Most authentication routes are handled by Fortify
+//auth/me is available for logged-in users and gets user's details and permissions
 
 //read only APIs. Accessible when config.accessibility.authenticatedUsersOnly is false, or authenticated.
 Route::group(['middleware' => ['read.accessibility']], function () {
@@ -49,6 +51,7 @@ Route::group(['middleware' => ['read.accessibility']], function () {
 
 //mutator APIs
 Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('about/me', [PermissionController::class, 'me']);    
     Route::post('tags/sync', [TagController::class, 'sync']);   
     Route::post('media/upload', [MediaController::class, 'upload']);
     Route::post('media/destroy', [MediaController::class, 'destroy']);

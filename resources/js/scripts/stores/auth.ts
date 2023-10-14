@@ -30,7 +30,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     try {
       let res = await send('auth/register', 'post', form)
-      
+
       return true
     } catch (err) {
       console.log(`The Application encounter a problem connecting with the Server`)
@@ -45,8 +45,10 @@ export const useAuthStore = defineStore('auth', () => {
 
     try {
       let res = await send('auth/login', 'post', form)
+      console.log(`login success sending for user data`)
+      let res2 = await send('about/me', 'get')
       if (res.data.user !== null) {
-        user.value = res.data.user
+        user.value = res2.data.user
         return true
       } else {
         return false
@@ -55,7 +57,7 @@ export const useAuthStore = defineStore('auth', () => {
       console.log(`The Application encounter a problem connecting with the Server`)
       return false
     }
-  }  
+  }
 
   async function logout() {
     console.log("auth.logout")
