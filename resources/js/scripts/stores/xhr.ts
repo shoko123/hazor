@@ -13,10 +13,10 @@ export const useXhrStore = defineStore('xhr', () => {
     axios.defaults.headers.common['Accept'] = 'application/json'
     axios.defaults.withCredentials = true
 
-    console.log(`setAxios defaults: ${JSON.stringify(axios.defaults, null, 2)}`); 
+    //console.log(`setAxios defaults: ${JSON.stringify(axios.defaults, null, 2)}`); 
     const res = await axios.get(`/sanctum/csrf-cookie`) 
        .then(res => {
-        console.log(`setAxios success. res: ${JSON.stringify(res, null, 2)}`); 
+        //console.log(`setAxios success. res: ${JSON.stringify(res, null, 2)}`); 
         return res;
       })
       .catch(err => { console.log(`failed to set csrf cookie. err: ${JSON.stringify(err, null, 2)}`); throw err; });

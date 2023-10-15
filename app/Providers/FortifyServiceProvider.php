@@ -23,34 +23,15 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // //change login response [from "two_factor"] to return the user's permissions.
-        // $this->app->instance(LoginResponse::class, new class implements LoginResponse
-        // {
-        //     public function toResponse($request)
-        //     {
-        //         $user = auth()->user();
-        //         $me = User::findOrFail($user->id);
-
-        //         return response()->json([
-        //             'user' => [
-        //                 'name' => $user->name,
-        //                 'id' => $user->id,
-        //                 'permissions' => $me->getAllPermissions()->pluck('name'),
-        //             ]
-        //         ], 200);
-        //     }
-        // });
-
-        // //change login response [from "two_factor"] to return the user's permissions.
-        // $this->app->instance(VerifyEmailResponse::class, new class implements VerifyEmailResponse
-        // {
-        //     public function toResponse($request)
-        //     {
-        //         return response()->json([
-        //             'msg' => 'user verified'
-        //         ], 200);
-        //     }
-        // });
+        $this->app->instance(VerifyEmailResponse::class, new class implements VerifyEmailResponse
+        {
+            public function toResponse($request)
+            {
+                return response()->json([
+                    'msg' => 'user verified. Please close this tab and return to the application'
+                ], 200);
+            }
+        });
     }
 
     /**

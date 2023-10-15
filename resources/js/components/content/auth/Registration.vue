@@ -51,9 +51,9 @@
       <v-card-text>
         {{ successText }}
       </v-card-text>
-      <!-- <v-card-actions>
-        <v-btn color="primary" block @click="goToLogin">to Login</v-btn>
-      </v-card-actions> -->
+      <v-card-actions>
+        <v-btn color="primary" block @click="maybeActivated">Finish Registration (after activation email link)</v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -66,11 +66,14 @@ import { useNotificationsStore } from '../../../scripts/stores/notifications';
 import { useModuleStore } from '../../../scripts/stores/module'
 import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
 import { router } from '../../../scripts/setups/vue-router'
+import { useXhrStore } from '../../../scripts/stores/xhr'
 
 let { showSpinner, showSnackbar } = useNotificationsStore()
 let auth = useAuthStore()
 let { current } = storeToRefs(useRoutesMainStore())
 let { routerPush } = useRoutesMainStore()
+let { send } = useXhrStore()
+
 import { useVuelidate } from "@vuelidate/core"
 import { required, email, minLength, maxLength, helpers, sameAs, } from "@vuelidate/validators"
 
@@ -146,13 +149,23 @@ async function register() {
 }
 
 const successText = computed(() => {
-  return `Registration successful. A verification email was sent to "${theEmail.value}".
-  Please close the current tab to terminate this session and activate your email link.`
+  return `A verification email was sent to "${theEmail.value}".
+  Once you activated email link, click below to continue.`
 })
 
-async function goToLogin() {
-  dialog.value = false
+function goToLogin() {
   routerPush('login')
+}
+
+async function maybeActivated() {
+  let verified = await auth.storeUserIfVerified()
+  if (verified) {
+    dialog.value = false
+    showSnackbar("User successfully registered and verified. Redirected to home page")
+    routerPush('home')
+  } else {
+    showSnackbar("User email has not been verified! Please check email and verify!")
+  }
 }
 
 </script>

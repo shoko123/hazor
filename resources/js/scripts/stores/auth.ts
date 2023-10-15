@@ -78,5 +78,22 @@ export const useAuthStore = defineStore('auth', () => {
         showSpinner(false)
       })
   }
-  return { register, login, logout, user, accessibility, authenticated, permissions, }
+
+  async function storeUserIfVerified(): Promise<boolean> {
+    try {
+         let res = await send('about/me', 'get')
+         console.log(`MaybeActivated user: ${JSON.stringify(res.data, null, 2)}`)  
+           if(res.data.user.is_verified){
+             user.value = res.data.user
+            return true
+           }     else {
+            return false
+           } 
+         
+       } catch (err) {
+         console.log(`The Application encounter a problem connecting with the Server`)
+        return false
+       }  
+   }
+  return { register, login, logout, storeUserIfVerified, user, accessibility, authenticated, permissions, }
 })
