@@ -1,16 +1,27 @@
 type TLoginForm = {
-        email: string,
-        password: string
-      }
-      type TRgistrationForm = {
-        email: string,
-        password: string
-      }
-      
-      type TUser = {
-        'name': string,
-        'id': number,
-        'permissions': string[]
-      }
+  email: string,
+  password: string
+}
+type TRegistrationForm = {
+  email: string,
+  password: string
+}
 
-export { TLoginForm, TRgistrationForm, TUser }
+type TForgotPasswordForm = {
+  email: string,
+}
+type TResetPasswordForm = {
+  email: string,
+  password: string,
+  password_confirmation: string,
+  token: string,
+}
+
+type TUser = {
+  name: string,
+  id: number,
+  is_verified: boolean,
+  permissions: string[]
+}
+
+export { TLoginForm, TRegistrationForm, TForgotPasswordForm, TResetPasswordForm, TUser }

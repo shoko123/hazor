@@ -23,7 +23,7 @@ export const useXhrStore = defineStore('xhr', () => {
   }
 
   async function send(endpoint: string, method: TXhrMethod, data?: object) {
-    let fullUrl = endpoint.substring(0,5) === 'auth/' ? `${axios.defaults.baseURL}/${endpoint}` : `${axios.defaults.baseURL}/api/${endpoint}`
+    let fullUrl = endpoint.substring(0,8) === 'fortify/' ? `${axios.defaults.baseURL}/${endpoint}` : `${axios.defaults.baseURL}/api/${endpoint}`
     console.log(`xhr.send() endpoint: ${fullUrl}`)
     return axios({
       url: fullUrl,

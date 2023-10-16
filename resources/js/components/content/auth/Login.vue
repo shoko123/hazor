@@ -12,7 +12,9 @@
       <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
         Password
 
-        <a class="text-caption text-decoration-none text-blue" href="#" rel="noopener noreferrer" target="_blank">
+        <!-- <v-btn :disabled="disableLinks" :to="{ name: 'welcome', params: { module: 'loci' } }">Loci</v-btn> -->
+
+        <a class="text-caption text-decoration-none text-blue" @click="goTo('forgot-password')">
           Forgot password?</a>
       </div>
 
@@ -26,7 +28,7 @@
       </v-btn>
 
       <v-card-text class="text-center">
-        <a class="text-blue text-decoration-none" @click="goToRegister">
+        <a class="text-blue text-decoration-none" @click="goTo('register')">
           Not Registered?<v-icon icon="mdi-chevron-right"></v-icon>
         </a>
       </v-card-text>
@@ -48,6 +50,7 @@ let { current } = storeToRefs(useRoutesMainStore())
 let { routerPush } = useRoutesMainStore()
 import { useVuelidate } from "@vuelidate/core"
 import { required, email, minLength, helpers, minValue, maxValue } from "@vuelidate/validators"
+import { TName } from '@/js/types/routesTypes';
 
 const data = reactive({
   email: "",
@@ -108,6 +111,11 @@ async function loginRedirect() {
     showSnackbar('Login or server access error! Please try again!')
   }
   return
+}
+
+function goTo(routeName: TName) {
+  console.log(`goto ${routeName}`)
+  routerPush(routeName)
 }
 
 function goToRegister() {

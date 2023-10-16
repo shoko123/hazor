@@ -220,6 +220,8 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
             case 'login':
             case 'register':
+            case 'forgot-password':
+            case 'reset-password':
                 router.push({ name: routeName, params: { module: 'auth' } })
                 break
 

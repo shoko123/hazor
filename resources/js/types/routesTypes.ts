@@ -1,6 +1,6 @@
 // routesStore.js
 import type { TSlugParams, TIdParams } from '../types/moduleIdParamsTypes';
-type TName = 'home' | 'welcome' | 'filter' | 'index' | 'show' | 'create' | 'update' | 'tag' | 'media' | 'login' | 'register'
+type TName = 'home' | 'welcome' | 'filter' | 'index' | 'show' | 'create' | 'update' | 'tag' | 'media' | 'login' | 'register' | 'forgot-password' | 'reset-password'
 type TUrlModule = 'auth' | 'admin' | 'loci' | 'fauna' | 'stones' | ''
 type TModule = 'Home' | 'Auth' | 'Admin' | 'Locus' | 'Fauna' | 'Stone'
 type TParsingError = 'BadModuleName' | 'BadIdFormat' | 'BadQueryParams'

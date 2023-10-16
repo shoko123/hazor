@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Models\ModelGroup\ModelGroup;
 use App\Models\App\DigModel;
@@ -68,6 +69,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        ResetPassword::createUrlUsing(
+            function ($notifiable, $token) {
+                return "http://localhost/auth/reset-password/{$token}?email={$notifiable->getEmailForPasswordReset()}";
+            }
+        );
+
         Relation::morphMap([
             'Locus' => 'App\Models\DigModels\Locus',
             'Stone' => 'App\Models\DigModels\Stone',

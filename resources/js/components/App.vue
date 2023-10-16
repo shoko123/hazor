@@ -22,6 +22,6 @@ import { useXhrStore } from '../scripts/stores/xhr'
 
 onBeforeUnmount(() => {
     const { send } = useXhrStore()
-    send('auth/logout', 'post')
+    send('fortify/logout', 'post')
 })
 </script>

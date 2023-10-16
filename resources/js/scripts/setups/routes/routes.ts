@@ -28,6 +28,16 @@ const routes = [
     name: 'register',
   },
   {
+    path: '/:module(auth)/forgot-password',
+    component: () => import('@/components/content/auth/AuthMain.vue'),
+    name: 'forgot-password',
+  },  
+  {
+    path: '/:module(auth)/reset-password/:slug',
+    component: () => import('@/components/content/auth/AuthMain.vue'),
+    name: 'reset-password',
+  },  
+  {
     path: "/:module(auth)/:catchAll(.*)",
     component: NotFound,
     name: 'not-found'
