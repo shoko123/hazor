@@ -1,7 +1,7 @@
 // auth.js
 //handles and stores user's login and capabilities
 import { ref, computed } from 'vue'
-import axios from 'axios';
+import { AxiosResponse, AxiosError } from 'axios'
 import { defineStore } from 'pinia'
 import { useXhrStore } from './xhr';
 import { useNotificationsStore } from './notifications';
@@ -9,8 +9,8 @@ import type { TLoginForm, TRegistrationForm, TForgotPasswordForm, TResetPassword
 
 
 export const useAuthStore = defineStore('auth', () => {
-  let { send } = useXhrStore()
-
+  const { send } = useXhrStore()
+  const { showSnackbar, showSpinner } = useNotificationsStore()
   let user = ref<TUser | null>(null)
   let accessibility = ref({ authenticatedUsersOnly: true, readOnly: false })
 
@@ -22,112 +22,142 @@ export const useAuthStore = defineStore('auth', () => {
     return user.value === null ? [] : (<TUser>user.value).permissions
   })
 
-
   async function register(form: TRegistrationForm): Promise<boolean> {
-    //clear user
+    console.log("auth.register")
     user.value = null
-    //console.log(`auth.login() form: ${JSON.stringify(loginForm.value, null, 2)}`)
 
     try {
-      let res = await send('fortify/register', 'post', form)
-
+      let res = await send('fortify/logout', 'post')
+      getResponseStatus(res, true)
+      res = await send('fortify/register', 'post', form)
+      getResponseStatus(res, true)
+      getResponseData(res, true)
+      //showSnackbar('Successfully logged-in!')      
       return true
-    } catch (err) {
-      console.log(`The Application encounter a problem connecting with the Server`)
+    } catch (err: any) {
+      console.log(`register error status : ${err.response.status} message: ${err.response.data.message}`)
+      showSnackbar(`Registration error! message: ${getErrorMessage(err)}. Please reload page and try again!`)
       return false
     }
   }
 
   async function login(form: TLoginForm): Promise<boolean> {
-    //clear user
+    console.log("auth.login")
     user.value = null
-    //console.log(`auth.login() form: ${JSON.stringify(loginForm.value, null, 2)}`)
-
     try {
-      let res = await send('fortify/login', 'post', form)
-      console.log(`login success sending for user data`)
-      let res2 = await send('about/me', 'get')
-      if (res.data.user !== null) {
-        user.value = res2.data.user
-        return true
-      } else {
-        return false
-      }
-    } catch (err) {
-      console.log(`The Application encounter a problem connecting with the Server`)
+      console.log(`starting login sequence.`)
+      let res = await send('fortify/logout', 'post')
+      getResponseStatus(res, true)
+      res = await send('fortify/login', 'post', form)
+      getResponseStatus(res, true)
+      getResponseData(res, true)
+      res = await send('about/me', 'get')
+      getResponseStatus(res, true)
+      getResponseData(res, true)
+      user.value = res.data.user
+      showSnackbar('Successfully logged-in!')
+      return true
+    }
+    catch (err: any) {
+      showSnackbar(`Login or server access problem! message: ${getErrorMessage(err)}`)
       return false
     }
   }
 
-  async function logout() {
+  async function logout(): Promise<boolean> {
     console.log("auth.logout")
-    let { showSnackbar, showSpinner } = useNotificationsStore()
-    showSpinner('Logging out ...')
-    return send('fortify/logout', 'post')
-      .then(res => {
-        showSnackbar('Successfully logged-out')
-        console.log(`logout successful`)
-      })
-      .catch(err => {
-        showSnackbar(`Logout attempt failed. Error logged to console. You are no longer authenticated`)
-        console.log(`logout failed error is ${JSON.stringify(err, null, 2)}`)
-      })
-      .finally(() => {
-        //clear user
-        user.value = null
-        showSpinner(false)
-      })
+    user.value = null
+    //showSpinner('Logging out ...')
+
+    try {
+      let res = await send('fortify/logout', 'post')
+      getResponseStatus(res, true)
+      showSnackbar('Successfully logged-out')
+      return true
+    }
+    catch (err: any) {
+      showSnackbar(`Logout attempt failed. Error logged to console. You are no longer authenticated`)
+      console.log(`logout failed error is ${getErrorMessage(err)}`)
+      return false
+    }
   }
 
   async function sendResetPasswordMail(form: TForgotPasswordForm): Promise<boolean> {
     console.log("auth.sendResetPasswordMail")
-    let { showSnackbar, showSpinner } = useNotificationsStore()
-    //showSpinner('Logging out ...')
-    return await send('fortify/forgot-password', 'post', form)
-      .then(res => {
-        return true
-        showSnackbar('Successfully reset password, redirected to login page')
-        console.log(`Successfully reset password`)
-      })
-      .catch(err => {
-        showSnackbar(`sendResetPasswordMail failed`)
-        console.log(`sendResetPasswordMail failed error: ${JSON.stringify(err, null, 2)}`)
-        return false
-      })
+    try {
+      let res = await send('fortify/logout', 'post')
+      getResponseStatus(res, true)
+      res = await send('fortify/forgot-password', 'post', form)
+      getResponseStatus(res, true)
+      getResponseData(res, true)
+      return true
+    }
+    catch (err: any) {
+      showSnackbar(`forgot-password request failed. message: ${getErrorMessage(err)}`)
+      return false
+    }
   }
 
   async function resetPassword(form: TResetPasswordForm): Promise<boolean> {
     console.log("auth.resetPassword")
-    let { showSnackbar, showSpinner } = useNotificationsStore()
-    //showSpinner('Logging out ...')
-    return await send('fortify/reset-password', 'post', form)
-      .then(res => {
-        return true
-        showSnackbar('Successfully reset password, redirected to login page')
-        console.log(`Successfully reset password`)
-      })
-      .catch(err => {
-        showSnackbar(`Logout attempt failed. Error logged to console. You are no longer authenticated`)
-        console.log(`logout failed error is ${JSON.stringify(err, null, 2)}`)
-        return false
-      })
+
+    try {
+      let res = await send('fortify/reset-password', 'post', form)
+      getResponseStatus(res, true)
+      getResponseData(res, true)
+      return true
+    }
+    catch (err: any) {
+      showSnackbar(`reset-password request failed. message: ${getErrorMessage(err)}`)
+      return false
+    }
   }
 
-  async function storeUserIfVerified(): Promise<boolean> {
+  async function getUserIfVerified(): Promise<boolean> {
+    console.log(`auth.getUserIfVerified`)
     try {
       let res = await send('about/me', 'get')
-      console.log(`MaybeActivated user: ${JSON.stringify(res.data, null, 2)}`)
+      getResponseStatus(res, true)
+      getResponseData(res, true)
       if (res.data.user.is_verified) {
         user.value = res.data.user
         return true
       } else {
         return false
       }
-
     } catch (err) {
-      console.log(`The Application encounter a problem connecting with the Server`)
+      showSnackbar(`about/me request failed. message: ${getErrorMessage(err)}. Please reload app.`)
       return false
     }
   }
-  return { register, login, logout, sendResetPasswordMail,resetPassword, storeUserIfVerified, user, accessibility, authenticated, permissions, }
+
+  function getErrorMessage(err: any): string {
+    if (err.response) {
+      return err.response.data.message
+    } else if (err.request) {
+      // The request was made but no response was received
+      console.log(`axios.err no response received request: ${JSON.stringify(err.request, null, 2)}`);
+      return `No response was received from the server.`
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log(`axios.Error: ${err.message}`);
+      return `There was a problem with axios.`
+    }
+  }
+
+  function getResponseStatus(resp: any, consoleLog: boolean): number {
+    if (consoleLog) {
+      console.log(`response status: ${resp.status}`)
+    }
+    return resp?.status
+  }
+
+  function getResponseData(resp: any, consoleLog: boolean): any {
+    if (consoleLog) {
+      console.log(`response data: ${JSON.stringify(resp.data, null, 2)}`)
+    }
+    return resp?.data
+  }
+
+  return { register, login, logout, sendResetPasswordMail, resetPassword, getUserIfVerified, user, accessibility, authenticated, permissions, }
 })

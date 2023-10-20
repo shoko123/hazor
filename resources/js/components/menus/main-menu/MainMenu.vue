@@ -35,13 +35,13 @@ const menu = computed(() => {
 const color = computed(() => {
     switch (mainMenuType.value) {
         case 'Read':
+        case 'Auth':
             return 'primary'
         case 'Modify':
             return 'orange'
         case 'Admin':
             return 'red'
-        case 'Auth':
-            return 'green'
+
         default:
             return undefined
     }

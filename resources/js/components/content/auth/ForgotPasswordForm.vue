@@ -14,6 +14,11 @@
         Send Email
       </v-btn>
 
+      <div class="d-flex justify-center">
+        <a class="text-blue text-decoration-none" @click="goToLogin()">
+          To Login Page<v-icon icon="mdi-chevron-right"></v-icon>
+        </a>
+      </div>
     </v-card-text>
   </v-card>
   <v-dialog v-model="dialog" persistent width="500">
@@ -30,18 +35,15 @@
 
 <script setup lang="ts" >
 import { computed, ref, reactive } from 'vue'
-import { storeToRefs } from 'pinia'
 import { useAuthStore } from '../../../scripts/stores/auth'
 import { useNotificationsStore } from '../../../scripts/stores/notifications';
 import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
-import { router } from '../../../scripts/setups/vue-router'
 
-let { showSpinner, showSnackbar } = useNotificationsStore()
-let auth = useAuthStore()
-let { current } = storeToRefs(useRoutesMainStore())
+let { showSnackbar } = useNotificationsStore()
+let { sendResetPasswordMail } = useAuthStore()
 let { routerPush } = useRoutesMainStore()
 import { useVuelidate } from "@vuelidate/core"
-import { required, email, minLength, helpers, sameAs, maxValue } from "@vuelidate/validators"
+import { required, email } from "@vuelidate/validators"
 
 const dialog = ref(false)
 const data = reactive({
@@ -70,36 +72,22 @@ async function send() {
     return
   }
 
-  let res = await auth.sendResetPasswordMail(data)
-
+  let res = await sendResetPasswordMail(data)
   if (res) {
-    //showSnackbar('Successfully logged-in!')
-    console.log(`SendPasswordEmail request returned`)
-    showSnackbar('SendPasswordEmail returned')
-  } else {
-    showSnackbar('SendPasswordEmail failed ******')
-    console.log(`SendPasswordEmail failed ******`)
+    dialog.value = true
+    console.log(`Password reset email was sent successfully`)
   }
-
 }
 
 const waitText = computed(() => {
   return `A password reset link was emailed to "${data.email}".
-  Follow instructions on email. Once a new password was set, click below to continue.`
+  Follow instructions on email. Once a new password was set, click below to head to the login page.`
 })
-
-function goToRegister() {
-  routerPush('register')
-}
 
 function goToLogin() {
   routerPush('login')
 }
 </script>
-<style scoped>
-#img {
-  height: 91vh;
-}
-</style>
+
 
 

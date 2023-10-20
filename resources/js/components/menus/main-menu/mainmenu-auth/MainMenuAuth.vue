@@ -1,6 +1,8 @@
 <template>
     <v-app-bar-title>
-      <v-btn :to="{ name: 'home' }">Hazor (Auth)</v-btn>
+        <v-btn :disabled="disable" :to="{ name: 'home' }">
+            Hazor (Auth)
+        </v-btn>
     </v-app-bar-title>
 </template>
 
@@ -9,9 +11,10 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 
-let { getModule } = useRoutesMainStore()
-const name = computed(() => {
-    return getModule()
+let { current } = storeToRefs(useRoutesMainStore())
+
+const disable = computed(() => {
+    return current.value.name === 'reset-password'
 })
 </script>
 

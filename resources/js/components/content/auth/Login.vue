@@ -27,11 +27,11 @@
         Log In
       </v-btn>
 
-      <v-card-text class="text-center">
+      <div class="d-flex justify-center">
         <a class="text-blue text-decoration-none" @click="goTo('register')">
           Not Registered?<v-icon icon="mdi-chevron-right"></v-icon>
         </a>
-      </v-card-text>
+      </div>
     </v-card-text>
   </v-card>
 </template>
@@ -39,18 +39,19 @@
 <script setup lang="ts" >
 import { computed, ref, reactive } from 'vue'
 import { storeToRefs } from 'pinia'
+import { type TName } from '@/js/types/routesTypes'
 import { useAuthStore } from '../../../scripts/stores/auth'
 import { useNotificationsStore } from '../../../scripts/stores/notifications';
 import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
 import { router } from '../../../scripts/setups/vue-router'
-
-let { showSpinner, showSnackbar } = useNotificationsStore()
-let auth = useAuthStore()
-let { current } = storeToRefs(useRoutesMainStore())
-let { routerPush } = useRoutesMainStore()
 import { useVuelidate } from "@vuelidate/core"
 import { required, email, minLength, helpers, minValue, maxValue } from "@vuelidate/validators"
-import { TName } from '@/js/types/routesTypes';
+
+
+const { showSnackbar } = useNotificationsStore()
+const { login } = useAuthStore()
+const { current } = storeToRefs(useRoutesMainStore())
+const { routerPush } = useRoutesMainStore()
 
 const data = reactive({
   email: "",
@@ -83,49 +84,30 @@ const passwordErrors = computed(() => {
 
 const visible = ref(false)
 
-
 async function loginRedirect() {
-  //showSpinner('Logging in ...')
-
-  await v$.value.$validate();
-  console.log(`after validate() errors: ${JSON.stringify(v$.value.$errors, null, 2)}`)
+  await v$.value.$validate()
   if (v$.value.$error || v$.value.$silentErrors.length > 0) {
-
     showSnackbar("Please correct the marked errors!", "orange")
     console.log(`validation errors: ${JSON.stringify(v$.value.$errors, null, 2)}`)
     console.log(`validation silent errors: ${JSON.stringify(v$.value.$silentErrors, null, 2)}`)
     return
   }
 
-  let res = await auth.login(data)
-  showSpinner(false)
+  let res = await login(data)
   if (res) {
-    showSnackbar('Successfully logged-in!')
-    console.log(`Login success push to preLoginPath: ${current.value.preLoginFullPath}`)
-    if (current.value.preLoginFullPath == '/auth/register') {
+    console.log(`Login preLoginPath: ${current.value.preLoginFullPath}`)
+    if (['/auth/register', '/auth/forgot-password'].includes(<string>current.value.preLoginFullPath)) {
       routerPush('home')
     } else {
       router.push(<string>current.value.preLoginFullPath)
     }
-  } else {
-    showSnackbar('Login or server access error! Please try again!')
   }
-  return
 }
 
 function goTo(routeName: TName) {
   console.log(`goto ${routeName}`)
   routerPush(routeName)
 }
-
-function goToRegister() {
-  routerPush('register')
-}
 </script>
-<style scoped>
-#img {
-  height: 91vh;
-}
-</style>
 
 

@@ -34,15 +34,15 @@
         placeholder="Enter password confirmation" prepend-inner-icon="mdi-lock-outline" variant="outlined"
         @click:append-inner="visible = !visible"></v-text-field>
 
-      <v-btn @click="register" block class="mb-8" color="blue" size="large" variant="tonal">
+      <v-btn @click="register1" block class="mb-8" color="blue" size="large" variant="tonal">
         Register
       </v-btn>
 
-      <v-card-text class="text-center">
+      <div class="d-flex justify-center">
         <a class="text-blue text-decoration-none" @click="goToLogin">
-          Already registered? login<v-icon icon="mdi-chevron-right"></v-icon>
+          To Login Page<v-icon icon="mdi-chevron-right"></v-icon>
         </a>
-      </v-card-text>
+      </div>
     </v-card-text>
   </v-card>
 
@@ -69,7 +69,7 @@ import { router } from '../../../scripts/setups/vue-router'
 import { useXhrStore } from '../../../scripts/stores/xhr'
 
 let { showSpinner, showSnackbar } = useNotificationsStore()
-let auth = useAuthStore()
+let {register, getUserIfVerified} = useAuthStore()
 let { current } = storeToRefs(useRoutesMainStore())
 let { routerPush } = useRoutesMainStore()
 let { send } = useXhrStore()
@@ -124,11 +124,10 @@ const password_confirmationErrors = computed(() => {
 const visible = ref(false)
 
 
-async function register() {
+async function register1() {
   console.log(`register...`)
 
   await v$.value.$validate();
-  console.log(`after validate() errors: ${JSON.stringify(v$.value.$errors, null, 2)}`)
   if (v$.value.$error || v$.value.$silentErrors.length > 0) {
     showSnackbar("Please correct the marked errors!", "orange")
     console.log(`validation errors: ${JSON.stringify(v$.value.$errors, null, 2)}`)
@@ -136,15 +135,10 @@ async function register() {
     return
   }
 
-
   theEmail.value = data.email
-  showSpinner('Registering ...')
-  let res = await auth.register(data)
-  showSpinner(false)
+  let res = await register(data)
   if (res) {
     dialog.value = true
-  } else {
-    showSnackbar('Registration failed!')
   }
 }
 
@@ -158,7 +152,7 @@ function goToLogin() {
 }
 
 async function maybeActivated() {
-  let verified = await auth.storeUserIfVerified()
+  let verified = await getUserIfVerified()
   if (verified) {
     dialog.value = false
     showSnackbar("User successfully registered and verified. Redirected to home page")
