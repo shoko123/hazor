@@ -10,12 +10,8 @@ const app = createApp(App)
     .use(router)
     .use(vuetify)
 
-let xhr = useXhrStore()
-await xhr.setAxios()
-
-
-
-
+let { setAxios } = useXhrStore()
+setAxios()
 
 router.isReady().then(() => {
     app.mount('#app')
