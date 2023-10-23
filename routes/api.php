@@ -50,7 +50,7 @@ Route::group(['middleware' => ['read.accessibility']], function () {
 });
 
 //mutator APIs
-Route::group(['middleware' => ['auth:sanctum']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::get('about/me', [PermissionController::class, 'me']);    
     Route::post('tags/sync', [TagController::class, 'sync']);   
     Route::post('media/upload', [MediaController::class, 'upload']);

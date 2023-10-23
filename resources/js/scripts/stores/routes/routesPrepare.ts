@@ -118,7 +118,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
         //console.log(`model(${module}).init() returned (success)`)
         m.counts = res.data.counts
         i.setItemViewIndex(0)        
-        i.itemViews = res.data.itemViews
+        i.itemViews = res.data.item_views
         c.clear(['main', 'media', 'related'])
 
         setTrio(res.data.trio)

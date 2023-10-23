@@ -27,7 +27,7 @@ class PermissionsSeeder extends Seeder
             }
         }
 
-        $editor = User::where('email', 'editor.hazor@opendigreports.com')->firstOrFail();
+        $editor = User::findOrFail(2);
         $editor->assignRole('Locus Manager', 'Fauna Manager', 'Stone Manager');
     }
 }

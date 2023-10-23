@@ -62,7 +62,7 @@ class Stone extends FindModel
         return [
             "message" => $this->eloquent_model_name . '.init()',
             "counts" => ["items" => $this->count(), "media" => DB::table('media')->where('model_type', 'Stone')->count(),],
-            "itemViews" => config('display_options.itemViews.Stone'),
+            "item_views" => config('app_specific.display_options.item_views.Stone'),
         ];
     }
 
