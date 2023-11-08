@@ -40,12 +40,12 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
         ],
         "Base Taxon" => [
             "group_type_code" => "CL",
-            "table_name" => "fauna_taxa",
+            "table_name" => "fauna_base_taxa",
             "column_name" => "taxon_id",
         ],
         "Element" => [
             "group_type_code" => "CL",
-            "table_name" => "fauna_elements",
+            "table_name" => "fauna_base_elements",
             "column_name" => "element_id"
         ],
         "Life Stage" => [

@@ -18,10 +18,7 @@ class MediaModifyRequest extends FormRequest
 
     public function authorize(): bool
     {
-        if (!auth('api')->check()) {
-            return false;
-        }
-        $p = $this->input("model") . "-" . "media";
+        $p = $this->input("model") . "-media";
         return $this->user('sanctum')->can($p);
     }
 

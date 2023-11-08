@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class FaunaElement extends Model
 {
     public $timestamps = false;
-    protected $table = 'fauna_elements';    
+    protected $table = 'fauna_base_elements';    
 }

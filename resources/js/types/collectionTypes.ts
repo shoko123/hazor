@@ -64,22 +64,22 @@ type TApiPageTableStone = {
 
 type TApiPageTableFauna = {
         id: number,
+        diagnostic: boolean,
         slug: string,
         label: string,
         area: string,
         locus: string,
         basket: string,
-        item_category: string,
-        biological_taxonomy: string,
-        has_taxonomic_identifier: string,
-        has_anatomical_identifier: string,
-        stratum: string,
+        registration_clean: boolean,
+        base_taxon: string,
         taxon: string,
-        element: string,
         fragment_present: string,
-        bone_number: string,
-        snippet: string,
+        base_element: string,
+        symmetry: string,
+        anatomical_label: string,
+        modifications: string,
 }
+
 
 type TApiPageMainTable = {
         id: number,
@@ -94,6 +94,8 @@ type TApiPage = TApiPageMainImage |
         TApiPageTableLocus |
         TApiPageTableStone |
         TApiPageTableFauna
+
+
 
 //conversions ready for consumption for 'Media', 'Chip', and 'Table' views
 type TPageVChip = {
@@ -114,7 +116,14 @@ type TPageCMainVTable = {
         id: number,
         slug: string,
         tag: string
-        description: string
+        //description: string
+}
+
+type TPageMainTabularLocus = {
+        id: number,
+        slug: string,
+        tag: string
+        //description: string
 }
 
 type TPageCRelatedVMedia = {

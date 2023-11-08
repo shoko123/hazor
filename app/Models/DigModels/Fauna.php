@@ -61,7 +61,11 @@ class Fauna extends FindModel
 
     public function getShortAttribute()
     {
-        return $this->snippet;
+        if ($this->diagnostic) {
+            return $this->taxon;
+        } else {
+            return 'Non Diagnostic Animal Bone';
+        }
     }
 
     public function builderIndexLoad(): void
@@ -76,12 +80,54 @@ class Fauna extends FindModel
 
     public function builderPageTableLoad(): void
     {
-        $this->builder = $this->select('*');
+        $this->builder = $this->select([
+            'id',
+            'diagnostic',
+            'label',
+            'area',
+            'locus',
+            'basket',
+            'registration_clean',
+            'base_taxon' => FaunaTaxon::select('name')
+                ->whereColumn('id', 'fauna.base_taxon_id'),
+            'taxon',
+            'fragment_present',
+            'base_element' => FaunaElement::select('name')
+                ->whereColumn('id', 'fauna.base_element_id'),
+            'symmetry',
+            'anatomical_label',
+            'modifications',
+        ]);
+        /*
+        'id
+        'uri
+        'diagnostic
+        'label
+        'area
+        'locus
+        'basket
+        'stratum
+        'registration_clean
+        'base_taxon
+        'taxon
+        'taxon_common_name
+        'fragment_present
+        'symmetry
+        'fusion_proximal
+        'fusion_distal
+        'base_element
+        'anatomical_label
+        'element
+        'age
+        'phase
+        'modifications
+        'context_uri
+        */
     }
 
     public function builderPageImageLoad(): void
     {
-        $this->builder = $this->select('id', 'label', 'snippet')
+        $this->builder = $this->select('id', 'label')
             ->with(['media' => function ($query) {
                 $query->select('*')->orderBy('order_column');
             }]);

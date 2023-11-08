@@ -11,15 +11,8 @@ class DigModelStoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        if (app()->environment(['production'])) {
-            if (!auth('api')->check()) {
-                return false;
-            }
-            $p = $this->input("model") . "-" . (($this->method() == 'POST')  ?  "create" : "update");
-            return $this->user('sanctum')->can($p);
-        } else {
-            return true;
-        }
+        $p = $this->input("model") . "-" . (($this->method() == 'POST')  ?  "create" : "update");
+        return $this->user('sanctum')->can($p);
     }
 
     /**

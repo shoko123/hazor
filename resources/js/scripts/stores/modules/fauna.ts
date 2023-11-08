@@ -50,7 +50,7 @@ export const useFaunaStore = defineStore('fauna', () => {
 
   const headers = computed(() => {
     return [
-      { title: 'Label', align: 'end', key: 'tag', },
+      { title: 'Label', align: 'start', key: 'tag', },
       { title: 'Area', align: 'start', key: 'area' },
       { title: 'Locus', align: 'start', key: 'locus' },
       { title: 'Basket', align: 'start', key: 'basket' },

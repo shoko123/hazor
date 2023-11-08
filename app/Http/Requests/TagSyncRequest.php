@@ -33,15 +33,8 @@ class TagSyncRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        if (app()->environment(['production'])) {
-            if (!auth('api')->check()) {
-                return false;
-            }
-            $p = $this->input("model") . "-" . "tag";
-            return $this->user('sanctum')->can($p);
-        } else {
-            return true;
-        }
+        $p = $this->input("model") . "-tag";
+        return $this->user('sanctum')->can($p);
     }
 
     /**

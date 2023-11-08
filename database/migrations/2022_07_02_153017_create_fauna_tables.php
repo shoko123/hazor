@@ -13,42 +13,47 @@ class CreateFaunaTables extends Migration
      */
     public function up()
     {
-        Schema::create('fauna_taxa', function (Blueprint $table) {
+        Schema::create('fauna_base_taxa', function (Blueprint $table) {
             $table->tinyIncrements('id');
             $table->string('name', 50);
         });
 
-        Schema::create('fauna_elements', function (Blueprint $table) {
+        Schema::create('fauna_base_elements', function (Blueprint $table) {
             $table->tinyincrements('id');
             $table->string('name', 50);
         });
 
         Schema::create('fauna', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedMediumInteger('label')->nullable();
-            $table->string('area', 5)->nullable();
-            $table->unsignedMediumInteger('locus')->nullable();
-            $table->unsignedMediumInteger('basket')->nullable();
-            $table->string('notes', 45)->nullable();            
-            $table->string('item_category', 50)->nullable();
-            $table->string('biological_taxonomy', 50)->nullable();
-            $table->string('has_taxonomic_identifier', 50)->nullable();
-            $table->string('has_anatomical_identifier', 50)->nullable();
-            $table->string('stratum')->nullable();
-            $table->string('taxon')->nullable();
-            $table->string('element', 50)->nullable();
-            $table->string('fragment_present', 50)->nullable();
-            $table->string('snippet', 200)->nullable();
-            $table->unsignedTinyInteger('taxon_id')->default(1);
-            $table->unsignedTinyInteger('element_id')->default(1);
-            $table->unsignedMediumInteger('order_column')->default(0);
+            $table->string('uri', 60)->nullable();
+            $table->boolean('diagnostic')->default(0);
+            $table->string('label', 40)->nullable();
+            $table->string('area', 12)->nullable();
+            $table->string('locus', 15)->nullable();
+            $table->string('basket', 20)->nullable();
+            $table->string('stratum', 30)->nullable();
+            $table->boolean('registration_clean')->default(0);
+            $table->unsignedTinyInteger('base_taxon_id')->default(1);
+            $table->string('taxon', 40)->nullable();
+            $table->string('taxon_common_name', 40)->nullable();
+            $table->string('fragment_present', 15)->nullable();
+            $table->string('symmetry', 15)->nullable();
+            $table->string('fusion_proximal', 15)->nullable();
+            $table->string('fusion_distal', 15)->nullable();
+            $table->unsignedTinyInteger('base_element_id')->default(1);
+            $table->string('anatomical_label', 40)->nullable();
+            $table->string('element', 40)->nullable();
+            $table->string('age', 20)->nullable();
+            $table->string('phase', 20)->nullable();
+            $table->string('modifications', 30)->nullable();
+            $table->string('context_uri', 60)->nullable();
 
-            $table->foreign('taxon_id')
-                ->references('id')->on('fauna_taxa')
+            $table->foreign('base_taxon_id')
+                ->references('id')->on('fauna_base_taxa')
                 ->onUpdate('cascade');
 
-            $table->foreign('element_id')
-                ->references('id')->on('fauna_elements')
+            $table->foreign('base_element_id')
+                ->references('id')->on('fauna_base_elements')
                 ->onUpdate('cascade');
         });
 
@@ -88,7 +93,7 @@ class CreateFaunaTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('fauna_base_types');
-        Schema::dropIfExists('fauna');
+        Schema::dropIfExists('fauna_base_taxa');
+        Schema::dropIfExists('fauna_base_elements');
     }
 }
