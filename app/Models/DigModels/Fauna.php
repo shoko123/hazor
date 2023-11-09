@@ -37,12 +37,12 @@ class Fauna extends FindModel
 
     public function base_taxon()
     {
-        return $this->belongsTo(FaunaTaxon::class, 'taxon_id');
+        return $this->belongsTo(FaunaTaxon::class, 'base_taxon_id');
     }
 
-    public function element_tag()
+    public function base_element()
     {
-        return $this->belongsTo(FaunaElement::class, 'element_id');
+        return $this->belongsTo(FaunaElement::class, 'base_element_id');
     }
 
     public function init(): array
@@ -80,49 +80,7 @@ class Fauna extends FindModel
 
     public function builderPageTableLoad(): void
     {
-        $this->builder = $this->select([
-            'id',
-            'diagnostic',
-            'label',
-            'area',
-            'locus',
-            'basket',
-            'registration_clean',
-            'base_taxon' => FaunaTaxon::select('name')
-                ->whereColumn('id', 'fauna.base_taxon_id'),
-            'taxon',
-            'fragment_present',
-            'base_element' => FaunaElement::select('name')
-                ->whereColumn('id', 'fauna.base_element_id'),
-            'symmetry',
-            'anatomical_label',
-            'modifications',
-        ]);
-        /*
-        'id
-        'uri
-        'diagnostic
-        'label
-        'area
-        'locus
-        'basket
-        'stratum
-        'registration_clean
-        'base_taxon
-        'taxon
-        'taxon_common_name
-        'fragment_present
-        'symmetry
-        'fusion_proximal
-        'fusion_distal
-        'base_element
-        'anatomical_label
-        'element
-        'age
-        'phase
-        'modifications
-        'context_uri
-        */
+         $this->builder = $this->with(['base_taxon', 'base_element']);
     }
 
     public function builderPageImageLoad(): void
@@ -147,7 +105,7 @@ class Fauna extends FindModel
             'model_tags.tag_group',
             'global_tags.tag_group',
             'base_taxon',
-            'element_tag',
+            'base_element',
         ])
             ->leftJoin('loci', function (JoinClause $join) {
                 $join->on('loci.name', '=', 'fauna.locus')->on('loci.area', '=', 'fauna.area');
@@ -176,9 +134,9 @@ class Fauna extends FindModel
 
     public function discreteColumns(Model $fields): array
     {
-        $c1 = 'Element' . '.' . $fields->element_tag->name;
+        $c1 = 'Element' . '.' . $fields->base_element->name;
         $c2 = 'Base Taxon' . '.' . $fields->base_taxon->name;
-        unset($fields->element_tag);
+        unset($fields->base_element);
         unset($fields->base_taxon);
         return [$c1, $c2];
     }

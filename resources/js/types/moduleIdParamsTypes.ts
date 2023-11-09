@@ -31,7 +31,7 @@ type TStoneIdParams = {
 type TStoneIdParam = keyof TStoneIdParams
 
 type TFaunaSlugParams = {
-        label: number
+        label: string
 }
 
 type TFaunaIdParams = {

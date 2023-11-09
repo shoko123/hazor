@@ -7,27 +7,9 @@ import { TParseSlugResponse } from '@/js/types/routesTypes'
 export const useFaunaStore = defineStore('fauna', () => {
 
   function slugParamsFromSlug(slug: string): TParseSlugResponse {
-
-    function isPositiveInteger(str: string) {
-      const number = Number(str);
-      const isInteger = Number.isInteger(number);
-      const isPositive = number > 0;
-
-      return isInteger && isPositive;
-    }
-
-    if (!isPositiveInteger(slug)) {
-      return {
-        success: false, data: {
-          error: "BadIdFormat",
-          message: "Slug is not a positive integer"
-        }
-      }
-    }
-
     return {
       success: true, data: {
-        label: slug as unknown as number,
+        label: slug as unknown as string,
       }
     }
   }
@@ -50,21 +32,19 @@ export const useFaunaStore = defineStore('fauna', () => {
 
   const headers = computed(() => {
     return [
-      { title: 'Label', align: 'start', key: 'tag', },
+      { title: 'Tag', align: 'start', key: 'tag', },
       { title: 'Area', align: 'start', key: 'area' },
       { title: 'Locus', align: 'start', key: 'locus' },
       { title: 'Basket', align: 'start', key: 'basket' },
-      { title: 'Notes', align: 'start', key: 'notes' },
-      { title: 'Category', align: 'start', key: 'item_category' },
-      { title: 'Tax1', align: 'start', key: 'biological_taxonomy' },
-      { title: 'Tax2', align: 'start', key: 'has_taxonomic_identifier' },
-      { title: 'Anatomical ID', align: 'start', key: 'has_anatomical_identifier' },
-      { title: 'Stratum', align: 'start', key: 'stratum' },
+      { title: 'Diagnosic', align: 'start', key: 'diagnostic' },
+      { title: 'Registration OK', align: 'start', key: 'registration_clean' },
+      { title: 'Base Taxon', align: 'start', key: 'base_taxon' },
       { title: 'Taxon', align: 'start', key: 'taxon' },
-      { title: 'Element', align: 'start', key: 'element' },
-      { title: 'Fragment', align: 'start', key: 'fragment_present' },
-      { title: 'Bone#', align: 'end', key: 'bone_number' },
-      { title: 'Snippet', align: 'start', key: 'snippet' },
+      { title: 'Anatomical Label', align: 'start', key: 'anatomical_label' },      
+      { title: 'Fragment Present', align: 'start', key: 'fragment_present' },
+      { title: 'Base Element', align: 'start', key: 'base_element' },
+      { title: 'Symmetry', align: 'start', key: 'symmetry' },
+      { title: 'Modifications', align: 'start', key: 'modifications' },
     ]
   })
 

@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use App\Models\App\DigModel;
 use App\Http\Requests\ShowParamsRequest;
 use App\Http\Requests\PageRequest;
+use App\Http\Resources\LocusPageTabularResourceCollection;
+use App\Http\Resources\StonePageTabularResourceCollection;
+use App\Http\Resources\FaunaPageTabularResourceCollection;
 
 class DigModelReadController extends Controller
 {
@@ -23,19 +26,33 @@ class DigModelReadController extends Controller
         ], 200);
     }
 
-   
+
     public function page(PageRequest $r, DigModel $m)
     {
         $validated = $r->validated();
-        return response()->json([
-            "page" => $m->page($validated["ids"], $validated["view"]),
-        ], 200);
+        
+        if ($validated["view"] === 'Table') {
+            $page = $m->page($validated["ids"], $validated["view"]);
+
+            switch ($r["model"]) {
+                case "Locus":
+                    return new LocusPageTabularResourceCollection($page);
+                case "Stone":
+                    return new StonePageTabularResourceCollection($page);
+                case "Fauna":
+                    return new FaunaPageTabularResourceCollection($page);
+            }
+        } else {
+            return response()->json([
+                "page" => $m->page($validated["ids"], $validated["view"]),
+            ], 200);
+        }
     }
 
     public function show(ShowParamsRequest $validator, DigModel $m)
-    {     
+    {
         $v = $validator->validated();
-        
+
         $resp = array_merge($m->show($v), [
             "msg" => "ModelControler.show(",
             "slug" => $v["slug"]
@@ -49,7 +66,7 @@ class DigModelReadController extends Controller
             "Locus" => "loci",
             "Stone" => "stones",
             "Fauna" => "fauna"
-        ];    
+        ];
         $validation_string = 'exists:' . $modelToTableName[$r["model"]] . ',id';
         $v = $r->validate([
             'id' => $validation_string

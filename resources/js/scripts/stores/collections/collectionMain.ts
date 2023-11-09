@@ -110,7 +110,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
                 break;
 
             case 'Table':
-                toSave = (<TPageCMainVTable[]>apiPage).map(x => { return { ...x, tag: tagFromSlug(module, x.slug)} })
+                toSave = apiPage.map(x => { return { ...x, tag: tagFromSlug(module, x.slug)} })
                 page.value = toSave
                 break;
 

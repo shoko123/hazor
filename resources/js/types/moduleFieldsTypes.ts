@@ -41,24 +41,29 @@ type TStoneField = keyof TStoneFields
 
 type TFaunaFields = {
         id: number,
+        uri: string,
+        diagnostic: boolean,
         label: string,
         area: string,
         locus: string,
         basket: string,
-        notes: string,
-        item_category: string,
-        biological_taxonomy: string,
-        has_taxonomic_identifier: string,
-        has_anatomical_identifier: string,
         stratum: string,
+        registration_clean: boolean,
+        base_taxon_id: number,
         taxon: string,
-        element: string,
+        taxon_common_name: string,
         fragment_present: string,
-        snippet: string,
-        taxon_id: number
-        element_id: number
+        symmetry: string,
+        fusion_proximal: string,
+        fusion_distal: string,
+        base_element_id: number,
+        anatomical_label: string,
+        element: string,
+        age: string,
+        phase: string,
+        modifications: string,
+        context_uri: string
 }
-
 type TFaunaField = keyof TFaunaFields
 
 type TFields = TLocusFields | TStoneFields | TFaunaFields

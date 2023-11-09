@@ -80,7 +80,6 @@ type TApiPageTableFauna = {
         modifications: string,
 }
 
-
 type TApiPageMainTable = {
         id: number,
         slug: string,
@@ -113,13 +112,6 @@ type TPageCMainVImage = {
 }
 
 type TPageCMainVTable = {
-        id: number,
-        slug: string,
-        tag: string
-        //description: string
-}
-
-type TPageMainTabularLocus = {
         id: number,
         slug: string,
         tag: string
