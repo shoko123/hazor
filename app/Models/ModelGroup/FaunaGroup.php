@@ -26,13 +26,13 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
             "group_type_code" => "CS",
             "column_name" => "basket",
         ],
-        "Search-Category" => [
-            "group_type_code" => "CS",
-            "column_name" => "item_category",
-        ],
         "Search-Taxon" => [
             "group_type_code" => "CS",
             "column_name" => "taxon",
+        ],
+        "Search-Anatomical-Label" => [
+            "group_type_code" => "CS",
+            "column_name" => "anatomical_label",
         ],
         "Search-Element" => [
             "group_type_code" => "CS",
@@ -41,26 +41,11 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
         "Base Taxon" => [
             "group_type_code" => "CL",
             "table_name" => "fauna_base_taxa",
-            "column_name" => "taxon_id",
+            "column_name" => "base_taxon_id",
         ],
-        "Element" => [
-            "group_type_code" => "CL",
-            "table_name" => "fauna_base_elements",
-            "column_name" => "element_id"
-        ],
-        "Life Stage" => [
+        "Mammal" => [
             "group_type_code" => "TM",
-            "dependency" => null,
-            "multiple" => true
-        ],
-        "Symmetry" => [
-            "group_type_code" => "TM",
-            "dependency" => null,
-            "multiple" => true
-        ],
-        "Weathering (Behrensmeyer 1978)" => [
-            "group_type_code" => "TM",
-            "dependency" => null,
+            "dependency" => ["Base Taxon.Mammal"],
             "multiple" => true
         ],
         "Bird" => [
@@ -68,44 +53,39 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
             "dependency" => ["Base Taxon.Bird"],
             "multiple" => true
         ],
-        "Mammal" => [
-            "group_type_code" => "TM",
-            "dependency" => ["Base Taxon.Mammal"],
-            "multiple" => true
+        "Base Element" => [
+            "group_type_code" => "CL",
+            "table_name" => "fauna_base_elements",
+            "column_name" => "base_element_id"
         ],
-        "Fusion" => [
+        "Symmetry" => [
             "group_type_code" => "TM",
-            "dependency" => ["Element.Bone"],
-            "multiple" => true
+            "dependency" => null,
+            "multiple" => false
         ],
-        "Breakage" => [
+        "Modifications" => [
             "group_type_code" => "TM",
-            "dependency" => ["Element.Bone"],
-            "multiple" => true
-        ],
-        "D&R (Grant 1982)" => [
-            "group_type_code" => "TM",
-            "dependency" => ["Element.Bone"],
+            "dependency" => ["Base Element.Bone"],
             "multiple" => true
         ],
         "Bone Name" => [
             "group_type_code" => "TM",
-            "dependency" => ["Element.Bone"],
+            "dependency" => ["Base Element.Bone"],
             "multiple" => true
         ],
         "Tooth Name" => [
             "group_type_code" => "TM",
-            "dependency" => ["Element.Tooth"],
+            "dependency" => ["Base Element.Tooth"],
             "multiple" => true
         ],
         "Tooth Age" => [
             "group_type_code" => "TM",
-            "dependency" => ["Element.Tooth"],
+            "dependency" => ["Base Element.Tooth"],
             "multiple" => true
         ],
         "Tooth Wear" => [
             "group_type_code" => "TM",
-            "dependency" => ["Element.Tooth"],
+            "dependency" => ["Base Element.Tooth"],
             "multiple" => true
         ],
         "Order By" => [
@@ -144,34 +124,36 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
                 "Search-Area",
                 "Search-Locus",
                 "Search-Basket",
-                "Search-Category",
                 "Search-Taxon",
-                "Search-Element",
-            ],            
-            "Basic Characteristics" => [
-                "Life Stage",
-                "Symmetry",
-                "Weathering (Behrensmeyer 1978)"
+                "Search-Anatomical-Label",
             ],
+            /*
+             "Registration" => [
+                "Diagnostic",
+                "Registration Clean",
+            ],
+            */
             "Taxon" => [
                 "Base Taxon",
+                "Mammal",
                 "Bird",
-                "Mammal"
             ],
             "Element" => [
-                "Element"
+                "Base Element",
+                "Symmetry",
+                
             ],
             "Bone" =>  [
-                "Fusion",
-                "Breakage",
-                "D&R (Grant 1982)",
-                "Bone Name"
+                "Bone Name",
+                "Modifications",
             ],
+            /*
             "Tooth" => [
                 "Tooth Name",
                 "Tooth Age",
                 "Tooth Wear"
             ],
+            */
             "Order By" => [
                 "Order By",
             ]

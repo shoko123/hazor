@@ -62,8 +62,8 @@ type TFaunaFields = {
         age: string,
         phase: string,
         modifications: string,
-        context_uri: string
 }
+
 type TFaunaField = keyof TFaunaFields
 
 type TFields = TLocusFields | TStoneFields | TFaunaFields

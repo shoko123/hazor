@@ -46,7 +46,6 @@ class CreateFaunaTables extends Migration
             $table->string('age', 20)->nullable();
             $table->string('phase', 20)->nullable();
             $table->string('modifications', 30)->nullable();
-            $table->string('context_uri', 60)->nullable();
 
             $table->foreign('base_taxon_id')
                 ->references('id')->on('fauna_base_taxa')

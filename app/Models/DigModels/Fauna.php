@@ -62,7 +62,7 @@ class Fauna extends FindModel
     public function getShortAttribute()
     {
         if ($this->diagnostic) {
-            return $this->taxon;
+            return $this->taxon . '. ' . $this->element;
         } else {
             return 'Non Diagnostic Animal Bone';
         }
@@ -85,7 +85,7 @@ class Fauna extends FindModel
 
     public function builderPageImageLoad(): void
     {
-        $this->builder = $this->select('id', 'label')
+        $this->builder = $this->select('id', 'label', 'diagnostic', 'taxon', 'element')
             ->with(['media' => function ($query) {
                 $query->select('*')->orderBy('order_column');
             }]);
@@ -134,7 +134,7 @@ class Fauna extends FindModel
 
     public function discreteColumns(Model $fields): array
     {
-        $c1 = 'Element' . '.' . $fields->base_element->name;
+        $c1 = 'Base Element' . '.' . $fields->base_element->name;
         $c2 = 'Base Taxon' . '.' . $fields->base_taxon->name;
         unset($fields->base_element);
         unset($fields->base_taxon);

@@ -40,31 +40,7 @@
 
 
 <script lang="ts" setup >
-/*
-id: number,
-uri: string,
-diagnostic: boolean,
-label: string,
-area: string,
-locus: string,
-basket: string,
-stratum: string,
-registration_clean: boolean,
-base_taxon_id: number,
-taxon: string,
-taxon_common_name: string,
-fragment_present: string,
-symmetry: string,
-fusion_proximal: string,
-fusion_distal: string,
-base_element_id: number,
-anatomical_label: string,
-element: string,
-age: string,
-phase: string,
-modifications: string,
-context_uri: string
-*/
+
 import { TFaunaFields } from '@/js/types/moduleFieldsTypes'
 import { computed } from 'vue'
 import { useItemStore } from '../../../scripts/stores/item'
