@@ -74,7 +74,7 @@ return new class extends Migration
 
         Schema::create('stone-stone_tags', function (Blueprint $table) {
             $table->unsignedInteger('item_id');
-            $table->foreign('item_id')->references('id')->on('loci')->onUpdate('cascade');
+            $table->foreign('item_id')->references('id')->on('stones')->onUpdate('cascade');
 
             $table->unsignedSmallInteger('tag_id')->unsigned();
             $table->foreign('tag_id')->references('id')->on('stone_tags')->onUpdate('cascade');

@@ -44,6 +44,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           await loadTrio(module).catch(err => {
             throw 'ModuleInitError'
           })
+          c.resetCollectionsViewIndex()
           break
 
         case 'module.clear':

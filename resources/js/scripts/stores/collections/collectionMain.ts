@@ -152,7 +152,6 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     function clear() {
         array.value = []
         page.value = []
-        extra.value.viewIndex = 0
         extra.value.pageNoB1 = 1
         extra.value.length = 0
     }

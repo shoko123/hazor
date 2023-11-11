@@ -128,7 +128,6 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
 
     function clear() {
         array.value = []
-        extra.value.viewIndex = 0
         extra.value.pageNoB1 = 1
         extra.value.length = 0
     }

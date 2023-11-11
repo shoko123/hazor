@@ -96,7 +96,6 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
 
     function clear() {
         array.value = []
-        extra.value.viewIndex = 0
         extra.value.pageNoB1 = 1
         extra.value.length = 0
     }

@@ -65,7 +65,7 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
         ],
         "Modifications" => [
             "group_type_code" => "TM",
-            "dependency" => ["Base Element.Bone"],
+            "dependency" => null,
             "multiple" => true
         ],
         "Bone Name" => [
@@ -140,12 +140,12 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
             ],
             "Element" => [
                 "Base Element",
+                "Modifications",
                 "Symmetry",
-                
             ],
             "Bone" =>  [
                 "Bone Name",
-                "Modifications",
+
             ],
             /*
             "Tooth" => [

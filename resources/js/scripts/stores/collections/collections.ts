@@ -118,6 +118,13 @@ export const useCollectionsStore = defineStore('collections', () => {
         })
     }
 
+    function resetCollectionsViewIndex() {
+        ['main', 'media', 'related'].forEach(x => {
+            let c = getCollection(<TCollectionName>x)
+            c.extra.viewIndex = 0
+        })
+    }
+    
     async function firstSlug() {
         let xhr = useXhrStore();
         let n = useNotificationsStore();
@@ -187,6 +194,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         loadPage,
         toggleCollectionView,
         clear,
+        resetCollectionsViewIndex,        
         itemIndexById,
         loadPageByItemIndex,
         itemIsInPage,
