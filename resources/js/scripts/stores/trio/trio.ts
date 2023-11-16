@@ -353,6 +353,11 @@ export const useTrioStore = defineStore('trio', () => {
     trio.value.entities.params[paramKey].name = name
   }
 
+  function orderSelectedParams(params: string[]) {
+    console.log(`orderItemTags()`)
+    params.sort((a, b) => trio.value.entities.params[a].order - trio.value.entities.params[b].order)
+  }
+
   return {
     resetCategoryAndGroupIndices,
     paramClicked,
@@ -365,6 +370,7 @@ export const useTrioStore = defineStore('trio', () => {
     categoryIndex,
     groupIndex,
     setFilterSearchTerm,
-    setOrderByString
+    setOrderByString,
+    orderSelectedParams
   }
 })

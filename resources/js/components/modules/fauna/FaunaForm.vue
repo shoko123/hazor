@@ -12,29 +12,29 @@
     </v-row>
 
     <v-row wrap no-gutters>
-      <v-text-field label="Base Taxon" v-model="item.base_taxon_id" class="mr-1" readonly filled>
-      </v-text-field>
+      <!-- <v-text-field label="Base Taxon" v-model="item.base_taxon_id" class="mr-1" readonly filled>
+      </v-text-field> -->
       <v-text-field label="Taxon" v-model="item.taxon" class="mr-1" readonly filled>
       </v-text-field>
       <v-text-field label="Taxon Common Name" v-model="item.taxon_common_name" class="mr-1" readonly filled>
       </v-text-field>
+      <v-text-field label="Anatomical Label" v-model="item.anatomical_label" class="mr-1" filled> </v-text-field>
+      <v-text-field label="Element" v-model="item.element" class="mr-1" filled> </v-text-field>
     </v-row>
 
     <v-row wrap no-gutters>
-      <v-text-field label="Base Element Group" v-model="item.base_element_id" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Anatomical Label" v-model="item.anatomical_label" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Element" v-model="item.element" class="mr-1" filled> </v-text-field>
+      <!-- <v-text-field label="Base Element Group" v-model="item.base_element_id" class="mr-1" filled> </v-text-field> -->
       <v-text-field label="Fragment Present" v-model="item.fragment_present" class="mr-1" filled> </v-text-field>
       <v-text-field label="Symmetry" v-model="item.symmetry" class="mr-1" filled> </v-text-field>
       <v-text-field label="Fusion Proximal" v-model="item.fusion_proximal" class="mr-1" filled> </v-text-field>
       <v-text-field label="Fusion Distal" v-model="item.fusion_distal" class="mr-1" filled> </v-text-field>
-    </v-row>
-
-    <v-row wrap no-gutters>
       <v-text-field label="Age" v-model="item.age" class="mr-1" filled> </v-text-field>
       <v-text-field label="Phase" v-model="item.phase" class="mr-1" filled> </v-text-field>
       <v-text-field label="Modifications" v-model="item.modifications" class="mr-1" filled> </v-text-field>
     </v-row>
+
+    <!-- <v-row wrap no-gutters>
+    </v-row> -->
   </v-container>
 </template>
 

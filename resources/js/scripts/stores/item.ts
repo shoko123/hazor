@@ -20,6 +20,7 @@ export const useItemStore = defineStore('item', () => {
   const moduleStore = useModuleStore()
   const { setItemMedia } = useMediaStore()
   const { send } = useXhrStore()
+  const { orderSelectedParams } = useTrioStore()
   const { showSnackbar, showSpinner } = useNotificationsStore()
 
   let fields = ref<TFields | undefined>(undefined)
@@ -51,7 +52,7 @@ export const useItemStore = defineStore('item', () => {
       module: current.value.module,
       slug: current.value.slug,
       tag: tag.value,
-      moduleAndTag: `${current.value === undefined ? "": current.value.module} ${tag.value === undefined ? "": tag.value}`,
+      moduleAndTag: `${current.value === undefined ? "" : current.value.module} ${tag.value === undefined ? "" : tag.value}`,
       short: short.value
     }
   })
@@ -62,6 +63,7 @@ export const useItemStore = defineStore('item', () => {
     short.value = apiItem.short
     tag.value = moduleStore.tagFromSlug(current.value.module, apiItem.slug)
     selectedItemParams.value = [...apiItem.model_tags, ...apiItem.global_tags, ...apiItem.discrete_columns]
+    orderSelectedParams(selectedItemParams.value)
   }
 
   function itemClear() {

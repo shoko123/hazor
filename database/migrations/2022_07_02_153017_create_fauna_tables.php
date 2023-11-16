@@ -29,8 +29,8 @@ class CreateFaunaTables extends Migration
             $table->boolean('diagnostic')->default(0);
             $table->string('label', 40)->nullable();
             $table->string('area', 12)->nullable();
-            $table->string('locus', 15)->nullable();
-            $table->string('basket', 20)->nullable();
+            $table->unsignedMediumInteger('locus')->nullable();
+            $table->unsignedMediumInteger('basket')->nullable();
             $table->string('stratum', 30)->nullable();
             $table->boolean('registration_clean')->default(0);
             $table->unsignedTinyInteger('base_taxon_id')->default(1);
