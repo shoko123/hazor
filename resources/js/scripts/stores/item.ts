@@ -1,9 +1,10 @@
 // stores/media.js
-import type { TFields } from '@/js/types/moduleFieldsTypes'
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { TApiItemShow } from '@/js/types/itemTypes'
-import { TApiArrayMain } from '@/js/types/collectionTypes'
+import type { TColumnName, TFields } from '@/js/types/moduleFieldsTypes'
+import type { TApiItemShow } from '@/js/types/itemTypes'
+import type { TApiArrayMain } from '@/js/types/collectionTypes'
+import type { IObject } from '@/js/types/generalTypes'
 import { useCollectionsStore } from './collections/collections'
 import { useCollectionMainStore } from './collections/collectionMain'
 import { useRoutesMainStore } from './routes/routesMain'
@@ -20,7 +21,7 @@ export const useItemStore = defineStore('item', () => {
   const moduleStore = useModuleStore()
   const { setItemMedia } = useMediaStore()
   const { send } = useXhrStore()
-  const { orderSelectedParams } = useTrioStore()
+  const { orderSelectedParams, getParamKeyByGroupAndId } = useTrioStore()
   const { showSnackbar, showSpinner } = useNotificationsStore()
 
   let fields = ref<TFields | undefined>(undefined)
@@ -57,12 +58,20 @@ export const useItemStore = defineStore('item', () => {
     }
   })
 
+
   function saveItem(apiItem: TApiItemShow) {
     fields.value = apiItem.fields
+    let fieldsObj = <IObject>apiItem.fields
     slug.value = apiItem.slug
     short.value = apiItem.short
     tag.value = moduleStore.tagFromSlug(current.value.module, apiItem.slug)
-    selectedItemParams.value = [...apiItem.model_tags, ...apiItem.global_tags, ...apiItem.discrete_columns]
+
+    let selectedLookups =  moduleStore.lookups.map(x => {
+      return getParamKeyByGroupAndId(x.group_name, fieldsObj[x.column_name])}   
+    )
+
+    //console.log(`saveItem() selectedLookups:\n${selectedLookups}`)
+    selectedItemParams.value = [...apiItem.model_tags, ...apiItem.global_tags, ...selectedLookups]
     orderSelectedParams(selectedItemParams.value)
   }
 

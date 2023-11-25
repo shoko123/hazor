@@ -213,7 +213,6 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         $item = $this->builder->first();
         $related = $this->builderView0PostLoad($item);
 
-        $discrete_columns = $this->discreteColumns($item);
         $mediaArray = MediaModel::getUrlsOfAll($item->media);
 
         //model tags (discrete)        
@@ -237,7 +236,6 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             "media" => $mediaArray,
             "global_tags" => $global_tags,
             "model_tags" => $model_tags,
-            "discrete_columns" => $discrete_columns,
             "slug" => $item->slug,
             "short" => $item->short,
             "related" => $related
@@ -301,7 +299,6 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
                 "media" => [],
                 "global_tags" => [],
                 "model_tags" => [],
-                "discrete_columns" => $this->discreteColumns($item),
                 "slug" => $item->slug,
                 "short" => $item->short,
             ];

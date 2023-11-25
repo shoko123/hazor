@@ -102,8 +102,6 @@ class Stone extends FindModel
             },
             'model_tags.tag_group',
             'global_tags.tag_group',
-            'material',
-            'baseType',
         ])
             ->leftJoin('loci', function (JoinClause $join) {
                 $join->on('loci.name', '=', 'stones.locus')->on('loci.area', '=', 'stones.area');
@@ -127,14 +125,5 @@ class Stone extends FindModel
     public function builderShowCarouselLoad(): void
     {
         $this->builder =  $this->select('id', 'basket', 'stone_no', 'type', 'description')->with("media");
-    }
-
-    public function discreteColumns(Model $fields): array
-    {
-        $material = 'Material' . '.' . $fields["material"]["name"];
-        $base_type = 'Basic Typology' . '.' . $fields["baseType"]["name"];
-        unset($fields->material);
-        unset($fields->baseType);
-        return [$material, $base_type];
     }
 }

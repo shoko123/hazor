@@ -2,7 +2,7 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
 import { TModule } from '../../types/routesTypes'
-import { TFields } from '../../types/moduleFieldsTypes'
+import { TColumnName, TFields } from '../../types/moduleFieldsTypes'
 
 import { useMediaStore } from './media'
 import { useRoutesMainStore } from './routes/routesMain'
@@ -17,6 +17,7 @@ export const useModuleStore = defineStore('module', () => {
   const { current } = storeToRefs(useRoutesMainStore())
 
   let counts = ref({ items: 0, media: 0 })
+  let lookups =  ref<{column_name: TColumnName, group_name: string}[]>([])
 
   const backgroundImage = computed(() => {
     let module = current.value.module
@@ -51,5 +52,5 @@ export const useModuleStore = defineStore('module', () => {
     return getStore(current.value.module)
   })
 
-  return { counts, backgroundImage, getCurrentModuleStore, tagFromSlug }
+  return { counts, backgroundImage, getCurrentModuleStore, lookups, tagFromSlug }
 })

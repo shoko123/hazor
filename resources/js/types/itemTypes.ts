@@ -10,7 +10,6 @@ type TApiItemShow = {
         media: TMediaRecord[],
         model_tags: any[],
         global_tags: any[],
-        discrete_columns: string[]
         slug: string,
         short: string,
         extra: any

@@ -63,18 +63,18 @@ type TApiPageTableStone = {
 }
 
 type TApiPageTableFauna = {
-        id: number,
-        diagnostic: boolean,
+        id: number,  
         slug: string,
         label: string,
         area: string,
         locus: string,
         basket: string,
         registration_clean: boolean,
+        scope: string,
         base_taxon: string,
         taxon: string,
         fragment_present: string,
-        base_element: string,
+        material: string,
         symmetry: string,
         anatomical_label: string,
         modifications: string,

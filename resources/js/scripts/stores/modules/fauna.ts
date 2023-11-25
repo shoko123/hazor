@@ -36,17 +36,19 @@ export const useFaunaStore = defineStore('fauna', () => {
       { title: 'Area', align: 'start', key: 'area' },
       { title: 'Locus', align: 'start', key: 'locus' },
       { title: 'Basket', align: 'start', key: 'basket' },
-      { title: 'Diagnosic', align: 'start', key: 'diagnostic' },
       { title: 'Registration OK', align: 'start', key: 'registration_clean' },
-      { title: 'Base Taxon', align: 'start', key: 'base_taxon' },
-      { title: 'Taxon', align: 'start', key: 'taxon' },
-      { title: 'Anatomical Label', align: 'start', key: 'anatomical_label' },      
+      { title: 'taxon', align: 'start', key: 'taxon' },
+      { title: 'Common Name', align: 'start', key: 'taxon_common_name' },
       { title: 'Fragment Present', align: 'start', key: 'fragment_present' },
-      { title: 'Base Element', align: 'start', key: 'base_element' },
-      { title: 'Symmetry', align: 'start', key: 'symmetry' },
+      { title: 'Anatomical Label', align: 'start', key: 'anatomical_label' },
+      { title: 'Element', align: 'start', key: 'element' },
       { title: 'Modifications', align: 'start', key: 'modifications' },
+      { title: 'Symmetry', align: 'start', key: 'symmetry' },
+      { title: 'Phase', align: 'start', key: 'phase' },
+      { title: 'Age', align: 'start', key: 'age' },
     ]
   })
+
 
   return {
     beforeStore,

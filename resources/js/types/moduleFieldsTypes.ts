@@ -42,29 +42,34 @@ type TStoneField = keyof TStoneFields
 type TFaunaFields = {
         id: number,
         uri: string,
-        diagnostic: boolean,
         label: string,
         area: string,
         locus: string,
         basket: string,
         stratum: string,
         registration_clean: boolean,
-        base_taxon_id: number,
+        
         taxon: string,
         taxon_common_name: string,
+        base_taxon_id: number,
+
         fragment_present: string,
-        symmetry: string,
-        fusion_proximal: string,
-        fusion_distal: string,
-        base_element_id: number,
         anatomical_label: string,
         element: string,
-        age: string,
-        phase: string,
         modifications: string,
+        phase: string,
+        age: string,
+
+        scope_id: number,
+        material_id: number,
+        symmetry_id: string,
+        fusion_proximal_id: string,
+        fusion_distal_id: string,
 }
 
 type TFaunaField = keyof TFaunaFields
+
+type FaunaLookups = keyof Pick<TFaunaFields, 'base_taxon_id' | 'scope_id' | 'material_id' | 'symmetry_id' | 'fusion_proximal_id' | 'fusion_distal_id'>
 
 type TFields = TLocusFields | TStoneFields | TFaunaFields
 type TColumnName = TLocusField | TStoneField | TFaunaField

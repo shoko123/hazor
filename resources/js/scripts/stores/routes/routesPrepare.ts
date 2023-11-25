@@ -118,6 +118,8 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
         //console.log(`auth.response is ${JSON.stringify(res, null, 2)}`)
         //console.log(`model(${module}).init() returned (success)`)
         m.counts = res.data.counts
+        m.lookups = res.data.lookups
+
         i.setItemViewIndex(0)        
         i.itemViews = res.data.item_views
         c.clear(['main', 'media', 'related'])

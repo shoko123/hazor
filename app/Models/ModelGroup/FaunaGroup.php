@@ -38,6 +38,11 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
             "group_type_code" => "CS",
             "column_name" => "element",
         ],
+        "Scope" => [
+            "group_type_code" => "CL",
+            "table_name" => "fauna_scopes",
+            "column_name" => "scope_id",
+        ],        
         "Base Taxon" => [
             "group_type_code" => "CL",
             "table_name" => "fauna_base_taxa",
@@ -53,15 +58,25 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
             "dependency" => ["Base Taxon.Bird"],
             "multiple" => true
         ],
-        "Base Element" => [
+        "Material" => [
             "group_type_code" => "CL",
-            "table_name" => "fauna_base_elements",
-            "column_name" => "base_element_id"
+            "table_name" => "fauna_materials",
+            "column_name" => "material_id"
         ],
         "Symmetry" => [
-            "group_type_code" => "TM",
-            "dependency" => null,
-            "multiple" => false
+            "group_type_code" => "CL",
+            "table_name" => "fauna_symmetries",
+            "column_name" => "symmetry_id"
+        ],
+        "Fusion Proximal" => [
+            "group_type_code" => "CL",
+            "table_name" => "fauna_fusions",
+            "column_name" => "fusion_proximal_id"
+        ],
+        "Fusion Distal" => [
+            "group_type_code" => "CL",
+            "table_name" => "fauna_fusions",
+            "column_name" => "fusion_distal_id"
         ],
         "Modifications" => [
             "group_type_code" => "TM",
@@ -70,22 +85,22 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
         ],
         "Bone Name" => [
             "group_type_code" => "TM",
-            "dependency" => ["Base Element.Bone"],
+            "dependency" => ["Material.Bone"],
             "multiple" => true
         ],
         "Tooth Name" => [
             "group_type_code" => "TM",
-            "dependency" => ["Base Element.Tooth"],
+            "dependency" => ["Material.Tooth"],
             "multiple" => true
         ],
         "Tooth Age" => [
             "group_type_code" => "TM",
-            "dependency" => ["Base Element.Tooth"],
+            "dependency" => ["Material.Tooth"],
             "multiple" => true
         ],
         "Tooth Wear" => [
             "group_type_code" => "TM",
-            "dependency" => ["Base Element.Tooth"],
+            "dependency" => ["Material.Tooth"],
             "multiple" => true
         ],
         "Order By" => [
@@ -133,19 +148,22 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
                 "Registration Clean",
             ],
             */
-            "Taxon" => [
-                "Base Taxon",
-                "Mammal",
-                "Bird",
-            ],
+
             "Element" => [
-                "Base Element",
+                "Scope",
+                "Material",
                 "Modifications",
                 "Symmetry",
             ],
             "Bone" =>  [
                 "Bone Name",
-
+                "Fusion Proximal",
+                "Fusion Distal",
+            ],
+            "Taxon" => [
+                "Base Taxon",
+                "Mammal",
+                "Bird",
             ],
             /*
             "Tooth" => [

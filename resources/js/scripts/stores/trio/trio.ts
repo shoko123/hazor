@@ -358,6 +358,12 @@ export const useTrioStore = defineStore('trio', () => {
     params.sort((a, b) => trio.value.entities.params[a].order - trio.value.entities.params[b].order)
   }
 
+  function getParamKeyByGroupAndId(group: string, id: number) : string {
+    let groupParamKeys = trio.value.entities.groups[group].params
+    let paramKey = groupParamKeys.find(x => trio.value.entities.params[x].id === id)
+    //console.log(`getParamKeyByGroupAndId(group(${group}), id(${id})) => ${paramKey}`)    
+    return <string>paramKey
+  }
   return {
     resetCategoryAndGroupIndices,
     paramClicked,
@@ -371,6 +377,7 @@ export const useTrioStore = defineStore('trio', () => {
     groupIndex,
     setFilterSearchTerm,
     setOrderByString,
-    orderSelectedParams
+    orderSelectedParams,
+    getParamKeyByGroupAndId
   }
 })

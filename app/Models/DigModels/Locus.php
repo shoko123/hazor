@@ -170,10 +170,4 @@ class Locus extends DigModel
     {
         $this->builder = $this->select('id', 'area', 'name', 'type', 'cross_ref')->with("media");
     }
-
-    public function discreteColumns(Model $model): array
-    {
-        $area = 'Area' . '.' . $model["area"];
-        return [$area];
-    }
 }

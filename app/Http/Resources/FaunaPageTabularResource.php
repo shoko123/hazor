@@ -16,20 +16,21 @@ class FaunaPageTabularResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'diagnostic' => $this->diagnostic,
             'slug' => $this->slug,
             'label' => $this->label,
             'area' => $this->area,
             'locus' => $this->locus,
             'basket' => $this->basket,
             'registration_clean' => $this->registration_clean ? 'Yes' : 'No',
-            'base_taxon' => $this->base_taxon->name,
             'taxon' => $this->taxon,
+            'taxon_common_name' => $this->taxon_common_name,
             'fragment_present' => $this->fragment_present,
-            'base_element' => $this->base_element->name,
-            'symmetry' => $this->symmetry,
-            'anatomical_label' => $this->anatomical_label,
-            'modifications' => $this->modifications,
+            'anatomical_label' => $this->anatomical_label,            
+            'element' => $this->material->name,
+            'modifications' => $this->modifications,            
+            'symmetry' => $this->symmetry->name,
+            'phase' => $this->phase,
+            'age' => $this->age,
         ];
     }
 }

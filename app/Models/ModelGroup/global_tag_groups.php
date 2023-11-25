@@ -9,10 +9,6 @@ function globalGroups()
             "group_type_code" => "BF",
             "params"  => MediaModel::media_collections()
         ],
-        "Scope" => [
-            "group_type_code" => "BF",
-            "params"  => ["Basket", "Artifact"]
-        ],
         "Periods (Top-Level)" => [
             "group_type_code" => "TG",
             "dependency" => null
