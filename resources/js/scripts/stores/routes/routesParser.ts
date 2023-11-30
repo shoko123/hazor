@@ -2,9 +2,6 @@
 //handles the entire routing mechanism - parsing, loading resources, error handling
 
 import type { TParsingError, TParseErrorDetails, TParseUrlModuleResponse, TParseUrlQueryResponse, TParseSlugResponse, TParseSlugData, TName, TModule, TRouteInfo } from '../../../types/routesTypes'
-import type { TIdParams, TLocusIdParams, TStoneIdParams, TFaunaIdParams, } from '../../../types/moduleIdParamsTypes'
-
-import type { LocationQuery, RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
 import { defineStore, storeToRefs } from 'pinia'
 import { useTrioStore } from '../trio/trio'
 import { useLocusStore } from '../modules/locus'

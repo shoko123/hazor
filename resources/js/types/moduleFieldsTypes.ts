@@ -13,8 +13,13 @@ type TLocusFields = {
         notes: string
         elevation: string,
 }
+type TLocusModify = keyof Pick<TLocusFields, 'id' | 'name' | 'area' | 'locus_no' |'stratum' | 'year' | 'square' |  'addendum' | 'type' | 'cross_ref' | 'description' | 'notes' >
+type TLocusLookup = keyof Pick<TLocusFields, 'id' >
 
 type TLocusField = keyof TLocusFields
+type TLocusModifyFields = keyof TLocusModify
+type TLocusLookupFields = keyof TLocusLookup
+
 
 type TStoneFields = {
         id: number,
@@ -36,8 +41,12 @@ type TStoneFields = {
         base_type_id: number,
         order_column: number | null
 }
+type TStoneModify = keyof Pick<TStoneFields, 'id' | 'area' | 'locus' |'basket' | 'stone_no' | 'date' |  'year' | 'prov_notes' | 'type' | 'material_code' | 'dimensions' | 'rim_diameter' | 'description' | 'notes' | 'publication'>
+type TStoneLookup = keyof Pick<TStoneFields, 'id' |'material_id' | 'base_type_id' >
 
 type TStoneField = keyof TStoneFields
+type TStoneModifyFields = keyof TStoneModify
+type TStoneLookupFields = keyof TStoneLookup
 
 type TFaunaFields = {
         id: number,
@@ -47,8 +56,8 @@ type TFaunaFields = {
         locus: string,
         basket: string,
         stratum: string,
-        registration_clean: boolean,
-        
+        registration_clean: number,
+
         taxon: string,
         taxon_common_name: string,
         base_taxon_id: number,
@@ -62,21 +71,29 @@ type TFaunaFields = {
 
         scope_id: number,
         material_id: number,
-        symmetry_id: string,
-        fusion_proximal_id: string,
-        fusion_distal_id: string,
+        symmetry_id: number,
+        fusion_proximal_id: number,
+        fusion_distal_id: number,
 }
 
-type TFaunaField = keyof TFaunaFields
+type TFaunaModify = keyof Pick<TFaunaFields, 'id' | 'area' | 'locus' | 'basket' | 'stratum' | 'registration_clean' | 'taxon' | 'taxon_common_name' | 'fragment_present' | 'anatomical_label' | 'element' | 'modifications' | 'phase' | 'age'>
+type TFaunaLookup = keyof Pick<TFaunaFields, 'id' | 'base_taxon_id' | 'scope_id' | 'material_id' | 'symmetry_id' | 'fusion_proximal_id' | 'fusion_distal_id'>
 
-type FaunaLookups = keyof Pick<TFaunaFields, 'base_taxon_id' | 'scope_id' | 'material_id' | 'symmetry_id' | 'fusion_proximal_id' | 'fusion_distal_id'>
+type TFaunaField = keyof TFaunaFields
+type TFaunaModifyField = keyof TFaunaModify
+type TFaunaLookupField = keyof TFaunaLookup
 
 type TFields = TLocusFields | TStoneFields | TFaunaFields
+type TModify = TLocusModify | TStoneModify | TFaunaModify
+type TLookup = TLocusLookup | TStoneLookup | TFaunaLookup
+
 type TColumnName = TLocusField | TStoneField | TFaunaField
 export {
         TLocusFields,
         TStoneFields,
         TFaunaFields,
         TFields,
+        TModify,
+        TLookup,
         TColumnName
 }

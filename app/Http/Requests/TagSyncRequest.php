@@ -11,21 +11,10 @@ use Closure;
 
 class TagSyncRequest extends FormRequest
 {
-    private $modelToTableName = [
-        "Locus" => "loci",
-        "Stone" => "stones",
-        "Fauna" => "fauna"
-    ];
-    private $modelToTagTableName = [
-        "Locus" => "locus_tags",
-        "Stone" => "stone_tags",
-        "Fauna" => "fauna_tags"
-    ];
-
     private $modelInfo = [
         "Locus" => ["table_name" => "loci", "tag_table_name" => "locus_tags", "fields" => ["area"]],
         "Stone" => ["table_name" => "stones", "tag_table_name" => "stone_tags", "fields" => ["material_id", "base_type_id"]],
-        "Fauna" => ["table_name" => "fauna", "tag_table_name" => "fauna_tags", "fields" => ["taxon_id", "element_id"]],
+        "Fauna" => ["table_name" => "fauna", "tag_table_name" => "fauna_tags", "fields" => ["base_taxon_id", "scope_id", "material_id", "symmetry_id", "fusion_proximal_id", "fusion_distal_id"]],
     ];
 
     /**
@@ -46,10 +35,10 @@ class TagSyncRequest extends FormRequest
     {
         //TODO  column_values Rule
         $model = $this->input("model");
-        $info = $this->modelInfo[$this->input("model")];
+        $info = $this->modelInfo[$model];
 
-        $table_name = $this->modelToTableName[$this->input("model")];
-        $tag_table_name = $this->modelToTagTableName[$model];
+        $table_name = $info["table_name"];
+        $tag_table_name = $info["tag_table_name"];
         $id_exists_rule = 'required|exists:' . $table_name . ',id';
         $tag_id_exists_rule = 'exists:' . $tag_table_name . ',id';
 

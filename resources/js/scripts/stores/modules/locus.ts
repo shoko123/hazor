@@ -1,7 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { TLocusFields, TFields } from '@/js/types/moduleFieldsTypes'
-import { TLocusSlugParams, TLocusIdParams } from '@/js/types/moduleIdParamsTypes'
 import type { TParseSlugResponse, TParseSlugData } from '../../../types/routesTypes'
 
 export const useLocusStore = defineStore('locus', () => {
@@ -16,7 +15,7 @@ export const useLocusStore = defineStore('locus', () => {
       return {
         success: false, data: {
           error: "BadIdFormat",
-          message: "No . detected in slug"
+          message: "No . [dot] detected in slug"
         }
       }
     }
