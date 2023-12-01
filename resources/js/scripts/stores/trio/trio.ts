@@ -136,12 +136,12 @@ export const useTrioStore = defineStore('trio', () => {
     let g = trio.value.entities.groups[groupKey]
 
     //if source is 'New' don't show CS, CR, BF and OB groups.
-    if (isNewParams.value && ["CS", "BF", "CR", "OB"].includes(g.group_type_code)) {
+    if (isNewParams.value && ["CS", "BF", "CR", "CB", "OB"].includes(g.group_type_code)) {
       return false
     }
 
     //if source is filter, and not TM or TG all these groups are available.
-    if (["CS", "CL", "CV", "CR", "BF", "OB"].includes(g.group_type_code)) {
+    if (["CS", "CL", "CV", "CR", "CB", "BF", "OB"].includes(g.group_type_code)) {
       return true
     }
 
@@ -181,54 +181,57 @@ export const useTrioStore = defineStore('trio', () => {
       } else {
         selectParam(paramKey)
       }
-    } else {
-      switch (group.group_type_code) {
-        case "TG":
-        case "TM":
-          if ((<TGroupTag>group).multiple) {
-            if (isSelected) {
-              unSelectParam(paramKey)
-            } else {
-              selectParam(paramKey)
-            }
-          } else {
-            if (isSelected) {
-              unSelectParam(paramKey)
-            } else {
-              //if there is currently  a  selected one - unselect the currently selected and select the new one.
-              //if there isn't, select the new one.
-              const currentKey = selected.value.find(x => { return parseParamKey(x, false) === group.group_name })
-              if (currentKey !== undefined) {
-                unSelectParam(currentKey)
-                selectParam(paramKey)
-              } else {
-                console.log("No param currently selected - selecting clicked")
-                selectParam(paramKey)
-              }
-            }
-          }
-          break
+      return
+    }
 
-        case "CL":
-        case "CV":
+    //new tags for item
+    switch (group.group_type_code) {
+      case "TG":
+      case "TM":
+        if ((<TGroupTag>group).multiple) {
           if (isSelected) {
-            //do nothing
+            unSelectParam(paramKey)
           } else {
-            //unselect the currently selected and select the new one
-            const currentKey = selected.value.find(x => { return parseParamKey(x, false) === group.group_name })
-            if (currentKey === undefined) {
-              console.log("Error in paramNewClicked - can't find a selected param in current group, wrong group_type_code")
-              return
-            }
-            console.log(`newItemParams(CL or CV).clicked select: ${paramKey}, unSelect: ${currentKey}`)
-            unSelectParam(currentKey)
             selectParam(paramKey)
           }
-          break
-        default:
-          console.log("Error in paramNewClicked - wrong group_type_code")
-      }
+        } else {
+          if (isSelected) {
+            unSelectParam(paramKey)
+          } else {
+            //if there is currently  a  selected one - unselect the currently selected and select the new one.
+            //if there isn't, select the new one.
+            const currentKey = selected.value.find(x => { return parseParamKey(x, false) === group.group_name })
+            if (currentKey !== undefined) {
+              unSelectParam(currentKey)
+              selectParam(paramKey)
+            } else {
+              console.log("No param currently selected - selecting clicked")
+              selectParam(paramKey)
+            }
+          }
+        }
+        break
+
+      case "CL":
+      case "CV":
+        if (isSelected) {
+          //do nothing
+        } else {
+          //unselect the currently selected and select the new one
+          const currentKey = selected.value.find(x => { return parseParamKey(x, false) === group.group_name })
+          if (currentKey === undefined) {
+            console.log("Error in paramNewClicked - can't find a selected param in current group, wrong group_type_code")
+            return
+          }
+          console.log(`newItemParams(CL or CV).clicked select: ${paramKey}, unSelect: ${currentKey}`)
+          unSelectParam(currentKey)
+          selectParam(paramKey)
+        }
+        break
+      default:
+        console.log("Error in paramNewClicked - wrong group_type_code")
     }
+
   }
 
   function selectParam(paramKey: string) {
@@ -358,7 +361,7 @@ export const useTrioStore = defineStore('trio', () => {
     params.sort((a, b) => trio.value.entities.params[a].order - trio.value.entities.params[b].order)
   }
 
-  function getParamKeyByGroupAndId(group: string, id: number) : string {
+  function getParamKeyByGroupAndId(group: string, id: number): string {
     let groupParamKeys = trio.value.entities.groups[group].params
     let paramKey = groupParamKeys.find(x => trio.value.entities.params[x].id === id)
     //console.log(`getParamKeyByGroupAndId(group(${group}), id(${id})) => ${paramKey}`)    

@@ -66,11 +66,6 @@ class LocusGroup extends ModelGroup implements ModelGroupInterface
         return self::$groups;
     }
 
-    public static function getModelGroupNames(): array
-    {
-        return array_keys(self::$groups);
-    }
-
     public function trio(): array
     {
         $cats = [

@@ -9,11 +9,11 @@ use Exception;
 abstract class ModelGroup
 {
     abstract public static function getModelGroups(): array;
-    abstract public static function getModelGroupNames(): array;
     abstract public  function trio(): array;
     protected $eloquent_model_name;
     protected static $groups;
     protected static $lookups = [];
+
 
     public function __construct($eloquent_model_name = null)
     {
@@ -45,6 +45,8 @@ abstract class ModelGroup
             case "CR": //column registration
                 return $this->getColumnGroupDetails($group_name, $group);
 
+            case "CB": //column boolean
+                return $this->getColumnBooleanDetails($group_name, $group);
 
             case "CL": //column lookup values
                 return $this->getLookupGroupDetails($group_name, $group);
@@ -66,7 +68,7 @@ abstract class ModelGroup
     {
         $params = DB::table($group["table_name"])->get();
         array_push(self::$lookups, ['column_name' => $group['column_name'], 'group_name' => $group_name]);
-        
+
         return array_merge($group, [
             "group_name" => $group_name,
             "params"  => $params
@@ -118,15 +120,25 @@ abstract class ModelGroup
             }),
         ]);
     }
+
     private function getColumnGroupDetails($group_name, $group)
     {
-        $params = DB::table($group["table_name"])->select($group["column_name"])->distinct()->orderBy($group["column_name"])->get();
+        $column_name = $group["column_name"];
+        $params = DB::table($group["table_name"])->select($column_name)->distinct()->orderBy($column_name)->get();
 
         return array_merge($group, [
             "group_name" => $group_name,
-            "params"  => $params->map(function ($y, $key) {
-                return ["id" => $key, "name" => $y->area];
+            "params"  => $params->map(function ($y, $key) use ($column_name) {
+                return ["name" => $y->$column_name];
             })
+        ]);
+    }
+
+    private function getColumnBooleanDetails($group_name, $group)
+    {
+        return array_merge($group, [
+            "group_name" => $group_name,
+            "params"  => [["name" => "False"], ["name" => "True"]]
         ]);
     }
 

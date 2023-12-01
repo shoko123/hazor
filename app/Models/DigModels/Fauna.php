@@ -161,6 +161,6 @@ class Fauna extends FindModel
 
     public function builderShowCarouselLoad(): void
     {
-        $this->builder =  $this->select('id', 'label', 'snippet')->with("media");
+        $this->builder =  $this->select('id', 'label', 'scope_id', 'taxon', 'element')->with("media");
     }
 }

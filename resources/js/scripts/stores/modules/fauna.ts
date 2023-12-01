@@ -36,7 +36,7 @@ export const useFaunaStore = defineStore('fauna', () => {
       { title: 'Area', align: 'start', key: 'area' },
       { title: 'Locus', align: 'start', key: 'locus' },
       { title: 'Basket', align: 'start', key: 'basket' },
-      { title: 'Registration OK', align: 'start', key: 'registration_clean' },
+      { title: 'Registration Clean', align: 'start', key: 'registration_clean' },
       { title: 'taxon', align: 'start', key: 'taxon' },
       { title: 'Common Name', align: 'start', key: 'taxon_common_name' },
       { title: 'Fragment Present', align: 'start', key: 'fragment_present' },

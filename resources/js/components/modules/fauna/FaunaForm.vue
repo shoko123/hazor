@@ -7,7 +7,7 @@
       <v-text-field label="Area" v-model="item.area" class="mr-1" readonly filled> </v-text-field>
       <v-text-field label="Locus" v-model="item.locus" class="mr-1" readonly filled> </v-text-field>
       <v-text-field label="Basket" v-model="item.basket" class="mr-1" readonly filled> </v-text-field>
-      <v-text-field label="Registration OK" v-model="registratioIsClean" class="mr-1" readonly filled> </v-text-field>
+      <v-text-field label="Registration Clean" v-model="registratioIsClean" class="mr-1" readonly filled> </v-text-field>
       <v-text-field label="Stratum" v-model="item.stratum" class="mr-1" readonly filled></v-text-field>
     </v-row>
 

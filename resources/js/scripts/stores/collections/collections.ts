@@ -12,6 +12,8 @@ import { useCollectionMediaStore } from './collectionMedia'
 import { useCollectionRelatedStore } from './collectionRelated'
 
 export const useCollectionsStore = defineStore('collections', () => {
+    let { showSpinner } = useNotificationsStore()
+    
     function getCollection(source: TCollectionName) {
         switch (source) {
             case 'main':
@@ -58,7 +60,9 @@ export const useCollectionsStore = defineStore('collections', () => {
         //console.log(`loadPage() source: ${name}  module: ${module} view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1}`);
 
         let c = getCollection(name)
+        showSpinner(`Loading Page ...`)
         await c.loadPage(pageNoB1, view, module)
+        showSpinner(false)
         return true
     }
 
@@ -124,14 +128,13 @@ export const useCollectionsStore = defineStore('collections', () => {
             c.extra.viewIndex = 0
         })
     }
-    
+
     async function firstSlug() {
         let xhr = useXhrStore();
-        let n = useNotificationsStore();
         let { current } = useRoutesMainStore()
 
         console.log(`firstSlug model: ${current.module}`)
-        n.showSpinner(`Finding first item ...`)
+        showSpinner(`Finding first item ...`)
         return xhr.send('model/firstSlug', 'post', { model: current.module })
             .then(res => {
                 console.log(`firstSlug() returned ${res.data.slug}`)
@@ -143,7 +146,7 @@ export const useCollectionsStore = defineStore('collections', () => {
                 return false
             })
             .finally(() => {
-                n.showSpinner(false)
+                showSpinner(false)
             })
     }
 
@@ -194,7 +197,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         loadPage,
         toggleCollectionView,
         clear,
-        resetCollectionsViewIndex,        
+        resetCollectionsViewIndex,
         itemIndexById,
         loadPageByItemIndex,
         itemIsInPage,

@@ -155,18 +155,35 @@ export const useFilterStore = defineStore('filter', () => {
           }))
           break
         case 'CL':
-          all.column_lookup_ids.push({
-            column_name: (<TGroupValue>trio.trio.entities.groups[groupKey]).column_name,
-            vals: params.map(x => {
-              let paramKey = groupKey + '.' + x
-              return trio.trio.entities.params[paramKey].id
+          //console.log(`urlQueryToFilters CL group: ${group.group_name} max: ${group.params.length} selectedParams.length: ${params.length}`)
+
+          //apply filters only if not all selected ('CL' is a partition)
+          if (params.length < trio.trio.entities.groups[groupKey].params.length) {
+            all.column_lookup_ids.push({
+              column_name: (<TGroupValue>trio.trio.entities.groups[groupKey]).column_name,
+              vals: params.map(x => {
+                let paramKey = groupKey + '.' + x
+                return trio.trio.entities.params[paramKey].id
+              })
             })
-          })
+          }
           break
+
         case 'CV':
         case 'CR':
-          all.column_values.push({ column_name: (<TGroupValue>trio.trio.entities.groups[groupKey]).column_name, vals: params })
+          //apply filters only if not all selected ('CV' & 'CR' are partitions)
+          if (params.length < trio.trio.entities.groups[groupKey].params.length) {
+            all.column_values.push({ column_name: (<TGroupValue>trio.trio.entities.groups[groupKey]).column_name, vals: params })
+          }
           break
+
+        case 'CB':
+          //apply filters only if one value is selected ('CB' is boolean)
+          if (params.length === 1) {
+            all.column_values.push({ column_name: (<TGroupValue>trio.trio.entities.groups[groupKey]).column_name, vals: (params[0] === 'True') ? ['1'] : ['0'] })
+          }
+          break
+
         case 'CS':
           all.column_search.push({
             column_name: (<TGroupValue>trio.trio.entities.groups[groupKey]).column_name, vals: params

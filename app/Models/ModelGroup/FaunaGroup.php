@@ -38,6 +38,10 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
             "group_type_code" => "CS",
             "column_name" => "element",
         ],
+        "Registration Clean" => [
+            "group_type_code" => "CB",
+            "column_name" => "registration_clean",
+        ],         
         "Scope" => [
             "group_type_code" => "CL",
             "table_name" => "fauna_scopes",
@@ -125,12 +129,6 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
         return self::$model_groups;
     }
 
-    public static function getModelGroupNames(): array
-    {
-        return array_keys(self::$model_groups);
-    }
-
-
     public function trio(): array
     {
         $cats = [
@@ -142,15 +140,12 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
                 "Search-Taxon",
                 "Search-Anatomical-Label",
             ],
-            /*
+            
              "Registration" => [
-                "Diagnostic",
                 "Registration Clean",
-            ],
-            */
-
-            "Element" => [
                 "Scope",
+            ],
+            "Element" => [               
                 "Material",
                 "Modifications",
                 "Symmetry",
