@@ -39,7 +39,7 @@ export const useTrioSelectedStore = defineStore('trioSelected', () => {
         selectedParams = selectedFilterParams.value
         break
       case 'Item':
-        selectedParams = selectedItemParams.value
+        selectedParams = selectedItemParams.value.filter(x => !x.includes('Unassigned'))
         break
       case 'New':
         selectedParams = selectedNewItemParams.value

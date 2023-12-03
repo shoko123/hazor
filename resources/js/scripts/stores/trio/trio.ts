@@ -1,7 +1,7 @@
 // stores/trio.js
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
-import type { TGroupTag, TGroup, Trio, TrioSourceName, TmpGroup, TGroupValue, TColumnValueUpdateInfo } from '../../../types/trioTypes'
+import type { TGroupTag, TGroupsWithDependency, Trio, TrioSourceName, TmpGroup, TGroupValue, TColumnValueUpdateInfo } from '../../../types/trioTypes'
 import normalizeTrio from './trioNormalizer'
 import { useFilterStore } from './filter'
 import { useTaggerStore } from './tagger'
@@ -141,16 +141,19 @@ export const useTrioStore = defineStore('trio', () => {
     }
 
     //if source is filter, and not TM or TG all these groups are available.
-    if (["CS", "CL", "CV", "CR", "CB", "BF", "OB"].includes(g.group_type_code)) {
+    if (["CS", "CV", "CR", "CB", "BF", "OB"].includes(g.group_type_code)) {
       return true
     }
 
-    //if TM ot TG check dependency. TODO  on NewTags check if available for scope (basket or artifact)
-    let tagGroup = <TGroupTag>g
-    return tagGroup.dependency === null ||
-      tagGroup.dependency.some(x => {
-        return (selected.value.includes(x))
-      })
+    if (["TM", "TG", "CL"].includes(g.group_type_code)) {
+      let tagGroup = <TGroupsWithDependency>g
+      return tagGroup.dependency === null ||
+        tagGroup.dependency.some(x => {
+          return (selected.value.includes(x))
+        })
+    }
+    console.log(`**** Error group availability unexpected type : ${g.group_type_code}`)
+    return true
   }
 
   function groupSelectedParamsCnt(groupKey: string) {
@@ -265,15 +268,15 @@ export const useTrioStore = defineStore('trio', () => {
     //We assume that this param was already removed from paramClickedSource (selectedFilterParams/selectedNewItemParams).
 
     //step 1 - collect all affected groups by unselecting this param
-    let groupsToBeUnselectable: TGroupTag[] = []
+    let groupsToBeUnselectable: TGroupsWithDependency[] = []
     for (const [key, value] of Object.entries(trio.value.entities.groups)) {
       //only Tag groups may be dependent
-      if (!["TG", "TM"].includes(value.group_type_code)) {
+      if (!["TG", "TM", "CL"].includes(value.group_type_code)) {
         continue
       }
 
       //collect only those whose dependency includes paramKey
-      let group = <TGroupTag>value
+      let group = <TGroupsWithDependency>value
       if (group.dependency === null || !group.dependency.includes(paramKey)) {
         continue
       }

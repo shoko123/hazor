@@ -31,7 +31,7 @@ class LocusGroup extends ModelGroup implements ModelGroupInterface
         "Search-Cross-Reference" => [
             "group_type_code" => "CS",
             "column_name" => "cross_ref",
-        ],        
+        ],
         "Search-Type" => [
             "group_type_code" => "CS",
             "column_name" => "type",
@@ -83,7 +83,7 @@ class LocusGroup extends ModelGroup implements ModelGroupInterface
             ],
             "Order By" => [
                 "Order By",
-            ]            
+            ]
         ];
 
         return $this->buildTrio($cats);

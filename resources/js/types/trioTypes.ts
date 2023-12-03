@@ -17,6 +17,7 @@ type TGroupOrderByOptionObject = {
 type TGroupValue = {
   group_type_code: TGroupType,
   group_name: string,
+  dependency: string[],  
   table_name: string,
   column_name: string,
   params: string[],
@@ -33,6 +34,8 @@ type TGroupTag = {
   categoryKey: string
 }
 
+type TGroupsWithDependency = TGroupValue | TGroupTag
+
 type TGroupOrderBy = {
   group_type_code: TGroupType,
   group_name: string,
@@ -42,7 +45,7 @@ type TGroupOrderBy = {
   categoryKey: string
 }
 
-type TGroup = TGroupTag | TGroupValue | TGroupOrderBy
+type TGroup = TGroupTag | TGroupValue | TGroupOrderBy 
 
 type TParam = {
   id: number,
@@ -50,7 +53,8 @@ type TParam = {
   order: number,
   paramKey: string,
   group: string,
-  column_name?: string
+  column_name?: string,
+  boolVal?: boolean
 }
 
 interface ICategoryObject {
@@ -101,6 +105,7 @@ export {
   TGroupValue,
   TGroupTag,
   TGroupOrderBy,
+  TGroupsWithDependency,
   TGroupOrderByOptionObject,
   TGroup,
   TGroupType,

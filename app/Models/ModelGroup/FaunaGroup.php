@@ -41,14 +41,16 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
         "Registration Clean" => [
             "group_type_code" => "CB",
             "column_name" => "registration_clean",
-        ],         
+        ],
         "Scope" => [
             "group_type_code" => "CL",
+            "dependency" => null,
             "table_name" => "fauna_scopes",
             "column_name" => "scope_id",
-        ],        
+        ],
         "Base Taxon" => [
             "group_type_code" => "CL",
+            "dependency" => null,
             "table_name" => "fauna_base_taxa",
             "column_name" => "base_taxon_id",
         ],
@@ -64,21 +66,25 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
         ],
         "Material" => [
             "group_type_code" => "CL",
+            "dependency" => null,
             "table_name" => "fauna_materials",
             "column_name" => "material_id"
         ],
         "Symmetry" => [
             "group_type_code" => "CL",
+            "dependency" => null,
             "table_name" => "fauna_symmetries",
             "column_name" => "symmetry_id"
         ],
         "Fusion Proximal" => [
             "group_type_code" => "CL",
+            "dependency" => ["Material.Bone"],
             "table_name" => "fauna_fusions",
             "column_name" => "fusion_proximal_id"
         ],
         "Fusion Distal" => [
             "group_type_code" => "CL",
+            "dependency" => ["Material.Bone"],
             "table_name" => "fauna_fusions",
             "column_name" => "fusion_distal_id"
         ],
@@ -140,12 +146,12 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
                 "Search-Taxon",
                 "Search-Anatomical-Label",
             ],
-            
-             "Registration" => [
+
+            "Registration" => [
+                "Scope",                
                 "Registration Clean",
-                "Scope",
             ],
-            "Element" => [               
+            "Element" => [
                 "Material",
                 "Modifications",
                 "Symmetry",

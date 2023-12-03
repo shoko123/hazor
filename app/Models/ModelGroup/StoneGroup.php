@@ -17,11 +17,13 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
         ],
         "Material" => [
             "group_type_code" => "CL",
+            "dependency" => null,
             "table_name" => "stone_materials",
             "column_name" => "material_id",
         ],
         "Basic Typology" => [
             "group_type_code" => "CL",
+            "dependency" => null,
             "table_name" => "stone_base_types",
             "column_name" => "base_type_id"
         ],

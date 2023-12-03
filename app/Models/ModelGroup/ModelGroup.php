@@ -138,7 +138,7 @@ abstract class ModelGroup
     {
         return array_merge($group, [
             "group_name" => $group_name,
-            "params"  => [["name" => "False"], ["name" => "True"]]
+            "params"  => [["name" => "True"], ["name" => "False"]]
         ]);
     }
 
