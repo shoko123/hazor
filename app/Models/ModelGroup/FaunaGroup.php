@@ -59,6 +59,11 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
             "dependency" => ["Base Taxon.Mammal"],
             "multiple" => true
         ],
+        "Anatomical Cluster" => [
+            "group_type_code" => "TM",
+            "dependency" => ["Scope.Multiple Elements"],
+            "multiple" => true
+        ],
         "Bird" => [
             "group_type_code" => "TM",
             "dependency" => ["Base Taxon.Bird"],
@@ -66,15 +71,25 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
         ],
         "Material" => [
             "group_type_code" => "CL",
-            "dependency" => null,
+            "dependency" => ["Scope.Single Element"],
             "table_name" => "fauna_materials",
             "column_name" => "material_id"
         ],
         "Symmetry" => [
             "group_type_code" => "CL",
-            "dependency" => null,
+            "dependency" => ["Scope.Single Element"],
             "table_name" => "fauna_symmetries",
             "column_name" => "symmetry_id"
+        ],
+        "Modifications" => [
+            "group_type_code" => "TM",
+            "dependency" =>  ["Scope.Single Element"],
+            "multiple" => true
+        ],
+        "Bone Name" => [
+            "group_type_code" => "TM",
+            "dependency" => ["Material.Bone"],
+            "multiple" => true
         ],
         "Fusion Proximal" => [
             "group_type_code" => "CL",
@@ -88,16 +103,7 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
             "table_name" => "fauna_fusions",
             "column_name" => "fusion_distal_id"
         ],
-        "Modifications" => [
-            "group_type_code" => "TM",
-            "dependency" => null,
-            "multiple" => true
-        ],
-        "Bone Name" => [
-            "group_type_code" => "TM",
-            "dependency" => ["Material.Bone"],
-            "multiple" => true
-        ],
+
         "Tooth Name" => [
             "group_type_code" => "TM",
             "dependency" => ["Material.Tooth"],
@@ -146,15 +152,15 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
                 "Search-Taxon",
                 "Search-Anatomical-Label",
             ],
-
             "Registration" => [
-                "Scope",                
-                "Registration Clean",
-            ],
-            "Element" => [
+                "Registration Clean",                
+                "Scope",
                 "Material",
                 "Modifications",
                 "Symmetry",
+            ],
+            "Multiple Elements" => [
+                "Anatomical Cluster",
             ],
             "Bone" =>  [
                 "Bone Name",
@@ -166,13 +172,6 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
                 "Mammal",
                 "Bird",
             ],
-            /*
-            "Tooth" => [
-                "Tooth Name",
-                "Tooth Age",
-                "Tooth Wear"
-            ],
-            */
             "Order By" => [
                 "Order By",
             ]

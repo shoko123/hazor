@@ -22,6 +22,7 @@ const router = useRouter()
 function submit() {
   console.log(`filter.submit()`);
   const query = filtersToQueryObject()
+  trio.resetCategoryAndGroupIndices()  
   router.push({ name: 'index', params: { module: current.value.url_module }, query })
 }
 
