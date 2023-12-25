@@ -110,10 +110,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     }
 
     async function loadPage(pageNoB1: number, view: TCView, module: TModule): Promise<boolean> {
-        let ipp = view.ipp
-        let start = (pageNoB1 - 1) * ipp
-
-        console.log(`collectionRelated.loadPage() view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1} module: ${module} `);
+        //related page is a sub-array of array, determined by computed(array, pageNoB1). So, just set pageNoB1
         extra.value.pageNoB1 = pageNoB1
         return true
     }

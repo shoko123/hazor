@@ -86,7 +86,34 @@ type TApiPage = TApiPageMainGallery |
         TApiPageTableStone |
         TApiPageTableFauna
 
+
 //conversions ready for consumption for 'Gallery', 'Chips', and 'Tabular' views
+
+type TPageMainTabularLocus = TApiPageTableLocus & {
+        tag: string
+}
+
+type TPageMainTabularStone = TApiPageTableStone & {
+        tag: string
+}
+
+type TPageMainTabularFauna = TApiPageTableStone & {
+        tag: string
+}
+
+type TPageMainTabular = TPageMainTabularLocus | TPageMainTabularStone | TPageMainTabularFauna
+
+type TPageRelatedTabular = {
+        relation_name: string,
+        module: TModule,
+        id: number,
+        slug: string,
+        tag: string
+        short: string,
+}
+
+type TPageTabular = TPageMainTabular | TPageRelatedTabular
+
 type TPageMainChips = {
         id: number,
         slug: string,
@@ -117,14 +144,8 @@ type TPageRelatedGallery = {
         media: TMediaOfItem
 }
 
-type TPageRelatedTabular = {
-        relation_name: string,
-        module: TModule,
-        id: number,
-        slug: string,
-        tag: string
-        short: string,
-}
+
+
 
 
 
@@ -169,6 +190,7 @@ export {
         TPageChips,
         TPageMainGallery,
         TPageRelatedGallery,
+        TPageMainTabular,
         TPageRelatedTabular,
         TMediaUrls,
         TItemsPerView,
