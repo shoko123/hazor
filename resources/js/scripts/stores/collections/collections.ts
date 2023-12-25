@@ -2,7 +2,7 @@
 //handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { TCollectionName, TCollectionMeta, TApiArray, TCView } from '@/js/types/collectionTypes'
+import { TCollectionName, TCollectionMeta, TApiArray, TCView, TCollectionView } from '@/js/types/collectionTypes'
 import { TModule } from '../../../types/routesTypes'
 import { useXhrStore } from '../xhr'
 import { useRoutesMainStore } from '../routes/routesMain'
@@ -122,6 +122,11 @@ export const useCollectionsStore = defineStore('collections', () => {
         })
     }
 
+    function setCollectionViews(collection: TCollectionName, views: TCollectionView[]) {
+        let c = getCollection(<TCollectionName>collection)
+        c.setCollectionViews(views)
+    }
+
     function resetCollectionsViewIndex() {
         ['main', 'media', 'related'].forEach(x => {
             let c = getCollection(<TCollectionName>x)
@@ -195,6 +200,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         itemByIndex,
         setArray,
         loadPage,
+        setCollectionViews,        
         toggleCollectionView,
         clear,
         resetCollectionsViewIndex,

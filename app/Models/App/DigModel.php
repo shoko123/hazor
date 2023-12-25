@@ -10,7 +10,6 @@ use Illuminate\Support\Collection;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-
 use App\Models\Interfaces\DigModelInterface;
 use App\Models\Functional\MediaModel;
 use App\Models\Tags\Tag;
@@ -21,12 +20,17 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
     use  InteractsWithMedia;
     public $timestamps = false;
     protected $guarded = [];
-    protected $eloquent_model_name;
+    protected $eloquent_model_name = "";
     protected $builder;
 
-    public function __construct($eloquent_model_name = null)
+    public function __construct($eloquent_model_name)
     {
         $this->eloquent_model_name = $eloquent_model_name;
+    }
+
+    public function eloquentName()
+    {
+        return $this->eloquent_model_name;
     }
 
     public function registerMediaConversions(Media $media = null): void

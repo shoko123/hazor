@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { TModule } from '../../../types/routesTypes'
 import { TMediaRecord, TPageCMedia } from '../../../types/mediaTypes'
-import { TCollectionExtra, TCView, TApiArray } from '@/js/types/collectionTypes'
+import { TCollectionExtra, TCView, TApiArray, TCollectionView } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections'
 import { useMediaStore } from '../media'
 
@@ -61,6 +61,10 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
         extra.value.length = data.length
     }
 
+    function setCollectionViews(views: TCollectionView[]){
+        //media collection views are constant (not dependent on Module - do nothing.
+        //extra.value.views = views.map(x => { return { name: x, ipp: itemsPerView[x] } })
+    }
     function switchArrayItems(indexA: number, indexB: number) {
         let temp = { ...array.value[indexA] }
         array.value[indexA] = { ...array.value[indexB] }
@@ -107,6 +111,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
         page,
         loadPage,
         itemIndexById,
+        setCollectionViews,
         setArray,
         switchArrayItems,        
         collection,

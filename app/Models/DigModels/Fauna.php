@@ -67,12 +67,17 @@ class Fauna extends FindModel
         return $this->belongsTo(FaunaFusion::class, 'fusion_distal_id');
     }
 
-    public function init(): array
+    public function initInfo(): array
     {
         return [
-            "message" => $this->eloquent_model_name . '.init()',
-            "counts" => ["items" => $this->count(), "media" => DB::table('media')->where('model_type', 'Fauna')->count(),],
-            "item_views" => config('app_specific.display_options.item_views.Fauna'),
+            "display_options" => [
+                "item_views" =>  ['Main', 'Media', 'Related'],
+                "main_collection_views" => ["Table", "Chip"],
+                "related_collection_views" => ["Image", "Table", "Chip"],
+            ],
+            "welcome_text" => 'Sources:
+            Justin Lev-Tov. (2006) "Hazor from Asia/Israel". In Hazor: Zooarchaeology. Justin Lev-Tov (Ed). Released: 2006-05-12. Open Context. <https://opencontext.org/subjects/87b0254e-4b20-c71e-2ba1-bdf294f4893c> ARK (Archive): https://n2t.net/ark:/28722/k20p1431c
+            Data imported and cleaned by Menachem Rogel. Each item includes a link to the persistent Open Context entry.'
         ];
     }
 

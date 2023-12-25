@@ -57,12 +57,17 @@ class Stone extends FindModel
         return is_null($this->type) ? "TBD" : $this->type;
     }
 
-    public function init(): array
+    public function initInfo(): array
     {
         return [
-            "message" => $this->eloquent_model_name . '.init()',
-            "counts" => ["items" => $this->count(), "media" => DB::table('media')->where('model_type', 'Stone')->count(),],
-            "item_views" => config('app_specific.display_options.item_views.Stone'),
+            "display_options" => [
+                "item_views" =>  ['Main', 'Media', 'Related'],
+                "main_collection_views" => ["Image", "Table", "Chip"],
+                "related_collection_views" => ["Image", "Table", "Chip"],
+            ],
+            "welcome_text" => 'Sources:
+            Hazor VI: The 1990-2009 Excavations, The Iron Age. 2012. A. Ben-Tor, D. Ben-Ami, and D. Sandhaus, eds. Jerusalem.
+            Also includes unpublished ground stone artifacts studied by Jennie Ebeling.'
         ];
     }
 

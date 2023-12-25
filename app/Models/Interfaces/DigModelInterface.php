@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 
 interface DigModelInterface
 {
-    public function init(): array;
+    public function initInfo(): array;
     public function index($queryParams);
     public function page($ids, $view): Collection;
     public function show(array $validated);

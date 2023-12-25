@@ -35,12 +35,17 @@ class Locus extends DigModel
         return $this->morphToMany(Tag::class, 'taggable');
     }
 
-    public function init(): array
+    public function initInfo(): array
     {
         return [
-            "message" => $this->eloquent_model_name . '.init()',
-            "counts" => ["items" => $this->count(), "media" => DB::table('media')->where('model_type', 'Locus')->count(),],
-            "item_views" => config('app_specific.display_options.item_views.Locus'),
+            "display_options" => [
+                "item_views" =>  ['Main', 'Media', 'Related'],
+                "main_collection_views" => ["Image", "Table", "Chip"],
+                "related_collection_views" => ["Image", "Table", "Chip"],
+            ],
+            "welcome_text" => 'Sources:
+            Hazor VII: The 1990-2012 Excavations, The Bronze Age. 2017. A. Ben-Tor, S. Zuckerman, S. Bechar, and D. Sandhaus, eds. Jerusalem. 
+            Hazor VI: The 1990-2009 Excavations, The Iron Age. 2012. A. Ben-Tor, D. Ben-Ami, and D. Sandhaus, eds. Jerusalem.'
         ];
     }
 

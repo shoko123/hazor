@@ -12,7 +12,7 @@ use Exception;
 
 abstract class FindModel extends DigModel
 {
-    public function __construct($eloquent_model_name = null)
+    public function __construct()
     {
     }
 }

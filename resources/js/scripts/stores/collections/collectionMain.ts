@@ -2,7 +2,7 @@
 //handles all collections and loading of pages
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
-import { TCollectionExtra, TApiArray, TApiArrayMain, TApiPageMainImage, TApiPageTableLocus, TCView, TApiPage, TPageItem, TCollectionView, TPageCMainVImage, TPageCMainVTable, TPageVChip } from '@/js/types/collectionTypes'
+import { TCollectionExtra, TApiArray, TApiArrayMain, TApiPageMainImage, TItemsPerView, TCView, TApiPage, TPageItem, TCollectionView, TPageCMainVImage, TPageCMainVTable, TPageVChip } from '@/js/types/collectionTypes'
 import { TModule } from '../../../types/routesTypes'
 import { useCollectionsStore } from './collections'
 import { useModuleStore } from '../module'
@@ -17,10 +17,12 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     const { tagFromSlug } = useModuleStore()
     const c = useCollectionsStore()
 
+    let itemsPerView  = <TItemsPerView> { Image: 36, Table: 500, Chip: 200 }
+
     let extra = ref<TCollectionExtra>({
         length: 0,
         pageNoB1: 1,
-        views: <TCView[]>[ { name: 'Image', ipp: 36}, { name: 'Table', ipp: 500} ,{ name: 'Chip', ipp: 200}],
+        views: <TCView[]>[{ name: 'Image', ipp: 36 }, { name: 'Table', ipp: 500 }, { name: 'Chip', ipp: 200 }],
         viewIndex: 0,
     })
 
@@ -37,8 +39,12 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     })
 
     const ipp = computed(() => {
-        return  extra.value.views[extra.value.viewIndex].ipp     
+        return extra.value.views[extra.value.viewIndex].ipp
     })
+
+    function setCollectionViews(views: TCollectionView[]){
+        extra.value.views = views.map(x => { return { name: x, ipp: itemsPerView[x] } })
+    }
 
     function setArray(data: TApiArray[]) {
         array.value = <TApiArrayMain[]>data
@@ -110,7 +116,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
                 break;
 
             case 'Table':
-                toSave = apiPage.map(x => { return { ...x, tag: tagFromSlug(module, x.slug)} })
+                toSave = apiPage.map(x => { return { ...x, tag: tagFromSlug(module, x.slug) } })
                 page.value = toSave
                 break;
 
@@ -126,7 +132,6 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         let index = array.value.findIndex(x => x.id === id)
         //console.log(`collectionMain.itemIndexById(id:${id}) array: ${JSON.stringify(array.value.slice(0,5), null, 2)} index: ${index}`)
         return index
-
     }
 
     function itemIsInPage(id: number) {
@@ -163,6 +168,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         page,
         loadPage,
         itemIndexById,
+        setCollectionViews,
         setArray,
         collection,
         itemIsInPage,

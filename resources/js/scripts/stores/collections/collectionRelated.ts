@@ -3,7 +3,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { TModule } from '../../../types/routesTypes'
-import { TCollectionExtra, TCollectionView, TPageCMainVImage, TApiArrayRelated, TCView, TApiArray, TPageCRelatedVMedia, TPageCRelatedVChip, TPageCRelatedVTable } from '@/js/types/collectionTypes'
+import { TCollectionExtra, TCollectionView, TItemsPerView, TApiArrayRelated, TCView, TApiArray, TPageCRelatedVMedia, TPageCRelatedVChip, TPageCRelatedVTable } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections'
 import { useXhrStore } from '../xhr'
 import { useMediaStore } from '../media'
@@ -16,6 +16,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     const c = useCollectionsStore()
     const { tagFromSlug } = useModuleStore()
 
+    let itemsPerView  = <TItemsPerView> { Image: 36, Table: 500, Chip: 200 }
 
     let extra = ref<TCollectionExtra>({
         length: 0,
@@ -99,6 +100,10 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
         }
     })
 
+    function setCollectionViews(views: TCollectionView[]){
+        extra.value.views = views.map(x => { return { name: x, ipp: itemsPerView[x] } })
+    }
+
     function setArray(data: TApiArray[]) {
         array.value = <TApiArrayRelated[]>data
         extra.value.length = data.length
@@ -140,6 +145,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
         headers,
         loadPage,
         itemIndexById,
+        setCollectionViews,
         setArray,
         collection,
         itemIsInPage,

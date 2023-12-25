@@ -41,10 +41,9 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     for (const x of plan) {
       switch (x) {
         case 'module.load':
-          await loadTrio(module).catch(err => {
+          await loadModule(module).catch(err => {
             throw 'ModuleInitError'
           })
-          c.resetCollectionsViewIndex()
           break
 
         case 'module.clear':
@@ -110,21 +109,26 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     return { success: true }
   }
 
-  async function loadTrio(module: TModule) {
+  async function loadModule(module: TModule) {
     trioReset()
     n.showSpinner('Loading module data ...')
     return xhr.send('model/init', 'post', { model: module })
       .then(res => {
-        //console.log(`auth.response is ${JSON.stringify(res, null, 2)}`)
+        //console.log(`loadModule() res:\n${JSON.stringify(res, null, 2)}`)
         //console.log(`model(${module}).init() returned (success)`)
         m.counts = res.data.counts
         m.lookups = res.data.lookups
+        m.welcomeText = res.data.welcome_text
 
+        c.resetCollectionsViewIndex()
         i.setItemViewIndex(0)        
-        i.itemViews = res.data.item_views
+        i.itemViews = res.data.display_options.item_views
         c.clear(['main', 'media', 'related'])
 
         setTrio(res.data.trio)
+        c.setCollectionViews('main', res.data.display_options.main_collection_views)
+        c.setCollectionViews('related', res.data.display_options.related_collection_views)
+
         return true
       })
       .catch(err => {

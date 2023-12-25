@@ -168,6 +168,8 @@ type TCollectionMeta = {
         length: number
 }
 
+type TItemsPerView = {[key in TCollectionView]: number;}
+
 export {
         TCollectionName,
         TCollectionView,
@@ -190,4 +192,5 @@ export {
         TPageCRelatedVChip,
         TPageItem,
         TMediaUrls,
+        TItemsPerView,
 }

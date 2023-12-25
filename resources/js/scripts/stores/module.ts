@@ -18,6 +18,7 @@ export const useModuleStore = defineStore('module', () => {
 
   let counts = ref({ items: 0, media: 0 })
   let lookups =  ref<{column_name: TColumnName, group_name: string}[]>([])
+  let welcomeText =  ref<string>("")
 
   const backgroundImage = computed(() => {
     let module = current.value.module
@@ -52,5 +53,5 @@ export const useModuleStore = defineStore('module', () => {
     return getStore(current.value.module)
   })
 
-  return { counts, backgroundImage, getCurrentModuleStore, lookups, tagFromSlug }
+  return { counts, backgroundImage, welcomeText, getCurrentModuleStore, lookups, tagFromSlug }
 })
