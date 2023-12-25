@@ -20,7 +20,7 @@
 <script lang="ts" setup >
 import { computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { TCollectionName, TPageCMainVImage, TPageCRelatedVMedia } from '../../types/collectionTypes'
+import { TCollectionName, TPageMainGallery, TPageRelatedGallery } from '../../types/collectionTypes'
 import { TMediaRecord } from '../../types/mediaTypes'
 import { useCollectionMainStore } from '../../scripts/stores/collections/collectionMain'
 import { useCollectionMediaStore } from '../../scripts/stores/collections/collectionMedia'
@@ -69,7 +69,7 @@ const mainRecord = computed(() => {
   if (props.source !== 'main') {
     return null
   }
-  let ma = record.value as TPageCMainVImage
+  let ma = record.value as TPageMainGallery
   return ma
 })
 
@@ -85,7 +85,7 @@ const relatedRecord = computed(() => {
   if (props.source !== 'related') {
     return null
   }
-  let ma = record.value as TPageCRelatedVMedia
+  let ma = record.value as TPageRelatedGallery
   return ma
 })
 

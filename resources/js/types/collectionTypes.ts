@@ -1,9 +1,9 @@
 // collectionTypes.ts
 
-import { TMediaOfItem, TMediaRecord, TMediaUrls, TPageCMedia } from '@/js/types/mediaTypes'
+import { TMediaOfItem, TMediaRecord, TMediaUrls, TPageMedia } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/routesTypes'
 
-type TCollectionView = 'Image' | 'Chip' | 'Table'
+type TCollectionView = 'Gallery' | 'Chips' | 'Tabular'
 type TCollectionName = 'main' | 'media' | 'related'
 
 type TCView = { name: TCollectionView, ipp: number }
@@ -25,7 +25,7 @@ type TApiArray = TApiArrayMain | TApiArrayMedia | TApiArrayRelated
 //page types (divided into ApiPageX and PageX groups)
 
 //Api page types
-type TApiPageMainImage = {
+type TApiPageMainGallery = {
         id: number,
         slug: string,
         short: string,
@@ -63,7 +63,7 @@ type TApiPageTableStone = {
 }
 
 type TApiPageTableFauna = {
-        id: number,  
+        id: number,
         slug: string,
         label: string,
         area: string,
@@ -80,30 +80,26 @@ type TApiPageTableFauna = {
         modifications: string,
 }
 
-type TApiPageMainTable = {
-        id: number,
-        slug: string,
-        tag: string,
-        description: string,
-}
-
-type TApiPage = TApiPageMainImage |
-        TApiPageMainTable |
+type TApiPage = TApiPageMainGallery |
         TApiArrayMain |
         TApiPageTableLocus |
         TApiPageTableStone |
         TApiPageTableFauna
 
-
-
-//conversions ready for consumption for 'Media', 'Chip', and 'Table' views
-type TPageVChip = {
+//conversions ready for consumption for 'Gallery', 'Chips', and 'Tabular' views
+type TPageMainChips = {
         id: number,
         slug: string,
         tag: string,
 }
 
-type TPageCMainVImage = {
+type TPageRelatedChips = TPageMainChips & {
+        module: TModule,
+}
+
+type TPageChips = TPageMainChips | TPageRelatedChips
+
+type TPageMainGallery = {
         id: number,
         slug: string,
         tag: string,
@@ -111,14 +107,7 @@ type TPageCMainVImage = {
         media: TMediaOfItem
 }
 
-type TPageCMainVTable = {
-        id: number,
-        slug: string,
-        tag: string
-        //description: string
-}
-
-type TPageCRelatedVMedia = {
+type TPageRelatedGallery = {
         relation_name: string,
         module: TModule,
         id: number,
@@ -128,7 +117,7 @@ type TPageCRelatedVMedia = {
         media: TMediaOfItem
 }
 
-type TPageCRelatedVTable = {
+type TPageRelatedTabular = {
         relation_name: string,
         module: TModule,
         id: number,
@@ -137,14 +126,7 @@ type TPageCRelatedVTable = {
         short: string,
 }
 
-type TPageCRelatedVChip = {
-        module: TModule,
-        id: number,
-        slug: string,
-        tag: string
-}
-//union of the above
-type TPageItem = TPageCMainVImage | TPageCMainVTable | TPageVChip | TPageCMedia | TPageCRelatedVMedia | TPageCRelatedVChip
+
 
 //internal collection data
 type TCollectionExtra = {
@@ -168,7 +150,7 @@ type TCollectionMeta = {
         length: number
 }
 
-type TItemsPerView = {[key in TCollectionView]: number;}
+type TItemsPerView = { [key in TCollectionView]: number; }
 
 export {
         TCollectionName,
@@ -180,17 +162,14 @@ export {
         TApiArrayMedia,
         TApiArrayRelated,
         TApiArray,
-        TApiPageMainImage,
-        TApiPageMainTable,
-        TApiPageTableLocus,
+        TApiPageMainGallery,
         TApiPage,
-        TPageVChip,
-        TPageCMainVImage,
-        TPageCMainVTable,
-        TPageCRelatedVMedia,
-        TPageCRelatedVTable,
-        TPageCRelatedVChip,
-        TPageItem,
+        TPageMainChips,
+        TPageRelatedChips,
+        TPageChips,
+        TPageMainGallery,
+        TPageRelatedGallery,
+        TPageRelatedTabular,
         TMediaUrls,
         TItemsPerView,
 }

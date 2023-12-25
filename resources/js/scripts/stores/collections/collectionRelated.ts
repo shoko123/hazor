@@ -3,7 +3,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { TModule } from '../../../types/routesTypes'
-import { TCollectionExtra, TCollectionView, TItemsPerView, TApiArrayRelated, TCView, TApiArray, TPageCRelatedVMedia, TPageCRelatedVChip, TPageCRelatedVTable } from '@/js/types/collectionTypes'
+import { TCollectionExtra, TCollectionView, TItemsPerView, TApiArrayRelated, TCView, TApiArray, TPageRelatedGallery, TPageRelatedChips, TPageRelatedTabular } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections'
 import { useXhrStore } from '../xhr'
 import { useMediaStore } from '../media'
@@ -16,12 +16,12 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     const c = useCollectionsStore()
     const { tagFromSlug } = useModuleStore()
 
-    let itemsPerView  = <TItemsPerView> { Image: 36, Table: 500, Chip: 200 }
+    let itemsPerView  = <TItemsPerView> { Gallery: 36, Tabular: 100, Chips: 200 }
 
     let extra = ref<TCollectionExtra>({
         length: 0,
         pageNoB1: 1,
-        views: <TCView[]>[{ name: 'Table', ipp: 25 }, { name: 'Image', ipp: 36 }, { name: 'Chip', ipp: 200 }],
+        views: <TCView[]>[{ name: "Tabular", ipp: 36 }, { name: "Chips", ipp: 200 }],
         viewIndex: 0,
     })
 
@@ -31,7 +31,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
         return extra.value.views[extra.value.viewIndex].ipp
     })
 
-    //headers for the related.Table view
+    //headers for the related.Tabular view
     const headers = computed(() => {
         return [
             { title: 'Tag', align: 'start', key: 'tag' },
@@ -40,14 +40,14 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
         ]
     })
 
-    const page = computed<TPageCRelatedVMedia[] | TPageCRelatedVTable[] | TPageCRelatedVChip[]>(() => {
-        //let ipp = c.getIpp('Image')
+    const page = computed<TPageRelatedGallery[] | TPageRelatedTabular[] | TPageRelatedChips[]>(() => {
+        //let ipp = c.getIpp("Gallery")
         let start = (extra.value.pageNoB1 - 1) * ipp.value
         let slice = array.value.slice(start, start + ipp.value)
         let res = []
 
         switch (extra.value.views[extra.value.viewIndex].name) {
-            case 'Table':
+            case "Tabular":
                 res = slice.map(x => {
                     let media = buildMedia(x.media, x.module)
                     return {
@@ -61,7 +61,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
                 })
                 break
 
-            case 'Image':
+            case "Gallery":
                 res = slice.map(x => {
                     let media = buildMedia(x.media, x.module)
                     return {
@@ -76,7 +76,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
                 })
                 break
 
-            case 'Chip':
+            case "Chips":
                 res = slice.map(x => {
                     return {
                         relation_name: x.relation_name,

@@ -40,12 +40,12 @@ const c = computed(() => {
 })
 
 const page = computed(() => {
-  return c.value.page //as TPageCMainVTable[]
+  return c.value.page
 })
 
 
 const collectionIsNotEmpty = computed(() => {
-  return page.value.length > 0 //as TPageCMainVTable[]
+  return page.value.length > 0
 })
 
 function btnClicked(item: any) {

@@ -40,8 +40,8 @@ class Locus extends DigModel
         return [
             "display_options" => [
                 "item_views" =>  ['Main', 'Media', 'Related'],
-                "main_collection_views" => ["Image", "Table", "Chip"],
-                "related_collection_views" => ["Image", "Table", "Chip"],
+                "main_collection_views" => ["Gallery", "Tabular", "Chips"],
+                "related_collection_views" => ["Gallery", "Tabular", "Chips"],
             ],
             "welcome_text" => 'Sources:
             Hazor VII: The 1990-2012 Excavations, The Bronze Age. 2017. A. Ben-Tor, S. Zuckerman, S. Bechar, and D. Sandhaus, eds. Jerusalem. 
@@ -71,12 +71,12 @@ class Locus extends DigModel
         $this->builder->orderBy('id', 'asc');
     }
 
-    public function builderPageTableLoad(): void
+    public function builderPageTabularLoad(): void
     {
         $this->builder = $this->select('*');
     }
 
-    public function builderPageImageLoad(): void
+    public function builderPageGalleryLoad(): void
     {
         $this->builder = $this->select('id', 'area', 'name', 'type', 'cross_ref')
             ->with(['media' => function ($query) {

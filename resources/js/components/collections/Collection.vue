@@ -24,9 +24,9 @@
 import { type Component, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { TCollectionName } from '@/js/types/collectionTypes'
-import CollectionPageImage from './CollectionPageImage.vue'
+import CollectionPageGallery from './CollectionPageGallery.vue'
 import CollectionPageChips from './CollectionPageChips.vue'
-import CollectionPageTable from './CollectionPageTable.vue'
+import CollectionPageTabular from './CollectionPageTabular.vue'
 import { useItemStore } from '../../scripts/stores/item';
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 
@@ -88,15 +88,15 @@ const paginator = computed(() => {
 
 const collectionPage = computed<Component>(() => {
   switch (meta.value.view.name) {
-    case 'Image':
-      return CollectionPageImage
-    case 'Chip':
+    case 'Gallery':
+      return CollectionPageGallery
+    case 'Chips':
       return CollectionPageChips
-    case 'Table':
-      return CollectionPageTable
+    case 'Tabular':
+      return CollectionPageTabular
     default:
       console.log(`Collection.vue invalid collectionPage: ${meta.value.viewIndex}`)
-      return CollectionPageImage
+      return CollectionPageGallery
   }
 })
 

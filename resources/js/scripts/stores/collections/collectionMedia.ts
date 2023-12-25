@@ -3,7 +3,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { TModule } from '../../../types/routesTypes'
-import { TMediaRecord, TPageCMedia } from '../../../types/mediaTypes'
+import { TMediaRecord, TPageMedia } from '../../../types/mediaTypes'
 import { TCollectionExtra, TCView, TApiArray, TCollectionView } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections'
 import { useMediaStore } from '../media'
@@ -15,7 +15,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     let extra = ref<TCollectionExtra>({
         length: 0,
         pageNoB1: 1,
-        views: [{name: 'Image', ipp: 36}],
+        views: [{name: 'Gallery', ipp: 36}],
         viewIndex: 0,
     })
 
@@ -33,8 +33,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
         return  extra.value.views[extra.value.viewIndex].ipp     
     })
 
-    const page = computed<TPageCMedia[]>(() => {
-        //let ipp = c.getIpp('Image')
+    const page = computed<TPageMedia[]>(() => {
         let start = (extra.value.pageNoB1 - 1) * ipp.value
         let slice = array.value.slice(start, start + ipp.value)
         let res = slice.map(x => {
@@ -62,9 +61,9 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     }
 
     function setCollectionViews(views: TCollectionView[]){
-        //media collection views are constant (not dependent on Module - do nothing.
-        //extra.value.views = views.map(x => { return { name: x, ipp: itemsPerView[x] } })
+        //The media collection has only one view (Gallery) independent of module. So, do nothing.
     }
+
     function switchArrayItems(indexA: number, indexB: number) {
         let temp = { ...array.value[indexA] }
         array.value[indexA] = { ...array.value[indexB] }

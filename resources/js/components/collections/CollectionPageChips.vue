@@ -9,7 +9,7 @@
 <script lang="ts" setup >
 
 import { computed } from 'vue'
-import { TCollectionName, TPageVChip } from '../../types/collectionTypes'
+import { TCollectionName, TPageChips } from '../../types/collectionTypes'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 
@@ -26,7 +26,7 @@ const c = computed(() => {
 })
 
 const page = computed(() => {
-  return c.value.page as TPageVChip[]
+  return c.value.page as TPageChips[]
 })
 
 function goTo(item: any) {

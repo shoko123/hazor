@@ -2,7 +2,7 @@
 //handles all collections and loading of pages
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
-import { TCollectionExtra, TApiArray, TApiArrayMain, TApiPageMainImage, TItemsPerView, TCView, TApiPage, TPageItem, TCollectionView, TPageCMainVImage, TPageCMainVTable, TPageVChip } from '@/js/types/collectionTypes'
+import { TCollectionExtra, TApiArray, TApiArrayMain, TApiPageMainGallery, TItemsPerView, TCView, TApiPage, TCollectionView, TPageMainGallery, TPageMainChips } from '@/js/types/collectionTypes'
 import { TModule } from '../../../types/routesTypes'
 import { useCollectionsStore } from './collections'
 import { useModuleStore } from '../module'
@@ -17,12 +17,12 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     const { tagFromSlug } = useModuleStore()
     const c = useCollectionsStore()
 
-    let itemsPerView  = <TItemsPerView> { Image: 36, Table: 500, Chip: 200 }
+    let itemsPerView  = <TItemsPerView> { Gallery: 36, Tabular: 500, Chips: 200 }
 
     let extra = ref<TCollectionExtra>({
         length: 0,
         pageNoB1: 1,
-        views: <TCView[]>[{ name: 'Image', ipp: 36 }, { name: 'Table', ipp: 500 }, { name: 'Chip', ipp: 200 }],
+        views: <TCView[]>[{ name: "Gallery", ipp: 36 }, { name: "Tabular", ipp: 500 }, { name: "Chips", ipp: 200 }],
         viewIndex: 0,
     })
 
@@ -58,8 +58,8 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         console.log(`collectionMain.loadPage() view: ${view.name} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1} module: ${module} `);
 
         switch (view.name) {
-            //if 'Chip' do nothing - page will be extracted from array
-            case 'Chip':
+            //if 'Chips' do nothing - page will be extracted from array
+            case "Chips":
                 //savePage(array.value.slice(start, start + ipp), view, module)
                 extra.value.pageNoB1 = pageNoB1
                 //extra.value.viewIndex = viewIndex
@@ -67,8 +67,8 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
                 savePage(slice, view, module)
                 return true
 
-            case 'Image':
-            case 'Table':
+            case "Gallery":
+            case "Tabular":
 
                 let ids = array.value.slice(start, start + ipp).map(x => x.id);
 
@@ -106,23 +106,23 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         let toSave = []
 
         switch (view.name) {
-            case 'Image':
-                toSave = (<TApiPageMainImage[]>apiPage).map(x => {
+            case "Gallery":
+                toSave = (<TApiPageMainGallery[]>apiPage).map(x => {
                     const media = buildMedia(x.media1, module)
                     const item = { id: x.id, slug: x.slug, tag: tagFromSlug(module, x.slug), short: x.short }
                     return { ...item, media: media }
                 })
-                page.value = <TPageCMainVImage[]>toSave
+                page.value = <TPageMainGallery[]>toSave
                 break;
 
-            case 'Table':
+            case "Tabular":
                 toSave = apiPage.map(x => { return { ...x, tag: tagFromSlug(module, x.slug) } })
                 page.value = toSave
                 break;
 
-            case 'Chip':
+            case 'Chips':
                 toSave = (<TApiArrayMain[]>apiPage).map(x => { return { ...x, tag: tagFromSlug(module, x.slug) } })
-                page.value = <TPageVChip[]>toSave
+                page.value = <TPageMainChips[]>toSave
                 break;
         }
         //console.log(`mainCollection.savePage() length: ${toSave.length}\npage:\n${JSON.stringify(page.value, null, 2)}`)
@@ -135,7 +135,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     }
 
     function itemIsInPage(id: number) {
-        return page.value.some((x) => (<TPageCMainVImage>x).id === id)
+        return page.value.some((x) => (<TPageMainGallery>x).id === id)
     }
 
     function itemByIndex(index: number): TApiArray {

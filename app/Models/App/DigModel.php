@@ -167,12 +167,12 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
     public function page($ids, $view): Collection
     {
         switch ($view) {
-            case 'Table':
-                $this->builderPageTableLoad();
+            case "Tabular":
+                $this->builderPageTabularLoad();
                 break;
 
-            case 'Image':
-                $this->builderPageImageLoad();
+            case "Gallery":
+                $this->builderPageGalleryLoad();
                 break;
         }
         $this->builder = $this->builder->whereIn('id', $ids);
@@ -181,10 +181,10 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             ->get();
 
         switch ($view) {
-            case "Table":
+            case "Tabular":
                 return $res;
 
-            case "Image":
+            case "Gallery":
                 $r = collect([]);
                 $r = $res->map(function ($item, $key) {
                     $media = null;

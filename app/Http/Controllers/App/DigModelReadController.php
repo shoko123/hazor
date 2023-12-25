@@ -31,7 +31,7 @@ class DigModelReadController extends Controller
     {
         $validated = $r->validated();
         
-        if ($validated["view"] === 'Table') {
+        if ($validated["view"] === "Tabular") {
             $page = $m->page($validated["ids"], $validated["view"]);
 
             switch ($r["model"]) {

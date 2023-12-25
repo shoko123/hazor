@@ -36,7 +36,7 @@ class PageRequest extends FormRequest
         return [
             'model' => 'required|in:Locus,Stone,Fauna',
             'ids.*' => $id_exists_rule,
-            'view' => 'required|in:Table,Image',
+            'view' => 'required|in:Tabular,Gallery',
         ];
     }
 

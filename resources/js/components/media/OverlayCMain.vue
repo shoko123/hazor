@@ -9,7 +9,7 @@
 <script lang="ts" setup >
 import { computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { TCollectionName, TPageCMainVImage } from '../../types/collectionTypes'
+import { TCollectionName } from '../../types/collectionTypes'
 import { useCollectionMainStore } from '../../scripts/stores/collections/collectionMain'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'

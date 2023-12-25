@@ -62,8 +62,8 @@ class Stone extends FindModel
         return [
             "display_options" => [
                 "item_views" =>  ['Main', 'Media', 'Related'],
-                "main_collection_views" => ["Image", "Table", "Chip"],
-                "related_collection_views" => ["Image", "Table", "Chip"],
+                "main_collection_views" => ["Gallery", "Tabular", "Chips"],
+                "related_collection_views" => ["Gallery", "Tabular", "Chips"],
             ],
             "welcome_text" => 'Sources:
             Hazor VI: The 1990-2009 Excavations, The Iron Age. 2012. A. Ben-Tor, D. Ben-Ami, and D. Sandhaus, eds. Jerusalem.
@@ -81,12 +81,12 @@ class Stone extends FindModel
         $this->builder->orderBy('basket', 'asc')->orderBy('stone_no', 'asc');
     }
 
-    public function builderPageTableLoad(): void
+    public function builderPageTabularLoad(): void
     {
         $this->builder = $this->with(['material', 'baseType']);
     }
 
-    public function builderPageImageLoad(): void
+    public function builderPageGalleryLoad(): void
     {
         $this->builder = $this->select('id', 'basket', 'stone_no', 'type', 'description')
             ->with(['media' => function ($query) {

@@ -72,8 +72,8 @@ class Fauna extends FindModel
         return [
             "display_options" => [
                 "item_views" =>  ['Main', 'Media', 'Related'],
-                "main_collection_views" => ["Table", "Chip"],
-                "related_collection_views" => ["Image", "Table", "Chip"],
+                "main_collection_views" => ["Tabular", "Chips"],
+                "related_collection_views" => ["Gallery", "Tabular", "Chips"],
             ],
             "welcome_text" => 'Sources:
             Justin Lev-Tov. (2006) "Hazor from Asia/Israel". In Hazor: Zooarchaeology. Justin Lev-Tov (Ed). Released: 2006-05-12. Open Context. <https://opencontext.org/subjects/87b0254e-4b20-c71e-2ba1-bdf294f4893c> ARK (Archive): https://n2t.net/ark:/28722/k20p1431c
@@ -117,12 +117,12 @@ class Fauna extends FindModel
         $this->builder->orderBy('label', 'asc');
     }
 
-    public function builderPageTableLoad(): void
+    public function builderPageTabularLoad(): void
     {
         $this->builder = $this->with(['symmetry']);
     }
 
-    public function builderPageImageLoad(): void
+    public function builderPageGalleryLoad(): void
     {
         $this->builder = $this->select('id', 'label', 'taxon', 'element')
             ->with(['media' => function ($query) {
