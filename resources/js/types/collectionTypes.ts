@@ -12,9 +12,9 @@ type TCView = { name: TCollectionView, ipp: number }
 type TApiArrayMain = { id: number, slug: string }
 type TApiArrayMedia = { id: number, order_column: number, urls: TMediaUrls }
 type TApiArrayRelated = {
+        id: number,        
         relation_name: string,
         module: TModule,
-        id: number,
         slug: string,
         short: string,
         media: TMediaUrls
@@ -80,12 +80,13 @@ type TApiPageTableFauna = {
         modifications: string,
 }
 
+type TApiPageMainTabular = TApiPageTableLocus | TApiPageTableStone | TApiPageTableFauna
 
-type TApiPage = TApiPageMainGallery |
+type TApiPage = TApiArrayMain |
+        TApiPageMainGallery |
         TApiArrayMedia |
-        TApiPageTableLocus |
-        TApiPageTableStone |
-        TApiPageTableFauna
+        TApiPageMainTabular
+
 
 
 //conversions ready for consumption for 'Gallery', 'Chips', and 'Tabular' views
@@ -121,6 +122,7 @@ type TPageMainChips = {
         tag: string,
 }
 
+
 type TPageRelatedChips = TPageMainChips & {
         module: TModule,
 }
@@ -135,15 +137,14 @@ type TPageMainGallery = {
         media: TMediaOfItem
 }
 
+type TPageMain = TPageMainChips | TPageMainGallery | TPageMainTabular
+
 type TPageRelatedGallery = TPageMainGallery & {
         relation_name: string,
         module: TModule,
 }
 
 type TPageMediaGallery = TApiArrayMedia
-
-
-
 
 //internal collection data
 type TCollectionExtra = {
@@ -180,13 +181,15 @@ export {
         TApiArrayRelated,
         TApiArray,
         TApiPageMainGallery,
+        TApiPageMainTabular,
         TApiPage,
         TPageMainChips,
+        TPageMainGallery,
+        TPageMainTabular,
+        TPageMain,
         TPageRelatedChips,
         TPageChips,
-        TPageMainGallery,
         TPageRelatedGallery,
-        TPageMainTabular,
         TPageRelatedTabular,
         TPageMediaGallery,
         TMediaUrls,

@@ -1,19 +1,19 @@
 
 
 <template>
-  <v-card-text v-if="itemMedia">
-     <v-row no-gutters class="text-h5">
+  <v-card-text v-if="item">
+    <v-row no-gutters class="text-h5">
       Media for {{ derived.moduleAndTag }}
     </v-row>
     <v-row wrap no-gutters>
       <v-textarea v-model="derived.short" label="Description" class="mr-1" rows="3" readonly filled></v-textarea>
     </v-row>
-      <v-row no-gutters>
-      <v-text-field v-model="itemMedia.file_name" label="File Name" class="mr-1" readonly filled> </v-text-field>
+    <v-row no-gutters>
+      <v-text-field v-model="item.file_name" label="File Name" class="mr-1" readonly filled> </v-text-field>
     </v-row>
     <v-row no-gutters>
-      <v-text-field v-model="itemMedia.collection_name" label="Group" class="mr-1" readonly filled></v-text-field>
-      <v-text-field v-model="itemMedia.size" label="Size" class="mr-1" readonly filled></v-text-field>
+      <v-text-field v-model="item.collection_name" label="Group" class="mr-1" readonly filled></v-text-field>
+      <v-text-field v-model="item.size" label="Size" class="mr-1" readonly filled></v-text-field>
     </v-row>
   </v-card-text>
   <v-card-actions>
@@ -23,20 +23,22 @@
 </template>
 
 <script lang="ts" setup >
-import { useRouter } from 'vue-router'
+import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
+import { type TCarouselMedia } from '@/js/types/mediaTypes'
 import { useItemStore } from '../../scripts/stores/item'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
-const { getRouteInfo } = useRoutesMainStore()
-const router = useRouter()
-const routeInfo = getRouteInfo()
-const {close} =useCarouselStore()
-const {itemMedia} = storeToRefs(useCarouselStore())
-const {derived} = storeToRefs(useItemStore())
+
+const { close } = useCarouselStore()
+const { carouselItemDetails } = storeToRefs(useCarouselStore())
+const { derived } = storeToRefs(useItemStore())
+
+const item = computed(() => {
+  return <TCarouselMedia | null>carouselItemDetails.value
+})
 
 async function download() {
-  downloadFile(<string>itemMedia.value?.media.urls.full, <string>itemMedia.value?.file_name)
+  downloadFile(<string>item.value?.media.urls.full, <string>item.value?.file_name)
 }
 
 async function goto() {
@@ -47,7 +49,7 @@ async function downloadFile(url: string, filename: string) {
   try {
     // Fetch the file
     const response = await fetch(url);
-    
+
     // Check if the request was successful
     if (response.status !== 200) {
       throw new Error(`Unable to download file. HTTP status: ${response.status}`);
@@ -74,6 +76,4 @@ async function downloadFile(url: string, filename: string) {
     console.error('Error downloading the file:', error.message);
   }
 }
-
-
 </script>

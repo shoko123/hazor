@@ -2,7 +2,7 @@
 //handles all collections and loading of pages
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
-import { TCollectionExtra, TApiArray, TApiArrayMain, TApiPageMainGallery, TItemsPerView, TCView, TApiPage, TCollectionView, TPageMainGallery, TPageMainChips } from '@/js/types/collectionTypes'
+import { TCollectionExtra, TApiArray, TApiArrayMain, TApiPageMainGallery, TApiPageMainTabular, TItemsPerView, TCView, TApiPage, TCollectionView, TPageMainGallery, TPageMain, TPageMainChips } from '@/js/types/collectionTypes'
 import { TModule } from '../../../types/routesTypes'
 import { useCollectionsStore } from './collections'
 import { useModuleStore } from '../module'
@@ -28,7 +28,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
 
     let array = ref<TApiArrayMain[]>([])
 
-    let page = ref<TApiPage[]>([])
+    let page = ref<TPageMain[]>([])
 
     const collection = computed(() => {
         return {
@@ -116,7 +116,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
                 break;
 
             case "Tabular":
-                toSave = apiPage.map(x => { return { ...x, tag: tagFromSlug(module, x.slug) } })
+                toSave = (<TApiPageMainTabular[]>apiPage).map(x => { return { ...x, tag: tagFromSlug(module, x.slug) } })
                 page.value = toSave
                 break;
 

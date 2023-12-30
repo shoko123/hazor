@@ -3,7 +3,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { TModule } from '../../../types/routesTypes'
-import { TCollectionExtra, TCView, TApiArrayMedia, TCollectionView, TPageMediaGallery} from '@/js/types/collectionTypes'
+import { TCollectionExtra, TCView, TApiArrayMedia, TApiArray, TCollectionView, TPageMediaGallery } from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections'
 import { useMediaStore } from '../media'
 
@@ -14,7 +14,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     let extra = ref<TCollectionExtra>({
         length: 0,
         pageNoB1: 1,
-        views: [{name: 'Gallery', ipp: 36}],
+        views: [{ name: 'Gallery', ipp: 36 }],
         viewIndex: 0,
     })
 
@@ -29,7 +29,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     })
 
     const ipp = computed(() => {
-        return  extra.value.views[extra.value.viewIndex].ipp     
+        return extra.value.views[extra.value.viewIndex].ipp
     })
 
     const page = computed<TPageMediaGallery[]>(() => {
@@ -39,19 +39,19 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
             let media = buildMedia({ full: x.urls.full, tn: x.urls.tn })
             return {
                 id: x.id,
-                order_column: x.order_column,                
+                order_column: x.order_column,
                 urls: media.urls,
             }
         })
         return res
     })
 
-    function setArray(data: TApiArrayMedia[]) {
-        array.value = data
+    function setArray(data: TApiArray[]) {
+        array.value = <TApiArrayMedia[]>data
         extra.value.length = data.length
     }
 
-    function setCollectionViews(views: TCollectionView[]){
+    function setCollectionViews(views: TCollectionView[]) {
         //The media collection has only one view (Gallery) independent of module. So, do nothing.
     }
 
@@ -103,7 +103,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
         itemIndexById,
         setCollectionViews,
         setArray,
-        switchArrayItems,        
+        switchArrayItems,
         collection,
         itemIsInPage,
         itemByIndex,

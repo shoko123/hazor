@@ -27,15 +27,18 @@
 
 <script lang="ts" setup >
 import { type Component, computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 import ImageZoom from './ImageZoom.vue'
 import CarouselFormMain from './CarouselFormMain.vue'
 import CarouselFormMedia from './CarouselFormMedia.vue'
 import CarouselFormRelated from './CarouselFormRelated.vue'
-const c = useCarouselStore()
+
+const { close, next } = useCarouselStore()
+const { showNextArrows, carouselHeader, collectionName } = storeToRefs(useCarouselStore())
 
 const carouselForm = computed<Component>(() => {
-  switch (c.collectionName) {
+  switch (collectionName.value) {
     case 'main':
       return CarouselFormMain
     case 'related':
@@ -46,22 +49,13 @@ const carouselForm = computed<Component>(() => {
   }
 })
 
-const carouselHeader = computed(() => {
-  return c.carouselHeader
-})
-
-
-const showNextArrows = computed(() => {
-  return c.arrayLength > 1
-})
-
-async function nextClicked(next: boolean) {
-  c.next(next)
+async function nextClicked(isRight: boolean) {
+  next(isRight)
 }
 
 async function closeCarousel() {
   console.log(`closeCarousel`)
-  await c.close()
+  await close()
 }
 
 </script>

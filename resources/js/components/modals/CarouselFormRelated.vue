@@ -22,10 +22,10 @@ import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 
 const { moveFromItemToItem } = useRoutesMainStore()
 const { close } = useCarouselStore()
-const { itemDetails } = storeToRefs(useCarouselStore())
+const { carouselItemDetails } = storeToRefs(useCarouselStore())
 
 const item = computed(() => {
-  return <TCarouselRelated | null>itemDetails.value
+  return <TCarouselRelated | null>carouselItemDetails.value
 })
 
 async function goToItem() {

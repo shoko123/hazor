@@ -2,7 +2,8 @@
 
 <template>
     <div id="zoomy-container" height="100vh">
-        <v-img id="zoomy" :src="urls?.full" :lazy-src="urls?.tn" aspect-ratio="1" height="95vh" :cover="isFiller">
+        <v-img id="zoomy" :src="media?.urls.full" :lazy-src="media?.urls.tn" aspect-ratio="1" height="95vh"
+            :cover="isFiller">
             <v-overlay v-model="isFiller" contained class="align-center justify-center">
                 <div class="text-white text-h2">No Media Available</div>
             </v-overlay>
@@ -19,7 +20,7 @@ import Zoomy from './zoomy/Zoomy.js'
 
 onMounted(() => {
     //console.log(`ImageZoom.mount`)
-    if (getMedia.value?.hasMedia) {
+    if (media.value?.hasMedia) {
         zm.value = new Zoomy('zoomy', options);
     } else {
         zm.value?.detach()
@@ -33,34 +34,33 @@ onBeforeUnmount(() => {
     zm.value = null
 })
 
+const { carouselItemDetails } = storeToRefs(useCarouselStore())
+
+const media = computed(() => {
+    return carouselItemDetails.value?.media
+})
+
 const zm = ref<Zoomy | null>(null)
 
 const options = {
     zoomUpperConstraint: 8, // Upper limit for zooming (optional)
     boundaryElementId: 'zoomy-container',
-};
+}
 
-//const { media } = storeToRefs(useCarouselStore())
-const { getMedia } = storeToRefs(useCarouselStore())
-
-watch(getMedia, () => {
+watch(media, () => {
     //console.log('ImageZoom.media changed')
     zm.value?.disable()
     zm.value?.detach()
-    if (getMedia.value?.hasMedia) {
+    if (media.value?.hasMedia) {
         zm.value = new Zoomy('zoomy', options)
     } else {
         zm.value = null
     }
 })
 
-const urls = computed(() => {
-    return getMedia.value?.urls
-})
-
 //isFiller includes a set function as v-overlays requires a modifiable boolean
 const isFiller = computed({
-    get: () => { return !getMedia.value?.hasMedia },
+    get: () => { return !media.value?.hasMedia },
     set: val => { }
 })
 </script>

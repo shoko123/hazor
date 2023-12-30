@@ -24,7 +24,7 @@ export const useCarouselStore = defineStore('carousel', () => {
   let isOpen = ref<boolean>(false)
   let collectionName = ref<TCollectionName>('main')
   let index = ref<number>(-1)
-  let itemDetails = ref<TCarousel | null>(null)
+  let carouselItemDetails = ref<TCarousel | null>(null)
 
   const carouselHeader = computed(() => {
     if (!isOpen.value) { return undefined }
@@ -32,57 +32,26 @@ export const useCarouselStore = defineStore('carousel', () => {
     let text = ""
     switch (collectionName.value) {
       case 'main':
-        text = `${derived.value.module} Query Results. Showing ${(<TCarouselMain>itemMain.value)?.module} ${(<TCarouselMain>itemMain.value)?.tag}`
+        text = `${derived.value.module} Query Results. Showing ${(<TCarouselMain>carouselItemDetails.value)?.module} ${(<TCarouselMain>carouselItemDetails.value)?.tag}`
         break
       case 'related':
-        text = `${derived.value.moduleAndTag} Related(${(<TCarouselRelated>itemDetails.value)?.module} ${(<TCarouselRelated>itemDetails.value)?.tag}. Relation: ${(<TCarouselRelated>itemDetails.value)?.relation_name})`
+        text = `${derived.value.moduleAndTag} Related(${(<TCarouselRelated>carouselItemDetails.value)?.module} ${(<TCarouselRelated>carouselItemDetails.value)?.tag}. Relation: ${(<TCarouselRelated>carouselItemDetails.value)?.relation_name})`
         break
       case 'media':
         text = `Media for ${derived.value.moduleAndTag}`
         break
     }
-    return text + ` (${index.value + 1}/${collection.value.array.length})`
+    return `${text} (${index.value + 1}/${collection.value.array.length})`
   })
 
-
-  const itemMain = computed(() => {
-    if (!isOpen.value || collectionName.value !== 'main') { return null }
-    return <TCarouselMain>itemDetails.value
-  })
-
-  const itemRelated = computed(() => {
-    if (!isOpen.value || collectionName.value !== 'related') { return null }
-    return <TCarouselRelated>itemDetails.value
-  })
-  const itemMedia = computed(() => {
-    if (!isOpen.value || collectionName.value !== 'media') { return null }
-    return <TCarouselMedia>itemDetails.value
-  })
-
-
-  const getMedia = computed<TMediaOfItem | null>(() => {
-    if (!isOpen.value) { return null }
-    return (<TCarouselMain>itemDetails.value).media
-  })
-
-  const arrayLength = computed(() => {
-    if (!isOpen.value) { return 0 }
+  const showNextArrows = computed(() => {
+    if (!isOpen.value) { return false }
     let collection = c.collection(<TCollectionName>collectionName.value)
-    return collection.value.array.length
-  })
-
-  const carouselGeneralDetails = computed(() => {
-    if (!isOpen.value) { return undefined }
-
-    return {
-      indexB1: index.value + 1,
-      collectionName: collectionName.value,
-    }
+    return collection.value.array.length > 1
   })
 
   async function open(source: TCollectionName, openIndex: number) {
     collectionName.value = source
-    let item = c.itemByIndex(source, openIndex)
     //console.log(`carousel.open() source: ${collectionName.value} index: ${openIndex} item: ${JSON.stringify(item, null, 2)}`)
     await load(c.itemByIndex(source, openIndex))
     index.value = openIndex
@@ -101,8 +70,7 @@ export const useCarouselStore = defineStore('carousel', () => {
 
     //related carousel item needs no DB access
     if (collectionName.value === 'related') {
-      //let media = buildMedia((<TApiArrayRelated>item).media, (<TApiArrayRelated>item).module)
-      itemDetails.value = { ...(<TApiArrayRelated>item), tag: tagFromSlug(derived.value.module, (<TApiArrayRelated>item).slug), media: buildMedia((<TApiArrayRelated>item).media, (<TApiArrayRelated>item).module) }
+      carouselItemDetails.value = { ...(<TApiArrayRelated>item), tag: tagFromSlug(derived.value.module, (<TApiArrayRelated>item).slug), media: buildMedia((<TApiArrayRelated>item).media, (<TApiArrayRelated>item).module) }
     } else {
       url = collectionName.value === 'main' ? 'model/carousel' : 'media/carousel'
       data["model"] = derived.value.module
@@ -121,7 +89,7 @@ export const useCarouselStore = defineStore('carousel', () => {
   }
 
   function saveMain(data: TApiCarouselMain) {
-    itemDetails.value = {
+    carouselItemDetails.value = {
       module: data.module,
       id: data.id,
       slug: data.slug,
@@ -132,7 +100,7 @@ export const useCarouselStore = defineStore('carousel', () => {
   }
 
   function saveMedia(data: TApiCarouselMedia) {
-    itemDetails.value = {
+    carouselItemDetails.value = {
       id: data.id,
       media: buildMedia(data.urls),
       size: (data.size / 1000000).toFixed(2).toString() + 'MB',
@@ -152,8 +120,8 @@ export const useCarouselStore = defineStore('carousel', () => {
       case 'main':
         let view = extra.value.views[extra.value.viewIndex]
 
-        if (!c.itemIsInPage(<number>itemDetails.value?.id)) {
-          const index = c.itemIndexById(<number>itemDetails.value?.id)
+        if (!c.itemIsInPage(<number>carouselItemDetails.value?.id)) {
+          const index = c.itemIndexById(<number>carouselItemDetails.value?.id)
           await c.loadPageByItemIndex(collectionName.value, view, index, derived.value.module)
             .then(res => {
               console.log(`carousel.close() loaded a new page`)
@@ -178,14 +146,9 @@ export const useCarouselStore = defineStore('carousel', () => {
   return {
     isOpen,
     collectionName,
-    arrayLength,
-    itemDetails,
-    itemMain,
-    itemRelated,
-    itemMedia,
+    carouselItemDetails,
     carouselHeader,
-    carouselGeneralDetails,
-    getMedia,
+    showNextArrows,
     open,
     close,
     next,
