@@ -1,6 +1,6 @@
 // collectionTypes.ts
 
-import { TMediaOfItem, TMediaRecord, TMediaUrls, TPageMedia } from '@/js/types/mediaTypes'
+import { TMediaOfItem, TMediaUrls } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/routesTypes'
 
 type TCollectionView = 'Gallery' | 'Chips' | 'Tabular'
@@ -10,7 +10,7 @@ type TCView = { name: TCollectionView, ipp: number }
 
 //array types
 type TApiArrayMain = { id: number, slug: string }
-type TApiArrayMedia = TMediaRecord
+type TApiArrayMedia = { id: number, order_column: number, urls: TMediaUrls }
 type TApiArrayRelated = {
         relation_name: string,
         module: TModule,
@@ -80,8 +80,9 @@ type TApiPageTableFauna = {
         modifications: string,
 }
 
+
 type TApiPage = TApiPageMainGallery |
-        TApiArrayMain |
+        TApiArrayMedia |
         TApiPageTableLocus |
         TApiPageTableStone |
         TApiPageTableFauna
@@ -134,17 +135,12 @@ type TPageMainGallery = {
         media: TMediaOfItem
 }
 
-type TPageRelatedGallery = {
+type TPageRelatedGallery = TPageMainGallery & {
         relation_name: string,
         module: TModule,
-        id: number,
-        slug: string,
-        tag: string
-        short: string,
-        media: TMediaOfItem
 }
 
-
+type TPageMediaGallery = TApiArrayMedia
 
 
 
@@ -192,6 +188,7 @@ export {
         TPageRelatedGallery,
         TPageMainTabular,
         TPageRelatedTabular,
+        TPageMediaGallery,
         TMediaUrls,
         TItemsPerView,
 }

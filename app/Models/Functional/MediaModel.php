@@ -26,14 +26,14 @@ class MediaModel
         $media = SpatieMedia::findOrFail($id);
         return [
             'id' => $id,
-            'full' => $media->getPath(),
-            'tn' =>  $media->getPath('tn'),
+            'urls' => [
+                'full' => $media->getPath(),
+                'tn' =>  $media->getPath('tn')
+            ],
             'size' => $media->size,
             'collection_name' => $media->collection_name,
             'file_name' => $media->file_name,
             'order_column' => $media->order_column,
-            'title' => "Fake Title",
-            'text' => "Fake Text",
         ];
     }
 
@@ -69,7 +69,7 @@ class MediaModel
     public static function getUrlsOfAll(MediaCollection $mc)
     {
         $mapped = $mc->map(function ($med, $key) {
-            return ['id' => $med["id"], 'urls' => ['full' => $med->getPath(), 'tn' =>  $med->getPath('tn')], 'order_column' =>  $med["order_column"], 'file_name' =>  $med["file_name"]];
+            return ['id' => $med["id"], 'urls' => ['full' => $med->getPath(), 'tn' =>  $med->getPath('tn')], 'order_column' =>  $med["order_column"]];
         });
 
         return $mapped;

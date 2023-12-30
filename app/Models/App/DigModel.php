@@ -255,7 +255,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             "id" => $id,
             "slug" => $item["slug"],
             "short" => $item["short"],
-            "media" => count($item->media) === 0 ? null : MediaModel::getUrlsOfOne($item->media),//MediaModel::getUrlsOfOne($item->media),
+            "urls" => count($item->media) === 0 ? null : MediaModel::getUrlsOfOne($item->media),
             "module" => $this->eloquent_model_name
         ];
     }

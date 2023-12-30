@@ -23,8 +23,6 @@
 </template>
 
 <script lang="ts" setup >
-import { TMediaRecord } from '@/js/types/mediaTypes'
-import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
@@ -38,7 +36,7 @@ const {itemMedia} = storeToRefs(useCarouselStore())
 const {derived} = storeToRefs(useItemStore())
 
 async function download() {
-  downloadFile(<string>itemMedia.value?.urls.full, <string>itemMedia.value?.file_name)
+  downloadFile(<string>itemMedia.value?.media.urls.full, <string>itemMedia.value?.file_name)
 }
 
 async function goto() {

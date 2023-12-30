@@ -3,8 +3,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { TModule } from '../../../types/routesTypes'
-import { TMediaRecord, TPageMedia } from '../../../types/mediaTypes'
-import { TCollectionExtra, TCView, TApiArray, TCollectionView } from '@/js/types/collectionTypes'
+import { TCollectionExtra, TCView, TApiArrayMedia, TCollectionView, TPageMediaGallery} from '@/js/types/collectionTypes'
 import { useCollectionsStore } from './collections'
 import { useMediaStore } from '../media'
 
@@ -19,7 +18,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
         viewIndex: 0,
     })
 
-    let array = ref<TMediaRecord[]>([])
+    let array = ref<TApiArrayMedia[]>([])
 
     const collection = computed(() => {
         return {
@@ -33,30 +32,22 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
         return  extra.value.views[extra.value.viewIndex].ipp     
     })
 
-    const page = computed<TPageMedia[]>(() => {
+    const page = computed<TPageMediaGallery[]>(() => {
         let start = (extra.value.pageNoB1 - 1) * ipp.value
         let slice = array.value.slice(start, start + ipp.value)
         let res = slice.map(x => {
             let media = buildMedia({ full: x.urls.full, tn: x.urls.tn })
             return {
                 id: x.id,
-                urls: {
-                    full: media.urls.full,
-                    tn: media.urls.tn
-                },
-                size: x.size,
-                collection_name: x.collection_name,
-                file_name: x.file_name,
-                order_column: x.order_column,
-                title: "LLLLL",
-                text: "LLLLL",
+                order_column: x.order_column,                
+                urls: media.urls,
             }
         })
         return res
     })
 
-    function setArray(data: TApiArray[]) {
-        array.value = <TMediaRecord[]>data
+    function setArray(data: TApiArrayMedia[]) {
+        array.value = data
         extra.value.length = data.length
     }
 
@@ -93,7 +84,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
         return page.value.some((x) => x.id === id)
     }
 
-    function itemByIndex(index: number): TMediaRecord {
+    function itemByIndex(index: number): TApiArrayMedia {
         return array.value[index]
     }
 

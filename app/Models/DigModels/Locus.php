@@ -173,6 +173,8 @@ class Locus extends DigModel
 
     public function builderShowCarouselLoad(): void
     {
-        $this->builder = $this->select('id', 'area', 'name', 'type', 'cross_ref')->with("media");
+        $this->builder = $this->select('id', 'area', 'name', 'type', 'cross_ref')->with(['media' => function ($query) {
+            $query->orderBy('order_column');
+        }]);
     }
 }

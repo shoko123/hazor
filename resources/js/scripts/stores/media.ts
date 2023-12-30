@@ -1,8 +1,8 @@
 // stores/media.js
 import { TFields } from '@/js/types/moduleFieldsTypes'
-import { TMediaOfItem, TMediaRecord } from '@/js/types/mediaTypes'
+import { TMediaOfItem } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/routesTypes'
-import { TMediaUrls } from '@/js/types/collectionTypes'
+import { TMediaUrls, TApiArrayMedia } from '@/js/types/collectionTypes'
 
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
@@ -52,7 +52,7 @@ export const useMediaStore = defineStore('media', () => {
     }
   }
  
-  function setItemMedia(media: TMediaRecord[]) {
+  function setItemMedia(media: TApiArrayMedia[]) {
     let cm = useCollectionMediaStore()
     cm.setArray(media)
   }

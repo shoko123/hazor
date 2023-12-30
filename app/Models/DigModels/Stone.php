@@ -129,6 +129,8 @@ class Stone extends FindModel
 
     public function builderShowCarouselLoad(): void
     {
-        $this->builder =  $this->select('id', 'basket', 'stone_no', 'type', 'description')->with("media");
+        $this->builder =  $this->select('id', 'basket', 'stone_no', 'type', 'description')->with(['media' => function ($query) {
+            $query->orderBy('order_column');
+        }]);
     }
 }

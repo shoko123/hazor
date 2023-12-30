@@ -1,18 +1,17 @@
 
 //showTypes.ts
 //types returned from 'show' api route
-import { TMediaRecord } from "./mediaTypes"
+import { TApiArrayMedia, TApiArrayRelated } from "./collectionTypes"
 import { TFields } from "./moduleFieldsTypes"
 
 type TApiItemShow = {
-        tag: string,
         fields: TFields,
-        media: TMediaRecord[],
         model_tags: any[],
         global_tags: any[],
+        media: TApiArrayMedia[],
+        related: TApiArrayRelated[],
         slug: string,
         short: string,
-        extra: any
 }
 type TApiItemUpdate = {
         fields: TFields,

@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { TCollectionName, TApiArrayMain, TApiArrayRelated, TApiArray } from '@/js/types/collectionTypes'
-import { TMediaRecord, TCarouselMain, TCarouselRelated, TApiCarouselMain, TApiCarouselMedia, TMediaOfItem } from '@/js/types/mediaTypes'
+import { TCarouselMedia, TCarouselMain, TCarouselRelated, TCarousel, TApiCarouselMain, TApiCarouselMedia, TMediaOfItem } from '@/js/types/mediaTypes'
 import { useCollectionsStore } from '../collections/collections'
 import { useCollectionMainStore } from '../collections/collectionMain'
 import { useXhrStore } from '../xhr'
@@ -24,8 +24,7 @@ export const useCarouselStore = defineStore('carousel', () => {
   let isOpen = ref<boolean>(false)
   let collectionName = ref<TCollectionName>('main')
   let index = ref<number>(-1)
-  let media = ref<TMediaOfItem>({ hasMedia: false, urls: { full: "", tn: "" } })
-  let itemDetails = ref<TCarouselMain | TMediaRecord | TCarouselRelated | null>(null)
+  let itemDetails = ref<TCarousel | null>(null)
 
   const carouselHeader = computed(() => {
     if (!isOpen.value) { return undefined }
@@ -45,6 +44,7 @@ export const useCarouselStore = defineStore('carousel', () => {
     return text + ` (${index.value + 1}/${collection.value.array.length})`
   })
 
+
   const itemMain = computed(() => {
     if (!isOpen.value || collectionName.value !== 'main') { return null }
     return <TCarouselMain>itemDetails.value
@@ -56,7 +56,13 @@ export const useCarouselStore = defineStore('carousel', () => {
   })
   const itemMedia = computed(() => {
     if (!isOpen.value || collectionName.value !== 'media') { return null }
-    return <TMediaRecord>itemDetails.value
+    return <TCarouselMedia>itemDetails.value
+  })
+
+
+  const getMedia = computed<TMediaOfItem | null>(() => {
+    if (!isOpen.value) { return null }
+    return (<TCarouselMain>itemDetails.value).media
   })
 
   const arrayLength = computed(() => {
@@ -93,9 +99,10 @@ export const useCarouselStore = defineStore('carousel', () => {
     let url = ""
     let data = { model: "", id: 0 }
 
+    //related carousel item needs no DB access
     if (collectionName.value === 'related') {
-      media.value = buildMedia((<TApiArrayRelated>item).media, (<TApiArrayRelated>item).module)
-      itemDetails.value = { ...(<TApiArrayRelated>item), tag: tagFromSlug(derived.value.module, (<TApiArrayRelated>item).slug), media: media.value }
+      //let media = buildMedia((<TApiArrayRelated>item).media, (<TApiArrayRelated>item).module)
+      itemDetails.value = { ...(<TApiArrayRelated>item), tag: tagFromSlug(derived.value.module, (<TApiArrayRelated>item).slug), media: buildMedia((<TApiArrayRelated>item).media, (<TApiArrayRelated>item).module) }
     } else {
       url = collectionName.value === 'main' ? 'model/carousel' : 'media/carousel'
       data["model"] = derived.value.module
@@ -114,22 +121,20 @@ export const useCarouselStore = defineStore('carousel', () => {
   }
 
   function saveMain(data: TApiCarouselMain) {
-    media.value = buildMedia(data.media, derived.value.module)
     itemDetails.value = {
       module: data.module,
       id: data.id,
       slug: data.slug,
       tag: tagFromSlug(derived.value.module, data.slug),
       short: data.short,
-      media: media.value
+      media: buildMedia(data.urls, derived.value.module)
     }
   }
 
   function saveMedia(data: TApiCarouselMedia) {
-    media.value = buildMedia({ full: data.full, tn: data.tn })
     itemDetails.value = {
       id: data.id,
-      urls: { full: data.full, tn: data.tn },
+      media: buildMedia(data.urls),
       size: (data.size / 1000000).toFixed(2).toString() + 'MB',
       collection_name: data.collection_name,
       file_name: data.file_name,
@@ -174,13 +179,13 @@ export const useCarouselStore = defineStore('carousel', () => {
     isOpen,
     collectionName,
     arrayLength,
-    media,
     itemDetails,
     itemMain,
     itemRelated,
     itemMedia,
     carouselHeader,
     carouselGeneralDetails,
+    getMedia,
     open,
     close,
     next,

@@ -211,7 +211,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       r.to.idParams = res.data.id_params
       setItemMedia(res.data.media)
       c.setArray('related', res.data.related)
-      i.saveItem(res.data)
+      i.saveitemFieldsPlus(res.data)
       n.showSpinner(false)
       return true
 

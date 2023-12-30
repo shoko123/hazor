@@ -59,7 +59,7 @@ export const useItemStore = defineStore('item', () => {
   })
 
 
-  function saveItem(apiItem: TApiItemShow) {
+  function saveitemFieldsPlus(apiItem: TApiItemShow) {
     fields.value = apiItem.fields
     let fieldsObj = <IObject>apiItem.fields
     slug.value = apiItem.slug
@@ -70,7 +70,7 @@ export const useItemStore = defineStore('item', () => {
       return getParamKeyByGroupAndId(x.group_name, fieldsObj[x.column_name])}   
     )
 
-    //console.log(`saveItem() selectedLookups:\n${selectedLookups}`)
+    //console.log(`saveitemFieldsPlus() selectedLookups:\n${selectedLookups}`)
     selectedItemParams.value = [...apiItem.model_tags, ...apiItem.global_tags, ...selectedLookups]
     orderSelectedParams(selectedItemParams.value)
   }
@@ -110,7 +110,7 @@ export const useItemStore = defineStore('item', () => {
 
     if (isCreate) {
       setItemMedia([])
-      saveItem(res.data)
+      saveitemFieldsPlus(res.data)
       let newIndex = pushToArray({ "id": res.data.fields.id, "slug": res.data.slug })
       itemIndex.value = newIndex
       //console.log(`item pushed to main array. index: ${itemIndex.value}`)
@@ -165,7 +165,7 @@ export const useItemStore = defineStore('item', () => {
     itemViewIndex,
     itemView,
     setItemViewIndex,
-    saveItem,
+    saveitemFieldsPlus,
     upload,
     destroy
   }
