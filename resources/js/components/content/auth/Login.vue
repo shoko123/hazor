@@ -1,6 +1,6 @@
 <template>
-  <v-card class="mx-auto" elevation="8" max-width="448" rounded="lg">
-    <v-toolbar dark color="primary" density="compact" :height="50">
+  <v-card dense>
+    <v-toolbar :height="35">
       <v-toolbar-title>User Login Form</v-toolbar-title>
     </v-toolbar>
     <v-card-text class="pa-12 pb-8">
@@ -11,8 +11,6 @@
 
       <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
         Password
-
-        <!-- <v-btn :disabled="disableLinks" :to="{ name: 'welcome', params: { module: 'loci' } }">Loci</v-btn> -->
 
         <a class="text-caption text-decoration-none text-blue" @click="goTo('forgot-password')">
           Forgot password?</a>

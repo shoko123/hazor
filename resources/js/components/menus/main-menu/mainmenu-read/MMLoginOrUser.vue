@@ -1,4 +1,5 @@
 <template>
+  <div class="hidden-sm-and-down">
   <v-btn v-if="showLoginButton" @click="loginClick()">Login</v-btn>
   <v-btn v-if="auth.authenticated">
     <v-icon left dark>mdi-account</v-icon>
@@ -10,7 +11,7 @@
         </v-list-item>
       </v-list>
     </v-menu>
-  </v-btn>
+  </v-btn></div>
 </template>
 
 

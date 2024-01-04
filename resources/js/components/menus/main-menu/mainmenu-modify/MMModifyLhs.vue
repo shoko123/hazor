@@ -1,7 +1,5 @@
 <template>
-  <v-app-bar-title>
-    {{ header }}
-  </v-app-bar-title>
+    {{ title }}
 </template>
 
 <script lang="ts" setup>
@@ -10,7 +8,7 @@ import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain
 import { useItemStore } from '../../../../scripts/stores/item'
 let rm = useRoutesMainStore()
 let it = useItemStore()
-const header = computed(() => {
+const title = computed(() => {
   const itemText = `${rm.current.module} ${it.tag}`
   switch (rm.current.name) {
     case 'media':

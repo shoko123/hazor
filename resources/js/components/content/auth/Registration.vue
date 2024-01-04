@@ -1,6 +1,6 @@
 <template>
-  <v-card class="mx-auto" elevation="8" max-width="448" rounded="lg">
-    <v-toolbar dark color="primary" density="compact" :height="50">
+  <v-card dense>
+    <v-toolbar :height="35">
       <v-toolbar-title>User Registration Form</v-toolbar-title>
     </v-toolbar>
     <v-card-text class="pa-12 pb-8">
