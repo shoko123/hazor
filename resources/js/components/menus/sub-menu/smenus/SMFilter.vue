@@ -1,14 +1,17 @@
 <template>
   <v-btn class="primary--text" large variant="outlined" @click="submit">Submit</v-btn>
-  <v-btn class="primary--text" large variant="outlined" @click="getCount">Get Count</v-btn>
   <v-btn class="primary--text" large variant="outlined" @click="clear">clear</v-btn>
-  <WelcomeButton />
+
+  <div class="hidden-sm-and-down">
+    <v-btn class="primary--text" large variant="outlined" @click="getCount">Get Count</v-btn>
+    <WelcomeButton />
+  </div>
 </template>
 
 <script lang="ts" setup >
 import { computed, } from 'vue'
 import { storeToRefs } from 'pinia'
-import WelcomeButton from '../lhs-buttons/WelcomeButton.vue'
+import WelcomeButton from '../elements/WelcomeButton.vue'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 import { useTrioStore } from '../../../../scripts/stores/trio/trio'
 import { useFilterStore } from '../../../../scripts/stores/trio/filter'
@@ -22,7 +25,7 @@ const router = useRouter()
 function submit() {
   console.log(`filter.submit()`);
   const query = filtersToQueryObject()
-  trio.resetCategoryAndGroupIndices()  
+  trio.resetCategoryAndGroupIndices()
   router.push({ name: 'index', params: { module: current.value.url_module }, query })
 }
 

@@ -40,11 +40,11 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 
-import { useAuthStore } from '../../../../../scripts/stores/auth'
-import { useRoutesMainStore } from '../../../../../scripts/stores/routes/routesMain'
-import { useItemStore } from '../../../../../scripts/stores/item'
-import { useCollectionMediaStore } from '../../../../../scripts/stores/collections/collectionMedia'
-import { useTaggerStore } from '../../../../../scripts/stores/trio/tagger'
+import { useAuthStore } from '../../../../scripts/stores/auth'
+import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
+import { useItemStore } from '../../../../scripts/stores/item'
+import { useCollectionMediaStore } from '../../../../scripts/stores/collections/collectionMedia'
+import { useTaggerStore } from '../../../../scripts/stores/trio/tagger'
 
 const { routerPush } = useRoutesMainStore()
 const { current } = storeToRefs(useRoutesMainStore())

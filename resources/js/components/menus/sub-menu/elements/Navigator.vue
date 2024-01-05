@@ -1,7 +1,7 @@
 <template>
-  <v-btn :disabled="rms.inTransition" @click="next(false)" icon="mdi-arrow-left" color="primary"> </v-btn>
-  <v-btn large variant="outlined">{{ tag }}</v-btn>
-  <v-btn :disabled="rms.inTransition" @click="next(true)" icon="mdi-arrow-right" color="primary"></v-btn>
+  <v-btn :disabled="rms.inTransition" @click="next(false)" icon="mdi-arrow-left" color="green-lighten-4" large  rounded="0" variant="flat" > </v-btn>
+  <v-btn color="green-lighten-2" large  rounded="0" variant="flat">{{ tag }}</v-btn>
+  <v-btn :disabled="rms.inTransition" @click="next(true)" icon="mdi-arrow-right" color="green-lighten-4" large  rounded="0" variant="flat" ></v-btn>
 </template>
 
 <script lang="ts" setup>

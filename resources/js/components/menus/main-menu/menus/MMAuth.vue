@@ -1,9 +1,7 @@
 <template>
-    <v-app-bar-title>
-        <v-btn :disabled="disable" :to="{ name: 'home' }">
-            Hazor (Auth)
-        </v-btn>
-    </v-app-bar-title>
+    <v-btn :disabled="disable" :to="{ name: 'home' }">
+        Hazor (Auth)
+    </v-btn>
 </template>
 
 <script lang="ts" setup>

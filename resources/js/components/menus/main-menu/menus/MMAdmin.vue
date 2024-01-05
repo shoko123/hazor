@@ -1,8 +1,5 @@
 <template>
-    <v-app-bar-title>
-      {{ name }} - Modify
-    </v-app-bar-title>
-   
+  {{ name }} - Modify
 </template>
 
 <script lang="ts" setup>
@@ -11,7 +8,7 @@ import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain
 
 let { getModule } = useRoutesMainStore()
 const name = computed(() => {
-    return getModule()
+  return getModule()
 })
 </script>
 

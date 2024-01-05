@@ -1,37 +1,50 @@
 <template>
-    <v-app-bar :height="36" dark app>
-        <component :is="sub"></component>
+    <v-app-bar :height="35">
+        <v-app-bar-nav-icon class="hidden-md-and-up" @click="showDrawer = !showDrawer"></v-app-bar-nav-icon>
+        <component :is="menu?.elements"></component>
     </v-app-bar>
+
+    <v-navigation-drawer v-model="showDrawer" temporary color="blue-grey darken-4">
+        <component :is="menu?.drawer"></component>
+    </v-navigation-drawer>
 </template>
+
 <script lang="ts" setup>
 
 import { ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 
-import SubWelcome from './submenu-welcome/SubMenuWelcome.vue'
-import SubIndex from './submenu-index/SubMenuIndex.vue'
-import SubMenuFilter from './submenu-filter/SubMenuFilter.vue'
-import SubMenuShow from './submenu-show/SubMenuShow.vue'
-import SubMenuMedia from './submenu-media/SubMenuMedia.vue'
+import Welcome from './smenus/SMWelcome.vue'
+import WelcomeD from './smenus/SMWelcomeDrawer.vue'
+import Index from './smenus/SMIndex.vue'
+import IndexD from './smenus/SMIndexDrawer.vue'
+import Filter from './smenus/SMFilter.vue'
+import FilterD from './smenus/SMFilterDrawer.vue'
+import Show from './smenus/SMShow.vue'
+import ShowD from './smenus/SMShowDrawer.vue'
+import Media from './smenus/SMMedia.vue'
+import MediaD from './smenus/SMMediaDrawer.vue'
+
 import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
 
 const { current } = storeToRefs(useRoutesMainStore())
 
-const sub = computed(() => {
+let showDrawer = ref<boolean>(false)
+
+const menu = computed(() => {
     switch (current.value.name) {
         case 'welcome':
-            return SubWelcome
+            return { elements: Welcome, drawer: WelcomeD }
         case 'index':
-            return SubIndex
+            return { elements: Index, drawer: IndexD }
         case 'filter':
-            return SubMenuFilter
+            return { elements: Filter, drawer: FilterD }
         case 'show':
-            return SubMenuShow
-        case 'media':
-            return SubMenuMedia
+            return { elements: Show, drawer: ShowD }
+            case 'media':
+            return { elements: Media, drawer: MediaD }            
         default:
-            return SubWelcome
-
+            null
     }
 })
 
