@@ -23,7 +23,6 @@ import FilterD from './smenus/SMFilterDrawer.vue'
 import Show from './smenus/SMShow.vue'
 import ShowD from './smenus/SMShowDrawer.vue'
 import Media from './smenus/SMMedia.vue'
-import MediaD from './smenus/SMMediaDrawer.vue'
 
 import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
 
@@ -41,8 +40,8 @@ const menu = computed(() => {
             return { elements: Filter, drawer: FilterD }
         case 'show':
             return { elements: Show, drawer: ShowD }
-            case 'media':
-            return { elements: Media, drawer: MediaD }            
+        case 'media':
+            return { elements: Media, drawer: null }
         default:
             null
     }

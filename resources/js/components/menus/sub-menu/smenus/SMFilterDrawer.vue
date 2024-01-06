@@ -1,8 +1,9 @@
 <template>
   <v-list-item @click="submit">Submit</v-list-item>
   <v-list-item @click="getCount">Get Count</v-list-item>
-  <v-list-item @click="clear">clear</v-list-item>
-  <v-list-item :to="{ name: 'welcome', params: { module } }">welcome</v-list-item>
+  <v-list-item @click="clear">Clear</v-list-item>
+  <v-divider />
+  <v-list-item :to="{ name: 'welcome', params: { module } }">Welcome</v-list-item>
 </template>
 
 <script lang="ts" setup >

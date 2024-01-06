@@ -4,10 +4,10 @@
     <v-card-text>
       <div v-if="hasMedia">
         <v-row wrap no-gutters>
-          <v-col lg="9">
+          <v-col :cols="widths[0]">
             <component :is="itemForm"></component>
           </v-col>
-          <v-col lg="3" class="px-1">
+          <v-col :cols="widths[1]" class="px-1">
             <MediaSquare v-bind="{
               source: 'media',
               itemIndex: 0,
@@ -24,9 +24,9 @@
 </template>
 
 <script lang="ts" setup >
-import type { Component } from 'vue'
-import { computed } from 'vue'
+import {type Component, computed } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useDisplay } from 'vuetify'
 import { useItemStore } from '../../../scripts/stores/item'
 import { useCollectionMediaStore } from '../../../scripts/stores/collections/collectionMedia'
 
@@ -34,8 +34,6 @@ import MediaSquare from '../../media/MediaSquare.vue'
 import LocusForm from '../../modules/loci/LocusForm.vue'
 import StoneForm from '../../modules/stones/StoneForm.vue'
 import FaunaForm from '../../modules/fauna/FaunaForm.vue'
-
-
 
 let { array } = storeToRefs(useCollectionMediaStore())
 let { derived, tag } = storeToRefs(useItemStore())
@@ -61,6 +59,12 @@ const title = computed(() => {
 const hasMedia = computed(() => {
   return array.value.length > 0
 })
+
+const widths = computed(() => {
+  const { smAndDown } = useDisplay()
+  return smAndDown.value ? [12, 12] : [9, 3]
+})
+
 
 </script>
 

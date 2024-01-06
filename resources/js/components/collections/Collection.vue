@@ -72,10 +72,10 @@ const header = computed(() => {
       pageInfo = `(Empty)`
       break
     case 1:
-      pageInfo = `(1)`
+      pageInfo = `(P1)`
       break
     default:
-      pageInfo = `(${meta.value.pageNoB1}/${meta.value.noOfPages})`
+      pageInfo = `(P${meta.value.pageNoB1}/${meta.value.noOfPages})`
   }
 
   switch (props.source) {

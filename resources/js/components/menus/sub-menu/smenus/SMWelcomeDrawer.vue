@@ -1,7 +1,7 @@
 <template>
-  <v-list-item @click="toFilter">Filters</v-list-item>
-  <v-list-item @click="toCollection">collection</v-list-item>
-  <v-list-item @click="toItem">item</v-list-item>
+  <v-list-item @click="toFilter">Filter</v-list-item>
+  <v-list-item @click="toCollection">Collection</v-list-item>
+  <v-list-item @click="toItem">Item</v-list-item>
 </template>
 
 <script lang="ts" setup>

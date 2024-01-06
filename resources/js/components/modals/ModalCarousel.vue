@@ -13,12 +13,12 @@
 
       <v-card-text>
         <v-row wrap>
-          <v-col :cols="`${widths.card}`">
+          <v-col :cols="widths[0]">
             <v-card>
               <ImageZoom />
             </v-card>
           </v-col>
-          <v-col :cols="`${widths.form}`">
+          <v-col :cols="widths[1]">
             <v-card class="bg-purple-lighten-5">
               <component :is="carouselForm" />
             </v-card>
@@ -48,10 +48,10 @@ import CarouselFormMain from './CarouselFormMain.vue'
 import CarouselFormMedia from './CarouselFormMedia.vue'
 import CarouselFormRelated from './CarouselFormRelated.vue'
 
+const { smAndDown } = useDisplay()
 const { close, next } = useCarouselStore()
 const { index } = storeToRefs(useCarouselStore())
 const { showNextArrows, collectionName, carouselItemDetails } = storeToRefs(useCarouselStore())
-const { smAndDown } = useDisplay()
 const { current } = useRoutesMainStore()
 const { derived } = storeToRefs(useItemStore())
 
@@ -68,7 +68,6 @@ const carouselForm = computed<Component>(() => {
 })
 
 const carouselHeader = computed(() => {
-  const { smAndDown } = useDisplay()
   let collection = c.collection(<TCollectionName>collectionName.value)
   let text = ""
   switch (collectionName.value) {
@@ -87,7 +86,7 @@ const carouselHeader = computed(() => {
 })
 
 const widths = computed(() => {
-  return smAndDown.value ? { card: 12, form: 12 } : { card: 10, form: 2 }
+  return smAndDown.value ? [12, 12] : [9, 3]
 })
 
 async function nextClicked(isRight: boolean) {

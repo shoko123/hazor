@@ -1,8 +1,10 @@
 <template>
-  <v-list-item @click="toWelcome">Welcome</v-list-item>  
-   <v-list-item @click="toFilter">Filters</v-list-item>
-  <v-list-item @click="toCollection">collection</v-list-item>
- <v-list-item @click="toggle">Toggle Views</v-list-item>
+  <v-list-item @click="toWelcome">Welcome</v-list-item>
+  <v-list-item @click="toFilter">Filter</v-list-item>
+  <v-list-item @click="toCollection">Collection</v-list-item>
+  <v-list-item @click="toggle">Toggle View</v-list-item>
+  <v-divider />
+  <v-list-item >Please Note: Editing is disabled on small devices!</v-list-item>
 </template>
 
 <script lang="ts" setup>
@@ -29,8 +31,7 @@ function toWelcome() {
 }
 
 function toggle() {
-  is.itemViewIndex = (is.itemViewIndex + 1)%is.itemViews.length
+  is.itemViewIndex = (is.itemViewIndex + 1) % is.itemViews.length
 }
-
 
 </script>

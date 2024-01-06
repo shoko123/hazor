@@ -1,9 +1,8 @@
 <template>
   <v-btn class="primary--text" large variant="outlined" @click="submit">Submit</v-btn>
   <v-btn class="primary--text" large variant="outlined" @click="clear">clear</v-btn>
-
+  <v-btn class="primary--text" large variant="outlined" @click="getCount">Count</v-btn>
   <div class="hidden-sm-and-down">
-    <v-btn class="primary--text" large variant="outlined" @click="getCount">Get Count</v-btn>
     <WelcomeButton />
   </div>
 </template>
