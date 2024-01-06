@@ -40,7 +40,7 @@ import FaunaForm from '../../modules/fauna/FaunaForm.vue'
 let { array } = storeToRefs(useCollectionMediaStore())
 let { derived, tag } = storeToRefs(useItemStore())
 
-const itemForm = computed<Component>(() => {
+const itemForm = computed<Component | null>(() => {
   switch (derived.value.module) {
     case 'Locus':
       return LocusForm
@@ -50,7 +50,7 @@ const itemForm = computed<Component>(() => {
       return FaunaForm
     default:
       console.log(`ItemCard.vue invalid Module`)
-      return LocusForm
+      return null
   }
 })
 

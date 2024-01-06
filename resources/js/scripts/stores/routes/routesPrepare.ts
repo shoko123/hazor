@@ -158,7 +158,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   async function loadMainCollection(module: TModule, query: LocationQuery) {
     let queryRes
     try {
-      queryRes = f.urlQueryToFilters(query)
+      queryRes = f.urlQueryToApiFilters(query)
       //console.log(`loadMainCollection()  queryRes:  ${JSON.stringify(queryRes, null, 2)}`)
     }
     catch (err) {

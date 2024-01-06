@@ -58,11 +58,8 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         console.log(`collectionMain.loadPage() view: ${view.name} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1} module: ${module} `);
 
         switch (view.name) {
-            //if 'Chips' do nothing - page will be extracted from array
             case "Chips":
-                //savePage(array.value.slice(start, start + ipp), view, module)
                 extra.value.pageNoB1 = pageNoB1
-                //extra.value.viewIndex = viewIndex
                 let slice = array.value.slice(start, start + ipp)
                 savePage(slice, view, module)
                 return true
@@ -78,8 +75,6 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
                     savePage([], view, module)
                     return true
                 }
-
-
 
                 await send('model/page', 'post', { model: module, view: view.name, ids })
                     .then(res => {

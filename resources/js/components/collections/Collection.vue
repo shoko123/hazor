@@ -4,11 +4,11 @@
 
       <v-toolbar-title>{{ header }}</v-toolbar-title>
 
-      <v-pagination v-if="paginator.show" v-model="page" :length="paginator.pages" :total-visible="12">
+      <v-pagination v-if="paginator.show" v-model="page" :length="paginator.pages"
+        :total-visible="`${mdAndDown ? 4 : 10}`">
       </v-pagination>
 
-      <v-btn v-if="showBtnViewToggle" size="small" variant="outlined" @click="toggleCollectionDisplayOption()">view: {{
-        displayOption }}
+      <v-btn v-if="showBtnViewToggle" :icon="ico" size="small" variant="tonal" @click="toggleCollectionDisplayOption()">
       </v-btn>
 
     </v-toolbar>
@@ -22,27 +22,39 @@
 
 <script lang="ts" setup >
 import { type Component, computed } from 'vue'
-import { defineStore, storeToRefs } from 'pinia'
-import { TCollectionName } from '@/js/types/collectionTypes'
+import { storeToRefs } from 'pinia'
+import { useDisplay } from 'vuetify'
+
+import type { TCollectionName } from '@/js/types/collectionTypes'
+import { useItemStore } from '../../scripts/stores/item';
+import { useCollectionsStore } from '../../scripts/stores/collections/collections'
+
 import CollectionPageGallery from './CollectionPageGallery.vue'
 import CollectionPageChips from './CollectionPageChips.vue'
 import CollectionPageTabular from './CollectionPageTabular.vue'
-import { useItemStore } from '../../scripts/stores/item';
-import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 
 const props = defineProps<{
   source: TCollectionName
 }>()
 
+
 let { collection, loadPage, toggleCollectionView } = useCollectionsStore()
 let { tag, derived } = storeToRefs(useItemStore())
+const { smAndDown, mdAndDown } = useDisplay()
 
-const c = computed(() => {
-  return collection(props.source).value
-})
+const viewToIcon = {
+  Gallery: 'mdi-image-area',
+  Tabular: 'mdi-table-of-contents',
+  Chips: 'mdi-dots-horizontal'
+}
 
 const meta = computed(() => {
+  const c = collection(props.source)
   return c.value.meta
+})
+
+const ico = computed(() => {
+  return viewToIcon[displayOption.value]
 })
 
 const page = computed({
@@ -53,29 +65,30 @@ const page = computed({
   }
 })
 
-const pageInfoAsText = computed(() => {
-  if (meta.value.length === 0) {
-    return `(Empty)`
-  }
-  if (meta.value.length === 1) {
-    return `(1)`
-  }
-  if (meta.value.noOfPages === 1) {
-    return `(${meta.value.firstItemNo}-${meta.value.lastItemNo}/${meta.value.noOfItems})`
-  }
-  return ` - Showing page (${meta.value.pageNoB1}/${meta.value.noOfPages}), items (${meta.value.firstItemNo}-${meta.value.lastItemNo}/${meta.value.noOfItems})`
-})
-
-
 const header = computed(() => {
+  let pageInfo, headerText = ``
+  switch (meta.value.length) {
+    case 0:
+      pageInfo = `(Empty)`
+      break
+    case 1:
+      pageInfo = `(1)`
+      break
+    default:
+      pageInfo = `(${meta.value.pageNoB1}/${meta.value.noOfPages})`
+  }
+
   switch (props.source) {
     case 'main':
-      return `${derived.value.module} Query Results ${pageInfoAsText.value}`
+      headerText = smAndDown.value ? `Results ${pageInfo}` : `${derived.value.module} Results: page ${pageInfo}, items (${meta.value.firstItemNo}-${meta.value.lastItemNo}/${meta.value.noOfItems})`
+      break
     case 'media':
-      return `${derived.value.moduleAndTag} - Media ${pageInfoAsText.value}`
+      headerText = smAndDown.value ? `Media ${pageInfo}` : `${derived.value.moduleAndTag} - Media ${pageInfo}`
+      break
     case 'related':
-      return `${derived.value.moduleAndTag} - Related ${pageInfoAsText.value}`
+      headerText = smAndDown.value ? `Related ${pageInfo}` : `${derived.value.moduleAndTag} - Related ${pageInfo}`
   }
+  return headerText
 })
 
 const paginator = computed(() => {

@@ -70,8 +70,8 @@ export const useFilterStore = defineStore('filter', () => {
     return query
   }
 
-  function urlQueryToFilters(qp: IObject): TParseUrlQueryResponse {
-    //console.log(`urlQueryToFilters().urlQuery: ${JSON.stringify(qp, null, 2)}`);
+  function urlQueryToApiFilters(qp: IObject): TParseUrlQueryResponse {
+    //console.log(`urlQueryToApiFilters().urlQuery: ${JSON.stringify(qp, null, 2)}`);
     let all: TApiFilters = {
       model_tag_ids: [],
       global_tag_ids: [],
@@ -155,7 +155,7 @@ export const useFilterStore = defineStore('filter', () => {
           }))
           break
         case 'CL':
-          //console.log(`urlQueryToFilters CL group: ${group.group_name} max: ${group.params.length} selectedParams.length: ${params.length}`)
+          //console.log(`urlQueryToApiFilters CL group: ${group.group_name} max: ${group.params.length} selectedParams.length: ${params.length}`)
 
           //apply filters only if not all selected ('CL' is a partition)
           if (params.length < trio.trio.entities.groups[groupKey].params.length) {
@@ -223,7 +223,7 @@ export const useFilterStore = defineStore('filter', () => {
       }
     }
 
-    //console.log(`urlQueryToFilters()\nquery: ${JSON.stringify(all, null, 2)}`);
+    //console.log(`urlQueryToApiFilters()\nquery: ${JSON.stringify(all, null, 2)}`);
     return { success: true, data: { apiFilters: all, selectedFilters } }
   }
 
@@ -274,7 +274,7 @@ export const useFilterStore = defineStore('filter', () => {
     orderParamClicked,
     orderClear,
     filtersToQueryObject,
-    urlQueryToFilters,
+    urlQueryToApiFilters,
     addRemoveSearchParam,
     clearSelectedFilters,
     setFiltersFromUrlQuery

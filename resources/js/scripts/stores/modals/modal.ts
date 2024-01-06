@@ -2,22 +2,22 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useCarouselStore } from './carousel'
-import { usePickerStore } from './picker'
-type TModalOwner = 'Carousel' | 'Picker'
+import { useQueryCountStore } from './queryCount'
+type TModalOwner = 'Carousel' | 'QueryCount'
 
 
 export const useModalStore = defineStore('modal', () => {
     const c = useCarouselStore()
-    const p = usePickerStore()
+    const qc = useQueryCountStore()
 
     const modalOwner = computed((): TModalOwner | undefined => {
         if (c.isOpen) { return 'Carousel' }
-        if (p.isOpen) { return 'Picker' }
+        if (qc.isOpen) { return 'QueryCount' }
         return undefined
     })
 
     const isOpen = computed(() => {
-        return c.isOpen || p.isOpen
+        return c.isOpen || qc.isOpen
     })
 
     return { isOpen, modalOwner }

@@ -5,20 +5,24 @@
     <v-card height="97vh">
       <v-toolbar height="36" class="bg-grey-lighten-1">
         <v-toolbar-title>{{ carouselHeader }}</v-toolbar-title>
-        <v-spacer />
+        <!-- <v-spacer /> -->
         <v-btn v-if="showNextArrows" size="small" @click="nextClicked(false)" icon="mdi-arrow-left"></v-btn>
         <v-btn v-if="showNextArrows" size="small" @click="nextClicked(true)" icon="mdi-arrow-right"> </v-btn>
         <v-btn size="small" @click="closeCarousel" icon="mdi-close"> </v-btn>
       </v-toolbar>
 
       <v-card-text>
-        <v-row>
-          <v-card width="80%" height="92vh">
-            <ImageZoom />
-          </v-card>
-          <v-card width="20%" class="bg-purple-lighten-5">
-            <component :is="carouselForm" />
-          </v-card>
+        <v-row wrap>
+          <v-col :cols="`${widths.card}`">
+            <v-card>
+              <ImageZoom />
+            </v-card>
+          </v-col>
+          <v-col :cols="`${widths.form}`">
+            <v-card class="bg-purple-lighten-5">
+              <component :is="carouselForm" />
+            </v-card>
+          </v-col>
         </v-row>
       </v-card-text>
     </v-card>
@@ -26,17 +30,32 @@
 </template>
 
 <script lang="ts" setup >
-import { type Component, computed } from 'vue'
+
 import { storeToRefs } from 'pinia'
+import { useDisplay } from 'vuetify'
+import { type Component, computed } from 'vue'
+
+import { TCollectionName } from '@/js/types/collectionTypes'
+import { TCarouselMain, TCarouselRelated } from '@/js/types/mediaTypes'
+
+import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
+import { useItemStore } from '../../scripts/stores/item'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
+import { useCollectionsStore } from '../../scripts/stores/collections/collections'
+
 import ImageZoom from './ImageZoom.vue'
 import CarouselFormMain from './CarouselFormMain.vue'
 import CarouselFormMedia from './CarouselFormMedia.vue'
 import CarouselFormRelated from './CarouselFormRelated.vue'
 
 const { close, next } = useCarouselStore()
-const { showNextArrows, carouselHeader, collectionName } = storeToRefs(useCarouselStore())
+const { index } = storeToRefs(useCarouselStore())
+const { showNextArrows, collectionName, carouselItemDetails } = storeToRefs(useCarouselStore())
+const { smAndDown } = useDisplay()
+const { current } = useRoutesMainStore()
+const { derived } = storeToRefs(useItemStore())
 
+let c = useCollectionsStore()
 const carouselForm = computed<Component>(() => {
   switch (collectionName.value) {
     case 'main':
@@ -44,9 +63,31 @@ const carouselForm = computed<Component>(() => {
     case 'related':
       return CarouselFormRelated
     case 'media':
-    default:
       return CarouselFormMedia
   }
+})
+
+const carouselHeader = computed(() => {
+  const { smAndDown } = useDisplay()
+  let collection = c.collection(<TCollectionName>collectionName.value)
+  let text = ""
+  switch (collectionName.value) {
+    case 'main':
+      text = `${current.module} Results. ${(<TCarouselMain>carouselItemDetails.value)?.module} ${(<TCarouselMain>carouselItemDetails.value)?.tag}`
+      break
+    case 'related':
+      text = `${derived.value.moduleAndTag} Related:`
+      text += smAndDown.value ? `` : ` (${(<TCarouselRelated>carouselItemDetails.value)?.module} ${(<TCarouselRelated>carouselItemDetails.value)?.tag}. Relation: ${(<TCarouselRelated>carouselItemDetails.value)?.relation_name})`
+      break
+    case 'media':
+      text = `${derived.value.moduleAndTag}: Media`
+      break
+  }
+  return `${text} (${index.value + 1}/${collection.value.array.length})`
+})
+
+const widths = computed(() => {
+  return smAndDown.value ? { card: 12, form: 12 } : { card: 10, form: 2 }
 })
 
 async function nextClicked(isRight: boolean) {

@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { TCollectionName, TApiArrayMain, TApiArrayRelated, TApiArray } from '@/js/types/collectionTypes'
-import { TCarouselMedia, TCarouselMain, TCarouselRelated, TCarousel, TApiCarouselMain, TApiCarouselMedia, TMediaOfItem } from '@/js/types/mediaTypes'
+import { TCarousel, TApiCarouselMain, TApiCarouselMedia, TMediaOfItem } from '@/js/types/mediaTypes'
 import { useCollectionsStore } from '../collections/collections'
 import { useCollectionMainStore } from '../collections/collectionMain'
 import { useXhrStore } from '../xhr'
@@ -25,24 +25,6 @@ export const useCarouselStore = defineStore('carousel', () => {
   let collectionName = ref<TCollectionName>('main')
   let index = ref<number>(-1)
   let carouselItemDetails = ref<TCarousel | null>(null)
-
-  const carouselHeader = computed(() => {
-    if (!isOpen.value) { return undefined }
-    let collection = c.collection(<TCollectionName>collectionName.value)
-    let text = ""
-    switch (collectionName.value) {
-      case 'main':
-        text = `${derived.value.module} Query Results. Showing ${(<TCarouselMain>carouselItemDetails.value)?.module} ${(<TCarouselMain>carouselItemDetails.value)?.tag}`
-        break
-      case 'related':
-        text = `${derived.value.moduleAndTag} Related(${(<TCarouselRelated>carouselItemDetails.value)?.module} ${(<TCarouselRelated>carouselItemDetails.value)?.tag}. Relation: ${(<TCarouselRelated>carouselItemDetails.value)?.relation_name})`
-        break
-      case 'media':
-        text = `Media for ${derived.value.moduleAndTag}`
-        break
-    }
-    return `${text} (${index.value + 1}/${collection.value.array.length})`
-  })
 
   const showNextArrows = computed(() => {
     if (!isOpen.value) { return false }
@@ -147,8 +129,9 @@ export const useCarouselStore = defineStore('carousel', () => {
     isOpen,
     collectionName,
     carouselItemDetails,
-    carouselHeader,
+    //carouselHeader,
     showNextArrows,
+    index,
     open,
     close,
     next,
