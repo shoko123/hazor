@@ -43,6 +43,7 @@ type TCarouselMain =  {
 
 type TCarouselMedia = {
         id: number,
+        tag: string,        
         media: TMediaOfItem,
         size: string,
         collection_name: string,

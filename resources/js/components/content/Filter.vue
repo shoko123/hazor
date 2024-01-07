@@ -1,19 +1,24 @@
 <template>
   <div>
-    <v-container fluid class="ma-0">
-      <v-row wrap dense>    
-        <v-col md="12" lg="3" class="d-flex flex-column">
-          <TagsForm source="Filter"></TagsForm>
-        </v-col>
-        <v-col md="12" lg="9" class="d-flex flex-column">
-          <FilterSelector />
-        </v-col>
-      </v-row>
-    </v-container>
+    <v-row wrap dense class="mt-1">
+      <v-col :cols="widths[0]">
+        <TagsForm source="Filter"></TagsForm>
+      </v-col>
+      <v-col :cols="widths[1]">
+        <FilterSelector />
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script lang="ts" setup >
+import { computed } from 'vue'
+import { useDisplay } from 'vuetify'
 import FilterSelector from '../filter/FilterSelector.vue'
 import TagsForm from '../trio/TrioSelectedForm.vue'
+
+const widths = computed(() => {
+  const { smAndDown } = useDisplay()
+  return smAndDown.value ? [12, 12] : [3, 9]
+})
 </script>

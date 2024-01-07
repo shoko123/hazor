@@ -1,6 +1,6 @@
 <template>
     <v-btn :disabled="disable" :to="{ name: 'home' }">
-        Hazor (Auth)
+        {{ title }}
     </v-btn>
 </template>
 
@@ -10,7 +10,8 @@ import { storeToRefs } from 'pinia'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 
 let { current } = storeToRefs(useRoutesMainStore())
-
+import { useMenusStore } from '../../../../scripts/stores/menus'
+const { title } = storeToRefs(useMenusStore())
 const disable = computed(() => {
     return current.value.name === 'reset-password'
 })

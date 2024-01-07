@@ -1,6 +1,6 @@
 // routesStore.js
 import type { TSlugParams, TIdParams } from '../types/moduleIdParamsTypes';
-type TName = 'home' | 'welcome' | 'filter' | 'index' | 'show' | 'create' | 'update' | 'tag' | 'media' | 'login' | 'register' | 'forgot-password' | 'reset-password'
+type TPageName = 'home' | 'welcome' | 'filter' | 'index' | 'show' | 'create' | 'update' | 'tag' | 'media' | 'login' | 'register' | 'forgot-password' | 'reset-password'
 type TUrlModule = 'auth' | 'admin' | 'loci' | 'fauna' | 'stones' | ''
 type TModule = 'Home' | 'Auth' | 'Admin' | 'Locus' | 'Fauna' | 'Stone'
 type TParsingError = 'BadModuleName' | 'BadIdFormat' | 'BadQueryParams'
@@ -32,7 +32,7 @@ type TRouteInfo = {
     url_module: TUrlModule | undefined,
     slug: string | undefined,
     url_full_path: string | undefined,
-    name: TName,
+    name: TPageName,
     module: TModule,
     idParams: TIdParams | undefined,
     queryParams: object | undefined,
@@ -99,7 +99,7 @@ type TPrepareResponse = {
     errorDetails?: TPrepareError
 }
 export {
-    TName,
+    TPageName,
     TUrlModule,
     TModule,
     TRouteInfo,

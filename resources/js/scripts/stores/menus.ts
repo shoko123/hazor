@@ -1,35 +1,28 @@
 // app.js
 //Stores data common to the whole app:
 
-import { defineStore } from 'pinia'
+import { defineStore, storeToRefs } from 'pinia'
 import { computed } from 'vue'
-
 import { useRoutesMainStore } from './routes/routesMain'
 
-type TMainMenu = 'Read' | 'Modify' | 'Admin' | 'Auth'
-
 export const useMenusStore = defineStore('menus', () => {
-  let rms = useRoutesMainStore()
+  const { current } = storeToRefs(useRoutesMainStore())
 
   const hasSubMenu = computed(() => {
-    switch (rms.current.name) {
-      case 'home':
-      case 'register':
-      case 'login':
-      case 'forgot-password':
-      case 'reset-password':
-      case 'create':
-      case 'update':
-      case 'tag':
-        return false
-
-      default:
-        return true
-    }
+    return ![
+      'home',
+      'register',
+      'login',
+      'forgot-password',
+      'reset-password',
+      'create',
+      'update',
+      'tag'
+    ].includes(current.value.name)
   })
 
-  const mainMenuType = computed((): TMainMenu => {
-    let routeName = rms.current.name
+  const mainMenuType = computed(() => {
+    let routeName = current.value.name
     switch (routeName) {
       case 'home':
       case 'welcome':
@@ -51,11 +44,34 @@ export const useMenusStore = defineStore('menus', () => {
         return 'Auth'
 
       default:
-        return 'Read'
+        return 'Admin'
     }
   })
 
-
-  return { hasSubMenu, mainMenuType }
+  const title = computed(() => {
+    let pageTxt = ''
+    switch (current.value.name) {
+      case 'home':
+        pageTxt = ''
+        break
+      case 'show':
+        pageTxt = ': Item Details'
+        break
+      case 'index':
+        pageTxt = ': Collection Page'
+        break
+      case 'welcome':
+        pageTxt = ': Welcome Page'
+        break
+      case 'filter':
+        pageTxt = ': Filter Page'
+        break
+      default:
+        pageTxt = ': ' + current.value.name + ' Page'
+        break
+    }
+    return `Hazor(${current.value.module})${pageTxt}`
+  })
+  return { hasSubMenu, mainMenuType, title }
 })
 

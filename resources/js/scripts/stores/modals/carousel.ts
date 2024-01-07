@@ -13,8 +13,8 @@ import { useItemStore } from '../item'
 
 
 export const useCarouselStore = defineStore('carousel', () => {
-  let c = useCollectionsStore()
-  let { extra } = storeToRefs(useCollectionMainStore())
+  const c = useCollectionsStore()
+  const { extra } = storeToRefs(useCollectionMainStore())
   const { send } = useXhrStore()
   const { showSpinner } = useNotificationsStore()
   const { derived } = storeToRefs(useItemStore())
@@ -26,11 +26,11 @@ export const useCarouselStore = defineStore('carousel', () => {
   let index = ref<number>(-1)
   let carouselItemDetails = ref<TCarousel | null>(null)
 
-  const showNextArrows = computed(() => {
-    if (!isOpen.value) { return false }
+  const arrayLength = computed(() => {
     let collection = c.collection(<TCollectionName>collectionName.value)
-    return collection.value.array.length > 1
+    return collection.value.array.length
   })
+
 
   async function open(source: TCollectionName, openIndex: number) {
     collectionName.value = source
@@ -84,6 +84,7 @@ export const useCarouselStore = defineStore('carousel', () => {
   function saveMedia(data: TApiCarouselMedia) {
     carouselItemDetails.value = {
       id: data.id,
+      tag: <string>derived.value.tag,
       media: buildMedia(data.urls),
       size: (data.size / 1000000).toFixed(2).toString() + 'MB',
       collection_name: data.collection_name,
@@ -129,8 +130,7 @@ export const useCarouselStore = defineStore('carousel', () => {
     isOpen,
     collectionName,
     carouselItemDetails,
-    //carouselHeader,
-    showNextArrows,
+    arrayLength,
     index,
     open,
     close,

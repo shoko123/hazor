@@ -1,9 +1,9 @@
 <template>
   <v-row wrap dense>
-    <v-col  :cols="widths[0]">
+    <v-col :cols="widths[0]">
       <ItemCard class="mb-2" />
     </v-col>
-    <v-col  :cols="widths[1]">
+    <v-col :cols="widths[1]">
       <TagsForm source="Item"></TagsForm>
     </v-col>
   </v-row>
@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup >
-import {computed } from 'vue'
+import { computed } from 'vue'
 import { useDisplay } from 'vuetify'
 import ItemCard from '../item-views/ItemCard.vue'
 import Collection from '../../collections/Collection.vue'

@@ -37,7 +37,7 @@
 <script setup lang="ts" >
 import { computed, ref, reactive } from 'vue'
 import { storeToRefs } from 'pinia'
-import { type TName } from '@/js/types/routesTypes'
+import { type TPageName } from '@/js/types/routesTypes'
 import { useAuthStore } from '../../../scripts/stores/auth'
 import { useNotificationsStore } from '../../../scripts/stores/notifications';
 import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
@@ -102,7 +102,7 @@ async function loginRedirect() {
   }
 }
 
-function goTo(routeName: TName) {
+function goTo(routeName: TPageName) {
   console.log(`goto ${routeName}`)
   routerPush(routeName)
 }

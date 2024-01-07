@@ -80,13 +80,15 @@ const header = computed(() => {
 
   switch (props.source) {
     case 'main':
-      headerText = smAndDown.value ? `Results ${pageInfo}` : `${derived.value.module} Results: page ${pageInfo}, items (${meta.value.firstItemNo}-${meta.value.lastItemNo}/${meta.value.noOfItems})`
+      headerText = smAndDown.value ? 
+      `Collection(${meta.value.length}): ${pageInfo}` : 
+      `${derived.value.module} Collection(${meta.value.length}): ${pageInfo}, items (${meta.value.firstItemNo}-${meta.value.lastItemNo})`
       break
     case 'media':
-      headerText = smAndDown.value ? `Media ${pageInfo}` : `${derived.value.moduleAndTag} - Media ${pageInfo}`
+      headerText = smAndDown.value ? `Media(${meta.value.length}) ${pageInfo}` : `${derived.value.moduleAndTag} - Media(${meta.value.length}) ${pageInfo}`
       break
     case 'related':
-      headerText = smAndDown.value ? `Related ${pageInfo}` : `${derived.value.moduleAndTag} - Related ${pageInfo}`
+      headerText = smAndDown.value ? `Related(${meta.value.length}) ${pageInfo}` : `${derived.value.moduleAndTag} - Related(${meta.value.length}) ${pageInfo}`
   }
   return headerText
 })

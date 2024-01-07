@@ -6,6 +6,8 @@ import type { TGroupValue, TGroupOrderBy, TGroupOrderByOptionObject, } from '../
 import type { IObject } from '../../../types/generalTypes'
 import type { TParseUrlQueryResponse, TParseQueryData, TApiFilters, TSelectedFilterFromQuery } from '@/js/types/routesTypes'
 import { useTrioStore } from './trio'
+import { useXhrStore } from '../xhr'
+import { useRoutesMainStore } from '../routes/routesMain'
 
 export const useFilterStore = defineStore('filter', () => {
   const trio = useTrioStore()
@@ -266,6 +268,22 @@ export const useFilterStore = defineStore('filter', () => {
     })
   }
 
+  async function getCount() {
+    const { send } = useXhrStore()
+    const { current } = storeToRefs(useRoutesMainStore())
+    const q = filtersToQueryObject()
+    const apiFilters = urlQueryToApiFilters(q)
+
+    try {
+      let res = await send('model/index', 'post', { model: current.value.module, query: (<TParseQueryData>apiFilters.data).apiFilters })
+      return res.data.collection.length
+    }
+    catch (err) {
+      console.log(`**** getCount() - failed err: ${JSON.stringify(err, null, 2)}`)
+      return -1
+    }
+  }
+  
   return {
     selectedFilterParams,
     orderAllNames,
@@ -277,6 +295,7 @@ export const useFilterStore = defineStore('filter', () => {
     urlQueryToApiFilters,
     addRemoveSearchParam,
     clearSelectedFilters,
-    setFiltersFromUrlQuery
+    setFiltersFromUrlQuery,
+    getCount
   }
 })

@@ -4,7 +4,7 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useRouter, type LocationQueryRaw, type RouteLocationNormalized, type RouteLocationRaw } from 'vue-router'
-import type { TParseModuleData, TRouteInfo, TName, TParseErrorDetails, TPlanAction, TPrepareError, TModule, TUrlModule } from '../../../types/routesTypes';
+import type { TParseModuleData, TRouteInfo, TPageName, TParseErrorDetails, TPlanAction, TPrepareError, TModule, TUrlModule } from '../../../types/routesTypes';
 
 import { useRoutesParserStore } from './routesParser'
 import { useRoutesPlanTransitionStore } from './routesPlanTransition'
@@ -74,7 +74,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             return { name: 'login', params: { module: 'auth' } }
         }
 
-        to.value.name = <TName>handle_to.name
+        to.value.name = <TPageName>handle_to.name
         to.value.url_full_path = handle_to.fullPath
         //parse module 
         //console.log(`A.current: ${JSON.stringify(current.value, null, 2)}\nto: ${JSON.stringify(to.value, null, 2)})`)
@@ -151,7 +151,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     }
 
     function finalizeRouting(handle_to: RouteLocationNormalized, handle_from: RouteLocationNormalized) {
-        current.value.name = <TName>handle_to.name
+        current.value.name = <TPageName>handle_to.name
         current.value.module = to.value.module
         current.value.url_module = to.value.url_module
         current.value.queryParams = ['index', 'show'].includes(current.value.name) ? handle_to.query : undefined

@@ -1,13 +1,10 @@
 // routesStore.js
 //handles the entire routing mechanism - parsing, loading resources, error handling
-
-import type { TParsingError, TParseErrorDetails, TParseUrlModuleResponse, TParseUrlQueryResponse, TParseSlugResponse, TParseSlugData, TName, TModule, TRouteInfo } from '../../../types/routesTypes'
-import { defineStore, storeToRefs } from 'pinia'
-import { useTrioStore } from '../trio/trio'
+import { defineStore } from 'pinia'
+import type { TModule, TParseUrlModuleResponse, TParseSlugResponse, } from '../../../types/routesTypes'
 import { useLocusStore } from '../modules/locus'
 import { useFaunaStore } from '../modules/fauna'
 import { useStoneStore } from '../modules/stone'
-
 
 const moduleConversion = {
     auth: 'Auth',
@@ -18,7 +15,6 @@ const moduleConversion = {
 }
 
 export const useRoutesParserStore = defineStore('routesParser', () => {
-    let trio = useTrioStore()
 
     function parseModule(module: string): TParseUrlModuleResponse {
         //console.log(`parseModule() module: "${module}"`)
@@ -64,7 +60,7 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
             default:
                 return { success: false, data: { error: "BadIdFormat", message: "bad store name" } }
         }
-        return store.slugParamsFromSlug(slug) 
+        return store.slugParamsFromSlug(slug)
     }
 
     return { parseModule, parseSlug }

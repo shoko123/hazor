@@ -1,5 +1,5 @@
 <template>
-  <v-btn :to="{ name: 'home' }">Hazor ({{ module }})</v-btn>
+  <v-btn :to="{ name: 'home' }">{{ title }}</v-btn>
   <v-divider inset vertical></v-divider>
   <div class="hidden-sm-and-down">
     <v-btn :disabled="disableLinks" :to="{ name: 'welcome', params: { module: 'loci' } }">Loci</v-btn>
@@ -14,16 +14,12 @@
 
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
+import { useMenusStore } from '../../../../scripts/stores/menus'
 import { useAuthStore } from '../../../../scripts/stores/auth'
 import LoginOrUser from '../elements/LoginOrUser.vue'
 
-const { current } = storeToRefs(useRoutesMainStore())
 const { authenticated, accessibility } = storeToRefs(useAuthStore())
-
-const module = computed(() => {
-  return current.value.module
-})
+const { title } = storeToRefs(useMenusStore())
 
 const disableLinks = computed(() => {
   return accessibility.value.authenticatedUsersOnly && !authenticated.value
