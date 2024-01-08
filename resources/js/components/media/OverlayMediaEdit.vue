@@ -1,31 +1,26 @@
 <template>
-  <v-container fluid class="fill-height">
-    <v-row>
-      <v-col class="d-flex justify-space-between">
-        <v-btn @click="switchMedia(true)" icon="mdi-arrow-left" variant="text" :disabled="disableLeft"> </v-btn>
-        <v-btn class="bg-grey-lighten-1" @click="deleteMedia()">Delete</v-btn>
-        <v-btn @click="switchMedia(false)" icon="mdi-arrow-right" variant="text" :disabled="disableRight"> </v-btn>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-row justify="space-between" align="center">
+    <v-btn @click="switchMedia(true)" icon="mdi-arrow-left" variant="text" :disabled="disableLeft"> </v-btn>
+    <v-btn class="bg-grey-lighten-1" @click="deleteMedia()">Delete</v-btn>
+    <v-btn @click="switchMedia(false)" icon="mdi-arrow-right" variant="text" :disabled="disableRight"> </v-btn>
+  </v-row>
 </template>
 
 <script lang="ts" setup >
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
+import { TCollectionName, TPageMediaGallery } from '../../types/collectionTypes'
 import { useMediaStore } from '../../scripts/stores/media'
-import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import { useCollectionMediaStore } from '../../scripts/stores/collections/collectionMedia'
 
-const props = defineProps<{
+const props = defineProps<{  
   itemIndex: number,
 }>()
 
 const m = useMediaStore()
 const cm = useCollectionMediaStore()
-//const { getIpp } = useCollectionsStore()
+
 const record = computed(() => {
-  let ipp =cm.ipp// getIpp(cm.extra.views[0])
-  let indexInPage = props.itemIndex % ipp
+  let indexInPage = props.itemIndex % cm.ipp
   let record = cm.page[indexInPage]
   return record
 })
@@ -41,7 +36,7 @@ const disableRight = computed(() => {
 function switchMedia(withLeft: boolean) {
   console.log(`switchMedia with ${withLeft === true ? "Left" : "Right"}`)
   m.orderChanged = true
-  cm.switchArrayItems(props.itemIndex, withLeft ? props.itemIndex - 1 : props.itemIndex + 1 )  
+  cm.switchArrayItems(props.itemIndex, withLeft ? props.itemIndex - 1 : props.itemIndex + 1)
 }
 
 function edit() {

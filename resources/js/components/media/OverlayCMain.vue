@@ -1,13 +1,11 @@
 <template>
-  <div d-flex>
-    <v-btn class="ml-2 bg-grey-lighten-1" @click="goToItem()">Visit</v-btn>
-      <v-btn v-if="props.hasMedia" class="ml-2 bg-grey-lighten-1" @click="openModalCarousel()">Lightbox</v-btn>
-  </div>
+  <v-btn class="ml-2 bg-grey-lighten-1" @click="goToItem()">Visit</v-btn>
+  <v-btn v-if="props.hasMedia" class="ml-2 bg-grey-lighten-1" @click="openModalCarousel()">Lightbox</v-btn>
 </template>
     
 
 <script lang="ts" setup >
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { TCollectionName } from '../../types/collectionTypes'
 import { useCollectionMainStore } from '../../scripts/stores/collections/collectionMain'
@@ -20,13 +18,8 @@ const props = defineProps<{
   hasMedia: boolean
 }>()
 
-
 const { ipp, page } = storeToRefs(useCollectionMainStore())
 let { routerPush } = useRoutesMainStore()
-
-onMounted(() => {
-  //console.log(`Overlay.onMounted props: ${JSON.stringify(props, null, 2)}`)
-})
 
 const { open } = useCarouselStore()
 
