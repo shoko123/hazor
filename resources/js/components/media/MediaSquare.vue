@@ -1,15 +1,15 @@
 <template>
   <v-hover v-slot="{ isHovering, props }">
     <v-card v-bind="props" variant="outlined" class="ml-1 mb-1">
-      <v-img :src="urls?.tn" :lazy-src="urls?.tn" aspect-ratio="1" class="bg-grey-lighten-2">
-        <v-btn v-if="showTag" class="text-subtitle-1 font-weight-medium text-black" color="grey">{{ tagText }}</v-btn>
+      <v-img :src="data.urls?.tn" :lazy-src="data.urls?.tn" aspect-ratio="1" class="bg-grey-lighten-2">
+        <v-btn v-if="data.showTag" class="text-subtitle-1 font-weight-medium text-black" color="grey">{{ data.tagText }}</v-btn>
         <v-card class="mx-auto" color="transparent" flat>
           <v-card-text class="text-body-1 text-black">
-            {{ overlayText }}</v-card-text>
+            {{ data.overlayText }}</v-card-text>
         </v-card>
         <v-overlay v-if="isHovering">
           <template #activator="{ isActive, props }">
-            <component v-bind:is="overlay" :source="source" :itemIndex="itemIndex"></component>
+            <component v-bind:is="data.overlay" :source="source" :itemIndex="itemIndex" :hasMedia="data.hasMedia"></component>
           </template>
         </v-overlay>
       </v-img>
@@ -88,60 +88,37 @@ const relatedRecord = computed(() => {
   return ma
 })
 
-const showTag = computed(() => {
-  return ['main', 'related'].includes(props.source)
-})
-
-const tagText = computed(() => {
+const data = computed(() => {
   switch (props.source) {
     case 'main':
-      return mainRecord.value?.tag
-
-    case 'related':
-      return relatedRecord.value?.relation_name
-
-    default:
-      return ""
-  }
-})
-
-const urls = computed(() => {
-  switch (props.source) {
-    case 'main':
-      return mainRecord.value?.media?.urls
+      return {
+        overlay: OverlayCMain,
+        showTag: true,
+        tagText: mainRecord.value?.tag,
+        urls: mainRecord.value?.media?.urls,
+        hasMedia: mainRecord.value?.media?.hasMedia,
+        overlayText: mainRecord.value?.short
+      }
 
     case 'media':
-      return mediaRecord.value?.urls
+    return {
+        overlay:  current.value.name === 'media' ? OverlayMediaEdit : OverlayCMedia,
+        showTag: false,
+        tagText: '',
+        urls: mediaRecord.value?.urls,
+        hasMedia: true,
+        overlayText: ''
+      }
 
     case 'related':
-      return relatedRecord.value?.media?.urls
-
-    default:
-      return { full: "", tn: "" }
-  }
-})
-
-const overlayText = computed(() => {
-  switch (props.source) {
-    case 'main':
-      return mainRecord.value?.short
-
-    case 'media':
-      return ``
-
-    case 'related':
-      return `${relatedRecord.value?.module} ${relatedRecord.value?.tag}.  ${relatedRecord.value?.short}`
-  }
-})
-
-const overlay = computed(() => {
-  switch (props.source) {
-    case 'main':
-      return OverlayCMain
-    case 'media':
-      return current.value.name === 'media' ? OverlayMediaEdit : OverlayCMedia
-    case 'related':
-      return OverlayRelated
+    return {
+        overlay: OverlayRelated,
+        showTag: true,
+        tagText: relatedRecord.value?.relation_name,
+        urls: relatedRecord.value?.media?.urls,
+        hasMedia: relatedRecord.value?.media?.hasMedia,
+        overlayText: `${relatedRecord.value?.module} ${relatedRecord.value?.tag}.  ${relatedRecord.value?.short}`
+      }
   }
 })
 

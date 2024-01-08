@@ -1,5 +1,9 @@
 <template>
-  <v-btn :to="{ name: 'home' }">{{ title }}</v-btn>
+  <div class="hidden-sm-and-down">
+    <v-btn icon="mdi-home-circle" :to="{ name: 'home' }" rounded="0"></v-btn>
+  </div>
+  <v-divider inset vertical></v-divider>
+  <v-btn>{{ title }}</v-btn>
   <v-divider inset vertical></v-divider>
   <div class="hidden-sm-and-down">
     <v-btn :disabled="disableLinks" :to="{ name: 'welcome', params: { module: 'loci' } }">Loci</v-btn>

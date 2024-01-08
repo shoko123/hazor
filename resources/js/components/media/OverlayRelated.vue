@@ -2,11 +2,10 @@
   <v-card class="mx-auto" color="transparent" flat>
     <v-card-actions>
       <v-btn class="bg-grey-lighten-1" @click="goToItem()">Visit</v-btn>
-      <v-btn class="bg-grey-lighten-1" @click="openModalCarousel()">Lightbox</v-btn>
+      <v-btn v-if="props.hasMedia" class="bg-grey-lighten-1" @click="openModalCarousel()">Lightbox</v-btn>
     </v-card-actions>
   </v-card>
 </template>
-    
 
 <script lang="ts" setup >
 import { computed, onMounted } from 'vue'
@@ -21,6 +20,7 @@ import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 const props = defineProps<{
   source: TCollectionName,
   itemIndex: number,
+  hasMedia: boolean
 }>()
 
 onMounted(() => {
