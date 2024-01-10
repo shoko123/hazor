@@ -146,6 +146,8 @@ type TPageRelatedGallery = TPageMainGallery & {
 
 type TPageMediaGallery = TApiArrayMedia
 
+type TPageGallery = TPageMainGallery | TPageMediaGallery | TPageRelatedGallery
+
 //internal collection data
 type TCollectionExtra = {
         length: number,
@@ -192,6 +194,7 @@ export {
         TPageRelatedGallery,
         TPageRelatedTabular,
         TPageMediaGallery,
+        TPageGallery,
         TMediaUrls,
         TItemsPerView,
 }

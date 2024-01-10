@@ -10,7 +10,7 @@
         </v-card>
         <v-overlay v-if="isHovering">
           <template #activator>
-            <MediaOverlay :source="source" :itemIndex="itemIndex"></MediaOverlay>
+            <MediaOverlay :source="source" :itemIndex="itemIndex" :record="data.record"></MediaOverlay>
           </template>
         </v-overlay>
       </v-img>
@@ -45,8 +45,9 @@ const data = computed(() => {
       return {
         showTag: true,
         tagText: ma.tag,
-        urls: ma.media?.urls,
-        short: ma.short
+        urls: ma.media.urls,
+        short: ma.short,
+        record: ma
       }
 
     case 'media':
@@ -55,7 +56,8 @@ const data = computed(() => {
         showTag: false,
         tagText: '',
         urls: med.urls,
-        short: ''
+        short: '',
+        record: med
       }
 
     case 'related':
@@ -64,7 +66,8 @@ const data = computed(() => {
         showTag: true,
         tagText: rel.relation_name,
         urls: rel.media.urls,
-        short: `${rel.module} ${rel.tag}.  ${rel.short}`
+        short: `${rel.module} ${rel.tag}.  ${rel.short}`,
+        record: rel
       }
   }
 })

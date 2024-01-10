@@ -1,6 +1,6 @@
 <template>
     <v-carousel height="96vh" continuos cycle>
-      <v-carousel-item v-for="(media1, i) in media" :key="i" :src="media1.urls.full" :lazy-src="media1.urls.tn"
+      <v-carousel-item v-for="(med, i) in media" :key="i" :src="med.urls.full" :lazy-src="med.urls.tn"
         cover>
       </v-carousel-item>
     </v-carousel>

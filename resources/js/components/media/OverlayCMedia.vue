@@ -6,19 +6,19 @@
     
 
 <script lang="ts" setup >
-import { TCollectionName, TPageMediaGallery } from '../../types/collectionTypes'
+import type { TPageMediaGallery } from '../../types/collectionTypes'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 
 const props = defineProps<{
-  source: TCollectionName,
   itemIndex: number,
+  record: TPageMediaGallery  
 }>()
 
 const { open } = useCarouselStore()
 
 function openModalCarousel() {
   console.log(`Open carousel clicked .....`)
-  open(props.source, props.itemIndex)
+  open('media', props.itemIndex)
 }
 
 </script>

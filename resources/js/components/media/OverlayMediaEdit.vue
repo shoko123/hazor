@@ -8,22 +8,17 @@
 
 <script lang="ts" setup >
 import { computed } from 'vue'
-import { TCollectionName, TPageMediaGallery } from '../../types/collectionTypes'
+import type { TPageMediaGallery } from '../../types/collectionTypes'
 import { useMediaStore } from '../../scripts/stores/media'
 import { useCollectionMediaStore } from '../../scripts/stores/collections/collectionMedia'
 
 const props = defineProps<{  
   itemIndex: number,
+  record: TPageMediaGallery  
 }>()
 
 const m = useMediaStore()
 const cm = useCollectionMediaStore()
-
-const record = computed(() => {
-  let indexInPage = props.itemIndex % cm.ipp
-  let record = cm.page[indexInPage]
-  return record
-})
 
 const disableLeft = computed(() => {
   return (cm.array.length === 1 || props.itemIndex === 0)
@@ -45,6 +40,6 @@ function edit() {
 
 function deleteMedia() {
   if (!confirm("Are you sure you want to delete this media item?")) { return }
-  m.destroy(record.value.id)
+  m.destroy(props.record.id)
 }
 </script>
