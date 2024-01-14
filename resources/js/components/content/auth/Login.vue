@@ -21,7 +21,7 @@
         placeholder="Enter your password" prepend-inner-icon="mdi-lock-outline" variant="outlined"
         @click:append-inner="visible = !visible"></v-text-field>
 
-      <v-btn @click="loginRedirect" block class="mb-8" color="blue" size="large" variant="tonal">
+      <v-btn @click="loginAndRedirect" block class="mb-8" color="blue" size="large" variant="tonal">
         Log In
       </v-btn>
 
@@ -32,6 +32,9 @@
       </div>
     </v-card-text>
   </v-card>
+  <v-dialog v-model="emailVerificationDialog" persistent width="500">
+    <WaitingForVerificationDialogForm :email="data.email" :fromLogin="true"> </WaitingForVerificationDialogForm>
+  </v-dialog>
 </template>
 
 <script setup lang="ts" >
@@ -39,12 +42,15 @@ import { computed, ref, reactive } from 'vue'
 import { storeToRefs } from 'pinia'
 import { type TPageName } from '@/js/types/routesTypes'
 import { useAuthStore } from '../../../scripts/stores/auth'
-import { useNotificationsStore } from '../../../scripts/stores/notifications';
+import { useNotificationsStore } from '../../../scripts/stores/notifications'
 import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
 import { router } from '../../../scripts/setups/vue-router'
 import { useVuelidate } from "@vuelidate/core"
-import { required, email, minLength, helpers, minValue, maxValue } from "@vuelidate/validators"
+import { required, email, minLength, helpers } from '@vuelidate/validators'
 
+import WaitingForVerificationDialogForm from './WaitingForVerificationDialogForm.vue'
+
+let { emailVerificationDialog } = storeToRefs(useAuthStore())
 
 const { showSnackbar } = useNotificationsStore()
 const { login } = useAuthStore()
@@ -82,23 +88,28 @@ const passwordErrors = computed(() => {
 
 const visible = ref(false)
 
-async function loginRedirect() {
+async function loginAndRedirect() {
   await v$.value.$validate()
   if (v$.value.$error || v$.value.$silentErrors.length > 0) {
     showSnackbar("Please correct the marked errors!", "orange")
-    console.log(`validation errors: ${JSON.stringify(v$.value.$errors, null, 2)}`)
-    console.log(`validation silent errors: ${JSON.stringify(v$.value.$silentErrors, null, 2)}`)
+    console.log(`validation errors: ${JSON.stringify(v$.value.$errors, null, 2)} silent: ${JSON.stringify(v$.value.$silentErrors, null, 2)}`)
     return
   }
 
   let res = await login(data)
-  if (res) {
+  if (res === null) {
+    return
+  }
+  if (res?.is_verified) {
     console.log(`Login preLoginPath: ${current.value.preLoginFullPath}`)
     if (['/auth/register', '/auth/forgot-password'].includes(<string>current.value.preLoginFullPath)) {
       routerPush('home')
     } else {
       router.push(<string>current.value.preLoginFullPath)
     }
+  } else {
+    console.log(`Login. after login. email not verified`)
+    //routerPush('home')
   }
 }
 

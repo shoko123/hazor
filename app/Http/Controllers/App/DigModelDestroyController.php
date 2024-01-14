@@ -11,9 +11,10 @@ class DigModelDestroyController extends Controller
 {
     public function destroy(Request $r, DigModel $m)
     {
-        $m->destroyItem($r["id"]);
+        $r =  $m->destroyItem($r["id"]);
         return response()->json([
-            "message" => 'item with id' . $r[" id"] . " deleted successfully",
+            "message" => "item deleted successfully",
+            "deleted_item" => $r
         ], 200);
     }
 }

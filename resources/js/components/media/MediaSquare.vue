@@ -41,7 +41,7 @@ const record = computed(() => {
 const data = computed(() => {
   switch (props.source) {
     case 'main':
-      let ma = record.value as TPageMainGallery
+      let ma = record.value as any as TPageMainGallery
       return {
         showTag: true,
         tagText: ma.tag,

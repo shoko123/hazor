@@ -67,8 +67,7 @@ async function send() {
   console.log(`after validate() errors: ${JSON.stringify(v$.value.$errors, null, 2)}`)
   if (v$.value.$error || v$.value.$silentErrors.length > 0) {
     showSnackbar("Please correct the marked errors!", "orange")
-    console.log(`validation errors: ${JSON.stringify(v$.value.$errors, null, 2)}`)
-    console.log(`validation silent errors: ${JSON.stringify(v$.value.$silentErrors, null, 2)}`)
+    console.log(`validation errors: ${JSON.stringify(v$.value.$errors, null, 2)} silent: ${JSON.stringify(v$.value.$silentErrors, null, 2)}`)
     return
   }
 

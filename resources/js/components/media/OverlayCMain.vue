@@ -5,19 +5,15 @@
     
 
 <script lang="ts" setup >
-import { computed } from 'vue'
-import { storeToRefs } from 'pinia'
 import { TPageMainGallery } from '../../types/collectionTypes'
-import { useCollectionMainStore } from '../../scripts/stores/collections/collectionMain'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 
 const props = defineProps<{
   itemIndex: number,
-  record: any
+  record: TPageMainGallery
 }>()
 
-const { ipp, page } = storeToRefs(useCollectionMainStore())
 let { routerPush } = useRoutesMainStore()
 const { open } = useCarouselStore()
 

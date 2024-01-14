@@ -269,8 +269,13 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
     public function destroyItem(int $id)
     {
-        $toDelete = self::findOrFail($id);
-        $toDelete->delete();
+        $toDelete = self::with(['model_tags', 'global_tags'])->findOrFail($id);
+        DB::transaction(function () use ($toDelete) {
+            $toDelete->model_tags()->detach();
+            $toDelete->global_tags()->detach();
+            $toDelete->delete();
+        });
+        return $toDelete;
     }
 
     public function store(array $new_item, bool $methodIsPost)
