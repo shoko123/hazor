@@ -2,6 +2,7 @@ type TLoginForm = {
   email: string,
   password: string
 }
+
 type TRegistrationForm = {
   email: string,
   password: string
@@ -10,6 +11,7 @@ type TRegistrationForm = {
 type TForgotPasswordForm = {
   email: string,
 }
+
 type TResetPasswordForm = {
   email: string,
   password: string,
@@ -24,5 +26,6 @@ type TUser = {
   permissions: string[]
 }
 
+type TAuthErrorName = 'unauthorized' | 'unauthenticated' | 'not-verified' | 'email-not-found' | 'bad-credentials' |'too-many-attempts' | 'server-error' | 'general-error'
 
-export { TLoginForm, TRegistrationForm, TForgotPasswordForm, TResetPasswordForm, TUser }
+export { TLoginForm, TRegistrationForm, TForgotPasswordForm, TResetPasswordForm, TUser, TAuthErrorName }

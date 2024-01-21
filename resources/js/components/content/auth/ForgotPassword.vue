@@ -1,9 +1,4 @@
 <template>
-  <v-card dense>
-    <v-toolbar :height="35">
-      <v-toolbar-title>Forgot Password Form</v-toolbar-title>
-    </v-toolbar>
-    <v-card-text class="pa-12 pb-8">
       <div class="text-subtitle-1 text-medium-emphasis">Recovery Email</div>
 
       <v-text-field v-model="data.email" :error-messages="emailErrors" density="compact" placeholder="Email address"
@@ -19,29 +14,16 @@
           To Login Page<v-icon icon="mdi-chevron-right"></v-icon>
         </a>
       </div>
-    </v-card-text>
-  </v-card>
-  <v-dialog v-model="dialog" persistent width="500">
-    <v-card>
-      <v-card-text>
-        {{ waitText }}
-      </v-card-text>
-      <v-card-actions>
-        <v-btn color="primary" block @click="goToLogin">Go to Login (after activation of email reset link)</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
 </template>
 
 <script setup lang="ts" >
 import { computed, ref, reactive } from 'vue'
 import { useAuthStore } from '../../../scripts/stores/auth'
-import { useNotificationsStore } from '../../../scripts/stores/notifications';
-import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
+import { useNotificationsStore } from '../../../scripts/stores/notifications'
 
 let { showSnackbar } = useNotificationsStore()
-let { sendResetPasswordMail } = useAuthStore()
-let { routerPush } = useRoutesMainStore()
+let { sendForgotPasswordRequest, resetAndGoTo } = useAuthStore()
+
 import { useVuelidate } from "@vuelidate/core"
 import { required, email } from "@vuelidate/validators"
 
@@ -71,20 +53,15 @@ async function send() {
     return
   }
 
-  let res = await sendResetPasswordMail(data)
+  let res = await sendForgotPasswordRequest(data)
   if (res) {
     dialog.value = true
     console.log(`Password reset email was sent successfully`)
   }
 }
 
-const waitText = computed(() => {
-  return `A password reset link was emailed to "${data.email}".
-  Follow instructions on email. Once a new password was set, click below to head to the login page.`
-})
-
 function goToLogin() {
-  routerPush('login')
+  resetAndGoTo('login')
 }
 </script>
 
