@@ -43,9 +43,8 @@ onMounted(() => {
   console.log(`ResetPasswordForm data:\n ${JSON.stringify(data, null, 2)}`)
 })
 
-
 let { showSnackbar } = useNotificationsStore()
-let { sendResetPasswordRequest, getUser, userStatus } = useAuthStore()
+let { attemptResetPassword, userStatus } = useAuthStore()
 
 const visible = ref(false)
 const uStat = ref<'verified' | 'not-verified' | 'server-error' | 'unauthenticated'>('unauthenticated')
@@ -100,7 +99,7 @@ async function send() {
     return
   }
 
-  let res = await sendResetPasswordRequest(data)
+  let res = await attemptResetPassword(data)
 }
 
 async function closeTab() {

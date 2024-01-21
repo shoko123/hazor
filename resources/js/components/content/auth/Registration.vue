@@ -47,7 +47,7 @@ import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
 
 
 let { showSnackbar } = useNotificationsStore()
-let { sendRegisterRequest, resetAndGoTo } = useAuthStore()
+let { attemptRegister, resetAndGoTo } = useAuthStore()
 let { routerPush } = useRoutesMainStore()
 
 import { useVuelidate } from "@vuelidate/core"
@@ -71,7 +71,7 @@ const rules = computed(() => {
         () => `The password requires an uppercase, lowercase, and a number`,
         (value) => /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])/.test(<string>value)
       ),
-    },//no need for validation - from select 
+    },
     password_confirmation: { required, sameAsPassword: sameAs(data.password) }
   }
 })
@@ -103,11 +103,7 @@ async function register1() {
     console.log(`validation errors: ${JSON.stringify(v$.value.$errors, null, 2)} silent: ${JSON.stringify(v$.value.$silentErrors, null, 2)}`)
     return
   }
-  let res = await sendRegisterRequest(data)
-  // if (!res) {
-  //   showSnackbar('Registration request failure. Redirected to home page')
-  //   resetAndGoTo('home')
-  // }
+  let res = await attemptRegister(data)
 }
 
 function goToLogin() {

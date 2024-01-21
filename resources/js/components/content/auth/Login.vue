@@ -16,7 +16,7 @@
     placeholder="Enter your password" prepend-inner-icon="mdi-lock-outline" variant="outlined"
     @click:append-inner="visible = !visible"></v-text-field>
 
-  <v-btn @click="loginAndRedirect" block class="mb-8" color="blue" size="large" variant="tonal">
+  <v-btn @click="login" block class="mb-8" color="blue" size="large" variant="tonal">
     Log In
   </v-btn>
 
@@ -39,7 +39,7 @@ import { useVuelidate } from "@vuelidate/core"
 import { required, email, minLength, helpers } from '@vuelidate/validators'
 
 const { showSnackbar } = useNotificationsStore()
-const { login } = useAuthStore()
+const { attemptLogin } = useAuthStore()
 const { current } = storeToRefs(useRoutesMainStore())
 const { routerPush } = useRoutesMainStore()
 
@@ -74,7 +74,7 @@ const passwordErrors = computed(() => {
 
 const visible = ref(false)
 
-async function loginAndRedirect() {
+async function login() {
   await v$.value.$validate()
   if (v$.value.$error || v$.value.$silentErrors.length > 0) {
     showSnackbar("Please correct the marked errors!", "orange")
@@ -82,26 +82,18 @@ async function loginAndRedirect() {
     return
   }
 
-  let res = await login(data)
-  switch (res) {
-    case 'OK':
-      showSnackbar('Successfully logged-in!')
-      if (['/auth/register', '/auth/forgot-password'].includes(<string>current.value.preLoginFullPath)) {
-        routerPush('home')
-      } else {
-        router.push(<string>current.value.preLoginFullPath)
-      }
-      return
-    case 'not-verified':
-      console.log(`Login. after login. email not verified`)
-    case 'credentials_problem':
-    case 'server_access_problem':
-      return
+  let res = await attemptLogin(data)
+  if (res) {
+    //showSnackbar('Successfully logged-in!')
+    if (['/auth/register', '/auth/forgot-password'].includes(<string>current.value.preLoginFullPath)) {
+      routerPush('home')
+    } else {
+      router.push(<string>current.value.preLoginFullPath)
+    }
   }
 }
 
 function goTo(routeName: TPageName) {
-  console.log(`goto ${routeName}`)
   routerPush(routeName)
 }
 </script>

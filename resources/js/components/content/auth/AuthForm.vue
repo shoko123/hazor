@@ -9,8 +9,15 @@
       </slot>
     </v-card-text>
   </v-card>
-  <v-dialog v-model="authDialog" persistent width="500">
-    <component :is="parts?.dialogForm" />
+  <v-dialog v-model="dialog.open" persistent width="500">
+    <v-card>
+      <v-card-text>
+        {{ dialog.message }}
+      </v-card-text>
+      <v-card-actions>
+        <component :is="parts?.dialogForm" />
+      </v-card-actions>
+    </v-card>
   </v-dialog>
 </template>
 
@@ -27,11 +34,12 @@ import ForgotPassword from './ForgotPassword.vue'
 import ForgotPasswordDialog from './ForgotPasswordDialog.vue'
 import ResetPassword from './ResetPassword.vue'
 import ResetPasswordDialog from './ResetPasswordDialog.vue'
-const { authDialog } = storeToRefs(useAuthStore())
+
+const { dialog } = storeToRefs(useAuthStore())
 const { current } = storeToRefs(useRoutesMainStore())
 
 onMounted(() => {
-  authDialog.value = false
+  dialog.value = { open: false, message: '' }
 })
 
 const parts = computed(() => {
@@ -49,7 +57,6 @@ const parts = computed(() => {
       return { form: ResetPassword, header: `Reset Password Form`, dialogForm: ResetPasswordDialog }
 
     default:
-      //console.log(`Collection.vue invalid authForm: ${current.value.name}`)
       return null
   }
 })

@@ -1,22 +1,15 @@
 <template>
-  <AuthDialogForm :text="text">
-    <template #buttons>
-      <v-btn color="primary" block @click="checkIfVerified">Close (After verification)</v-btn>
-    </template>
-  </AuthDialogForm>
+   <v-btn color="primary" block @click="checkIfVerified">Close (After verification)</v-btn>
 </template>
 
 <script setup lang="ts" >
 //This form is shown after registration - 
 //proceed only after verification!
-import { computed } from 'vue'
-import { storeToRefs } from 'pinia'
 import { useAuthStore } from '../../../scripts/stores/auth'
 import { useNotificationsStore } from '../../../scripts/stores/notifications'
-import AuthDialogForm from './AuthDialogForm.vue'
 
-let { email } = storeToRefs(useAuthStore())
-let { userStatus, resetAndGoTo, login } = useAuthStore()
+let { userStatus, resetAndGoTo } = useAuthStore()
+
 const { showSnackbar } = useNotificationsStore()
 
 async function checkIfVerified() {
@@ -35,9 +28,6 @@ async function checkIfVerified() {
   }
 }
 
-const text = computed(() => {
-  return `A verification email has been sent to "${email.value}". After verifying your email please click below to close this tab`
-})
 </script>
 
 

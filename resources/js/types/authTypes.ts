@@ -26,6 +26,5 @@ type TUser = {
   permissions: string[]
 }
 
-type TAuthErrorName = 'unauthorized' | 'unauthenticated' | 'not-verified' | 'email-not-found' | 'bad-credentials' |'too-many-attempts' | 'server-error' | 'general-error'
 
-export { TLoginForm, TRegistrationForm, TForgotPasswordForm, TResetPasswordForm, TUser, TAuthErrorName }
+export { TLoginForm, TRegistrationForm, TForgotPasswordForm, TResetPasswordForm, TUser }

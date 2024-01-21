@@ -22,12 +22,11 @@ import { useAuthStore } from '../../../scripts/stores/auth'
 import { useNotificationsStore } from '../../../scripts/stores/notifications'
 
 let { showSnackbar } = useNotificationsStore()
-let { sendForgotPasswordRequest, resetAndGoTo } = useAuthStore()
+let { attemptForgotPassword, resetAndGoTo } = useAuthStore()
 
 import { useVuelidate } from "@vuelidate/core"
 import { required, email } from "@vuelidate/validators"
 
-const dialog = ref(false)
 const data = reactive({
   email: "",
 })
@@ -49,15 +48,11 @@ async function send() {
   console.log(`after validate() errors: ${JSON.stringify(v$.value.$errors, null, 2)}`)
   if (v$.value.$error || v$.value.$silentErrors.length > 0) {
     showSnackbar("Please correct the marked errors!", "orange")
-    console.log(`validation errors: ${JSON.stringify(v$.value.$errors, null, 2)} silent: ${JSON.stringify(v$.value.$silentErrors, null, 2)}`)
+    //console.log(`validation errors: ${JSON.stringify(v$.value.$errors, null, 2)} silent: ${JSON.stringify(v$.value.$silentErrors, null, 2)}`)
     return
   }
 
-  let res = await sendForgotPasswordRequest(data)
-  if (res) {
-    dialog.value = true
-    console.log(`Password reset email was sent successfully`)
-  }
+  let res = await attemptForgotPassword(data)
 }
 
 function goToLogin() {
