@@ -17,18 +17,18 @@
       </v-col>
       <v-col cols="12" sm="1">
         <v-row justify="center" no-gutters>
-          AND</v-row>
+          OR</v-row>
       </v-col>
       <v-col cols="12" sm="3" class="ml-2">
         <v-card class="mx-auto" variant="outlined">
           <v-card-item>
-            <v-text-field label="search term4" v-model="search4" name="search3" filled>
+            <v-text-field label="search term4" v-model="search4" name="search4" filled>
             </v-text-field>
             OR
-            <v-text-field label="search term5" v-model="search5" name="search4"
+            <v-text-field label="search term5" v-model="search5" name="search5"
               filled></v-text-field>
             OR
-            <v-text-field label="search term6" v-model="search6" name="search5"
+            <v-text-field label="search term6" v-model="search6" name="search6"
               filled></v-text-field>
           </v-card-item>
         </v-card>
