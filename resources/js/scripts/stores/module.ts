@@ -16,12 +16,12 @@ export const useModuleStore = defineStore('module', () => {
   const { bucketUrl } = storeToRefs(useMediaStore())
   const { current } = storeToRefs(useRoutesMainStore())
 
-  let counts = ref({ items: 0, media: 0 })
-  let lookups =  ref<{column_name: TColumnName, group_name: string}[]>([])
-  let welcomeText =  ref<string>("")
+  const counts = ref({ items: 0, media: 0 })
+  const lookups =  ref<{column_name: TColumnName, group_name: string}[]>([])
+  const welcomeText =  ref<string>("")
 
   const backgroundImage = computed(() => {
-    let module = current.value.module
+    const module = current.value.module
     return ['welcome', 'login', 'register', 'forgot-password', 'reset-password'].includes(current.value.name) ? {
       fullUrl: `${bucketUrl.value}app/background/${module}.jpg`,
       tnUrl: `${bucketUrl.value}app/background/${module}-tn.jpg`

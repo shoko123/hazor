@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <component :is="view"></component>
+    <component :is="view" />
   </v-container>
 </template>
 
@@ -27,6 +27,4 @@ const view = computed<Component>(() => {
       return ShowView0
   }
 })
-
-
 </script>

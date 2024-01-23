@@ -1,5 +1,10 @@
 <template>
-    <v-list-item  :disabled="disable"  :to="{ name: 'home' }">Home</v-list-item>
+  <v-list-item
+    :disabled="disable"
+    :to="{ name: 'home' }"
+  >
+    Home
+  </v-list-item>
 </template>
 
 <script lang="ts" setup>

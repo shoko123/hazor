@@ -3,14 +3,20 @@
 <template>
   <v-card-text>
     <v-row class="text-body-1">
-      {{ item?.short }}</v-row>
+      {{ item?.short }}
+    </v-row>
   </v-card-text>
   <v-card-actions>
-    <v-btn @click="goToItem" variant="outlined">{{ item?.module }} {{ item?.tag }}</v-btn>
+    <v-btn
+      variant="outlined"
+      @click="goToItem"
+    >
+      {{ item?.module }} {{ item?.tag }}
+    </v-btn>
   </v-card-actions>
 </template>
 
-<script lang="ts" setup >
+<script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { type TModule } from '@/js/types/routesTypes'

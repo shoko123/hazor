@@ -12,7 +12,7 @@ export const useMainStore = defineStore('main', () => {
   const a = useAuthStore()
   const { send } = useXhrStore()
 
-  let initialized = ref(false)
+  const initialized = ref(false)
 
   async function appInit() {
 

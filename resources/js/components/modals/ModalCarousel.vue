@@ -3,11 +3,28 @@
 <template>
   <v-container fluid>
     <v-card height="97vh">
-      <v-toolbar height="36" class="bg-grey-lighten-1">
+      <v-toolbar
+        height="36"
+        class="bg-grey-lighten-1"
+      >
         <v-toolbar-title>{{ carouselHeader }}</v-toolbar-title>
-        <v-btn v-if="showNextArrows" size="small" @click="nextClicked(false)" icon="mdi-arrow-left"></v-btn>
-        <v-btn v-if="showNextArrows" size="small" @click="nextClicked(true)" icon="mdi-arrow-right"> </v-btn>
-        <v-btn size="small" @click="closeCarousel" icon="mdi-close"> </v-btn>
+        <v-btn
+          v-if="showNextArrows"
+          size="small"
+          icon="mdi-arrow-left"
+          @click="nextClicked(false)"
+        />
+        <v-btn
+          v-if="showNextArrows"
+          size="small"
+          icon="mdi-arrow-right"
+          @click="nextClicked(true)"
+        />
+        <v-btn
+          size="small"
+          icon="mdi-close"
+          @click="closeCarousel"
+        />
       </v-toolbar>
 
       <v-card-text>
@@ -28,7 +45,7 @@
   </v-container>
 </template>
 
-<script lang="ts" setup >
+<script lang="ts" setup>
 
 import { storeToRefs } from 'pinia'
 import { useDisplay } from 'vuetify'

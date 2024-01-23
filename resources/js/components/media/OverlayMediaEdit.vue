@@ -1,12 +1,30 @@
 <template>
-  <v-row justify="space-between" align="center">
-    <v-btn @click="switchMedia(true)" icon="mdi-arrow-left" variant="text" :disabled="disableLeft"> </v-btn>
-    <v-btn class="bg-grey-lighten-1" @click="deleteMedia()">Delete</v-btn>
-    <v-btn @click="switchMedia(false)" icon="mdi-arrow-right" variant="text" :disabled="disableRight"> </v-btn>
+  <v-row
+    justify="space-between"
+    align="center"
+  >
+    <v-btn
+      icon="mdi-arrow-left"
+      variant="text"
+      :disabled="disableLeft"
+      @click="switchMedia(true)"
+    />
+    <v-btn
+      class="bg-grey-lighten-1"
+      @click="deleteMedia()"
+    >
+      Delete
+    </v-btn>
+    <v-btn
+      icon="mdi-arrow-right"
+      variant="text"
+      :disabled="disableRight"
+      @click="switchMedia(false)"
+    />
   </v-row>
 </template>
 
-<script lang="ts" setup >
+<script lang="ts" setup>
 import { computed } from 'vue'
 import type { TPageMediaGallery } from '../../types/collectionTypes'
 import { useMediaStore } from '../../scripts/stores/media'

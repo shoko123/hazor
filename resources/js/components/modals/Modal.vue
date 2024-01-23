@@ -1,10 +1,13 @@
 <template>
-    <v-dialog fullscreen v-model="open">
-        <component :is=comp />
-    </v-dialog>
+  <v-dialog
+    v-model="open"
+    fullscreen
+  >
+    <component :is="comp" />
+  </v-dialog>
 </template>
 
-<script lang="ts" setup >
+<script lang="ts" setup>
 import { computed, type Component } from 'vue'
 import Carousel from './ModalCarousel.vue'
 import Count from './ModalQueryCount.vue'

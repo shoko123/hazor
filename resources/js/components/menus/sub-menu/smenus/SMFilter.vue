@@ -1,13 +1,34 @@
 <template>
-  <v-btn class="primary--text" large variant="outlined" @click="submit">Submit</v-btn>
-  <v-btn class="primary--text" large variant="outlined" @click="clear">clear</v-btn>
-  <v-btn class="primary--text" large variant="outlined" @click="getCnt">Count</v-btn>
+  <v-btn
+    class="primary--text"
+    large
+    variant="outlined"
+    @click="submit"
+  >
+    Submit
+  </v-btn>
+  <v-btn
+    class="primary--text"
+    large
+    variant="outlined"
+    @click="clear"
+  >
+    clear
+  </v-btn>
+  <v-btn
+    class="primary--text"
+    large
+    variant="outlined"
+    @click="getCnt"
+  >
+    Count
+  </v-btn>
   <div class="hidden-sm-and-down">
     <WelcomeButton />
   </div>
 </template>
 
-<script lang="ts" setup >
+<script lang="ts" setup>
 import { computed, } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'

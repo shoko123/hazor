@@ -1,29 +1,92 @@
 <template>
-  <v-container fluid class="pa-1 ma-0">
-    <v-row wrap no-gutters>
-      <v-text-field label="Name" v-model="data.name" :error-messages="nameErrors" class="mr-1" filled> </v-text-field>
-      <v-select label="Area" v-model="data.area" :items="areas"></v-select>
-      <v-text-field label="Square" v-model="data.square" :error-messages="squareErrors" class="mr-1" filled>
-      </v-text-field>
-      <v-text-field label="stratum" v-model="data.stratum" :error-messages="stratumErrors" class="mr-1" filled>
-      </v-text-field>
+  <v-container
+    fluid
+    class="pa-1 ma-0"
+  >
+    <v-row
+      wrap
+      no-gutters
+    >
+      <v-text-field
+        v-model="data.name"
+        label="Name"
+        :error-messages="nameErrors"
+        class="mr-1"
+        filled
+      />
+      <v-select
+        v-model="data.area"
+        label="Area"
+        :items="areas"
+      />
+      <v-text-field
+        v-model="data.square"
+        label="Square"
+        :error-messages="squareErrors"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        v-model="data.stratum"
+        label="stratum"
+        :error-messages="stratumErrors"
+        class="mr-1"
+        filled
+      />
     </v-row>
 
-    <v-row wrap no-gutters>
-      <v-text-field label="Type" v-model="data.type" :error-messages="typeErrors" class="mr-1" filled>
-      </v-text-field>
-      <v-text-field label="cross_ref" v-model="data.cross_ref" :error-messages="cross_refErrors" class="mr-1" filled>
-      </v-text-field>
-      <v-text-field label="Elevation" v-model="data.elevation" :error-messages="elevationErrors" class="mr-1"
-        filled></v-text-field>
+    <v-row
+      wrap
+      no-gutters
+    >
+      <v-text-field
+        v-model="data.type"
+        label="Type"
+        :error-messages="typeErrors"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        v-model="data.cross_ref"
+        label="cross_ref"
+        :error-messages="cross_refErrors"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        v-model="data.elevation"
+        label="Elevation"
+        :error-messages="elevationErrors"
+        class="mr-1"
+        filled
+      />
     </v-row>
 
-    <v-row wrap no-gutters>
-      <v-textarea label="Description" v-model="data.description" class="mr-1" :error-messages="descriptionErrors" filled>
-      </v-textarea>
-      <v-textarea label="Notes" v-model="data.notes" class="mr-1" :error-messages="notesErrors" filled> </v-textarea>
+    <v-row
+      wrap
+      no-gutters
+    >
+      <v-textarea
+        v-model="data.description"
+        label="Description"
+        class="mr-1"
+        :error-messages="descriptionErrors"
+        filled
+      />
+      <v-textarea
+        v-model="data.notes"
+        label="Notes"
+        class="mr-1"
+        :error-messages="notesErrors"
+        filled
+      />
     </v-row>
-    <slot name="data" v-bind:v$=v$ v-bind:data=data v-bind:id=data.id></slot>
+    <slot
+      :id="data.id"
+      name="data"
+      :v$="v$"
+      :data="data"
+    />
   </v-container>
 </template>
 

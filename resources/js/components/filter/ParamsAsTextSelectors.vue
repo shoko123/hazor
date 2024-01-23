@@ -1,46 +1,98 @@
 <template>
   <v-container>
     <v-row no-gutters>
-      <v-col cols="12" sm="3">
-        <v-card class="mx-auto" variant="outlined">
+      <v-col
+        cols="12"
+        sm="3"
+      >
+        <v-card
+          class="mx-auto"
+          variant="outlined"
+        >
           <v-card-item>
-            <v-text-field label="search term1" v-model="search1" name="search1" filled>
-            </v-text-field>
+            <v-text-field
+              v-model="search1"
+              label="search term1"
+              name="search1"
+              filled
+            />
             OR
-            <v-text-field label="search term2" v-model="search2"  name="search2"
-              filled></v-text-field>
+            <v-text-field
+              v-model="search2"
+              label="search term2"
+              name="search2"
+              filled
+            />
             OR
-            <v-text-field label="search term3" v-model="search3" name="search3" 
-              filled></v-text-field>
+            <v-text-field
+              v-model="search3"
+              label="search term3"
+              name="search3" 
+              filled
+            />
           </v-card-item>
         </v-card>
       </v-col>
-      <v-col cols="12" sm="1">
-        <v-row justify="center" no-gutters>
-          OR</v-row>
+      <v-col
+        cols="12"
+        sm="1"
+      >
+        <v-row
+          justify="center"
+          no-gutters
+        >
+          OR
+        </v-row>
       </v-col>
-      <v-col cols="12" sm="3" class="ml-2">
-        <v-card class="mx-auto" variant="outlined">
+      <v-col
+        cols="12"
+        sm="3"
+        class="ml-2"
+      >
+        <v-card
+          class="mx-auto"
+          variant="outlined"
+        >
           <v-card-item>
-            <v-text-field label="search term4" v-model="search4" name="search4" filled>
-            </v-text-field>
+            <v-text-field
+              v-model="search4"
+              label="search term4"
+              name="search4"
+              filled
+            />
             OR
-            <v-text-field label="search term5" v-model="search5" name="search5"
-              filled></v-text-field>
+            <v-text-field
+              v-model="search5"
+              label="search term5"
+              name="search5"
+              filled
+            />
             OR
-            <v-text-field label="search term6" v-model="search6" name="search6"
-              filled></v-text-field>
+            <v-text-field
+              v-model="search6"
+              label="search term6"
+              name="search6"
+              filled
+            />
           </v-card-item>
         </v-card>
       </v-col>
-      <v-col cols="12" sm="2">
-        <v-btn @click="clearClicked" class="ml-2">Clear</v-btn>
+      <v-col
+        cols="12"
+        sm="2"
+      >
+        <v-btn
+          class="ml-2"
+          @click="clearClicked"
+        >
+          Clear
+        </v-btn>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
-<script lang="ts" setup >
+<script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { useTrioStore } from '../../scripts/stores/trio/trio'
 import { useFilterStore } from '../../scripts/stores/trio/filter'

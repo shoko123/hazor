@@ -1,29 +1,38 @@
 <template>
   <v-card class="elevation-12">
-    <v-card-title class="bg-grey text-black py-0 mb-4">{{ title }}</v-card-title>
+    <v-card-title class="bg-grey text-black py-0 mb-4">
+      {{ title }}
+    </v-card-title>
     <v-card-text>
       <div v-if="hasMedia">
-        <v-row wrap no-gutters>
+        <v-row
+          wrap
+          no-gutters
+        >
           <v-col :cols="widths[0]">
-            <component :is="itemForm"></component>
+            <component :is="itemForm" />
           </v-col>
-          <v-col :cols="widths[1]" class="px-1">
-            <MediaSquare v-bind="{
-              source: 'media',
-              itemIndex: 0,
-            }"></MediaSquare>
+          <v-col
+            :cols="widths[1]"
+            class="px-1"
+          >
+            <MediaSquare
+              v-bind="{
+                source: 'media',
+                itemIndex: 0,
+              }"
+            />
           </v-col>
         </v-row>
       </div>
       <div v-else>
-        <component :is="itemForm"></component>
+        <component :is="itemForm" />
       </div>
-
     </v-card-text>
   </v-card>
 </template>
 
-<script lang="ts" setup >
+<script lang="ts" setup>
 import {type Component, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDisplay } from 'vuetify'

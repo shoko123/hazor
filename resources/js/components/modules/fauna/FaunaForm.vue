@@ -1,42 +1,135 @@
 <template>
-  <v-container v-if="item" fluid class="pa-1 ma-0">
-    <v-row  wrap no-gutters>
-      <v-btn prepend-icon="mdi-map-marker" @click="openContextTab()" class="mb-3 text-none"
-        color="blue-lighten-3">{{ item.label }}
+  <v-container
+    v-if="item"
+    fluid
+    class="pa-1 ma-0"
+  >
+    <v-row
+      wrap
+      no-gutters
+    >
+      <v-btn
+        prepend-icon="mdi-map-marker"
+        class="mb-3 text-none"
+        color="blue-lighten-3"
+        @click="openContextTab()"
+      >
+        {{ item.label }}
       </v-btn>
     </v-row>
-    <v-row wrap no-gutters>
-
-      <v-text-field label="Area" v-model="item.area" class="mr-1" readonly filled> </v-text-field>
-      <v-text-field label="Locus" v-model="item.locus" class="mr-1" readonly filled> </v-text-field>
-      <v-text-field label="Basket" v-model="item.basket" class="mr-1" readonly filled> </v-text-field>
-      <v-text-field label="Registration Clean" v-model="registratioIsClean" class="mr-1" readonly filled> </v-text-field>
-      <v-text-field label="Stratum" v-model="item.stratum" class="mr-1" readonly filled></v-text-field>
+    <v-row
+      wrap
+      no-gutters
+    >
+      <v-text-field
+        v-model="item.area"
+        label="Area"
+        class="mr-1"
+        readonly
+        filled
+      />
+      <v-text-field
+        v-model="item.locus"
+        label="Locus"
+        class="mr-1"
+        readonly
+        filled
+      />
+      <v-text-field
+        v-model="item.basket"
+        label="Basket"
+        class="mr-1"
+        readonly
+        filled
+      />
+      <v-text-field
+        v-model="registratioIsClean"
+        label="Registration Clean"
+        class="mr-1"
+        readonly
+        filled
+      />
+      <v-text-field
+        v-model="item.stratum"
+        label="Stratum"
+        class="mr-1"
+        readonly
+        filled
+      />
     </v-row>
 
-    <v-row wrap no-gutters>
-      <v-text-field label="Taxon" v-model="item.taxon" class="mr-1" readonly filled> </v-text-field>
-      <v-text-field label="Taxon Common Name" v-model="item.taxon_common_name" class="mr-1" readonly filled>
-      </v-text-field>
-      <v-text-field label="Anatomical Label" v-model="item.anatomical_label" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Element" v-model="item.element" class="mr-1" filled> </v-text-field>
+    <v-row
+      wrap
+      no-gutters
+    >
+      <v-text-field
+        v-model="item.taxon"
+        label="Taxon"
+        class="mr-1"
+        readonly
+        filled
+      />
+      <v-text-field
+        v-model="item.taxon_common_name"
+        label="Taxon Common Name"
+        class="mr-1"
+        readonly
+        filled
+      />
+      <v-text-field
+        v-model="item.anatomical_label"
+        label="Anatomical Label"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        v-model="item.element"
+        label="Element"
+        class="mr-1"
+        filled
+      />
     </v-row>
 
-    <v-row wrap no-gutters>
-      <v-text-field label="Fragment Present" v-model="item.fragment_present" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Modifications" v-model="item.modifications" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Age" v-model="item.age" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Phase" v-model="item.phase" class="mr-1" filled> </v-text-field>
+    <v-row
+      wrap
+      no-gutters
+    >
+      <v-text-field
+        v-model="item.fragment_present"
+        label="Fragment Present"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        v-model="item.modifications"
+        label="Modifications"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        v-model="item.age"
+        label="Age"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        v-model="item.phase"
+        label="Phase"
+        class="mr-1"
+        filled
+      />
     </v-row>
     <v-row>
-      <div class="font-weight-bold">Source: Justin Lev-Tov. (2006) In Hazor: Zooarchaeology. Justin Lev-Tov (Ed).
-        Released: 2006-05-12. Open Context.</div>
+      <div class="font-weight-bold">
+        Source: Justin Lev-Tov. (2006) In Hazor: Zooarchaeology. Justin Lev-Tov (Ed).
+        Released: 2006-05-12. Open Context.
+      </div>
     </v-row>
   </v-container>
 </template>
 
 
-<script lang="ts" setup >
+<script lang="ts" setup>
 
 import { TFaunaFields } from '@/js/types/moduleFieldsTypes'
 import { computed } from 'vue'

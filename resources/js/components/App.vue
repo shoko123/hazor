@@ -5,14 +5,14 @@
     <LoadingSpinner />
     <Menus />
     <v-main>
-      <router-view></router-view>
+      <router-view />
     </v-main>
     <v-footer />
   </v-app>
   <Modal />
 </template>
 
-<script setup lang="ts" >
+<script setup lang="ts">
 import { onBeforeUnmount } from 'vue'
 import Menus from './menus/Menus.vue'
 import Snackbar from './notifications/snackbar.vue'

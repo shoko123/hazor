@@ -1,6 +1,11 @@
 <template>
-    <v-btn :disabled="disable" icon="mdi-home-circle" :to="{ name: 'home' }" rounded="0"></v-btn>
-    <v-btn> {{ title }} </v-btn>
+  <v-btn
+    :disabled="disable"
+    icon="mdi-home-circle"
+    :to="{ name: 'home' }"
+    rounded="0"
+  />
+  <v-btn> {{ title }} </v-btn>
 </template>
 
 <script lang="ts" setup>

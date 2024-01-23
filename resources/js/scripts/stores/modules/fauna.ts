@@ -20,9 +20,9 @@ export const useFaunaStore = defineStore('fauna', () => {
 
   function beforeStore(isCreate: boolean, fields: TFields): TFields | false {
     console.log(`fauna.beforStores() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
-    let sf = <TFaunaFields>fields
+    const sf = <TFaunaFields>fields
     if (isCreate) {
-      let rf = { ...sf }
+      const rf = { ...sf }
       //do something here
       return rf
     } else {

@@ -1,11 +1,22 @@
 <template>
-  <v-data-table-virtual v-if="collectionIsNotEmpty" :headers="(heads as any)" :items="page" class="elevation-1"
-    height="80vh" item-value="slug" fixed-header><template v-slot:item.tag="{ item }">
-      <v-btn @click="btnClicked(item)">{{ item.tag }}</v-btn>
-    </template></v-data-table-virtual>
+  <v-data-table-virtual
+    v-if="collectionIsNotEmpty"
+    :headers="(heads as any)"
+    :items="page"
+    class="elevation-1"
+    height="80vh"
+    item-value="slug"
+    fixed-header
+  > 
+    <template #[`item.tag`]="{ item }">
+      <v-btn @click="btnClicked(item)">
+        {{ item.tag }}
+      </v-btn>
+    </template>
+  </v-data-table-virtual>
 </template>
 
-<script lang="ts" setup >
+<script lang="ts" setup>
 import type { VDataTableVirtual } from 'vuetify/lib/components/index.mjs'
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
@@ -40,28 +51,25 @@ const c = computed(() => {
 })
 
 const page = computed(() => {
-  switch (props.source) {
-    case 'main':
-      return c.value.page as TPageMainTabular[]
-    case 'related':
-      return c.value.page as TPageRelatedTabular[]
-    case 'media':
-      console.log(`**** Error media as source for tabular page ***`)
-      return []
+  if (props.source === 'main') {
+    return c.value.page as TPageMainTabular[]
+  } else {
+    return c.value.page as TPageRelatedTabular[]
   }
 })
 
 
 const collectionIsNotEmpty = computed(() => {
-  return page.value.length > 0
+  return page.value === undefined ? 0 : page.value.length > 0
 })
 
-function btnClicked(item: any) {
+function btnClicked(item: TPageMainTabular | TPageRelatedTabular) {
   //console.log(`pageTable.btnClicked() item: ${JSON.stringify(item, null, 2)}`)
   if (props.source === 'main') {
-    routerPush('show', item.slug)
+    routerPush('show', (<TPageMainTabular>item).slug)
   } else {
-    moveFromItemToItem(item.slug, item.id, item.module)
+    const related = <TPageRelatedTabular>item
+    moveFromItemToItem(related.slug, related.id, related.module)
   }
 }
 </script>

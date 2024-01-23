@@ -6,7 +6,7 @@ import { TParseSlugResponse } from '@/js/types/routesTypes'
 export const useStoneStore = defineStore('stone', () => {
 
   function slugParamsFromSlug(slug: string): TParseSlugResponse {
-    let arr = slug.split('.');
+    const arr = slug.split('.');
     if (arr.length === 1) {
       return {
         success: false, data: {
@@ -30,9 +30,9 @@ export const useStoneStore = defineStore('stone', () => {
 
   function beforeStore(isCreate: boolean, fields: TFields): TFields | false {
     //console.log(`stone.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
-    let sf = <TStoneFields>fields
+    const sf = <TStoneFields>fields
     if (isCreate) {
-      let rf = { ...sf }
+      const rf = { ...sf }
       //do something here
       return rf
     } else {

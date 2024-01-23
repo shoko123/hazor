@@ -10,7 +10,7 @@ import { useRoutesMainStore } from '../routes/routesMain'
 export const useTrioStore = defineStore('trio', () => {
   const { selectedFilterParams } = storeToRefs(useFilterStore())
 
-  let trio = ref<Trio>({
+  const trio = ref<Trio>({
     entities: {
       categories: {},
       groups: {},
@@ -25,10 +25,10 @@ export const useTrioStore = defineStore('trio', () => {
   //in the same way.
 
   //index in visible categories
-  let categoryIndex = ref<number>(0)
+  const categoryIndex = ref<number>(0)
 
   //index in visible groups
-  let groupIndex = ref<number>(0)
+  const groupIndex = ref<number>(0)
 
   const selected = computed(() => {
     const { current } = storeToRefs(useRoutesMainStore())
@@ -55,15 +55,15 @@ export const useTrioStore = defineStore('trio', () => {
 
   //A category is visible if at least one of its groups is available 
   const visibleCategories = computed(() => {
-    let cats: { catName: string, grpKeys: string[], cnt: number }[] = []
+    const cats: { catName: string, grpKeys: string[], cnt: number }[] = []
 
     availableGroupsKeys.value.forEach(x => {
-      let group = trio.value.entities.groups[x]
+      const group = trio.value.entities.groups[x]
 
       //count
-      let selectedCount = groupSelectedParamsCnt(x)
+      const selectedCount = groupSelectedParamsCnt(x)
       //console.log(`cnt: ${selectedCount}`)
-      let i = cats.findIndex(x => x.catName === group.categoryKey)
+      const i = cats.findIndex(x => x.catName === group.categoryKey)
       if (i === -1) {
         cats.push({ catName: group.categoryKey, grpKeys: [x], cnt: selectedCount })
       } else {
@@ -76,7 +76,7 @@ export const useTrioStore = defineStore('trio', () => {
   })
 
   const availableGroupsKeys = computed(() => {
-    let agk = []
+    const agk = []
     for (const [key, value] of Object.entries(trio.value.entities.groups)) {
       if (groupIsAvailable(key)) {
         agk.push(key)
@@ -92,14 +92,14 @@ export const useTrioStore = defineStore('trio', () => {
   const visibleGroups = computed(() => {
     if (trio.value.result.length === 0) { return [] }
 
-    let vc = visibleCategories.value.map(x => x.name)
-    let perCategoryGroupsKeys = trio.value.entities.categories[vc[categoryIndex.value]].groups
+    const vc = visibleCategories.value.map(x => x.name)
+    const perCategoryGroupsKeys = trio.value.entities.categories[vc[categoryIndex.value]].groups
 
     //filter only available groups
-    let visibleGroupsKeys = perCategoryGroupsKeys.filter(x => availableGroupsKeys.value.includes(x))
+    const visibleGroupsKeys = perCategoryGroupsKeys.filter(x => availableGroupsKeys.value.includes(x))
 
     return visibleGroupsKeys.map(x => {
-      let group = trio.value.entities.groups[x]
+      const group = trio.value.entities.groups[x]
       let required = false
       let multiple = false
       switch (group.group_type_code) {
@@ -133,7 +133,7 @@ export const useTrioStore = defineStore('trio', () => {
 
   //Is group available?.
   function groupIsAvailable(groupKey: string) {
-    let g = trio.value.entities.groups[groupKey]
+    const g = trio.value.entities.groups[groupKey]
 
     //if source is 'New' don't show CS, CR, BF and OB groups.
     if (isNewParams.value && ["CS", "BF", "CR", "CB", "OB"].includes(g.group_type_code)) {
@@ -146,7 +146,7 @@ export const useTrioStore = defineStore('trio', () => {
     }
 
     if (["TM", "TG", "CL"].includes(g.group_type_code)) {
-      let tagGroup = <TGroupsWithDependency>g
+      const tagGroup = <TGroupsWithDependency>g
       return tagGroup.dependency === null ||
         tagGroup.dependency.some(x => {
           return (selected.value.includes(x))
@@ -157,8 +157,8 @@ export const useTrioStore = defineStore('trio', () => {
   }
 
   function groupSelectedParamsCnt(groupKey: string) {
-    let selectedCount = selected.value.reduce((accumulator, param) => {
-      let toAdd = (parseParamKey(param, false) === groupKey ? 1 : 0)
+    const selectedCount = selected.value.reduce((accumulator, param) => {
+      const toAdd = (parseParamKey(param, false) === groupKey ? 1 : 0)
       return accumulator + toAdd
     }, 0);
     return selectedCount
@@ -167,14 +167,14 @@ export const useTrioStore = defineStore('trio', () => {
 
   const visibleParams = computed(() => {
     if (trio.value.result.length === 0) { return [] }
-    let paramKeys = visibleGroups.value[groupIndex.value].params
+    const paramKeys = visibleGroups.value[groupIndex.value].params
     return paramKeys.map(x => { return { ...trio.value.entities.params[x], selected: selected.value.includes(x) } })
   })
 
   function paramClicked(groupIndex: number, paramIndex: number) {
-    let paramInfo = visibleParams.value[paramIndex]
-    let group = trio.value.entities.groups[parseParamKey(paramInfo.paramKey, false)]
-    let paramKey = paramInfo.paramKey
+    const paramInfo = visibleParams.value[paramIndex]
+    const group = trio.value.entities.groups[parseParamKey(paramInfo.paramKey, false)]
+    const paramKey = paramInfo.paramKey
     const isSelected = selected.value.includes(paramInfo.paramKey)
     console.log(`TRIO.click(${groupIndex}, ${paramIndex}): "${paramInfo.paramKey}" isFilter: ${isFilter.value} isCurrentlySelected: ${isSelected}`)
 
@@ -239,8 +239,8 @@ export const useTrioStore = defineStore('trio', () => {
 
   function selectParam(paramKey: string) {
     //insert into ordered "selected" at the correct location
-    let orderNo = trio.value.entities.params[paramKey].order
-    let inserIndex = insertIndex(orderNo)
+    const orderNo = trio.value.entities.params[paramKey].order
+    const inserIndex = insertIndex(orderNo)
     //console.log(`insertIndex: ${inserIndex}`)
     selected.value.splice(inserIndex, 0, paramKey)
   }
@@ -268,7 +268,7 @@ export const useTrioStore = defineStore('trio', () => {
     //We assume that this param was already removed from paramClickedSource (selectedFilterParams/selectedNewItemParams).
 
     //step 1 - collect all affected groups by unselecting this param
-    let groupsToBeUnselectable: TGroupsWithDependency[] = []
+    const groupsToBeUnselectable: TGroupsWithDependency[] = []
     for (const [key, value] of Object.entries(trio.value.entities.groups)) {
       //only Tag groups may be dependent
       if (!["TG", "TM", "CL"].includes(value.group_type_code)) {
@@ -276,13 +276,13 @@ export const useTrioStore = defineStore('trio', () => {
       }
 
       //collect only those whose dependency includes paramKey
-      let group = <TGroupsWithDependency>value
+      const group = <TGroupsWithDependency>value
       if (group.dependency === null || !group.dependency.includes(paramKey)) {
         continue
       }
 
       //check if dependency holds or not
-      let groupIstoBeUnselected = !group.dependency.some(x => {
+      const groupIstoBeUnselected = !group.dependency.some(x => {
         return (selected.value.includes(x))
       })
 
@@ -295,7 +295,7 @@ export const useTrioStore = defineStore('trio', () => {
     console.log(`Extra Groups to be unselectable: ${groupsToBeUnselectable.map(x => x.group_name)}`)
 
     //step 2 - collect all params to be unselected
-    let paramsToBeUnselected: string[] = []
+    const paramsToBeUnselected: string[] = []
     groupsToBeUnselectable.forEach(x => {
       x.params.forEach(y => {
         if (selected.value.includes(y)) {
@@ -308,7 +308,7 @@ export const useTrioStore = defineStore('trio', () => {
 
     //step 3 - for each paramsToBeUnselected - remove from selected, call clearDependecies() recuresively
     paramsToBeUnselected.forEach(x => {
-      let i = selected.value.findIndex((y) => y === x)
+      const i = selected.value.findIndex((y) => y === x)
       if (i === -1) {
         console.log(`ERRRRR - trying to remove param ${x} which is NOT selected`)
       } else {
@@ -340,7 +340,7 @@ export const useTrioStore = defineStore('trio', () => {
 
   function parseParamKey(paramKey: string, getParam = true): string {
     //console.log(`parseParamKey() key: ${paramKey} value: ${trio.value.entities.params[paramKey]}`)
-    let pieces = paramKey.split('.')
+    const pieces = paramKey.split('.')
     return getParam ? trio.value.entities.params[paramKey].name : pieces[0]
   }
 
@@ -365,8 +365,8 @@ export const useTrioStore = defineStore('trio', () => {
   }
 
   function getParamKeyByGroupAndId(group: string, id: number): string {
-    let groupParamKeys = trio.value.entities.groups[group].params
-    let paramKey = groupParamKeys.find(x => trio.value.entities.params[x].id === id)
+    const groupParamKeys = trio.value.entities.groups[group].params
+    const paramKey = groupParamKeys.find(x => trio.value.entities.params[x].id === id)
     //console.log(`getParamKeyByGroupAndId(group(${group}), id(${id})) => ${paramKey}`)    
     return <string>paramKey
   }

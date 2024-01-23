@@ -24,16 +24,16 @@ import { useRoutesParserStore } from './routesParser'
 import { EmptyResultSetError } from '../../setups/routes/errors'
 
 export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
-  let xhr = useXhrStore()
-  let n = useNotificationsStore()
-  let m = useModuleStore()
-  let c = useCollectionsStore()
-  let i = useItemStore();
-  let r = useRoutesMainStore()
-  let p = useRoutesParserStore()
-  let f = useFilterStore()
-  let { trioReset, setTrio } = useTrioStore()
-  let { setItemMedia } = useMediaStore()
+  const xhr = useXhrStore()
+  const n = useNotificationsStore()
+  const m = useModuleStore()
+  const c = useCollectionsStore()
+  const i = useItemStore();
+  const r = useRoutesMainStore()
+  const p = useRoutesParserStore()
+  const f = useFilterStore()
+  const { trioReset, setTrio } = useTrioStore()
+  const { setItemMedia } = useMediaStore()
   const fromUndef = ref<boolean>(false)
 
   async function prepareForNewRoute(module: TModule, query: LocationQuery, slug: string, plan: TPlanAction[], fromUndefined: boolean): Promise<TPrepareResponse> {
@@ -168,7 +168,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     if (!queryRes.success) {
       throw (<TParseErrorDetails>queryRes.data).error
     }
-    let apiQuery = <TParseQueryData>queryRes.data
+    const apiQuery = <TParseQueryData>queryRes.data
     if (fromUndef.value) {
       f.setFiltersFromUrlQuery(apiQuery.selectedFilters)
     }
@@ -196,7 +196,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
   async function loadItem(module: TModule, slug: string,) {
     //console.log(`prepare.loadItem() slug: ${slug}`)
-    let sp = p.parseSlug(module, slug)
+    const sp = p.parseSlug(module, slug)
     if (!sp.success) {
       console.log(`parseSlug() failed`)
       throw (<TParseErrorDetails>sp.data).error
@@ -205,7 +205,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     n.showSpinner(`Loading ${module} item...`)
 
     try {
-      let res = await xhr.send('model/show', 'post', { model: module, slug: slug, params: sp.data })
+      const res = await xhr.send('model/show', 'post', { model: module, slug: slug, params: sp.data })
       //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
       r.to.slug = res.data.slug
       r.to.idParams = res.data.id_params
@@ -229,7 +229,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
   async function itemSetIndexInCollection(): Promise<boolean> {
     //console.log(`prepare.itemSetIndexInCollection()`)
-    let itemIndex = c.itemIndexById(i.id)
+    const itemIndex = c.itemIndexById(i.id)
     if (itemIndex === -1) {
       console.log(`Item not found in mainCollection - set itemIndex to -1, clear page`)
       //c.mainPageArray = []

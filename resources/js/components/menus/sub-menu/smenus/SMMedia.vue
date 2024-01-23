@@ -1,7 +1,24 @@
 <template>
-  <v-btn :disabled="disableShowUploaderButton" @click="showUpldr" variant="outlined">Upload files</v-btn>
-  <v-btn @click="back" variant="outlined">{{ backText }}</v-btn>
-  <v-btn v-if="orderChanged" @click="reorderAndBack" variant="outlined">Save Order & back</v-btn>
+  <v-btn
+    :disabled="disableShowUploaderButton"
+    variant="outlined"
+    @click="showUpldr"
+  >
+    Upload files
+  </v-btn>
+  <v-btn
+    variant="outlined"
+    @click="back"
+  >
+    {{ backText }}
+  </v-btn>
+  <v-btn
+    v-if="orderChanged"
+    variant="outlined"
+    @click="reorderAndBack"
+  >
+    Save Order & back
+  </v-btn>
 </template>
 
 <script lang="ts" setup>

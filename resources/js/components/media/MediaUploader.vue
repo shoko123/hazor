@@ -1,20 +1,40 @@
 <template>
-  <v-container fluid class="pa-1">
+  <v-container
+    fluid
+    class="pa-1"
+  >
     <v-card class="elevation-12">
-      <v-toolbar class="bg-grey text-black" density="compact" :height="50">
+      <v-toolbar
+        class="bg-grey text-black"
+        density="compact"
+        :height="50"
+      >
         <v-toolbar-title> {{ header }}</v-toolbar-title>
       </v-toolbar>
 
       <v-card-text>
-        <v-container fluid class="pa-1">
+        <v-container
+          fluid
+          class="pa-1"
+        >
           <v-row v-if="mediaReady">
-            <v-container fluid class="pa-1">
+            <v-container
+              fluid
+              class="pa-1"
+            >
               <v-card class="elevation-12">
                 <v-card-title>Upload Preview</v-card-title>
                 <v-card-text>
                   <v-row>
-                    <v-col v-for="(item, index) in imagesAsBrowserReadable" :key="index" cols="2">
-                      <v-img :src="item" height="30vh"></v-img>
+                    <v-col
+                      v-for="(item, index) in imagesAsBrowserReadable"
+                      :key="index"
+                      cols="2"
+                    >
+                      <v-img
+                        :src="item"
+                        height="30vh"
+                      />
                     </v-col>
                   </v-row>
                 </v-card-text>
@@ -23,11 +43,18 @@
           </v-row>
 
           <v-row class="pt-2">
-
-            <v-file-input id="fileInput" v-model="images" multiple :show-size="1000" accept="image/png, image/jpeg, image/bmp"
-              placeholder="Select images" prepend-icon="mdi-camera" @change="onInputChange" @click:clear="clear()"
-              :label="fileInputLabel">
-            </v-file-input>
+            <v-file-input
+              id="fileInput"
+              v-model="images"
+              multiple
+              :show-size="1000"
+              accept="image/png, image/jpeg, image/bmp"
+              placeholder="Select images"
+              prepend-icon="mdi-camera"
+              :label="fileInputLabel"
+              @change="onInputChange"
+              @click:clear="clear()"
+            />
           </v-row>
 
           <v-row>
@@ -35,17 +62,38 @@
               Type: {{ mediaCollection }}
               <v-menu activator="parent">
                 <v-list>
-                  <v-list-item v-for="(item, index) in mediaCollectionNames" :key="index" :value="item"
-                    @click="setMediaCollectionName(item)">
+                  <v-list-item
+                    v-for="(item, index) in mediaCollectionNames"
+                    :key="index"
+                    :value="item"
+                    @click="setMediaCollectionName(item)"
+                  >
                     <v-list-item-title>{{ item }}</v-list-item-title>
                   </v-list-item>
                 </v-list>
               </v-menu>
             </v-btn>
 
-            <v-btn v-if="mediaReady" @click="upload" class="ml-2">Upload</v-btn>
-            <v-btn v-if="mediaReady" @click="openMultiItemSelector" class="ml-2">Upload as multi item media</v-btn>
-            <v-btn @click="clear" class="ml-2">Cancel</v-btn>
+            <v-btn
+              v-if="mediaReady"
+              class="ml-2"
+              @click="upload"
+            >
+              Upload
+            </v-btn>
+            <v-btn
+              v-if="mediaReady"
+              class="ml-2"
+              @click="openMultiItemSelector"
+            >
+              Upload as multi item media
+            </v-btn>
+            <v-btn
+              class="ml-2"
+              @click="clear"
+            >
+              Cancel
+            </v-btn>
           </v-row>
         </v-container>
       </v-card-text>

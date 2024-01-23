@@ -1,6 +1,6 @@
 <template>
   <MainMenu />
-  <SubMenu v-if="hasSubMenu"/>
+  <SubMenu v-if="hasSubMenu" />
 </template>
 
 <script lang="ts" setup>

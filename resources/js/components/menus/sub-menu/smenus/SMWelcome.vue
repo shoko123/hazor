@@ -2,8 +2,17 @@
   <FilterButton />
   <CollectionButton />
   <div class="hidden-sm-and-down">
-    <v-btn variant="outlined" @click="showClicked()">
-      Show Item<v-tooltip activator="parent" location="bottom left">Go to the first item</v-tooltip></v-btn>
+    <v-btn
+      variant="outlined"
+      @click="showClicked()"
+    >
+      Show Item<v-tooltip
+        activator="parent"
+        location="bottom left"
+      >
+        Go to the first item
+      </v-tooltip>
+    </v-btn>
   </div>
 </template>
 

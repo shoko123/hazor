@@ -29,8 +29,8 @@ export const useTrioSelectedStore = defineStore('trioSelected', () => {
   function selectedTrio(sourceName: TrioSourceName) {
     if (trio.value.result.length === 0) { return [] }
 
-    let groups = <TGroup[]>[]
-    let cats = <{ name: string, groups: TGroup[] }[]>[]
+    const groups = <TGroup[]>[]
+    const cats = <{ name: string, groups: TGroup[] }[]>[]
 
     //choose source
     let selectedParams = []
@@ -48,9 +48,9 @@ export const useTrioSelectedStore = defineStore('trioSelected', () => {
 
     //organize all params into groups array, each item with the group's name and its params array
     selectedParams.forEach(x => {
-      let pieces = x.split('.')
-      let group = pieces[0]
-      let i = groups.findIndex(g => {
+      const pieces = x.split('.')
+      const group = pieces[0]
+      const i = groups.findIndex(g => {
         return g.key === group
       })
 
@@ -63,8 +63,8 @@ export const useTrioSelectedStore = defineStore('trioSelected', () => {
 
     //organize all groups into categgories array, each item with the category's name and its groups array
     groups.forEach(x => {
-      let catKey = trio.value.entities.groups[x.key].categoryKey
-      let i = cats.findIndex(c => {
+      const catKey = trio.value.entities.groups[x.key].categoryKey
+      const i = cats.findIndex(c => {
         return c.name === catKey
       })
 

@@ -1,8 +1,12 @@
 <template>
   <div>
-    <v-row wrap dense class="mt-1">
+    <v-row
+      wrap
+      dense
+      class="mt-1"
+    >
       <v-col :cols="widths[0]">
-        <TagsForm source="Filter"></TagsForm>
+        <TagsForm source="Filter" />
       </v-col>
       <v-col :cols="widths[1]">
         <FilterSelector />
@@ -11,7 +15,7 @@
   </div>
 </template>
 
-<script lang="ts" setup >
+<script lang="ts" setup>
 import { computed } from 'vue'
 import { useDisplay } from 'vuetify'
 import FilterSelector from '../filter/FilterSelector.vue'

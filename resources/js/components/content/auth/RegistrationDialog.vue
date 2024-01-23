@@ -1,8 +1,14 @@
 <template>
-   <v-btn color="primary" block @click="checkIfVerified">Close (After verification)</v-btn>
+  <v-btn
+    color="primary"
+    block
+    @click="checkIfVerified"
+  >
+    Close (After verification)
+  </v-btn>
 </template>
 
-<script setup lang="ts" >
+<script setup lang="ts">
 //This form is shown after registration - 
 //proceed only after verification!
 import { useAuthStore } from '../../../scripts/stores/auth'

@@ -1,32 +1,113 @@
 <template>
-  <v-container fluid class="pa-1 ma-0">
-    <slot name="data" v-bind:v$=v$ v-bind:data=data v-bind:id=data.id></slot>
-    <v-row wrap no-gutters>
-      <v-text-field label="Label" v-model="data.label" :error-messages="labelErrors" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Area" v-model="data.area" :error-messages="areaErrors" class="mr-1" filled> </v-text-field>
-      <v-text-field label="locus" v-model="data.locus" :error-messages="locusErrors" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Basket" v-model="data.basket" :error-messages="basketErrors" class="mr-1" filled>
-      </v-text-field>
-      <v-text-field label="Stratum" v-model="data.stratum" :error-messages="stratumErrors" class="mr-1" filled>
-      </v-text-field>
-      <v-checkbox label="Registration Clean" v-model="clean"></v-checkbox>
+  <v-container
+    fluid
+    class="pa-1 ma-0"
+  >
+    <slot
+      :id="data.id"
+      name="data"
+      :v$="v$"
+      :data="data"
+    />
+    <v-row
+      wrap
+      no-gutters
+    >
+      <v-text-field
+        v-model="data.label"
+        label="Label"
+        :error-messages="labelErrors"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        v-model="data.area"
+        label="Area"
+        :error-messages="areaErrors"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        v-model="data.locus"
+        label="locus"
+        :error-messages="locusErrors"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        v-model="data.basket"
+        label="Basket"
+        :error-messages="basketErrors"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        v-model="data.stratum"
+        label="Stratum"
+        :error-messages="stratumErrors"
+        class="mr-1"
+        filled
+      />
+      <v-checkbox
+        v-model="clean"
+        label="Registration Clean"
+      />
       <!-- <v-text-field label="Registration Clean" v-model="data.registration_clean" :error-messages="item_categoryErrors"
         class="mr-1" filled> </v-text-field> -->
     </v-row>
 
     <v-row>
-      <v-text-field label="Taxon" v-model="data.taxon" :error-messages="taxonErrors" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Common Name" v-model="data.taxon_common_name" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Anatomical Label" v-model="data.anatomical_label" class="mr-1" filled>
-      </v-text-field>
-      <v-text-field label="Element" v-model="data.element" class="mr-1" filled> </v-text-field>
+      <v-text-field
+        v-model="data.taxon"
+        label="Taxon"
+        :error-messages="taxonErrors"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        v-model="data.taxon_common_name"
+        label="Common Name"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        v-model="data.anatomical_label"
+        label="Anatomical Label"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        v-model="data.element"
+        label="Element"
+        class="mr-1"
+        filled
+      />
     </v-row>
     <v-row>
-      <v-text-field label="Fragment Present" v-model="data.fragment_present" class="mr-1" filled>
-      </v-text-field>
-      <v-text-field label="Modifications" v-model="data.modifications" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Phase" v-model="data.phase" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Age" v-model="data.age" class="mr-1" filled> </v-text-field>
+      <v-text-field
+        v-model="data.fragment_present"
+        label="Fragment Present"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        v-model="data.modifications"
+        label="Modifications"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        v-model="data.phase"
+        label="Phase"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        v-model="data.age"
+        label="Age"
+        class="mr-1"
+        filled
+      />
     </v-row>
   </v-container>
 </template>

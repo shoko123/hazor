@@ -1,12 +1,23 @@
 <template>
-  <v-chip-group multiple column v-model="selectedParamIndexes" selected-class="primary">
-    <v-chip v-for="(param, index) in params" :key="index" @click="paramClicked(index)" color="blue" large>
+  <v-chip-group
+    v-model="selectedParamIndexes"
+    multiple
+    column
+    selected-class="primary"
+  >
+    <v-chip
+      v-for="(param, index) in params"
+      :key="index"
+      color="blue"
+      large
+      @click="paramClicked(index)"
+    >
       {{ param.name }}
     </v-chip>
   </v-chip-group>
 </template>
 
-<script lang="ts" setup >
+<script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { useTrioStore } from '../../scripts/stores/trio/trio'
 

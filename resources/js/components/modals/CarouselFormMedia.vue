@@ -2,27 +2,63 @@
 
 <template>
   <v-card-text v-if="item">
-    <v-row no-gutters class="text-h5">
+    <v-row
+      no-gutters
+      class="text-h5"
+    >
       Media for {{ derived.moduleAndTag }}
     </v-row>
-    <v-row wrap no-gutters>
-      <v-textarea v-model="derived.short" label="Description" class="mr-1" rows="3" readonly filled></v-textarea>
+    <v-row
+      wrap
+      no-gutters
+    >
+      <v-textarea
+        v-model="derived.short"
+        label="Description"
+        class="mr-1"
+        rows="3"
+        readonly
+        filled
+      />
     </v-row>
     <v-row no-gutters>
-      <v-text-field v-model="item.file_name" label="File Name" class="mr-1" readonly filled> </v-text-field>
+      <v-text-field
+        v-model="item.file_name"
+        label="File Name"
+        class="mr-1"
+        readonly
+        filled
+      />
     </v-row>
     <v-row no-gutters>
-      <v-text-field v-model="item.collection_name" label="Group" class="mr-1" readonly filled></v-text-field>
-      <v-text-field v-model="item.size" label="Size" class="mr-1" readonly filled></v-text-field>
+      <v-text-field
+        v-model="item.collection_name"
+        label="Group"
+        class="mr-1"
+        readonly
+        filled
+      />
+      <v-text-field
+        v-model="item.size"
+        label="Size"
+        class="mr-1"
+        readonly
+        filled
+      />
     </v-row>
   </v-card-text>
   <v-card-actions>
-    <v-btn @click="goto" variant="outlined">{{ derived.moduleAndTag }}</v-btn>
+    <v-btn
+      variant="outlined"
+      @click="goto"
+    >
+      {{ derived.moduleAndTag }}
+    </v-btn>
     <!-- <v-btn @click="download" variant="outlined">Download</v-btn> -->
   </v-card-actions>
 </template>
 
-<script lang="ts" setup >
+<script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { type TCarouselMedia } from '@/js/types/mediaTypes'

@@ -1,7 +1,15 @@
 <template>
-  <v-btn @click="toWelcome" variant="outlined">
+  <v-btn
+    variant="outlined"
+    @click="toWelcome"
+  >
     Welcome
-    <v-tooltip activator="parent" location="bottom left">{{ tip }}</v-tooltip>
+    <v-tooltip
+      activator="parent"
+      location="bottom left"
+    >
+      {{ tip }}
+    </v-tooltip>
   </v-btn>
 </template>
 

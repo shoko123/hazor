@@ -10,7 +10,7 @@ export const useLocusStore = defineStore('locus', () => {
   const reNameIsYearAreaHyphenLocusNo = /^\d{2}[A-Z]\d{1}-\d{3}$/
 
   function slugParamsFromSlug(slug: string): TParseSlugResponse {
-    let arr = slug.split('.');
+    const arr = slug.split('.');
     if (arr.length === 1) {
       return {
         success: false, data: {
@@ -33,9 +33,9 @@ export const useLocusStore = defineStore('locus', () => {
 
   function beforeStore(isCreate: boolean, fields: TFields): TFields | false {
     //console.log(`locus.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
-    let lf = <TLocusFields>fields
+    const lf = <TLocusFields>fields
     if (isCreate) {
-      let rf = { ...lf }
+      const rf = { ...lf }
       if (reNameIsLocusNo) {
         rf.locus_no = lf.name as unknown as number
         rf.addendum = ""

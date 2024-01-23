@@ -1,6 +1,10 @@
 <template>
-  <v-list-item :to="{ name: 'welcome', params: { module } }">Welcome</v-list-item>
-  <v-list-item :to="{ name: 'filter', params: { module } }">Filter</v-list-item>
+  <v-list-item :to="{ name: 'welcome', params: { module } }">
+    Welcome
+  </v-list-item>
+  <v-list-item :to="{ name: 'filter', params: { module } }">
+    Filter
+  </v-list-item>
 </template>
 
 <script lang="ts" setup>

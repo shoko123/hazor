@@ -1,10 +1,10 @@
-import Index from '@/components/content/Index.vue'
+import IndexPage from '@/components/content/IndexPage.vue'
 import NotFound from '@/components/routes/NotFound.vue'
 
 const routes = [
   {
     path: '/',
-    component: () => import('@/components/content/Home.vue'),
+    component: () => import('@/components/content/HomePage.vue'),
     name: 'home'
   },
   {
@@ -45,34 +45,34 @@ const routes = [
   //dig modules ( loci, stones, etc...)
   {
     path: '/:module',
-    component: Index,
+    component: IndexPage,
     name: 'index'
   },
   {
     path: '/:module/welcome',
-    component: () => import('@/components/content/Welcome.vue'),
+    component: () => import('@/components/content/WelcomePage.vue'),
     name: 'welcome'
   },
   {
     path: '/:module/filter',
-    component: () => import('@/components/content/Filter.vue'),
+    component: () => import('@/components/content/FilterPage.vue'),
     name: 'filter'
   },
 
   {
     path: '/:module/create',
-    component:  () => import('@/components/content/CreateUpdate.vue'),
+    component:  () => import('@/components/content/CreateUpdatePage.vue'),
     name: 'create',
     props: { isCreate: true }
   },
   {
     path: '/:module/:slug',
-    component: () => import('@/components/content/Show.vue'),
+    component: () => import('@/components/content/ShowPage.vue'),
     name: 'show'
   },
   {
     path: '/:module/:slug/update',
-    component:  () => import('@/components/content/CreateUpdate.vue'),
+    component:  () => import('@/components/content/CreateUpdatePage.vue'),
     name: 'update',
     props: { isCreate: false }    
   },
@@ -83,7 +83,7 @@ const routes = [
   },
   {
     path: '/:module/:slug/tag',
-    component: () => import('@/components/content/Tagger.vue'),
+    component: () => import('@/components/content/TaggerPage.vue'),
     name: 'tag'
   },
   {

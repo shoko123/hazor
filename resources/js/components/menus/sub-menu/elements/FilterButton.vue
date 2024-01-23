@@ -1,9 +1,15 @@
 <template>
-  <v-btn @click="toFilter" variant="outlined">
+  <v-btn
+    variant="outlined"
+    @click="toFilter"
+  >
     Filters
-    <v-tooltip activator="parent" location="bottom left">
-      <v-text-field >{{ tip }}</v-text-field>
-      <TagsForm source="Filter"></TagsForm>
+    <v-tooltip
+      activator="parent"
+      location="bottom left"
+    >
+      <v-text-field>{{ tip }}</v-text-field>
+      <TagsForm source="Filter" />
     </v-tooltip>
   </v-btn>
 </template>

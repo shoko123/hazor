@@ -17,18 +17,18 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     const { tagFromSlug } = useModuleStore()
     const c = useCollectionsStore()
 
-    let itemsPerView  = <TItemsPerView> { Gallery: 36, Tabular: 500, Chips: 200 }
+    const itemsPerView  = <TItemsPerView> { Gallery: 36, Tabular: 500, Chips: 200 }
 
-    let extra = ref<TCollectionExtra>({
+    const extra = ref<TCollectionExtra>({
         length: 0,
         pageNoB1: 1,
         views: <TCView[]>[{ name: "Gallery", ipp: 36 }, { name: "Tabular", ipp: 500 }, { name: "Chips", ipp: 200 }],
         viewIndex: 0,
     })
 
-    let array = ref<TApiArrayMain[]>([])
+    const array = ref<TApiArrayMain[]>([])
 
-    let page = ref<TPageMain[]>([])
+    const page = ref<TPageMain[]>([])
 
     const collection = computed(() => {
         return {
@@ -52,22 +52,22 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     }
 
     async function loadPage(pageNoB1: number, view: TCView, module: TModule): Promise<boolean> {
-        let ipp = view.ipp
-        let start = (pageNoB1 - 1) * ipp
+        const ipp = view.ipp
+        const start = (pageNoB1 - 1) * ipp
 
         console.log(`collectionMain.loadPage() view: ${view.name} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1} module: ${module} `);
 
         switch (view.name) {
             case "Chips":
                 extra.value.pageNoB1 = pageNoB1
-                let slice = array.value.slice(start, start + ipp)
+                const slice = array.value.slice(start, start + ipp)
                 savePage(slice, view, module)
                 return true
 
             case "Gallery":
             case "Tabular":
 
-                let ids = array.value.slice(start, start + ipp).map(x => x.id);
+                const ids = array.value.slice(start, start + ipp).map(x => x.id);
 
 
                 if (ids.length === 0) {
@@ -124,7 +124,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     }
 
     function itemIndexById(id: number) {
-        let index = array.value.findIndex(x => x.id === id)
+        const index = array.value.findIndex(x => x.id === id)
         //console.log(`collectionMain.itemIndexById(id:${id}) array: ${JSON.stringify(array.value.slice(0,5), null, 2)} index: ${index}`)
         return index
     }

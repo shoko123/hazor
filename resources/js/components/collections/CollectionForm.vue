@@ -1,26 +1,43 @@
 <template>
   <v-card class="elevation-12">
-    <v-toolbar class="bg-grey text-black" density="compact" :height="50">
-
+    <v-toolbar
+      class="bg-grey text-black"
+      density="compact"
+      :height="50"
+    >
       <v-toolbar-title>{{ header }}</v-toolbar-title>
 
-      <v-pagination v-if="paginator.show" v-model="page" :length="paginator.pages"
-        :total-visible="`${mdAndDown ? 4 : 10}`">
-      </v-pagination>
+      <v-pagination
+        v-if="paginator.show"
+        v-model="page"
+        :length="paginator.pages"
+        :total-visible="`${mdAndDown ? 4 : 10}`"
+      />
 
-      <v-btn v-if="showBtnViewToggle" :icon="ico" size="small" variant="tonal" @click="toggleCollectionDisplayOption()">
-      </v-btn>
-
+      <v-btn
+        v-if="showBtnViewToggle"
+        :icon="ico"
+        size="small"
+        variant="tonal"
+        @click="toggleCollectionDisplayOption()"
+      />
     </v-toolbar>
     <v-card-text>
-      <v-container fluid class="ma-0 pa-0">
-        <component :is="collectionPage" :source=props.source :pageNoB1="meta.pageNoB1" />
+      <v-container
+        fluid
+        class="ma-0 pa-0"
+      >
+        <component
+          :is="collectionPage"
+          :source="props.source"
+          :page-no-b1="meta.pageNoB1"
+        />
       </v-container>
     </v-card-text>
   </v-card>
 </template>
 
-<script lang="ts" setup >
+<script lang="ts" setup>
 import { type Component, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDisplay } from 'vuetify'
@@ -39,7 +56,7 @@ const props = defineProps<{
 
 
 let { collection, loadPage, toggleCollectionView } = useCollectionsStore()
-let { tag, derived } = storeToRefs(useItemStore())
+let { derived } = storeToRefs(useItemStore())
 const { smAndDown, mdAndDown } = useDisplay()
 
 const viewToIcon = {

@@ -1,17 +1,33 @@
 <template>
   <div class="hidden-sm-and-down">
-  <v-btn v-if="showLoginButton" @click="loginClick()">Login</v-btn>
-  <v-btn v-if="auth.authenticated">
-    <v-icon left dark>mdi-account</v-icon>
-    {{ auth.user?.name }}
-    <v-menu activator="parent">
-      <v-list>
-        <v-list-item v-for="(item, index) in options" :key="index" :value="index" @click="userOptionsClicked(item)">
-          <v-list-item-title>{{ item }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
-  </v-btn></div>
+    <v-btn
+      v-if="showLoginButton"
+      @click="loginClick()"
+    >
+      Login
+    </v-btn>
+    <v-btn v-if="auth.authenticated">
+      <v-icon
+        left
+        dark
+      >
+        mdi-account
+      </v-icon>
+      {{ auth.user?.name }}
+      <v-menu activator="parent">
+        <v-list>
+          <v-list-item
+            v-for="(item, index) in options"
+            :key="index"
+            :value="index"
+            @click="userOptionsClicked(item)"
+          >
+            <v-list-item-title>{{ item }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </v-btn>
+  </div>
 </template>
 
 

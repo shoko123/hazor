@@ -26,7 +26,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         Stone: "stones"
     }
 
-    let router = useRouter()
+    const router = useRouter()
     const { parseModule } = useRoutesParserStore()
     const { planTransition } = useRoutesPlanTransitionStore()
 
@@ -57,9 +57,9 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
 
     async function handleRouteChange(handle_to: RouteLocationNormalized, handle_from: RouteLocationNormalized): Promise<RouteLocationRaw | boolean> {
-        let { showSnackbar } = useNotificationsStore()
-        let { prepareForNewRoute } = useRoutesPrepareStore()
-        let { authenticated } = storeToRefs(useAuthStore())
+        const { showSnackbar } = useNotificationsStore()
+        const { prepareForNewRoute } = useRoutesPrepareStore()
+        const { authenticated } = storeToRefs(useAuthStore())
 
         console.log(`handleRouteChange(${String(handle_from.name)} -> ${String(handle_to.name)})`)
 
@@ -79,9 +79,9 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         //parse module 
         //console.log(`A.current: ${JSON.stringify(current.value, null, 2)}\nto: ${JSON.stringify(to.value, null, 2)})`)
         if (handle_to.params.hasOwnProperty('module')) {
-            let res = parseModule(<string>handle_to.params.module)
+            const res = parseModule(<string>handle_to.params.module)
             if (res.success) {
-                let data = <TParseModuleData>res.data
+                const data = <TParseModuleData>res.data
                 to.value.module = data.module
                 to.value.url_module = data.url_module
             }
@@ -99,7 +99,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
         //verify that the transition is legal and prepare the plan required for a successful transition.
 
-        let planResponse = planTransition(handle_to, handle_from)
+        const planResponse = planTransition(handle_to, handle_from)
 
         if (!planResponse.success) {
             console.log("plan failed...")
@@ -133,7 +133,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     }
 
     function authorize(path: string) {
-        let auth = useAuthStore()
+        const auth = useAuthStore()
         //console.log(`authorize() to.path: ${path} authUsersOnly: ${main.authenticatedUsersOnly}\nisLoggedIn: ${auth.authenticated}`);
         if (path === "/auth/login" || path === "/") {
             return true;
@@ -257,7 +257,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     function moveFromItemToItem(slug: string, id: number, module: TModule | "current" = "current") {
         const { itemIndexById } = useCollectionMainStore()
         const { clearSelectedFilters } = useFilterStore()
-        let { showSnackbar } = useNotificationsStore()
+        const { showSnackbar } = useNotificationsStore()
         console.log(`moveFromItemToItem "${current.value.module} ${current.value.slug}" -> "${module} ${slug}" (id: ${id})`)
         if (current.value.module === module) {
             if (current.value.slug === slug) {

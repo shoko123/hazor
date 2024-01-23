@@ -2,14 +2,21 @@
 
 <template>
   <v-card-text>
-    <v-row class="text-body-1"> {{ item?.short }}</v-row>
+    <v-row class="text-body-1">
+      {{ item?.short }}
+    </v-row>
   </v-card-text>
   <v-card-actions>
-    <v-btn @click="clicked" variant="outlined">{{ item?.module }} {{ item?.tag }}</v-btn>
+    <v-btn
+      variant="outlined"
+      @click="clicked"
+    >
+      {{ item?.module }} {{ item?.tag }}
+    </v-btn>
   </v-card-actions>
 </template>
 
-<script lang="ts" setup >
+<script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { type TCarouselMain } from '@/js/types/mediaTypes'

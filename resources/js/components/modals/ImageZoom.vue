@@ -1,17 +1,32 @@
 
 
 <template>
-    <div id="zoomy-container" height="100vh">
-        <v-img id="zoomy" :src="media?.urls.full" :lazy-src="media?.urls.tn" aspect-ratio="1" height="95vh"
-            :cover="isFiller">
-            <v-overlay v-model="isFiller" contained class="align-center justify-center">
-                <div class="text-white text-h2">No Media Available</div>
-            </v-overlay>
-        </v-img>
-    </div>
+  <div
+    id="zoomy-container"
+    height="100vh"
+  >
+    <v-img
+      id="zoomy"
+      :src="media?.urls.full"
+      :lazy-src="media?.urls.tn"
+      aspect-ratio="1"
+      height="95vh"
+      :cover="isFiller"
+    >
+      <v-overlay
+        v-model="isFiller"
+        contained
+        class="align-center justify-center"
+      >
+        <div class="text-white text-h2">
+          No Media Available
+        </div>
+      </v-overlay>
+    </v-img>
+  </div>
 </template>
   
-<script lang="ts" setup >
+<script lang="ts" setup>
 
 import { computed, onMounted, onBeforeUnmount, watch, ref } from 'vue'
 import { storeToRefs } from 'pinia'

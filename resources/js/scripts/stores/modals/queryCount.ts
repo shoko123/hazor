@@ -6,7 +6,7 @@ import { useModuleStore } from '../module'
 
 export const useQueryCountStore = defineStore('qcount', () => {
 
-  let isOpen = ref<boolean>(false)
+  const isOpen = ref<boolean>(false)
 
 
     const queryCountInfo = computed(() => {

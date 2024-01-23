@@ -16,14 +16,14 @@ type TSpinner = {
 }
 
 export const useNotificationsStore = defineStore('notifications', () => {
-    let snackbar = ref<TSnackbar>({
+    const snackbar = ref<TSnackbar>({
         turnOn: false,
         message: "",
         color: 'blue',
         timeout: 4000
     })
 
-    let spinner = ref<TSpinner>({
+    const spinner = ref<TSpinner>({
         isOn: false,
         message: "",
     })

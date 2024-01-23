@@ -11,14 +11,14 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     const { buildMedia } = useMediaStore()
     const c = useCollectionsStore()
 
-    let extra = ref<TCollectionExtra>({
+    const extra = ref<TCollectionExtra>({
         length: 0,
         pageNoB1: 1,
         views: [{ name: 'Gallery', ipp: 36 }],
         viewIndex: 0,
     })
 
-    let array = ref<TApiArrayMedia[]>([])
+    const array = ref<TApiArrayMedia[]>([])
 
     const collection = computed(() => {
         return {
@@ -33,10 +33,10 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     })
 
     const page = computed<TPageMediaGallery[]>(() => {
-        let start = (extra.value.pageNoB1 - 1) * ipp.value
-        let slice = array.value.slice(start, start + ipp.value)
-        let res = slice.map(x => {
-            let media = buildMedia({ full: x.urls.full, tn: x.urls.tn })
+        const start = (extra.value.pageNoB1 - 1) * ipp.value
+        const slice = array.value.slice(start, start + ipp.value)
+        const res = slice.map(x => {
+            const media = buildMedia({ full: x.urls.full, tn: x.urls.tn })
             return {
                 id: x.id,
                 order_column: x.order_column,
@@ -56,14 +56,14 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     }
 
     function switchArrayItems(indexA: number, indexB: number) {
-        let temp = { ...array.value[indexA] }
+        const temp = { ...array.value[indexA] }
         array.value[indexA] = { ...array.value[indexB] }
         array.value[indexB] = { ...temp }
     }
 
     async function loadPage(pageNoB1: number, view: TCView, module: TModule): Promise<boolean> {
-        let ipp = view.ipp
-        let start = (pageNoB1 - 1) * ipp
+        const ipp = view.ipp
+        const start = (pageNoB1 - 1) * ipp
 
         //console.log(`collectionMedia.loadPage() view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1} module: ${module} `);
         extra.value.pageNoB1 = pageNoB1
@@ -74,7 +74,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     }
 
     function itemIndexById(id: number) {
-        let index = array.value.findIndex(x => x["id"] === id)
+        const index = array.value.findIndex(x => x["id"] === id)
         //console.log(`itemIndexById(id:${id}) index: ${index}`)
         return index
 

@@ -11,38 +11,38 @@ import { useRoutesMainStore } from '../routes/routesMain'
 
 export const useFilterStore = defineStore('filter', () => {
   const trio = useTrioStore()
-  let selectedFilterParams = ref<string[]>([])
+  const selectedFilterParams = ref<string[]>([])
 
   const orderSelectedNames = computed(() => {
-    let orderParamKeys = selectedFilterParams.value.filter(x => {
+    const orderParamKeys = selectedFilterParams.value.filter(x => {
       return (x.split('.')[0] === 'Order By')
     })
-    let names = <string[]>orderParamKeys.map(y => (trio.trio.entities.params[y].name))
+    const names = <string[]>orderParamKeys.map(y => (trio.trio.entities.params[y].name))
     return names
   })
 
   const orderAllNames = computed(() => {
     if (trio.trio.result.length === 0) { return [] }
-    let orderGroup = <TGroupOrderBy>trio.trio.entities.groups['Order By']
+    const orderGroup = <TGroupOrderBy>trio.trio.entities.groups['Order By']
     return orderGroup.options.map(x => x.name)
   })
 
   const orderAvailableNames = computed(() => {
-    let osn = orderSelectedNames.value.map(x => x.slice(0, -2))
+    const osn = orderSelectedNames.value.map(x => x.slice(0, -2))
     return orderAllNames.value.filter(x => !osn.includes(x))
   })
 
   function orderParamClicked(index: number, asc: boolean) {
-    let i = orderSelectedNames.value.length
-    let nameToSet = `${orderAvailableNames.value[index]}.${asc ? 'A' : 'D'}`
-    let paramKey = `Order By.ob${i + 1}`
+    const i = orderSelectedNames.value.length
+    const nameToSet = `${orderAvailableNames.value[index]}.${asc ? 'A' : 'D'}`
+    const paramKey = `Order By.ob${i + 1}`
     console.log(`paramClicked(${index}) nameToSet: ${nameToSet} indexToset: ${i} paramKey: ${paramKey}`)
     trio.setOrderByString(paramKey, nameToSet)
     selectedFilterParams.value.push(paramKey)
   }
 
   function orderClear() {
-    let orderParamKeys = selectedFilterParams.value.filter(x => {
+    const orderParamKeys = selectedFilterParams.value.filter(x => {
       return (x.split('.')[0] === 'Order By')
     })
 
@@ -55,12 +55,12 @@ export const useFilterStore = defineStore('filter', () => {
   }
 
   function filtersToQueryObject(): IObject {
-    let query: IObject = {}
+    const query: IObject = {}
     selectedFilterParams.value.forEach(pk => {
 
-      let pieces = pk.split('.')
-      let groupKeyUnderlined = pieces[0].replace(/ /g, "_")
-      let paramUnderlined = trio.trio.entities.params[pk].name.replace(/ /g, "_")
+      const pieces = pk.split('.')
+      const groupKeyUnderlined = pieces[0].replace(/ /g, "_")
+      const paramUnderlined = trio.trio.entities.params[pk].name.replace(/ /g, "_")
 
       if (query.hasOwnProperty(groupKeyUnderlined)) {
         query[groupKeyUnderlined] += ',' + paramUnderlined
@@ -74,7 +74,7 @@ export const useFilterStore = defineStore('filter', () => {
 
   function urlQueryToApiFilters(qp: IObject): TParseUrlQueryResponse {
     //console.log(`urlQueryToApiFilters().urlQuery: ${JSON.stringify(qp, null, 2)}`);
-    let all: TApiFilters = {
+    const all: TApiFilters = {
       model_tag_ids: [],
       global_tag_ids: [],
       column_values: [],
@@ -83,24 +83,24 @@ export const useFilterStore = defineStore('filter', () => {
       bespoke: [],
       order_by: [],
     }
-    let selectedFilters = <TSelectedFilterFromQuery[]>[]
+    const selectedFilters = <TSelectedFilterFromQuery[]>[]
 
     for (const [key, value] of Object.entries(qp)) {
       //Verify that the group exists. 
-      let groupKey = key.replace(/_/g, " ")
+      const groupKey = key.replace(/_/g, " ")
 
       if (!trio.trio.entities.groups.hasOwnProperty(groupKey)) {
         console.log(`Query parsing Error: "${key}" group doesn't exist. aborting... `)
         throw 'BadGroupNameParsingError'
       }
 
-      let group = trio.trio.entities.groups[groupKey]
+      const group = trio.trio.entities.groups[groupKey]
 
       //verify that params exist for this group 
-      let underlinedParams = <string[]>value.split(',')
-      let params = underlinedParams.map(x => <string>x.replace(/_/g, " "))
-      let possibleParams = group.params.map(x => {
-        let pieces = x.split('.')
+      const underlinedParams = <string[]>value.split(',')
+      const params = underlinedParams.map(x => <string>x.replace(/_/g, " "))
+      const possibleParams = group.params.map(x => {
+        const pieces = x.split('.')
         return pieces[1]
       })
 
@@ -116,8 +116,8 @@ export const useFilterStore = defineStore('filter', () => {
           break
 
         case 'OB':
-          let orderGroup = <TGroupOrderBy>trio.trio.entities.groups['Order By']
-          let options = orderGroup.options.map(x => x.name)
+          const orderGroup = <TGroupOrderBy>trio.trio.entities.groups['Order By']
+          const options = orderGroup.options.map(x => x.name)
 
           params.forEach((x, index) => {
             if (!['.A', '.D'].includes(x.slice(-2))) {
@@ -146,13 +146,13 @@ export const useFilterStore = defineStore('filter', () => {
       switch (group.group_type_code) {
         case 'TG':
           all.global_tag_ids.push(...params.map(x => {
-            let paramKey = groupKey + '.' + x
+            const paramKey = groupKey + '.' + x
             return trio.trio.entities.params[paramKey].id
           }))
           break
         case 'TM':
           all.model_tag_ids.push(...params.map(x => {
-            let paramKey = groupKey + '.' + x
+            const paramKey = groupKey + '.' + x
             return trio.trio.entities.params[paramKey].id
           }))
           break
@@ -164,7 +164,7 @@ export const useFilterStore = defineStore('filter', () => {
             all.column_lookup_ids.push({
               column_name: (<TGroupValue>trio.trio.entities.groups[groupKey]).column_name,
               vals: params.map(x => {
-                let paramKey = groupKey + '.' + x
+                const paramKey = groupKey + '.' + x
                 return trio.trio.entities.params[paramKey].id
               })
             })
@@ -214,10 +214,10 @@ export const useFilterStore = defineStore('filter', () => {
 
         case 'OB':
           console.log(`processing Order By group`)
-          let orderGroup = <TGroupOrderBy>trio.trio.entities.groups['Order By']
-          let options = orderGroup.options
+          const orderGroup = <TGroupOrderBy>trio.trio.entities.groups['Order By']
+          const options = orderGroup.options
           params.forEach(x => {
-            let data = options.find(y => y.name === x.slice(0, -2));
+            const data = options.find(y => y.name === x.slice(0, -2));
             all.order_by.push({
               column_name: (<TGroupOrderByOptionObject>data).column_name, asc: x.slice(-1) === 'A'
             })
@@ -241,7 +241,7 @@ export const useFilterStore = defineStore('filter', () => {
   function clearSelectedFilters() {
     console.log(`filter.clearSelectedFilters()`)
     selectedFilterParams.value.forEach(x => {
-      let pieces = x.split('.')
+      const pieces = x.split('.')
       switch (trio.trio.entities.groups[pieces[0]].group_type_code) {
         case 'OB':
           trio.setOrderByString(x, "")
@@ -275,7 +275,7 @@ export const useFilterStore = defineStore('filter', () => {
     const apiFilters = urlQueryToApiFilters(q)
 
     try {
-      let res = await send('model/index', 'post', { model: current.value.module, query: (<TParseQueryData>apiFilters.data).apiFilters })
+      const res = await send('model/index', 'post', { model: current.value.module, query: (<TParseQueryData>apiFilters.data).apiFilters })
       return res.data.collection.length
     }
     catch (err) {

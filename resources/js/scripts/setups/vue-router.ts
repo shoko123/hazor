@@ -21,7 +21,7 @@ router.beforeEach(async (to, from) => {
   }
 
   try {
-    let res = await handleRouteChange(to, from)
+    const res = await handleRouteChange(to, from)
     //console.log(`router.beforeEach returned ${JSON.stringify(res, null, 2)}`);
     return res
   }

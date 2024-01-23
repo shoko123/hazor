@@ -24,12 +24,12 @@ export const useItemStore = defineStore('item', () => {
   const { orderSelectedParams, getParamKeyByGroupAndId } = useTrioStore()
   const { showSnackbar, showSpinner } = useNotificationsStore()
 
-  let fields = ref<TFields | undefined>(undefined)
-  let slug = ref<string | undefined>(undefined)
-  let tag = ref<string | undefined>(undefined)
-  let short = ref<string | undefined>(undefined)
-  let selectedItemParams = ref<string[]>([])
-  let ready = ref<boolean>(false)
+  const fields = ref<TFields | undefined>(undefined)
+  const slug = ref<string | undefined>(undefined)
+  const tag = ref<string | undefined>(undefined)
+  const short = ref<string | undefined>(undefined)
+  const selectedItemParams = ref<string[]>([])
+  const ready = ref<boolean>(false)
 
   const itemViews = ref<string[]>([])
   const itemViewIndex = ref<number>(0)
@@ -61,12 +61,12 @@ export const useItemStore = defineStore('item', () => {
 
   function saveitemFieldsPlus(apiItem: TApiItemShow) {
     fields.value = apiItem.fields
-    let fieldsObj = <IObject>apiItem.fields
+    const fieldsObj = <IObject>apiItem.fields
     slug.value = apiItem.slug
     short.value = apiItem.short
     tag.value = moduleStore.tagFromSlug(current.value.module, apiItem.slug)
 
-    let selectedLookups =  moduleStore.lookups.map(x => {
+    const selectedLookups =  moduleStore.lookups.map(x => {
       return getParamKeyByGroupAndId(x.group_name, fieldsObj[x.column_name])}   
     )
 
@@ -86,7 +86,7 @@ export const useItemStore = defineStore('item', () => {
 
   function nextSlug(isRight: boolean) {
     let newIndex
-    let length = collection('main').value.meta.length
+    const length = collection('main').value.meta.length
     if (isRight) {
       newIndex = (itemIndex.value === length - 1) ? 0 : itemIndex.value + 1
     } else {
@@ -101,7 +101,7 @@ export const useItemStore = defineStore('item', () => {
   //return the newly created/update item's slug (need it only for create())
   async function upload(isCreate: boolean, newFields: TFields): Promise<TApiItemShow> {
     console.log(`item.upload isCreate: ${isCreate}, module: ${current.value.module}, fields: ${JSON.stringify(newFields, null, 2)}`)
-    let res = await send('model/store', isCreate ? 'post' : 'put', { model: current.value.module, item: newFields, id: newFields.id })
+    const res = await send('model/store', isCreate ? 'post' : 'put', { model: current.value.module, item: newFields, id: newFields.id })
       .catch(err => {
         showSnackbar(`model.store failed!`)
         //console.log(`model.store  failed. err: ${JSON.stringify(err, null, 2)}`)
@@ -111,7 +111,7 @@ export const useItemStore = defineStore('item', () => {
     if (isCreate) {
       setItemMedia([])
       saveitemFieldsPlus(res.data)
-      let newIndex = pushToArray({ "id": res.data.fields.id, "slug": res.data.slug })
+      const newIndex = pushToArray({ "id": res.data.fields.id, "slug": res.data.slug })
       itemIndex.value = newIndex
       //console.log(`item pushed to main array. index: ${itemIndex.value}`)
     } else {

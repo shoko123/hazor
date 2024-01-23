@@ -18,7 +18,7 @@ export default function normalizeTrio(res: object): Trio {
       return `${parent.group_name}.${value.name}`
     },
     processStrategy: (value, parent, key) => {
-      let param = {
+      const param = {
         ...value,
         paramKey: `${parent.group_name}.${value.name}`,
         order: 0

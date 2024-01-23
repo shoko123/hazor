@@ -1,9 +1,20 @@
 <template>
-    <v-btn class="ml-2 bg-grey-lighten-1" @click="goToItem()">Visit</v-btn>
-    <v-btn v-if="props.record.media.hasMedia" class="ml-2 bg-grey-lighten-1" @click="openModalCarousel()">Lightbox</v-btn>
+  <v-btn
+    class="ml-2 bg-grey-lighten-1"
+    @click="goToItem()"
+  >
+    Visit
+  </v-btn>
+  <v-btn
+    v-if="props.record.media.hasMedia"
+    class="ml-2 bg-grey-lighten-1"
+    @click="openModalCarousel()"
+  >
+    Lightbox
+  </v-btn>
 </template>
 
-<script lang="ts" setup >
+<script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 

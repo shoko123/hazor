@@ -1,8 +1,8 @@
 <template>
-  <Collection source="related" />
+  <CollectionForm source="related" />
 </template>
 
-<script lang="ts" setup >
-import Collection from '../../collections/Collection.vue'
+<script lang="ts" setup>
+import CollectionForm from '../../collections/CollectionForm.vue'
 </script>
 

@@ -1,14 +1,39 @@
 <template>
   <div class="hidden-sm-and-down">
-    <v-btn icon="mdi-home-circle" :to="{ name: 'home' }" rounded="0"></v-btn>
+    <v-btn
+      icon="mdi-home-circle"
+      :to="{ name: 'home' }"
+      rounded="0"
+    />
   </div>
-  <v-divider inset vertical></v-divider>
+  <v-divider
+    inset
+    vertical
+  />
   <v-btn>{{ title }}</v-btn>
-  <v-divider inset vertical></v-divider>
+  <v-divider
+    inset
+    vertical
+  />
   <div class="hidden-sm-and-down">
-    <v-btn :disabled="disableLinks" :to="{ name: 'welcome', params: { module: 'loci' } }">Loci</v-btn>
-    <v-btn :disabled="disableLinks" :to="{ name: 'welcome', params: { module: 'stones' } }">Stones</v-btn>
-    <v-btn :disabled="disableLinks" :to="{ name: 'welcome', params: { module: 'fauna' } }">Fauna</v-btn>
+    <v-btn
+      :disabled="disableLinks"
+      :to="{ name: 'welcome', params: { module: 'loci' } }"
+    >
+      Loci
+    </v-btn>
+    <v-btn
+      :disabled="disableLinks"
+      :to="{ name: 'welcome', params: { module: 'stones' } }"
+    >
+      Stones
+    </v-btn>
+    <v-btn
+      :disabled="disableLinks"
+      :to="{ name: 'welcome', params: { module: 'fauna' } }"
+    >
+      Fauna
+    </v-btn>
   </div>
   <v-spacer />
   <LoginOrUser />

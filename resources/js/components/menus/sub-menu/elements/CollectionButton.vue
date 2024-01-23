@@ -1,7 +1,15 @@
 <template>
-  <v-btn @click="toCollection" variant="outlined">
+  <v-btn
+    variant="outlined"
+    @click="toCollection"
+  >
     Collection
-    <v-tooltip activator="parent" location="bottom left">{{ tip }}</v-tooltip>
+    <v-tooltip
+      activator="parent"
+      location="bottom left"
+    >
+      {{ tip }}
+    </v-tooltip>
   </v-btn>
 </template>
 

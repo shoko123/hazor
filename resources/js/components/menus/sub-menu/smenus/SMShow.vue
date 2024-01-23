@@ -3,27 +3,39 @@
     <WelcomeButton />
     <FilterButton />
     <CollectionButton />
-
   </div>
-  <v-divider class="ms-3" inset vertical></v-divider>
+  <v-divider
+    class="ms-3"
+    inset
+    vertical
+  />
   <Navigator />
-  <v-spacer></v-spacer>
+  <v-spacer />
   <div class="hidden-sm-and-down">
-
-
-
-
     <Modifiers />
 
     <v-menu>
-      <template v-slot:activator="{ props }">
-        <v-btn color="primary" v-bind="props">
-          <v-icon left dark>mdi-eye</v-icon>
+      <template #activator="{ props }">
+        <v-btn
+          color="primary"
+          v-bind="props"
+        >
+          <v-icon
+            left
+            dark
+          >
+            mdi-eye
+          </v-icon>
           {{ itemViewText }}
         </v-btn>
       </template>
       <v-list>
-        <v-list-item v-for="(item, index) in displayOptions" :key="index" :value="index" @click="setItemViewIndex(index)">
+        <v-list-item
+          v-for="(item, index) in displayOptions"
+          :key="index"
+          :value="index"
+          @click="setItemViewIndex(index)"
+        >
           <v-list-item-title>{{ item }}</v-list-item-title>
         </v-list-item>
       </v-list>

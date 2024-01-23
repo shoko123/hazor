@@ -1,8 +1,14 @@
 <template>
-    <v-btn color="primary" block @click="btnClicked">login (After reset)</v-btn>
+  <v-btn
+    color="primary"
+    block
+    @click="btnClicked"
+  >
+    login (After reset)
+  </v-btn>
 </template>
 
-<script setup lang="ts" >
+<script setup lang="ts">
 
 import { useAuthStore } from '../../../scripts/stores/auth'
 

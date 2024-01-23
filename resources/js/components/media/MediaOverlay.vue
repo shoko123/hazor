@@ -1,10 +1,17 @@
 <template>
-  <v-container fluid pa-0>
-    <component v-bind:is="overlay" :itemIndex="itemIndex" :record="props.record"></component>
+  <v-container
+    fluid
+    pa-0
+  >
+    <component
+      :is="overlay"
+      :item-index="itemIndex"
+      :record="props.record"
+    />
   </v-container>
 </template>
 
-<script lang="ts" setup >
+<script lang="ts" setup>
 import { computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { TCollectionName, TPageGallery } from '../../types/collectionTypes'

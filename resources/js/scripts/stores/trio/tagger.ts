@@ -12,9 +12,9 @@ import { TFields } from '@/js/types/moduleFieldsTypes'
 
 export const useTaggerStore = defineStore('tagger', () => {
   const trio = useTrioStore()
-  let { fields, selectedItemParams } = storeToRefs(useItemStore())
+  const { fields, selectedItemParams } = storeToRefs(useItemStore())
 
-  let selectedNewItemParams = ref<string[]>([])
+  const selectedNewItemParams = ref<string[]>([])
 
   function copyCurrentToNew() {
     selectedNewItemParams.value = [...selectedItemParams.value]
@@ -22,21 +22,21 @@ export const useTaggerStore = defineStore('tagger', () => {
 
   function parseParamKey(paramKey: string, getParam = true): string {
     //console.log(`parseParamKey() key: ${paramKey} value: ${trio.entities.params[paramKey]}`)
-    let pieces = paramKey.split('.')
+    const pieces = paramKey.split('.')
     return getParam ? trio.trio.entities.params[paramKey].name : pieces[0]
   }
 
   async function sync() {
-    let { send } = useXhrStore()
+    const { send } = useXhrStore()
 
-    let { current } = storeToRefs(useRoutesMainStore())
+    const { current } = storeToRefs(useRoutesMainStore())
     console.log(`trio.sync()`)
-    let globalTagIds = <number[]>([])
-    let modelTagIds = <number[]>([])
-    let columns = <TColumnValueUpdateInfo[]>([])
+    const globalTagIds = <number[]>([])
+    const modelTagIds = <number[]>([])
+    const columns = <TColumnValueUpdateInfo[]>([])
 
     selectedNewItemParams.value.forEach(paramKey => {
-      let group = trio.trio.entities.groups[parseParamKey(paramKey, false)]
+      const group = trio.trio.entities.groups[parseParamKey(paramKey, false)]
       switch (group.group_type_code) {
         case "TG":
           globalTagIds.push(trio.trio.entities.params[paramKey].id)
@@ -46,14 +46,14 @@ export const useTaggerStore = defineStore('tagger', () => {
           break
         case "CL":
         case "CV":
-          let param = trio.trio.entities.params[paramKey]
-          let column_name = (<TGroupValue>group).column_name
+          const param = trio.trio.entities.params[paramKey]
+          const column_name = (<TGroupValue>group).column_name
           columns.push({ column_name, val: group.group_type_code === "CL" ? param.id : param.name })
           break
       }
     })
 
-    let data = {
+    const data = {
       model: current.value.module,
       id: (<TFields>fields.value).id,
       ids: globalTagIds,
@@ -71,7 +71,7 @@ export const useTaggerStore = defineStore('tagger', () => {
 
     //once back successfully from server, update locally
     selectedItemParams.value = [...selectedNewItemParams.value]
-    let fieldsAsAnObject = fields.value as unknown as IObject
+    const fieldsAsAnObject = fields.value as unknown as IObject
     columns.forEach(x => {
       fieldsAsAnObject[x.column_name] = x.val
     })
@@ -81,7 +81,7 @@ export const useTaggerStore = defineStore('tagger', () => {
   function clearSelectedNewItemParams() {
     selectedNewItemParams.value = []
     selectedItemParams.value.forEach(x => {
-      let pieces = x.split('.')
+      const pieces = x.split('.')
       if (['CL', 'CV'].includes(trio.trio.entities.groups[pieces[0]].group_type_code)) {  
           selectedNewItemParams.value.push(trio.trio.entities.groups[pieces[0]].params[0])     
       }

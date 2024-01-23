@@ -16,7 +16,7 @@ import { useItemStore } from '../../scripts/stores/item'
 
 
 export const useMediaStore = defineStore('media', () => {
-  let { showSnackbar, } = useNotificationsStore()
+  const { showSnackbar, } = useNotificationsStore()
   const { send } = useXhrStore()
 
   //both bucketUrl and mediaCollectionNames are initiated at app.init()
@@ -53,7 +53,7 @@ export const useMediaStore = defineStore('media', () => {
   }
  
   function setItemMedia(media: TApiArrayMedia[]) {
-    let cm = useCollectionMediaStore()
+    const cm = useCollectionMediaStore()
     cm.setArray(media)
   }
 
@@ -114,7 +114,7 @@ export const useMediaStore = defineStore('media', () => {
   async function upload() {
     const i = useItemStore()
     const r = useRoutesMainStore()
-    let fd = new FormData();
+    const fd = new FormData();
 
     images.value.forEach((file) => {
       fd.append("media_files[]", file, file.name);
@@ -161,8 +161,8 @@ export const useMediaStore = defineStore('media', () => {
   async function reorder() {
     const r = useRoutesMainStore()
     const i = useItemStore()
-    let cm = useCollectionMediaStore()
-    let ordered = cm.array.map((x, index) => {return {id: x.id, order: index + 1}})
+    const cm = useCollectionMediaStore()
+    const ordered = cm.array.map((x, index) => {return {id: x.id, order: index + 1}})
     console.log(`reorder()  model: ${r.current.module}, id: ${i.fields?.id} ,ordered: ${JSON.stringify(ordered, null, 2)}`)
     return send("media/reorder", 'post', { model: r.current.module, model_id: i.fields?.id, ordered })
     .then((res) => {

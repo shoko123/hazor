@@ -13,8 +13,8 @@ export const useAuthStore = defineStore('auth', () => {
   const { showSnackbar, showSpinner } = useNotificationsStore()
   const { routerPush } = useRoutesMainStore()
 
-  let user = ref<TUser | null>(null)
-  let accessibility = ref({ authenticatedUsersOnly: true, readOnly: false })
+  const user = ref<TUser | null>(null)
+  const accessibility = ref({ authenticatedUsersOnly: true, readOnly: false })
   const dialog = ref({ open: false, message: '' })
 
   const authenticated = computed(() => {
@@ -90,7 +90,7 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null
 
     try {
-      let res = await send('fortify/logout', 'post')
+      const res = await send('fortify/logout', 'post')
       //logApiResponse(`fortify/logout`, res)
       showSnackbar('Successfully logged-out')
       return true
@@ -122,7 +122,7 @@ export const useAuthStore = defineStore('auth', () => {
     console.log("auth.attemptResetPassword()")
 
     try {
-      let res = await send('fortify/reset-password', 'post', form)
+      const res = await send('fortify/reset-password', 'post', form)
       logApiResponse(`fortify/reset-password`, res)
       dialog.value = { open: true, message: `Your password was successfuly reset. Please close this tab and follow the instructions in the app to login.` }
       return true
@@ -136,7 +136,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function userStatus(): Promise<'verified' | 'not-verified' | 'unauthenticated' | 'server-error'> {
     try {
-      let res = await send('about/me', 'get')
+      const res = await send('about/me', 'get')
       return res.data.user.is_verified ? 'verified' : 'not-verified'
     } catch (err: any) {
       console.log(`userStatus.err: ${getErrorMessage(err)}`)      

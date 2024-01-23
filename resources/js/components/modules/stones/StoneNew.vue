@@ -1,48 +1,147 @@
 <template>
-  <v-container fluid class="pa-1 ma-0">
-    <v-row wrap no-gutters>
-      <v-select label="Area" v-model="data.area" :items="areas"></v-select>
-      <v-text-field id="locus" label="Locus" v-model="data.locus" :error-messages="locusErrors" class="mr-1" filled>
-      </v-text-field>
-      <v-text-field id="basket" label="Basket" v-model="data.basket" :error-messages="basketErrors" class="mr-1" filled>
-      </v-text-field>
-      <v-text-field id="stone_no" label="Stone No." v-model="data.stone_no" :error-messages="stone_noErrors" class="mr-1"
-        filled>
-      </v-text-field>
-      <v-text-field id="year" label="Year" v-model="data.year" :error-messages="yearErrors" class="mr-1" filled>
-      </v-text-field>
-      <v-text-field id="date" label="Date" v-model="data.date" :error-messages="dateErrors" type="date" min="1990-01-01"
-        max="2018-12-31"></v-text-field>
+  <v-container
+    fluid
+    class="pa-1 ma-0"
+  >
+    <v-row
+      wrap
+      no-gutters
+    >
+      <v-select
+        v-model="data.area"
+        label="Area"
+        :items="areas"
+      />
+      <v-text-field
+        id="locus"
+        v-model="data.locus"
+        label="Locus"
+        :error-messages="locusErrors"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        id="basket"
+        v-model="data.basket"
+        label="Basket"
+        :error-messages="basketErrors"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        id="stone_no"
+        v-model="data.stone_no"
+        label="Stone No."
+        :error-messages="stone_noErrors"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        id="year"
+        v-model="data.year"
+        label="Year"
+        :error-messages="yearErrors"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        id="date"
+        v-model="data.date"
+        label="Date"
+        :error-messages="dateErrors"
+        type="date"
+        min="1990-01-01"
+        max="2018-12-31"
+      />
     </v-row>
 
-    <v-row wrap no-gutters>
-      <v-text-field label="Type" v-model="data.type" :error-messages="typeErrors" class="mr-1" filled> </v-text-field>
-      <v-text-field label="Material Code" v-model="data.material_code" :error-messages="material_codeErrors" class="mr-1"
-        filled>
-      </v-text-field>
-      <v-text-field label="Rim Diameter (mm)" v-model="data.rim_diameter" :error-messages="rim_diameterErrors" class="mr-1"
-        filled> </v-text-field>
+    <v-row
+      wrap
+      no-gutters
+    >
+      <v-text-field
+        v-model="data.type"
+        label="Type"
+        :error-messages="typeErrors"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        v-model="data.material_code"
+        label="Material Code"
+        :error-messages="material_codeErrors"
+        class="mr-1"
+        filled
+      />
+      <v-text-field
+        v-model="data.rim_diameter"
+        label="Rim Diameter (mm)"
+        :error-messages="rim_diameterErrors"
+        class="mr-1"
+        filled
+      />
     </v-row>
 
-    <v-row wrap no-gutters>
-      <v-textarea label="Description" v-model="data.description" :error-messages="descriptionErrors" rows="1" class="mr-1"
-        auto-grow>
-      </v-textarea>
-      <v-textarea label="Dimensions" v-model="data.dimensions" :error-messages="dimensionsErrors" rows="1" class="mr-1"
-        auto-grow></v-textarea>
+    <v-row
+      wrap
+      no-gutters
+    >
+      <v-textarea
+        v-model="data.description"
+        label="Description"
+        :error-messages="descriptionErrors"
+        rows="1"
+        class="mr-1"
+        auto-grow
+      />
+      <v-textarea
+        v-model="data.dimensions"
+        label="Dimensions"
+        :error-messages="dimensionsErrors"
+        rows="1"
+        class="mr-1"
+        auto-grow
+      />
     </v-row>
 
-    <v-row wrap no-gutters>
-      <v-textarea label="Provenience notes" v-model="data.prov_notes" :error-messages="provErrors" rows="1"
-        class="mr-1"></v-textarea>
-      <v-textarea label="Notes" v-model="data.notes" :error-messages="notesErrors" rows="1" class="mr-1"></v-textarea>
+    <v-row
+      wrap
+      no-gutters
+    >
+      <v-textarea
+        v-model="data.prov_notes"
+        label="Provenience notes"
+        :error-messages="provErrors"
+        rows="1"
+        class="mr-1"
+      />
+      <v-textarea
+        v-model="data.notes"
+        label="Notes"
+        :error-messages="notesErrors"
+        rows="1"
+        class="mr-1"
+      />
     </v-row>
 
-    <v-row wrap no-gutters>
-      <v-textarea label="Publication(s)" v-model="data.publication" :error-messages="publicationErrors" rows="1"
-        class="mr-1"></v-textarea>
+    <v-row
+      wrap
+      no-gutters
+    >
+      <v-textarea
+        v-model="data.publication"
+        label="Publication(s)"
+        :error-messages="publicationErrors"
+        rows="1"
+        class="mr-1"
+      />
     </v-row>
-    <slot name="data" v-bind:v$=v$ v-bind:data=data v-bind:id=data.id></slot>
+    <slot
+      :id="data.id"
+      name="data"
+      :v$="v$"
+      :data="data"
+    />
   </v-container>
 </template>
 

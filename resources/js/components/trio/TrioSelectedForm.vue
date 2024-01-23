@@ -1,21 +1,35 @@
 <template>
   <v-card class="elevation-12">
-    <v-card-title class="bg-grey text-black py-0 mb-4">{{ d.header }}</v-card-title>
+    <v-card-title class="bg-grey text-black py-0 mb-4">
+      {{ d.header }}
+    </v-card-title>
     <v-card-text>
-      <div v-if="!d.data.length">{{ d.emptyTitle }}</div>
+      <div v-if="!d.data.length">
+        {{ d.emptyTitle }}
+      </div>
       <v-list v-if="d.data.length">
         <v-list-item v-for="cat in d.data">
-          <div class="font-weight-bold">{{ cat.name }}</div>
+          <div class="font-weight-bold">
+            {{ cat.name }}
+          </div>
           <v-list-item v-for="group in cat.groups">
             <v-list-item-title>
-              <v-container fluid class="pa-0 ma-0">
+              <v-container
+                fluid
+                class="pa-0 ma-0"
+              >
                 <v-row class="pa-2 ma-2">
                   <div>{{ group.key }}:</div>
-                  <v-chip v-for="param in group.params" class="ml-2 mb-2">{{ param }}</v-chip>
+                  <v-chip
+                    v-for="param in group.params"
+                    class="ml-2 mb-2"
+                  >
+                    {{ param }}
+                  </v-chip>
                 </v-row>
               </v-container>
             </v-list-item-title>
-            <v-row></v-row>
+            <v-row />
           </v-list-item>
         </v-list-item>
       </v-list>
@@ -23,7 +37,7 @@
   </v-card>
 </template>
 
-<script lang="ts" setup >
+<script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import type { TrioSourceName } from '../../types/trioTypes'

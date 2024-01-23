@@ -143,7 +143,7 @@ type TPageRelatedGallery = TPageMainGallery & {
         relation_name: string,
         module: TModule,
 }
-
+type TPageRelated = TPageRelatedChips | TPageRelatedTabular | TPageRelatedGallery
 type TPageMediaGallery = TApiArrayMedia
 
 type TPageGallery = TPageMainGallery | TPageMediaGallery | TPageRelatedGallery
@@ -189,6 +189,7 @@ export {
         TPageMainGallery,
         TPageMainTabular,
         TPageMain,
+        TPageRelated,
         TPageRelatedChips,
         TPageChips,
         TPageRelatedGallery,

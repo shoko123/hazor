@@ -1,8 +1,14 @@
 <template>
-   <v-btn color="primary" block @click="checkIfVerified">Continue (After verification)</v-btn>
+  <v-btn
+    color="primary"
+    block
+    @click="checkIfVerified"
+  >
+    Continue (After verification)
+  </v-btn>
 </template>
 
-<script setup lang="ts" >
+<script setup lang="ts">
 //This form is only shown if after login, user is found to be not verified - 
 //proceed only after verification!
 

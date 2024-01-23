@@ -22,7 +22,7 @@ export const useMenusStore = defineStore('menus', () => {
   })
 
   const mainMenuType = computed(() => {
-    let routeName = current.value.name
+    const routeName = current.value.name
     switch (routeName) {
       case 'home':
       case 'welcome':

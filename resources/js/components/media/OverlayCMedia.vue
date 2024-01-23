@@ -1,11 +1,19 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-btn class="bg-grey-lighten-1" @click="openModalCarousel()">Lightbox</v-btn>
+  <v-row
+    justify="center"
+    align="center"
+  >
+    <v-btn
+      class="bg-grey-lighten-1"
+      @click="openModalCarousel()"
+    >
+      Lightbox
+    </v-btn>
   </v-row>
 </template>
     
 
-<script lang="ts" setup >
+<script lang="ts" setup>
 import type { TPageMediaGallery } from '../../types/collectionTypes'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 

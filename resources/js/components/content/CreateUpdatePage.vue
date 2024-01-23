@@ -1,12 +1,28 @@
 <template>
   <v-container fluid>
     <v-card class="elevation-12">
-      <v-card-title class="bg-grey text-black py-0 mb-4">{{ title }}</v-card-title>
+      <v-card-title class="bg-grey text-black py-0 mb-4">
+        {{ title }}
+      </v-card-title>
       <v-card-text>
-        <component :is="formNew" :isCreate=props.isCreate>
+        <component
+          :is="formNew"
+          :is-create="props.isCreate"
+        >
           <template #data="{ v$, data, id }">
-            <v-btn @click="submit(v$, data, id)" variant="outlined">Submit</v-btn>
-            <v-btn @click="cancel" variant="outlined" class="ml-1">Cancel</v-btn>
+            <v-btn
+              variant="outlined"
+              @click="submit(v$, data, id)"
+            >
+              Submit
+            </v-btn>
+            <v-btn
+              variant="outlined"
+              class="ml-1"
+              @click="cancel"
+            >
+              Cancel
+            </v-btn>
           </template>
         </component>
       </v-card-text>
@@ -80,7 +96,7 @@ function beforeStore(isCreate: boolean, fields: TFields) {
   return store.beforeStore(props.isCreate, fields)
 }
 
-async function submit(v$: Validation, data: TFields, id?: number) {
+async function submit(v$: Validation, data: TFields) {
   //console.log(`CreateUpdate.submit() data: ${JSON.stringify(data, null, 2)}`)
 
   // vuelidate validation
@@ -102,7 +118,7 @@ async function submit(v$: Validation, data: TFields, id?: number) {
   }
 
   const itemDetails = await upload(props.isCreate, <TFields>fieldsToSend).catch(err => {
-    console.log(`CreateUpdate.upload failed!`)
+    console.log(`CreateUpdate.upload failed errors: ${JSON.stringify(err, null, 2)}`)
     throw 'FailedToUpload'
   })
 

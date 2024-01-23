@@ -16,16 +16,16 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     const c = useCollectionsStore()
     const { tagFromSlug } = useModuleStore()
 
-    let itemsPerView  = <TItemsPerView> { Gallery: 36, Tabular: 100, Chips: 200 }
+    const itemsPerView  = <TItemsPerView> { Gallery: 36, Tabular: 100, Chips: 200 }
 
-    let extra = ref<TCollectionExtra>({
+    const extra = ref<TCollectionExtra>({
         length: 0,
         pageNoB1: 1,
         views: <TCView[]>[{ name: "Tabular", ipp: 36 }, { name: "Chips", ipp: 200 }],
         viewIndex: 0,
     })
 
-    let array = ref<TApiArrayRelated[]>([])
+    const array = ref<TApiArrayRelated[]>([])
 
     const ipp = computed(() => {
         return extra.value.views[extra.value.viewIndex].ipp
@@ -42,14 +42,14 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
 
     const page = computed<TPageRelatedGallery[] | TPageRelatedTabular[] | TPageRelatedChips[]>(() => {
         //let ipp = c.getIpp("Gallery")
-        let start = (extra.value.pageNoB1 - 1) * ipp.value
-        let slice = array.value.slice(start, start + ipp.value)
+        const start = (extra.value.pageNoB1 - 1) * ipp.value
+        const slice = array.value.slice(start, start + ipp.value)
         let res = []
 
         switch (extra.value.views[extra.value.viewIndex].name) {
             case "Tabular":
                 res = slice.map(x => {
-                    let media = buildMedia(x.media, x.module)
+                    const media = buildMedia(x.media, x.module)
                     return {
                         relation_name: x.relation_name,
                         module: x.module,
@@ -63,7 +63,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
 
             case "Gallery":
                 res = slice.map(x => {
-                    let media = buildMedia(x.media, x.module)
+                    const media = buildMedia(x.media, x.module)
                     return {
                         relation_name: x.relation_name,
                         module: x.module,
@@ -116,7 +116,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
     }
 
     function itemIndexById(id: number) {
-        let index = array.value.findIndex(x => x.id === id)
+        const index = array.value.findIndex(x => x.id === id)
         return index
     }
 

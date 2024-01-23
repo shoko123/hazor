@@ -1,32 +1,71 @@
 <template>
   <template v-if="isUnauthinticated">
-    <div class="text-subtitle-1 text-medium-emphasis">Email</div>
-    <v-text-field v-model="data.email" readonly :error-messages="emailErrors" density="compact"
-      placeholder="Email address" prepend-inner-icon="mdi-email-outline" variant="outlined"></v-text-field>
+    <div class="text-subtitle-1 text-medium-emphasis">
+      Email
+    </div>
+    <v-text-field
+      v-model="data.email"
+      readonly
+      :error-messages="emailErrors"
+      density="compact"
+      placeholder="Email address"
+      prepend-inner-icon="mdi-email-outline"
+      variant="outlined"
+    />
 
-    <v-text-field v-model="data.password" :error-messages="passwordErrors"
-      :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'" density="compact"
-      placeholder="Enter your new password" prepend-inner-icon="mdi-lock-outline" variant="outlined"
-      @click:append-inner="visible = !visible"></v-text-field>
+    <v-text-field
+      v-model="data.password"
+      :error-messages="passwordErrors"
+      :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+      :type="visible ? 'text' : 'password'"
+      density="compact"
+      placeholder="Enter your new password"
+      prepend-inner-icon="mdi-lock-outline"
+      variant="outlined"
+      @click:append-inner="visible = !visible"
+    />
 
-    <v-text-field v-model="data.password_confirmation" :error-messages="password_confirmationErrors"
-      :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'" density="compact"
-      placeholder="Enter new password confirmation" prepend-inner-icon="mdi-lock-outline" variant="outlined"
-      @click:append-inner="visible = !visible"></v-text-field>
+    <v-text-field
+      v-model="data.password_confirmation"
+      :error-messages="password_confirmationErrors"
+      :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+      :type="visible ? 'text' : 'password'"
+      density="compact"
+      placeholder="Enter new password confirmation"
+      prepend-inner-icon="mdi-lock-outline"
+      variant="outlined"
+      @click:append-inner="visible = !visible"
+    />
 
-    <v-btn @click="send" block class="mb-8" color="blue" size="large" variant="tonal">
+    <v-btn
+      block
+      class="mb-8"
+      color="blue"
+      size="large"
+      variant="tonal"
+      @click="send"
+    >
       Reset Password
     </v-btn>
   </template>
   <template v-else>
-    <div class="text-h4">{{ problemText }}</div>
-    <v-btn @click="closeTab" block class="mb-8" color="blue" size="large" variant="tonal">
+    <div class="text-h4">
+      {{ problemText }}
+    </div>
+    <v-btn
+      block
+      class="mb-8"
+      color="blue"
+      size="large"
+      variant="tonal"
+      @click="closeTab"
+    >
       Close Tab
     </v-btn>
   </template>
 </template>
 
-<script setup lang="ts" >
+<script setup lang="ts">
 import { computed, ref, reactive, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'

@@ -1,12 +1,20 @@
 <template>
-    <v-carousel height="96vh" continuos cycle>
-      <v-carousel-item v-for="(med, i) in media" :key="i" :src="med.urls.full" :lazy-src="med.urls.tn"
-        cover>
-      </v-carousel-item>
-    </v-carousel>
+  <v-carousel
+    height="96vh"
+    continuos
+    cycle
+  >
+    <v-carousel-item
+      v-for="(med, i) in media"
+      :key="i"
+      :src="med.urls.full"
+      :lazy-src="med.urls.tn"
+      cover
+    />
+  </v-carousel>
 </template>
 
-<script setup lang="ts" >
+<script setup lang="ts">
 import { computed } from 'vue'
 import { useMediaStore } from '../../scripts/stores/media'
 import { TMediaOfItem } from '../../types/mediaTypes'

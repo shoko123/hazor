@@ -1,15 +1,24 @@
 <template>
-  <v-row wrap no-gutters>
-    <v-col v-for="(item, index) in page" :key="index" :cols="`${mediaSizeInColumns}`">
-      <MediaSquare v-bind="{
-        source: source,
-        itemIndex: itemIndex(index),
-      }"></MediaSquare>
+  <v-row
+    wrap
+    no-gutters
+  >
+    <v-col
+      v-for="(item, index) in page"
+      :key="index"
+      :cols="`${mediaSizeInColumns}`"
+    >
+      <MediaSquare
+        v-bind="{
+          source: source,
+          itemIndex: itemIndex(index),
+        }"
+      />
     </v-col>
   </v-row>
 </template>
 
-<script lang="ts" setup >
+<script lang="ts" setup>
 import { computed } from 'vue'
 import { useDisplay } from 'vuetify'
 

@@ -1,22 +1,39 @@
 <template>
-      <div class="text-subtitle-1 text-medium-emphasis">Recovery Email</div>
+  <div class="text-subtitle-1 text-medium-emphasis">
+    Recovery Email
+  </div>
 
-      <v-text-field v-model="data.email" :error-messages="emailErrors" density="compact" placeholder="Email address"
-        prepend-inner-icon="mdi-email-outline" variant="outlined">
-      </v-text-field>
+  <v-text-field
+    v-model="data.email"
+    :error-messages="emailErrors"
+    density="compact"
+    placeholder="Email address"
+    prepend-inner-icon="mdi-email-outline"
+    variant="outlined"
+  />
 
-      <v-btn @click="send" block class="mb-8" color="blue" size="large" variant="tonal">
-        Send Email
-      </v-btn>
+  <v-btn
+    block
+    class="mb-8"
+    color="blue"
+    size="large"
+    variant="tonal"
+    @click="send"
+  >
+    Send Email
+  </v-btn>
 
-      <div class="d-flex justify-center">
-        <a class="text-blue text-decoration-none" @click="goToLogin()">
-          To Login Page<v-icon icon="mdi-chevron-right"></v-icon>
-        </a>
-      </div>
+  <div class="d-flex justify-center">
+    <a
+      class="text-blue text-decoration-none"
+      @click="goToLogin()"
+    >
+      To Login Page<v-icon icon="mdi-chevron-right" />
+    </a>
+  </div>
 </template>
 
-<script setup lang="ts" >
+<script setup lang="ts">
 import { computed, ref, reactive } from 'vue'
 import { useAuthStore } from '../../../scripts/stores/auth'
 import { useNotificationsStore } from '../../../scripts/stores/notifications'
