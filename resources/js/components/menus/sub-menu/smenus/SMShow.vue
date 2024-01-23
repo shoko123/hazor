@@ -9,10 +9,10 @@
     inset
     vertical
   />
-  <Navigator />
+  <NavigateElement />
   <v-spacer />
   <div class="hidden-sm-and-down">
-    <Modifiers />
+    <ModifyButtons />
 
     <v-menu>
       <template #activator="{ props }">
@@ -48,8 +48,8 @@
 import { computed } from 'vue'
 import { useItemStore } from '../../../../scripts/stores/item'
 
-import Navigator from '../elements/Navigator.vue'
-import Modifiers from '../elements/Modifiers.vue'
+import NavigateElement from '../elements/NavigateElement.vue'
+import ModifyButtons from '../elements/ModifyButtons.vue'
 import WelcomeButton from '../elements/WelcomeButton.vue'
 import FilterButton from '../elements/FilterButton.vue'
 import CollectionButton from '../elements/CollectionButton.vue'

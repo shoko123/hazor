@@ -17,10 +17,9 @@
 </template>
 
 <script lang="ts" setup>
-
 import { ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
-
+import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
 import Welcome from './smenus/SMWelcome.vue'
 import WelcomeD from './smenus/SMWelcomeDrawer.vue'
 import Index from './smenus/SMIndex.vue'
@@ -31,27 +30,24 @@ import Show from './smenus/SMShow.vue'
 import ShowD from './smenus/SMShowDrawer.vue'
 import Media from './smenus/SMMedia.vue'
 
-import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
-
 const { current } = storeToRefs(useRoutesMainStore())
-
-let showDrawer = ref<boolean>(false)
+const showDrawer = ref<boolean>(false)
 
 const menu = computed(() => {
-    switch (current.value.name) {
-        case 'welcome':
-            return { elements: Welcome, drawer: WelcomeD }
-        case 'index':
-            return { elements: Index, drawer: IndexD }
-        case 'filter':
-            return { elements: Filter, drawer: FilterD }
-        case 'show':
-            return { elements: Show, drawer: ShowD }
-        case 'media':
-            return { elements: Media, drawer: null }
-        default:
-            null
-    }
+  switch (current.value.name) {
+    case 'welcome':
+      return { elements: Welcome, drawer: WelcomeD }
+    case 'index':
+      return { elements: Index, drawer: IndexD }
+    case 'filter':
+      return { elements: Filter, drawer: FilterD }
+    case 'show':
+      return { elements: Show, drawer: ShowD }
+    case 'media':
+      return { elements: Media, drawer: null }
+    default:
+      return null
+  }
 })
 
 </script>

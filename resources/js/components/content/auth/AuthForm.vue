@@ -30,13 +30,13 @@ import { computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '../../../scripts/stores/auth'
 import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
-import LoginForm from './Login.vue'
+import LoginForm from './LoginForm.vue'
 import LoginDialog from './LoginDialog.vue'
-import RegistrationForm from './Registration.vue'
+import RegistrationForm from './RegistrationForm.vue'
 import RegistrationDialog from './RegistrationDialog.vue'
-import ForgotPassword from './ForgotPassword.vue'
+import ForgotPasswordForm from './ForgotPasswordForm.vue'
 import ForgotPasswordDialog from './ForgotPasswordDialog.vue'
-import ResetPassword from './ResetPassword.vue'
+import ResetPasswordForm from './ResetPasswordForm.vue'
 import ResetPasswordDialog from './ResetPasswordDialog.vue'
 
 const { dialog } = storeToRefs(useAuthStore())
@@ -55,10 +55,10 @@ const parts = computed(() => {
       return { form: RegistrationForm, header: `User Registration Form`, dialogForm: RegistrationDialog }
 
     case 'forgot-password':
-      return { form: ForgotPassword, header: `Forgot Password Form`, dialogForm: ForgotPasswordDialog }
+      return { form: ForgotPasswordForm, header: `Forgot Password Form`, dialogForm: ForgotPasswordDialog }
 
     case 'reset-password':
-      return { form: ResetPassword, header: `Reset Password Form`, dialogForm: ResetPasswordDialog }
+      return { form: ResetPasswordForm, header: `Reset Password Form`, dialogForm: ResetPasswordDialog }
 
     default:
       return null

@@ -111,7 +111,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useFilterStore } from '../../scripts/stores/trio/filter'
 

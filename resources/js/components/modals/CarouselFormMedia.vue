@@ -50,7 +50,7 @@
   <v-card-actions>
     <v-btn
       variant="outlined"
-      @click="goto"
+      @click="backToItem"
     >
       {{ derived.moduleAndTag }}
     </v-btn>
@@ -73,43 +73,7 @@ const item = computed(() => {
   return <TCarouselMedia | null>carouselItemDetails.value
 })
 
-async function download() {
-  downloadFile(<string>item.value?.media.urls.full, <string>item.value?.file_name)
-}
-
-async function goto() {
+async function backToItem() {
   await close()
-}
-
-async function downloadFile(url: string, filename: string) {
-  try {
-    // Fetch the file
-    const response = await fetch(url);
-
-    // Check if the request was successful
-    if (response.status !== 200) {
-      throw new Error(`Unable to download file. HTTP status: ${response.status}`);
-    }
-
-    // Get the Blob data
-    const blob = await response.blob();
-
-    // Create a download link
-    const downloadLink = document.createElement('a');
-    downloadLink.href = URL.createObjectURL(blob);
-    downloadLink.download = filename;
-
-    // Trigger the download
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-
-    // Clean up
-    setTimeout(() => {
-      URL.revokeObjectURL(downloadLink.href);
-      document.body.removeChild(downloadLink);
-    }, 100);
-  } catch (error: any) {
-    console.error('Error downloading the file:', error.message);
-  }
 }
 </script>

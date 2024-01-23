@@ -1,11 +1,11 @@
 <template>
-  <v-list-item @click="toWelcome">
+  <v-list-item @click="goTo('welcome')">
     Welcome
   </v-list-item>
-  <v-list-item @click="toFilter">
+  <v-list-item @click="goTo('filter')">
     Filter
   </v-list-item>
-  <v-list-item @click="toCollection">
+  <v-list-item @click="goTo('index')">
     Collection
   </v-list-item>
   <v-list-item @click="toggle">
@@ -16,30 +16,19 @@
 </template>
 
 <script lang="ts" setup>
-
-import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
+import { type TPageName } from '@/js/types/routesTypes'
 import { useItemStore } from '../../../../scripts/stores/item'
-
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
-import { useCollectionsStore } from '../../../../scripts/stores/collections/collections'
 
 const { routerPush } = useRoutesMainStore()
-const is = useItemStore()
+const { itemViewIndex, itemViews } = storeToRefs(useItemStore())
 
-function toCollection() {
-  routerPush('index')
-}
-
-function toFilter() {
-  routerPush('filter')
-}
-
-function toWelcome() {
-  routerPush('welcome')
+function goTo(pageName: TPageName) {
+  routerPush(pageName)
 }
 
 function toggle() {
-  is.itemViewIndex = (is.itemViewIndex + 1) % is.itemViews.length
+  itemViewIndex.value = (itemViewIndex.value + 1) % itemViews.value.length
 }
-
 </script>

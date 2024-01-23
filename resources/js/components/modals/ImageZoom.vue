@@ -34,48 +34,48 @@ import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 import Zoomy from './zoomy/Zoomy.js'
 
 onMounted(() => {
-    //console.log(`ImageZoom.mount`)
-    if (media.value?.hasMedia) {
-        zm.value = new Zoomy('zoomy', options);
-    } else {
-        zm.value?.detach()
-        zm.value = null
-    }
+  //console.log(`ImageZoom.mount`)
+  if (media.value?.hasMedia) {
+    zm.value = new Zoomy('zoomy', options);
+  } else {
+    zm.value?.detach()
+    zm.value = null
+  }
 })
 
 onBeforeUnmount(() => {
-    //console.log(`ImageZoom.unmount`)
-    zm.value?.detach()
-    zm.value = null
+  //console.log(`ImageZoom.unmount`)
+  zm.value?.detach()
+  zm.value = null
 })
 
 const { carouselItemDetails } = storeToRefs(useCarouselStore())
 
 const media = computed(() => {
-    return carouselItemDetails.value?.media
+  return carouselItemDetails.value?.media
 })
 
 const zm = ref<Zoomy | null>(null)
 
 const options = {
-    zoomUpperConstraint: 8, // Upper limit for zooming (optional)
-    boundaryElementId: 'zoomy-container',
+  zoomUpperConstraint: 8, // Upper limit for zooming (optional)
+  boundaryElementId: 'zoomy-container',
 }
 
 watch(media, () => {
-    //console.log('ImageZoom.media changed')
-    zm.value?.disable()
-    zm.value?.detach()
-    if (media.value?.hasMedia) {
-        zm.value = new Zoomy('zoomy', options)
-    } else {
-        zm.value = null
-    }
+  //console.log('ImageZoom.media changed')
+  zm.value?.disable()
+  zm.value?.detach()
+  if (media.value?.hasMedia) {
+    zm.value = new Zoomy('zoomy', options)
+  } else {
+    zm.value = null
+  }
 })
 
 //isFiller includes a set function as v-overlays requires a modifiable boolean
 const isFiller = computed({
-    get: () => { return !media.value?.hasMedia },
-    set: val => { }
+  get: () => { return !media.value?.hasMedia },
+  set: val => { val }
 })
 </script>

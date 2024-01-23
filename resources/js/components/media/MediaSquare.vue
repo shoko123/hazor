@@ -43,29 +43,30 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import { TCollectionName, TPageMainGallery, TPageRelatedGallery, TPageMediaGallery } from '../../types/collectionTypes'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import MediaOverlay from './MediaOverlay.vue'
 
 const { collection } = useCollectionsStore()
 
-const props = defineProps<{
+const prps = defineProps<{
   source: TCollectionName,
   itemIndex: number,
 }>()
 
 const record = computed(() => {
-  const c = collection(props.source)
-  let indexInPage = props.itemIndex % c.value.meta.itemsPerPage
+  const c = collection(prps.source)
+  let indexInPage = prps.itemIndex % c.value.meta.itemsPerPage
   let record = c.value.page[indexInPage]
   return record
 })
 
 const data = computed(() => {
-  switch (props.source) {
-    case 'main':
-      let ma = record.value as any as TPageMainGallery
+  if(prps.source === 'main') {
+    // const ma = record.value as any as TPageMainGallery
+    const ma = <TPageMainGallery>record.value
+
       return {
         showTag: true,
         tagText: ma.tag,
@@ -73,9 +74,9 @@ const data = computed(() => {
         short: ma.short,
         record: ma
       }
-
-    case 'media':
-      let med = record.value as TPageMediaGallery
+  } else if (prps.source === 'media'){
+    // const med = record.value as TPageMediaGallery
+    const med = <TPageMediaGallery>record.value
       return {
         showTag: false,
         tagText: '',
@@ -83,17 +84,49 @@ const data = computed(() => {
         short: '',
         record: med
       }
-
-    case 'related':
-      let rel = record.value as TPageRelatedGallery
+  } else {
+    // const rel = record.value as TPageRelatedGallery
+    const rel = <TPageRelatedGallery>record.value
       return {
         showTag: true,
         tagText: rel.relation_name,
         urls: rel.media?.urls,
         short: `${rel.module} ${rel.tag}.  ${rel.short}`,
         record: rel
-      }
+      } 
   }
+  // switch (prps.source) {
+  //   case 'main':
+  //     let ma = record.value as any as TPageMainGallery
+  //     return {
+  //       showTag: true,
+  //       tagText: ma.tag,
+  //       urls: ma.media?.urls,
+  //       short: ma.short,
+  //       record: ma
+  //     }
+
+  //   case 'media':
+  //     let med = record.value as TPageMediaGallery
+  //     return {
+  //       showTag: false,
+  //       tagText: '',
+  //       urls: med?.urls,
+  //       short: '',
+  //       record: med
+  //     }
+
+  //   case 'related':
+  //   default:
+  //     let rel = record.value as TPageRelatedGallery
+  //     return {
+  //       showTag: true,
+  //       tagText: rel.relation_name,
+  //       urls: rel.media?.urls,
+  //       short: `${rel.module} ${rel.tag}.  ${rel.short}`,
+  //       record: rel
+  //     }
+  // }
 })
 
 </script>

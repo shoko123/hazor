@@ -16,8 +16,8 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from '../../../scripts/stores/auth'
-import { storeToRefs } from 'pinia'
+// import { useAuthStore } from '../../../scripts/stores/auth'
+// import { storeToRefs } from 'pinia'
 
 </script>
 

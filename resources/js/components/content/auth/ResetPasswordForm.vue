@@ -67,12 +67,11 @@
 
 <script setup lang="ts">
 import { computed, ref, reactive, onMounted } from 'vue'
-import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '../../../scripts/stores/auth'
 import { useNotificationsStore } from '../../../scripts/stores/notifications';
 import { useVuelidate } from "@vuelidate/core"
-import { required, email, minLength, helpers, sameAs, maxValue } from "@vuelidate/validators"
+import { required, email, minLength, helpers, sameAs } from "@vuelidate/validators"
 
 onMounted(() => {
   prefetch()
@@ -138,7 +137,7 @@ async function send() {
     return
   }
 
-  let res = await attemptResetPassword(data)
+  await attemptResetPassword(data)
 }
 
 async function closeTab() {

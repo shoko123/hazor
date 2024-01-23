@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import CollectionForm from "../collections/CollectionForm.vue"
 import { useCollectionMediaStore } from '../../scripts/stores/collections/collectionMedia'

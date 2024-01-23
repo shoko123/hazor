@@ -45,7 +45,7 @@ import StoneForm from '../../modules/stones/StoneForm.vue'
 import FaunaForm from '../../modules/fauna/FaunaForm.vue'
 
 let { array } = storeToRefs(useCollectionMediaStore())
-let { derived, tag } = storeToRefs(useItemStore())
+let { derived } = storeToRefs(useItemStore())
 
 const itemForm = computed<Component | null>(() => {
   switch (derived.value.module) {

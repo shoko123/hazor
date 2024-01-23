@@ -56,5 +56,6 @@ export {
         TFaunaIdParams,
         TFaunaSlugParams,
         TSlugParams,
-        TIdParams
+        TIdParams,
+        TIdParam
 }

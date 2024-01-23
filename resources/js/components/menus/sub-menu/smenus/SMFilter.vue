@@ -11,25 +11,25 @@
     class="primary--text"
     large
     variant="outlined"
-    @click="clear"
+    @click="getCnt"
   >
-    clear
+    Count
   </v-btn>
   <v-btn
     class="primary--text"
     large
     variant="outlined"
-    @click="getCnt"
+    @click="clear"
   >
-    Count
+    clear
   </v-btn>
+
   <div class="hidden-sm-and-down">
     <WelcomeButton />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
@@ -39,11 +39,9 @@ import { useNotificationsStore } from '../../../../scripts/stores/notifications'
 import WelcomeButton from '../elements/WelcomeButton.vue'
 
 const router = useRouter()
-
 const { current } = storeToRefs(useRoutesMainStore())
 const { resetCategoryAndGroupIndices } = useTrioStore()
 const { filtersToQueryObject, clearSelectedFilters, getCount } = useFilterStore()
-
 
 function submit() {
   console.log(`filter.submit()`)
@@ -54,7 +52,6 @@ function submit() {
 
 async function getCnt() {
   const { showSnackbar } = useNotificationsStore()
-
   let cnt = await getCount()
   if (cnt > -1) {
     showSnackbar(`Request count result: ${cnt}`)

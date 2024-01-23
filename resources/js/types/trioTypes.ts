@@ -1,6 +1,4 @@
 // trioTypes.ts
-import { IObject } from '@/js/types/generalTypes'
-
 type TCategory = {
   id: number,
   name: string,

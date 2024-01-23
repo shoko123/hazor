@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useMediaStore } from '@/js/scripts/stores/media'
-const mediaStore = useMediaStore()
-const txt = 'hhh'
+// import { useMediaStore } from '@/js/scripts/stores/media'
+// const mediaStore = useMediaStore()
+// const txt = 'hhh'
 </script>

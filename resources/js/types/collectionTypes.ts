@@ -114,7 +114,7 @@ type TPageRelatedTabular = {
         short: string,
 }
 
-type TPageTabular = TPageMainTabular | TPageRelatedTabular
+//type TPageTabular = TPageMainTabular | TPageRelatedTabular
 
 type TPageMainChips = {
         id: number,

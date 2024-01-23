@@ -21,12 +21,9 @@
 </template>
 
 <script lang="ts" setup>
-
 import { computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
-
 import { useMenusStore } from '../../../scripts/stores/menus'
-
 import Read from './menus/MMRead.vue'
 import ReadDrawer from './menus/MMReadDrawer.vue'
 import Auth from './menus/MMAuth.vue'
@@ -34,22 +31,21 @@ import AuthDrawer from './menus/MMAuthDrawer.vue'
 import Modify from './menus/MMModify.vue'
 import Admin from './menus/MMAdmin.vue'
 
-
 const { mainMenuType } = storeToRefs(useMenusStore())
-
-let showDrawer = ref<boolean>(false)
+const showDrawer = ref<boolean>(false)
 
 const menu = computed(() => {
-    switch (mainMenuType.value) {
-        case 'Read':
-            return { elements: Read, drawer: ReadDrawer, color: 'primary' }
-        case 'Modify':
-            return { elements: Modify, drawer: null, color: 'orange' }
-        case 'Admin':
-            return { elements: Admin, drawer: null, color: 'red' }
-        case 'Auth':
-            return { elements: Auth, drawer: AuthDrawer, color: 'primary' }
-    }
+  switch (mainMenuType.value) {
+    case 'Read':
+      return { elements: Read, drawer: ReadDrawer, color: 'primary' }
+    case 'Modify':
+      return { elements: Modify, drawer: null, color: 'orange' }
+    case 'Admin':
+      return { elements: Admin, drawer: null, color: 'red' }
+    case 'Auth':
+    default:
+      return { elements: Auth, drawer: AuthDrawer, color: 'primary' }
+  }
 })
 </script>
 

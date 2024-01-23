@@ -3,7 +3,7 @@
   <v-app>
     <Snackbar />
     <LoadingSpinner />
-    <Menus />
+    <MenusBoth />
     <v-main>
       <router-view />
     </v-main>
@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import { onBeforeUnmount } from 'vue'
-import Menus from './menus/Menus.vue'
+import MenusBoth from './menus/MenusBoth.vue'
 import Snackbar from './notifications/snackbar.vue'
 import LoadingSpinner from './notifications/loadingSpinner.vue'
 import Modal from './modals/Modal.vue'

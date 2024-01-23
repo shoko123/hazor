@@ -52,9 +52,9 @@ function switchMedia(withLeft: boolean) {
   cm.switchArrayItems(props.itemIndex, withLeft ? props.itemIndex - 1 : props.itemIndex + 1)
 }
 
-function edit() {
-  console.log(`edit${5}`)
-}
+// function edit() {
+//   //TODO edit media text
+// }
 
 function deleteMedia() {
   if (!confirm("Are you sure you want to delete this media item?")) { return }

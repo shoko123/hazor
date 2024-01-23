@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, reactive } from 'vue'
+import { computed, reactive } from 'vue'
 import { useAuthStore } from '../../../scripts/stores/auth'
 import { useNotificationsStore } from '../../../scripts/stores/notifications'
 
@@ -69,7 +69,7 @@ async function send() {
     return
   }
 
-  let res = await attemptForgotPassword(data)
+  await attemptForgotPassword(data)
 }
 
 function goToLogin() {

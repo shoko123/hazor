@@ -41,6 +41,7 @@ const overlay = computed(() => {
     case 'media':
       return current.value.name === 'media' ? OverlayMediaEdit : OverlayCMedia
     case 'related':
+    default:
       return OverlayRelated
   }
 })

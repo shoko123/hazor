@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useTrioStore } from '../../scripts/stores/trio/trio'
 
 let trio = useTrioStore()
@@ -37,7 +37,7 @@ const selectedParamIndexes = computed({
     })
     return selected
   },
-  set: val => { }
+  set: val => { val }
 })
 
 function paramClicked(paramIndex: number) {

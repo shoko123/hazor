@@ -63,21 +63,21 @@ export default class Zoomy {
 	 */
 	constructor(elementId, options) {
 		this.el = document.getElementById(elementId);
-		this.options = {...options };
+		this.options = { ...options };
 		this.boxEl = this.options.boundaryElementId ? document.getElementById(this.options.boundaryElementId) : document.body;
 		this.options.zoomUpperConstraint ||= 4;
 		var fn = this.handleMouseEvents.bind(this);
 		if (this.boxEl) {
-			this.boxEl.addEventListener('wheel', fn, {passive: false});
+			this.boxEl.addEventListener('wheel', fn, { passive: false });
 		} else {
-			this.el.addEventListener('wheel', fn, {passive: false});
+			this.el.addEventListener('wheel', fn, { passive: false });
 		}
 
-		this.el.addEventListener('mousedown', fn, {passive: false});
+		this.el.addEventListener('mousedown', fn, { passive: false });
 
 		['mousemove', 'mouseup', 'mouseout'].forEach(
 			event => {
-				document.addEventListener(event, fn, {passive: false});
+				document.addEventListener(event, fn, { passive: false });
 			}
 		);
 	}
@@ -113,17 +113,17 @@ export default class Zoomy {
 
 		if (this.isDragging) {
 			var newLeft = currentLeft + (currentMouseX - this.lastMouseX),
-			newRight = currentRight + (currentMouseX - this.lastMouseX),
-			newTop = currentTop + (currentMouseY - this.lastMouseY),
-			newBottom = currentBottom + (currentMouseY - this.lastMouseY),
-			heightInsideCanvas = (img.top >= box.top && img.bottom <= box.bottom),
-		    widthInsideCanvas = (img.left >= box.left && img.right <= box.right);
+				newRight = currentRight + (currentMouseX - this.lastMouseX),
+				newTop = currentTop + (currentMouseY - this.lastMouseY),
+				newBottom = currentBottom + (currentMouseY - this.lastMouseY),
+				heightInsideCanvas = (img.top >= box.top && img.bottom <= box.bottom),
+				widthInsideCanvas = (img.left >= box.left && img.right <= box.right);
 
 			//flag to check if image can freely be moves on the x-axis(horizontally)
 			var freeX = (
-					img.width > box.width || // image overflows canvas
-					!widthInsideCanvas // or simply positioned off canvas
-				) &&
+				img.width > box.width || // image overflows canvas
+				!widthInsideCanvas // or simply positioned off canvas
+			) &&
 				!(
 					(newLeft < box.left && //hard left wall
 						(
@@ -197,7 +197,7 @@ export default class Zoomy {
 						diffY = imgCenterY - boxCenterY,
 						scaleDiff = 1 - currentScale,
 						//ratio of distance to scaling
-					    adjustedDiffX = diffX / scaleDiff,
+						adjustedDiffX = diffX / scaleDiff,
 						adjustedDiffY = diffY / scaleDiff;
 
 					//adjust dhe difference based on how much we are shrinking, so that for every shrinkage the
@@ -216,14 +216,14 @@ export default class Zoomy {
 
 				if (isShrinking) {
 					var newWidth = this.el.offsetWidth * newScale,
-					widthShrankBy = newWidth - img.width,
-					oneSideWidthShrankBy = widthShrankBy / 2,
-					newHeight = this.el.offsetHeight * newScale,
-					heightShrankBy = newHeight - img.height,
-					oneSideHeightShrankBy = heightShrankBy / 2,
-					horizontalMove = moveXBy - oneSideWidthShrankBy,
-					verticalMove = moveYBy - oneSideHeightShrankBy,
-					visualMargin = 10;
+						widthShrankBy = newWidth - img.width,
+						oneSideWidthShrankBy = widthShrankBy / 2,
+						newHeight = this.el.offsetHeight * newScale,
+						heightShrankBy = newHeight - img.height,
+						oneSideHeightShrankBy = heightShrankBy / 2,
+						horizontalMove = moveXBy - oneSideWidthShrankBy,
+						verticalMove = moveYBy - oneSideHeightShrankBy,
+						visualMargin = 10;
 
 					newLeft = currentLeft + horizontalMove;
 					newRight = newLeft + newWidth;
@@ -315,13 +315,13 @@ export default class Zoomy {
 		m.translateY += moveYBy;
 		m.scaleX += enlargeOrShrinkBy;
 		m.scaleY += enlargeOrShrinkBy;
-		this.el.style.transform = 'matrix('+Object.values(m).join(', ')+')';
+		this.el.style.transform = 'matrix(' + Object.values(m).join(', ') + ')';
 	}
 
 	/**
 	 * This method removes the event listeners from the instance element of the class.
 	 */
-	detach(){
+	detach() {
 		if (this.boxEl) {
 			this.boxEl.removeEventListener('wheel', this.handleMouseEvents);
 		} else {
@@ -340,15 +340,15 @@ export default class Zoomy {
 	/**
 	 * This method enables the instance of the class
 	 */
-	enable(){
+	enable() {
 		this.enabled = true;
 	}
 
 	/**
 	 * This method disables the instance of the class
 	 */
-	disable(){
-		this.enabled  = false;
+	disable() {
+		this.enabled = false;
 	}
 
 	/**
@@ -357,7 +357,7 @@ export default class Zoomy {
 	 * @return {boolean}
 	 */
 	handleMouseEvents(e) {
-		if(!this.enabled){
+		if (!this.enabled) {
 			return false;
 		}
 

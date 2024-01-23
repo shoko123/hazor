@@ -80,15 +80,11 @@
 
 <script setup lang="ts">
 import { computed, ref, reactive } from 'vue'
-import { storeToRefs } from 'pinia'
 import { useAuthStore } from '../../../scripts/stores/auth'
 import { useNotificationsStore } from '../../../scripts/stores/notifications';
-import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
-
 
 let { showSnackbar } = useNotificationsStore()
 let { attemptRegister, resetAndGoTo } = useAuthStore()
-let { routerPush } = useRoutesMainStore()
 
 import { useVuelidate } from "@vuelidate/core"
 import { required, email, minLength, maxLength, helpers, sameAs, } from "@vuelidate/validators"
@@ -143,7 +139,7 @@ async function register1() {
     console.log(`validation errors: ${JSON.stringify(v$.value.$errors, null, 2)} silent: ${JSON.stringify(v$.value.$silentErrors, null, 2)}`)
     return
   }
-  let res = await attemptRegister(data)
+  await attemptRegister(data)
 }
 
 function goToLogin() {

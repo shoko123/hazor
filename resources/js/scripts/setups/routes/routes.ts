@@ -9,7 +9,7 @@ const routes = [
   },
   {
     path: '/:module(admin)/dashboard',
-    component: () => import('@/components/content/admin/Dashboard.vue'),
+    component: () => import('@/components/content/admin/DashboardPage.vue'),
     name: 'dashboard'
   },
   {
@@ -19,22 +19,22 @@ const routes = [
   },
   {
     path: '/:module(auth)/login',
-    component: () => import('@/components/content/auth/AuthMain.vue'),
+    component: () => import('@/components/content/auth/AuthPage.vue'),
     name: 'login',
   },
   {
     path: '/:module(auth)/register',
-    component: () => import('@/components/content/auth/AuthMain.vue'),
+    component: () => import('@/components/content/auth/AuthPage.vue'),
     name: 'register',
   },
   {
     path: '/:module(auth)/forgot-password',
-    component: () => import('@/components/content/auth/AuthMain.vue'),
+    component: () => import('@/components/content/auth/AuthPage.vue'),
     name: 'forgot-password',
   },  
   {
     path: '/:module(auth)/reset-password/:slug',
-    component: () => import('@/components/content/auth/AuthMain.vue'),
+    component: () => import('@/components/content/auth/AuthPage.vue'),
     name: 'reset-password',
   },  
   {
