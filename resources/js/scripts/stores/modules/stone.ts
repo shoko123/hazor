@@ -1,10 +1,10 @@
 import { computed } from 'vue'
 import { defineStore } from 'pinia'
 import { TStoneFields, TFields } from '@/js/types/moduleFieldsTypes'
-import { TStoneSlugParams, TStoneIdParams } from '@/js/types/moduleIdParamsTypes'
 import { TParseSlugResponse } from '@/js/types/routesTypes'
-export const useStoneStore = defineStore('stone', () => {
 
+export const useStoneStore = defineStore('stone', () => {
+  
   function slugParamsFromSlug(slug: string): TParseSlugResponse {
     const arr = slug.split('.');
     if (arr.length === 1) {
@@ -47,7 +47,7 @@ export const useStoneStore = defineStore('stone', () => {
       { title: 'Locus', align: 'start', key: 'locus' },
       { title: 'Year', align: 'end', key: 'year' },
       { title: 'Type', align: 'start', key: 'type' },
-      { title: 'Description', key: 'description',align: 'start',  sortable: false, },
+      { title: 'Description', key: 'description', align: 'start', sortable: false, },
       { title: 'Base Type', align: 'start', key: 'base_type' },
       { title: 'Material Code', align: 'start', key: 'material_code' },
       { title: 'Material', align: 'start', key: 'material' },
@@ -57,7 +57,7 @@ export const useStoneStore = defineStore('stone', () => {
       { title: 'Date', align: 'end', key: 'date' },
     ]
   })
- 
+
   return {
     beforeStore,
     slugParamsFromSlug,

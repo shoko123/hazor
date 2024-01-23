@@ -1,6 +1,3 @@
-import IndexPage from '@/components/content/IndexPage.vue'
-import NotFound from '@/components/routes/NotFound.vue'
-
 const routes = [
   {
     path: '/',
@@ -14,7 +11,7 @@ const routes = [
   },
   {
     path: '/:module(admin)/:catchAll(.*)',
-    component: NotFound,
+    component: () => import('@/components/routes/NotFound.vue'),    
     name: 'not-found-admin'
   },
   {
@@ -39,13 +36,13 @@ const routes = [
   },  
   {
     path: "/:module(auth)/:catchAll(.*)",
-    component: NotFound,
+    component: () => import('@/components/routes/NotFound.vue'),    
     name: 'not-found'
   },
   //dig modules ( loci, stones, etc...)
   {
     path: '/:module',
-    component: IndexPage,
+    component: () => import('@/components/content/IndexPage.vue'),    
     name: 'index'
   },
   {
@@ -88,7 +85,7 @@ const routes = [
   },
   {
     path: "/:module/:slug/:catchAll(.*)",
-    component: NotFound,
+    component: () => import('@/components/routes/NotFound.vue'),    
     name: "not-found-item-action",
   },
 ]

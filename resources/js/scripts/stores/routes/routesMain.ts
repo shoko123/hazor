@@ -1,10 +1,10 @@
 // routesStore.js
 //handles the entire routing mechanism - parsing, loading resources, error handling
 
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useRouter, type LocationQueryRaw, type RouteLocationNormalized, type RouteLocationRaw } from 'vue-router'
-import type { TParseModuleData, TRouteInfo, TPageName, TParseErrorDetails, TPlanAction, TPrepareError, TModule, TUrlModule } from '../../../types/routesTypes';
+import type { TParseModuleData, TRouteInfo, TPageName, TParseErrorDetails, TPlanAction, TPrepareError, TModule } from '../../../types/routesTypes';
 
 import { useRoutesParserStore } from './routesParser'
 import { useRoutesPlanTransitionStore } from './routesPlanTransition'

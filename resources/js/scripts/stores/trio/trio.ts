@@ -1,7 +1,7 @@
 // stores/trio.js
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
-import type { TGroupTag, TGroupsWithDependency, Trio, TrioSourceName, TmpGroup, TGroupValue, TColumnValueUpdateInfo } from '../../../types/trioTypes'
+import type { TGroupTag, TGroupsWithDependency, Trio } from '../../../types/trioTypes'
 import normalizeTrio from './trioNormalizer'
 import { useFilterStore } from './filter'
 import { useTaggerStore } from './tagger'
@@ -77,7 +77,7 @@ export const useTrioStore = defineStore('trio', () => {
 
   const availableGroupsKeys = computed(() => {
     const agk = []
-    for (const [key, value] of Object.entries(trio.value.entities.groups)) {
+    for (const [key] of Object.entries(trio.value.entities.groups)) {
       if (groupIsAvailable(key)) {
         agk.push(key)
       }
@@ -270,6 +270,8 @@ export const useTrioStore = defineStore('trio', () => {
     //step 1 - collect all affected groups by unselecting this param
     const groupsToBeUnselectable: TGroupsWithDependency[] = []
     for (const [key, value] of Object.entries(trio.value.entities.groups)) {
+      key//make eslint happy
+      
       //only Tag groups may be dependent
       if (!["TG", "TM", "CL"].includes(value.group_type_code)) {
         continue

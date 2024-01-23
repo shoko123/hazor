@@ -1,19 +1,17 @@
 // stores/trio.js
+import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { ref, computed } from 'vue'
-import type { TGroupTag, TGroup, Trio, TrioSourceName, TmpGroup, TGroupValue, TColumnValueUpdateInfo } from '../../../types/trioTypes'
+import type { TGroupValue, TColumnValueUpdateInfo } from '../../../types/trioTypes'
 import type { IObject } from '../../../types/generalTypes'
+import type { TFields } from '@/js/types/moduleFieldsTypes'
 import { useXhrStore } from '../xhr'
 import { useItemStore } from '../item'
 import { useTrioStore } from './trio'
 import { useRoutesMainStore } from '../routes/routesMain'
-import { TFields } from '@/js/types/moduleFieldsTypes'
-
 
 export const useTaggerStore = defineStore('tagger', () => {
   const trio = useTrioStore()
   const { fields, selectedItemParams } = storeToRefs(useItemStore())
-
   const selectedNewItemParams = ref<string[]>([])
 
   function copyCurrentToNew() {

@@ -1,7 +1,7 @@
 // routesPlanTransition.ts
 //decide on action needed before transitioning to a new route
-import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
-import type { TRouteInfo, TPlanResponse, TPlanError, TPlanAction } from '../../../types/routesTypes'
+import type { RouteLocationNormalized } from 'vue-router'
+import type {  TPlanResponse } from '../../../types/routesTypes'
 import { defineStore } from 'pinia'
 
 export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', () => {

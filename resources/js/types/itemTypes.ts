@@ -6,8 +6,8 @@ import { TFields } from "./moduleFieldsTypes"
 
 type TApiItemShow = {
         fields: TFields,
-        model_tags: any[],
-        global_tags: any[],
+        model_tags: object[],
+        global_tags: object[],
         media: TApiArrayMedia[],
         related: TApiArrayRelated[],
         slug: string,

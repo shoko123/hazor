@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
 
 type TXhrMethod = "get" | "put" | "post" | "delete"
 
@@ -28,18 +27,20 @@ export const useXhrStore = defineStore('xhr', () => {
     return axios({
       url: fullUrl,
       method,
-      data: (typeof data === undefined) ? null : data
+      data: (data === undefined) ? null : data
     })
       .then(res => {
         //console.log(`xhr success. res: ${JSON.stringify(res, null, 2)}`); 
         return res;
       })
       .catch(err => {
-        consoleLogErrors(err)
+        //consoleLogErrors(err)
+        console.log(`**** axios.err ****\n${JSON.stringify(err, null, 2)}`);
         throw err
       });
   }
 
+  /*
   async function consoleLogErrors(err: any) {
     // The request was made and the server responded with a status code
     // that falls out of the range of 2xx
@@ -55,6 +56,6 @@ export const useXhrStore = defineStore('xhr', () => {
     }
     //console.log(`axios.config: ${JSON.stringify(err.config, null, 2)}`);
   }
-
+*/
   return { setAxios, send }
 })

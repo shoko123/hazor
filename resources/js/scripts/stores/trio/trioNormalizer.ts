@@ -14,10 +14,10 @@ export default function normalizeTrio(res: object): Trio {
   } as Trio
 
   const ParamSchema = new schema.Entity('params', {}, {
-    idAttribute: (value, parent, key) => {
+    idAttribute: (value, parent) => {
       return `${parent.group_name}.${value.name}`
     },
-    processStrategy: (value, parent, key) => {
+    processStrategy: (value, parent) => {
       const param = {
         ...value,
         paramKey: `${parent.group_name}.${value.name}`,
@@ -31,10 +31,10 @@ export default function normalizeTrio(res: object): Trio {
   });
 
   const GroupSchema = new schema.Entity('groups', { params: [ParamSchema], }, {
-    idAttribute: (value, parent, key) => {
+    idAttribute: (value) => {
       return value.group_name
     },
-    processStrategy: (value, parent, key) => {
+    processStrategy: (value, parent) => {
       return {
         ...value, categoryKey: parent.name
       };
@@ -44,8 +44,8 @@ export default function normalizeTrio(res: object): Trio {
   const categorySchema = new schema.Entity('categories', {
     groups: [GroupSchema]
   }, {
-    idAttribute: (value, parent, key) => `${value.name}`,
-    processStrategy: (value, parent, key) => {
+    idAttribute: (value) => `${value.name}`,
+    processStrategy: (value) => {
       return {
         groups: value.groups,
         name: value.name

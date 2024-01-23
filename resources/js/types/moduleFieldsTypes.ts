@@ -17,8 +17,6 @@ type TLocusModify = keyof Pick<TLocusFields, 'id' | 'name' | 'area' | 'locus_no'
 type TLocusLookup = keyof Pick<TLocusFields, 'id' >
 
 type TLocusField = keyof TLocusFields
-type TLocusModifyFields = keyof TLocusModify
-type TLocusLookupFields = keyof TLocusLookup
 
 
 type TStoneFields = {
@@ -45,8 +43,6 @@ type TStoneModify = keyof Pick<TStoneFields, 'id' | 'area' | 'locus' |'basket' |
 type TStoneLookup = keyof Pick<TStoneFields, 'id' |'material_id' | 'base_type_id' >
 
 type TStoneField = keyof TStoneFields
-type TStoneModifyFields = keyof TStoneModify
-type TStoneLookupFields = keyof TStoneLookup
 
 type TFaunaFields = {
         id: number,
@@ -80,8 +76,6 @@ type TFaunaModify = keyof Pick<TFaunaFields, 'id' | 'area' | 'locus' | 'basket' 
 type TFaunaLookup = keyof Pick<TFaunaFields, 'id' | 'base_taxon_id' | 'scope_id' | 'material_id' | 'symmetry_id' | 'fusion_proximal_id' | 'fusion_distal_id'>
 
 type TFaunaField = keyof TFaunaFields
-type TFaunaModifyField = keyof TFaunaModify
-type TFaunaLookupField = keyof TFaunaLookup
 
 type TFields = TLocusFields | TStoneFields | TFaunaFields
 type TModify = TLocusModify | TStoneModify | TFaunaModify

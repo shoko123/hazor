@@ -6,11 +6,10 @@
 //activities (e.g. clear, copy current -> new,), before
 //proceeding to the new route.
 
-import type { TRouteInfo, TPlanAction, TPrepareResponse, TModule, TParseSlugData, TParseQueryData, TParseErrorDetails } from '@/js/types/routesTypes'
-import type { RouteLocationNormalized, RouteLocationRaw, LocationQuery } from 'vue-router'
-import { TLocusFields, TStoneFields, TFaunaFields, } from '@/js/types/moduleFieldsTypes'
+import type {  TPlanAction, TPrepareResponse, TModule, TParseQueryData, TParseErrorDetails } from '@/js/types/routesTypes'
+import type { LocationQuery } from 'vue-router'
 import { ref } from 'vue'
-import { defineStore, storeToRefs } from 'pinia'
+import { defineStore } from 'pinia'
 import { useXhrStore } from '../xhr'
 import { useTrioStore } from '../trio/trio'
 import { useFilterStore } from '../trio/filter'
@@ -41,7 +40,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     for (const x of plan) {
       switch (x) {
         case 'module.load':
-          await loadModule(module).catch(err => {
+          await loadModule(module).catch(() => {
             throw 'ModuleInitError'
           })
           break
@@ -51,7 +50,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'collection.item.load':
-          await loadCollectionAndItem(module, query, slug).catch(err => {
+          await loadCollectionAndItem(module, query, slug).catch(() => {
             throw "LoadCollectionAndItemFError"
           })
           break
@@ -72,7 +71,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'item.load':
-          await loadItem(module, slug).catch(err => {
+          await loadItem(module, slug).catch(() => {
             throw 'ItemLoadError'
           })
           break
@@ -145,12 +144,12 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     n.showSpinner(`Loading Module ${module} ...`)
     console.log(`prepare.loadCollectionAndItem()`)
 
-    const [col, item] = await Promise.all([
+    await Promise.all([
       loadMainCollection(module, query),
       loadItem(module, slug)
     ])
       .catch(err => {
-        throw err;
+        throw err
       });
     //console.log(`loadCollectionAndItem done!`)
   }
