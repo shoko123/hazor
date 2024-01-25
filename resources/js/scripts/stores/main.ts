@@ -1,11 +1,8 @@
-// app.js
-
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useXhrStore } from './xhr'
 import { useAuthStore } from './auth'
 import { useMediaStore } from './media'
-import { useCollectionsStore } from './collections/collections'
 
 export const useMainStore = defineStore('main', () => {
   const { initMedia } = useMediaStore()
@@ -15,7 +12,6 @@ export const useMainStore = defineStore('main', () => {
   const initialized = ref(false)
 
   async function appInit() {
-
     return send('app/init', 'get')
       .then(res => {
         console.log(`app.init() Setting basic configs: ${JSON.stringify(res.data, null, 2)}`)
@@ -29,7 +25,6 @@ export const useMainStore = defineStore('main', () => {
       })
   }
   
-
   return { initialized, appInit }
 })
 

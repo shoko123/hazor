@@ -2,23 +2,19 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
 import { TModule } from '../../types/routesTypes'
-import { TColumnName, TFields } from '../../types/moduleFieldsTypes'
-
+import { TColumnName } from '../../types/moduleFieldsTypes'
 import { useMediaStore } from './media'
 import { useRoutesMainStore } from './routes/routesMain'
-import { useItemStore } from './item'
 import { useLocusStore } from './modules/locus'
 import { useStoneStore } from './modules/stone'
 import { useFaunaStore } from './modules/fauna'
 
 export const useModuleStore = defineStore('module', () => {
-
   const { bucketUrl } = storeToRefs(useMediaStore())
   const { current } = storeToRefs(useRoutesMainStore())
-
   const counts = ref({ items: 0, media: 0 })
-  const lookups =  ref<{column_name: TColumnName, group_name: string}[]>([])
-  const welcomeText =  ref<string>("")
+  const lookups = ref<{ column_name: TColumnName, group_name: string }[]>([])
+  const welcomeText = ref<string>("")
 
   const backgroundImage = computed(() => {
     const module = current.value.module
@@ -38,13 +34,9 @@ export const useModuleStore = defineStore('module', () => {
     switch (module) {
       case 'Locus':
         return useLocusStore()
-
       case 'Stone':
         return useStoneStore()
-
       case 'Fauna':
-        return useFaunaStore()
-
       default:
         return useFaunaStore()
     }

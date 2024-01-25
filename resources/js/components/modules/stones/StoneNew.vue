@@ -139,7 +139,7 @@
     <slot
       :id="data.id"
       name="data"
-      :v$="v$"
+      :v="v"
       :data="data"
     />
   </v-container>
@@ -148,10 +148,10 @@
 <script lang="ts" setup>
 import { useTrioStore } from '../../../scripts/stores/trio/trio'
 import { TStoneFields } from '@/js/types/moduleFieldsTypes'
-import { onMounted, reactive, computed, ref } from "vue"
+import { onMounted, reactive, computed } from "vue"
 import { storeToRefs } from 'pinia'
 import { useVuelidate } from "@vuelidate/core"
-import { required, numeric, minLength, maxLength, minValue, maxValue } from "@vuelidate/validators"
+import { required, numeric, maxLength, minValue, maxValue } from "@vuelidate/validators"
 import { useItemStore } from '../../../scripts/stores/item'
 
 
@@ -216,55 +216,55 @@ const rules = computed(() => {
   }
 })
 
-const v$ = useVuelidate(rules, data)
+const v = useVuelidate(rules, data)
 
 const locusErrors = computed(() => {
-  return <string>(v$.value.locus.$error ? v$.value.locus.$errors[0].$message : undefined)
+  return <string>(v.value.locus.$error ? v.value.locus.$errors[0].$message : undefined)
 })
 
 const basketErrors = computed(() => {
-  return <string>(v$.value.basket.$error ? v$.value.basket.$errors[0].$message : undefined)
+  return <string>(v.value.basket.$error ? v.value.basket.$errors[0].$message : undefined)
 })
 
 const stone_noErrors = computed(() => {
-  return <string>(v$.value.stone_no.$error ? v$.value.stone_no.$errors[0].$message : undefined)
+  return <string>(v.value.stone_no.$error ? v.value.stone_no.$errors[0].$message : undefined)
 })
 
 const yearErrors = computed(() => {
-  return <string>(v$.value.year.$error ? v$.value.year.$errors[0].$message : undefined)
+  return <string>(v.value.year.$error ? v.value.year.$errors[0].$message : undefined)
 })
 const dateErrors = computed(() => {
-  return <string>(v$.value.date.$error ? v$.value.date.$errors[0].$message : undefined)
+  return <string>(v.value.date.$error ? v.value.date.$errors[0].$message : undefined)
 })
 
 const typeErrors = computed(() => {
-  return <string>(v$.value.type.$error ? v$.value.type.$errors[0].$message : undefined)
+  return <string>(v.value.type.$error ? v.value.type.$errors[0].$message : undefined)
 })
 
 const material_codeErrors = computed(() => {
-  return <string>(v$.value.material_code.$error ? v$.value.material_code.$errors[0].$message : undefined)
+  return <string>(v.value.material_code.$error ? v.value.material_code.$errors[0].$message : undefined)
 })
 const provErrors = computed(() => {
-  return <string>(v$.value.prov_notes.$error ? v$.value.prov_notes.$errors[0].$message : undefined)
+  return <string>(v.value.prov_notes.$error ? v.value.prov_notes.$errors[0].$message : undefined)
 })
 
 const descriptionErrors = computed(() => {
-  return <string>(v$.value.description.$error ? v$.value.description.$errors[0].$message : undefined)
+  return <string>(v.value.description.$error ? v.value.description.$errors[0].$message : undefined)
 })
 
 const notesErrors = computed(() => {
-  return <string>(v$.value.notes.$error ? v$.value.notes.$errors[0].$message : undefined)
+  return <string>(v.value.notes.$error ? v.value.notes.$errors[0].$message : undefined)
 })
 
 const publicationErrors = computed(() => {
-  return <string>(v$.value.publication.$error ? v$.value.publication.$errors[0].$message : undefined)
+  return <string>(v.value.publication.$error ? v.value.publication.$errors[0].$message : undefined)
 })
 
 const dimensionsErrors = computed(() => {
-  return <string>(v$.value.dimensions.$error ? v$.value.dimensions.$errors[0].$message : undefined)
+  return <string>(v.value.dimensions.$error ? v.value.dimensions.$errors[0].$message : undefined)
 })
 
 const rim_diameterErrors = computed(() => {
-  return <string>(v$.value.rim_diameter.$error ? v$.value.rim_diameter.$errors[0].$message : undefined)
+  return <string>(v.value.rim_diameter.$error ? v.value.rim_diameter.$errors[0].$message : undefined)
 })
 </script>

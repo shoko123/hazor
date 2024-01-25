@@ -1,7 +1,7 @@
 // collection.ts
 //handles all collections and loading of pages
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { TCollectionName, TCollectionMeta, TApiArray, TCView, TCollectionView } from '@/js/types/collectionTypes'
 import { TModule } from '../../../types/routesTypes'
 import { useXhrStore } from '../xhr'
@@ -18,7 +18,6 @@ export const useCollectionsStore = defineStore('collections', () => {
         switch (source) {
             case 'main':
                 return useCollectionMainStore()
-
             case 'media':
                 return useCollectionMediaStore()
             case 'related':
@@ -146,7 +145,7 @@ export const useCollectionsStore = defineStore('collections', () => {
                 //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
                 return res.data.slug
             })
-            .catch(err => {
+            .catch(() => {
                 console.log(`firstSlug() failed`)
                 return false
             })

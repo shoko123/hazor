@@ -85,7 +85,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useTrioStore } from '../../scripts/stores/trio/trio'
 import { useTaggerStore } from '../../scripts/stores/trio/tagger'
@@ -132,7 +132,7 @@ const selectedParams = computed({
     })
     return selected
   },
-  set: val => { }
+  set: val => { val }
 })
 
 function pClicked(paramIndex: number) {
@@ -140,7 +140,7 @@ function pClicked(paramIndex: number) {
 }
 
 async function submit() {
-  await sync().catch(err => {
+  await sync().catch(() => {
     console.log(`***** Sync failed *****`)
   })
   resetCategoryAndGroupIndices()
@@ -148,7 +148,7 @@ async function submit() {
   routerPush('back1')
 }
 
-function cancel(paramIndex: number) {
+function cancel() {
   console.log(`cancelClicked`)
   resetCategoryAndGroupIndices()
   clearSelectedNewItemParams()

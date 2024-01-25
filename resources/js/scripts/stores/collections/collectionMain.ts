@@ -1,10 +1,9 @@
 // collection.ts
 //handles all collections and loading of pages
-import { defineStore, storeToRefs } from 'pinia'
+import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { TCollectionExtra, TApiArray, TApiArrayMain, TApiPageMainGallery, TApiPageMainTabular, TItemsPerView, TCView, TApiPage, TCollectionView, TPageMainGallery, TPageMain, TPageMainChips } from '@/js/types/collectionTypes'
 import { TModule } from '../../../types/routesTypes'
-import { useCollectionsStore } from './collections'
 import { useModuleStore } from '../module'
 import { useXhrStore } from '../xhr'
 import { useMediaStore } from '../media'
@@ -15,7 +14,6 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     const { showSnackbar } = useNotificationsStore()
     const { buildMedia } = useMediaStore()
     const { tagFromSlug } = useModuleStore()
-    const c = useCollectionsStore()
 
     const itemsPerView  = <TItemsPerView> { Gallery: 36, Tabular: 500, Chips: 200 }
 

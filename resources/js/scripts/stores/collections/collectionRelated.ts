@@ -4,16 +4,11 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { TModule } from '../../../types/routesTypes'
 import { TCollectionExtra, TCollectionView, TItemsPerView, TApiArrayRelated, TCView, TApiArray, TPageRelatedGallery, TPageRelatedChips, TPageRelatedTabular } from '@/js/types/collectionTypes'
-import { useCollectionsStore } from './collections'
-import { useXhrStore } from '../xhr'
 import { useMediaStore } from '../media'
-import { useNotificationsStore } from '../notifications'
 import { useModuleStore } from '../module'
 
 export const useCollectionRelatedStore = defineStore('collectionRelated', () => {
-
     const { buildMedia } = useMediaStore()
-    const c = useCollectionsStore()
     const { tagFromSlug } = useModuleStore()
 
     const itemsPerView  = <TItemsPerView> { Gallery: 36, Tabular: 100, Chips: 200 }
@@ -49,7 +44,6 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
         switch (extra.value.views[extra.value.viewIndex].name) {
             case "Tabular":
                 res = slice.map(x => {
-                    const media = buildMedia(x.media, x.module)
                     return {
                         relation_name: x.relation_name,
                         module: x.module,
@@ -88,7 +82,6 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
                 })
                 break
         }
-
         return res
     })
 
@@ -111,6 +104,8 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
 
     async function loadPage(pageNoB1: number, view: TCView, module: TModule): Promise<boolean> {
         //related page is a sub-array of array, determined by computed(array, pageNoB1). So, just set pageNoB1
+        view
+        module
         extra.value.pageNoB1 = pageNoB1
         return true
     }

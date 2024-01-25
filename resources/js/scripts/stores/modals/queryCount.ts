@@ -1,8 +1,6 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { useModuleStore } from '../module'
-
 
 export const useQueryCountStore = defineStore('qcount', () => {
 

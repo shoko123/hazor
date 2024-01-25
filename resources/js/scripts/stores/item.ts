@@ -1,7 +1,7 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TColumnName, TFields } from '@/js/types/moduleFieldsTypes'
+import type { TFields } from '@/js/types/moduleFieldsTypes'
 import type { TApiItemShow } from '@/js/types/itemTypes'
 import type { TApiArrayMain } from '@/js/types/collectionTypes'
 import type { IObject } from '@/js/types/generalTypes'
@@ -16,7 +16,7 @@ import { useNotificationsStore } from './notifications'
 
 export const useItemStore = defineStore('item', () => {
   const { pushToArray } = useCollectionMainStore()
-  const { current, to } = storeToRefs(useRoutesMainStore())
+  const { current } = storeToRefs(useRoutesMainStore())
   const { collection, itemByIndex, itemIndexById, next } = useCollectionsStore()
   const moduleStore = useModuleStore()
   const { setItemMedia } = useMediaStore()
@@ -66,8 +66,9 @@ export const useItemStore = defineStore('item', () => {
     short.value = apiItem.short
     tag.value = moduleStore.tagFromSlug(current.value.module, apiItem.slug)
 
-    const selectedLookups =  moduleStore.lookups.map(x => {
-      return getParamKeyByGroupAndId(x.group_name, fieldsObj[x.column_name])}   
+    const selectedLookups = moduleStore.lookups.map(x => {
+      return getParamKeyByGroupAndId(x.group_name, fieldsObj[x.column_name])
+    }
     )
 
     //console.log(`saveitemFieldsPlus() selectedLookups:\n${selectedLookups}`)

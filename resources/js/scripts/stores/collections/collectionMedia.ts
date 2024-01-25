@@ -4,12 +4,10 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { TModule } from '../../../types/routesTypes'
 import { TCollectionExtra, TCView, TApiArrayMedia, TApiArray, TCollectionView, TPageMediaGallery } from '@/js/types/collectionTypes'
-import { useCollectionsStore } from './collections'
 import { useMediaStore } from '../media'
 
 export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     const { buildMedia } = useMediaStore()
-    const c = useCollectionsStore()
 
     const extra = ref<TCollectionExtra>({
         length: 0,
@@ -52,6 +50,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     }
 
     function setCollectionViews(views: TCollectionView[]) {
+        views
         //The media collection has only one view (Gallery) independent of module. So, do nothing.
     }
 
@@ -62,9 +61,8 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
     }
 
     async function loadPage(pageNoB1: number, view: TCView, module: TModule): Promise<boolean> {
-        const ipp = view.ipp
-        const start = (pageNoB1 - 1) * ipp
-
+        view
+        module
         //console.log(`collectionMedia.loadPage() view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1} module: ${module} `);
         extra.value.pageNoB1 = pageNoB1
         //extra.value.viewIndex = viewIndex

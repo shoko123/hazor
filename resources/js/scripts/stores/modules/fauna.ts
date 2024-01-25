@@ -1,7 +1,6 @@
-import { ref, computed } from 'vue'
+import {  computed } from 'vue'
 import { defineStore } from 'pinia'
 import { TFaunaFields, TFields } from '@/js/types/moduleFieldsTypes'
-import { TFaunaSlugParams, TFaunaIdParams } from '@/js/types/moduleIdParamsTypes'
 import { TParseSlugResponse } from '@/js/types/routesTypes'
 
 export const useFaunaStore = defineStore('fauna', () => {

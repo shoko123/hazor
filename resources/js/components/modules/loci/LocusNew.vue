@@ -84,7 +84,7 @@
     <slot
       :id="data.id"
       name="data"
-      :v$="v$"
+      :v="v"
       :data="data"
     />
   </v-container>
@@ -93,7 +93,7 @@
 <script lang="ts" setup>
 
 import type { TLocusFields } from '@/js/types/moduleFieldsTypes'
-import { onMounted, reactive, computed, ref, defineExpose } from "vue";
+import { onMounted, reactive, computed } from "vue"
 import { storeToRefs } from 'pinia'
 import { useVuelidate } from "@vuelidate/core";
 import { required, minValue, maxValue, maxLength, helpers } from "@vuelidate/validators";
@@ -132,11 +132,11 @@ let data: TLocusFields = reactive({
   elevation: "",
 })
 
-const nameIsLocusNo = helpers.regex(/^\d{1,5}$/)
-const nameIsLocusNoWithAddendum = helpers.regex(/^\d{+}[a-c]$/)
-const nameIsYearHyphenLocusNo = helpers.regex(/^\d{2}-\d{3}$/)
-const nameIsYearAreaHyphenLocusNo = helpers.regex(/^\d{2}[A-Z]\d{1}-\d{3}$/)
-//allowed names int(1-5 digits), int with 1-2 chars addendum, year(2-digits)-locusNo(3-digits), year+area-locusNo
+// const nameIsLocusNo = helpers.regex(/^\d{1,5}$/)
+// const nameIsLocusNoWithAddendum = helpers.regex(/^\d{+}[a-c]$/)
+// const nameIsYearHyphenLocusNo = helpers.regex(/^\d{2}-\d{3}$/)
+// const nameIsYearAreaHyphenLocusNo = helpers.regex(/^\d{2}[A-Z]\d{1}-\d{3}$/)
+// allowed names int(1-5 digits), int with 1-2 chars addendum, year(2-digits)-locusNo(3-digits), year+area-locusNo
 const nameValidator = helpers.regex(/^\d{1,5}$|^\d{1,5}[a-c]$|^\d{2}-\d{3}$|^\d{2}[A-Z]\d{1}-\d{3}$/)
 
 const areas = computed(() => {
@@ -162,41 +162,41 @@ const rules = computed(() => {
   }
 })
 
-const v$ = useVuelidate(rules, data)
+const v = useVuelidate(rules, data)
 
 const nameErrors = computed(() => {
-  return <string>(v$.value.name.$error ? v$.value.name.$errors[0].$message : undefined)
+  return <string>(v.value.name.$error ? v.value.name.$errors[0].$message : undefined)
 })
 
-const locus_noErrors = computed(() => {
-  return <string>(v$.value.locus_no.$error ? v$.value.locus_no.$errors[0].$message : undefined)
-})
+// const locus_noErrors = computed(() => {
+//   return <string>(v.value.locus_no.$error ? v.value.locus_no.$errors[0].$message : undefined)
+// })
 
 const squareErrors = computed(() => {
-  return <string>(v$.value.square.$error ? v$.value.square.$errors[0].$message : undefined)
+  return <string>(v.value.square.$error ? v.value.square.$errors[0].$message : undefined)
 })
 
 const stratumErrors = computed(() => {
-  return <string>(v$.value.stratum.$error ? v$.value.stratum.$errors[0].$message : undefined)
+  return <string>(v.value.stratum.$error ? v.value.stratum.$errors[0].$message : undefined)
 })
 
 const typeErrors = computed(() => {
-  return <string>(v$.value.type.$error ? v$.value.type.$errors[0].$message : undefined)
+  return <string>(v.value.type.$error ? v.value.type.$errors[0].$message : undefined)
 })
 
 const cross_refErrors = computed(() => {
-  return <string>(v$.value.cross_ref.$error ? v$.value.cross_ref.$errors[0].$message : undefined)
+  return <string>(v.value.cross_ref.$error ? v.value.cross_ref.$errors[0].$message : undefined)
 })
 
 const descriptionErrors = computed(() => {
-  return <string>(v$.value.description.$error ? v$.value.description.$errors[0].$message : undefined)
+  return <string>(v.value.description.$error ? v.value.description.$errors[0].$message : undefined)
 })
 
 const notesErrors = computed(() => {
-  return <string>(v$.value.notes.$error ? v$.value.notes.$errors[0].$message : undefined)
+  return <string>(v.value.notes.$error ? v.value.notes.$errors[0].$message : undefined)
 })
 
 const elevationErrors = computed(() => {
-  return <string>(v$.value.elevation.$error ? v$.value.elevation.$errors[0].$message : undefined)
+  return <string>(v.value.elevation.$error ? v.value.elevation.$errors[0].$message : undefined)
 })
 </script>

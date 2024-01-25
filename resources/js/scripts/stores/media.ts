@@ -5,7 +5,7 @@ import { TModule } from '@/js/types/routesTypes'
 import { TMediaUrls, TApiArrayMedia } from '@/js/types/collectionTypes'
 
 import { ref, computed } from 'vue'
-import { defineStore, storeToRefs } from 'pinia'
+import { defineStore } from 'pinia'
 
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
@@ -67,6 +67,7 @@ export const useMediaStore = defineStore('media', () => {
   })
 
   async function onInputChange(media: File[]) {
+    media//make eslint happy
     if (images.value.length > 6) {
       alert("Max number of files is 6 - Upload aborted!");
       clear()
@@ -83,7 +84,7 @@ export const useMediaStore = defineStore('media', () => {
     loadingToBrowser.value = true
     //console.log("Load files - started")
     await Promise.all(images.value.map(async (image) => { addImage(image) }))
-      .catch(err => {
+      .catch(() => {
         console.log(`Error encountered when loading files - clearing files`)
         loadingToBrowser.value = false
         clear()
@@ -165,7 +166,7 @@ export const useMediaStore = defineStore('media', () => {
     const ordered = cm.array.map((x, index) => {return {id: x.id, order: index + 1}})
     console.log(`reorder()  model: ${r.current.module}, id: ${i.fields?.id} ,ordered: ${JSON.stringify(ordered, null, 2)}`)
     return send("media/reorder", 'post', { model: r.current.module, model_id: i.fields?.id, ordered })
-    .then((res) => {
+    .then(() => {
       showUploader.value = false
       showSnackbar("Reorder completed successfully")
     })

@@ -145,10 +145,10 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         }
     }
 
-    function handlePrepareError(errorDetails: TPrepareError): Promise<RouteLocationRaw | boolean> {
-        console.log(`handlePrepareError: ${JSON.stringify(errorDetails)}`)
-        return Promise.resolve(false)
-    }
+    // function handlePrepareError(errorDetails: TPrepareError): Promise<RouteLocationRaw | boolean> {
+    //     console.log(`handlePrepareError: ${JSON.stringify(errorDetails)}`)
+    //     return Promise.resolve(false)
+    // }
 
     function finalizeRouting(handle_to: RouteLocationNormalized, handle_from: RouteLocationNormalized) {
         current.value.name = <TPageName>handle_to.name

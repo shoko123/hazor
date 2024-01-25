@@ -1,13 +1,13 @@
-import { ref, computed } from 'vue'
+import {  computed } from 'vue'
 import { defineStore } from 'pinia'
 import { TLocusFields, TFields } from '@/js/types/moduleFieldsTypes'
-import type { TParseSlugResponse, TParseSlugData } from '../../../types/routesTypes'
+import type { TParseSlugResponse } from '../../../types/routesTypes'
 
 export const useLocusStore = defineStore('locus', () => {
   const reNameIsLocusNo = /^\d{1,5}$/
-  const reNameIsLocusNoWithAddendum = /^\d{+}[a-c]$/
-  const reNameIsYearHyphenLocusNo = /^\d{2}-\d{3}$/
-  const reNameIsYearAreaHyphenLocusNo = /^\d{2}[A-Z]\d{1}-\d{3}$/
+  // const reNameIsLocusNoWithAddendum = /^\d{+}[a-c]$/
+  // const reNameIsYearHyphenLocusNo = /^\d{2}-\d{3}$/
+  // const reNameIsYearAreaHyphenLocusNo = /^\d{2}[A-Z]\d{1}-\d{3}$/
 
   function slugParamsFromSlug(slug: string): TParseSlugResponse {
     const arr = slug.split('.');

@@ -1,10 +1,10 @@
 // stores/modals/mpdal.ts
-import { ref, computed } from 'vue'
-import { defineStore, storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import { defineStore } from 'pinia'
 import { useCarouselStore } from './carousel'
 import { useQueryCountStore } from './queryCount'
-type TModalOwner = 'Carousel' | 'QueryCount'
 
+type TModalOwner = 'Carousel' | 'QueryCount'
 
 export const useModalStore = defineStore('modal', () => {
     const c = useCarouselStore()

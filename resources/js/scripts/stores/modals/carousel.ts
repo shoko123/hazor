@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { TCollectionName, TApiArrayMain, TApiArrayRelated, TApiArray } from '@/js/types/collectionTypes'
-import { TCarousel, TApiCarouselMain, TApiCarouselMedia, TMediaOfItem } from '@/js/types/mediaTypes'
+import { TCarousel, TApiCarouselMain, TApiCarouselMedia } from '@/js/types/mediaTypes'
 import { useCollectionsStore } from '../collections/collections'
 import { useCollectionMainStore } from '../collections/collectionMain'
 import { useXhrStore } from '../xhr'
@@ -97,32 +97,52 @@ export const useCarouselStore = defineStore('carousel', () => {
 
   async function close() {
     //if current carouselItem is in currently loaded page - close, otherwise, load relevant page
-
-    switch (collectionName.value) {
-
-      case 'main':
-        const view = extra.value.views[extra.value.viewIndex]
-
-        if (!c.itemIsInPage(<number>carouselItemDetails.value?.id)) {
-          const index = c.itemIndexById(<number>carouselItemDetails.value?.id)
-          await c.loadPageByItemIndex(collectionName.value, view, index, derived.value.module)
-            .then(res => {
-              console.log(`carousel.close() loaded a new page`)
-            })
-            .catch(err => {
-              console.log(`carousel.close() loaded a new page failed`)
-              throw err
-            })
-            .finally(() => {
-              showSpinner(false)
-            })
-        } else {
-          console.log(`carousel.close() no need to load a new page`)
-        }
-        break;
-      case 'media':
-        console.log(`carousel.close() media not loading new page (YET)`)
+    if (collectionName.value === 'main') {
+      const view = extra.value.views[extra.value.viewIndex]
+      if (!c.itemIsInPage(<number>carouselItemDetails.value?.id)) {
+        const index = c.itemIndexById(<number>carouselItemDetails.value?.id)
+        await c.loadPageByItemIndex(collectionName.value, view, index, derived.value.module)
+          .then(() => {
+            console.log(`carousel.close() loaded a new page`)
+          })
+          .catch(err => {
+            console.log(`carousel.close() loaded a new page failed`)
+            throw err
+          })
+          .finally(() => {
+            showSpinner(false)
+          })
+      } else {
+        console.log(`carousel.close() no need to load a new page`)
+      }
+    } else if (collectionName.value === 'media') {
+      console.log(`carousel.close() media not loading new page (YET)`)
     }
+
+    // switch (collectionName.value) {
+    //   case 'main':
+    //     const view = extra.value.views[extra.value.viewIndex]
+
+    //     if (!c.itemIsInPage(<number>carouselItemDetails.value?.id)) {
+    //       const index = c.itemIndexById(<number>carouselItemDetails.value?.id)
+    //       await c.loadPageByItemIndex(collectionName.value, view, index, derived.value.module)
+    //         .then(res => {
+    //           console.log(`carousel.close() loaded a new page`)
+    //         })
+    //         .catch(err => {
+    //           console.log(`carousel.close() loaded a new page failed`)
+    //           throw err
+    //         })
+    //         .finally(() => {
+    //           showSpinner(false)
+    //         })
+    //     } else {
+    //       console.log(`carousel.close() no need to load a new page`)
+    //     }
+    //     break;
+    //   case 'media':
+    //     console.log(`carousel.close() media not loading new page (YET)`)
+    // }
     isOpen.value = false
   }
 

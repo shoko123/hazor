@@ -6,7 +6,7 @@
     <slot
       :id="data.id"
       name="data"
-      :v$="v$"
+      :v="v"
       :data="data"
     />
     <v-row
@@ -116,7 +116,7 @@
 import { onMounted, reactive, computed } from "vue"
 import { storeToRefs } from 'pinia'
 import { useVuelidate } from "@vuelidate/core";
-import { required, minLength, maxLength, minValue, maxValue, between } from "@vuelidate/validators";
+import { required, maxLength, minValue, maxValue } from "@vuelidate/validators";
 import { TFaunaFields } from '@/js/types/moduleFieldsTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 
@@ -186,32 +186,32 @@ const clean = computed({
   }
 })
 
-const v$ = useVuelidate(rules, data)
+const v = useVuelidate(rules, data)
 
 const labelErrors = computed(() => {
-  return <string>(v$.value.label.$error ? v$.value.label.$errors[0].$message : undefined)
+  return <string>(v.value.label.$error ? v.value.label.$errors[0].$message : undefined)
 })
 const areaErrors = computed(() => {
-  return <string>(v$.value.area.$error ? v$.value.area.$errors[0].$message : undefined)
+  return <string>(v.value.area.$error ? v.value.area.$errors[0].$message : undefined)
 })
 
 const locusErrors = computed(() => {
-  return <string>(v$.value.locus.$error ? v$.value.locus.$errors[0].$message : undefined)
+  return <string>(v.value.locus.$error ? v.value.locus.$errors[0].$message : undefined)
 })
 
 const basketErrors = computed(() => {
-  return <string>(v$.value.basket.$error ? v$.value.basket.$errors[0].$message : undefined)
+  return <string>(v.value.basket.$error ? v.value.basket.$errors[0].$message : undefined)
 })
 
 const stratumErrors = computed(() => {
-  return <string>(v$.value.stratum.$error ? v$.value.stratum.$errors[0].$message : undefined)
+  return <string>(v.value.stratum.$error ? v.value.stratum.$errors[0].$message : undefined)
 })
 
-const registration_cleanErrors = computed(() => {
-  return <string>(v$.value.registration_clean.$error ? v$.value.registration_cleanErrors.$errors[0].$message : undefined)
-})
+// const registration_cleanErrors = computed(() => {
+//   return <string>(v.value.registration_clean.$error ? v.value.registration_cleanErrors.$errors[0].$message : undefined)
+// })
 
 const taxonErrors = computed(() => {
-  return <string>(v$.value.taxon.$error ? v$.value.taxon.$errors[0].$message : undefined)
+  return <string>(v.value.taxon.$error ? v.value.taxon.$errors[0].$message : undefined)
 })
 </script>

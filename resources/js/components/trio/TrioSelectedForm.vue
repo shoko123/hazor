@@ -41,11 +41,10 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import type { TrioSourceName } from '../../types/trioTypes'
-
-import { useTrioSelectedStore } from '../../scripts/stores/trio/selectedParams';
+import { useTrioSelectedStore } from '../../scripts/stores/trio/selectedParams'
 import { useItemStore } from '../../scripts/stores/item'
 let { selectedFilterTrio, selectedNewItemTrio, selectedItemTrio } = storeToRefs(useTrioSelectedStore())
-let { derived, tag } = storeToRefs(useItemStore())
+let { derived } = storeToRefs(useItemStore())
 
 const props = defineProps<{
   source: TrioSourceName
@@ -60,6 +59,7 @@ const d = computed(() => {
       return { data: selectedItemTrio.value, header: `${derived.value.moduleAndTag} - Tags`, emptyTitle: `[ Item has no tags ]` }
 
     case 'New':
+      default:
       return { data: selectedNewItemTrio.value, header: `Selected Tags`, emptyTitle: `[ No tags selected ]` }
   }
 })

@@ -9,10 +9,10 @@
           :is="formNew"
           :is-create="props.isCreate"
         >
-          <template #data="{ v$, data, id }">
+          <template #data="{ v, data }">
             <v-btn
               variant="outlined"
-              @click="submit(v$, data, id)"
+              @click="submit(v, data)"
             >
               Submit
             </v-btn>
@@ -96,16 +96,16 @@ function beforeStore(isCreate: boolean, fields: TFields) {
   return store.beforeStore(props.isCreate, fields)
 }
 
-async function submit(v$: Validation, data: TFields) {
+async function submit(v: Validation, data: TFields) {
   //console.log(`CreateUpdate.submit() data: ${JSON.stringify(data, null, 2)}`)
 
   // vuelidate validation
-  await v$.$validate();
+  await v.$validate();
 
-  if (v$.$error || v$.$silentErrors.length > 0) {
+  if (v.$error || v.$silentErrors.length > 0) {
     showSnackbar("Please correct the marked errors!", "orange")
-    console.log(`validation errors: ${JSON.stringify(v$.$errors, null, 2)}`)
-    console.log(`validation silent errors: ${JSON.stringify(v$.$silentErrors, null, 2)}`)
+    console.log(`validation errors: ${JSON.stringify(v.$errors, null, 2)}`)
+    console.log(`validation silent errors: ${JSON.stringify(v.$silentErrors, null, 2)}`)
     return
   }
 

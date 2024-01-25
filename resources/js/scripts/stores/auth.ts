@@ -1,7 +1,7 @@
 // auth.js
 //handles and stores user's login and capabilities
 import { ref, computed } from 'vue'
-import { defineStore, storeToRefs } from 'pinia'
+import { defineStore } from 'pinia'
 import { useXhrStore } from './xhr'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useNotificationsStore } from './notifications';
@@ -10,7 +10,7 @@ import type { TPageName } from '@/js/types/routesTypes'
 
 export const useAuthStore = defineStore('auth', () => {
   const { send } = useXhrStore()
-  const { showSnackbar, showSpinner } = useNotificationsStore()
+  const { showSnackbar } = useNotificationsStore()
   const { routerPush } = useRoutesMainStore()
 
   const user = ref<TUser | null>(null)
@@ -90,7 +90,7 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null
 
     try {
-      const res = await send('fortify/logout', 'post')
+      await send('fortify/logout', 'post')
       //logApiResponse(`fortify/logout`, res)
       showSnackbar('Successfully logged-out')
       return true
