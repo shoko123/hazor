@@ -1,5 +1,3 @@
-// collection.ts
-//handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { TCollectionExtra, TApiArray, TApiArrayMain, TApiPageMainGallery, TApiPageMainTabular, TItemsPerView, TCView, TApiPage, TCollectionView, TPageMainGallery, TPageMain, TPageMainChips } from '@/js/types/collectionTypes'
@@ -15,7 +13,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
     const { buildMedia } = useMediaStore()
     const { tagFromSlug } = useModuleStore()
 
-    const itemsPerView  = <TItemsPerView> { Gallery: 36, Tabular: 500, Chips: 200 }
+    const itemsPerView = <TItemsPerView>{ Gallery: 36, Tabular: 500, Chips: 200 }
 
     const extra = ref<TCollectionExtra>({
         length: 0,
@@ -40,7 +38,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         return extra.value.views[extra.value.viewIndex].ipp
     })
 
-    function setCollectionViews(views: TCollectionView[]){
+    function setCollectionViews(views: TCollectionView[]) {
         extra.value.views = views.map(x => { return { name: x, ipp: itemsPerView[x] } })
     }
 
@@ -54,45 +52,36 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         const start = (pageNoB1 - 1) * ipp
 
         console.log(`collectionMain.loadPage() view: ${view.name} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1} module: ${module} `);
-
-        switch (view.name) {
-            case "Chips":
-                extra.value.pageNoB1 = pageNoB1
-                const slice = array.value.slice(start, start + ipp)
-                savePage(slice, view, module)
-                return true
-
-            case "Gallery":
-            case "Tabular":
-
-                const ids = array.value.slice(start, start + ipp).map(x => x.id);
-
-
-                if (ids.length === 0) {
-                    console.log(`ids.length is 0 - returning`)
-                    savePage([], view, module)
-                    return true
-                }
-
-                await send('model/page', 'post', { model: module, view: view.name, ids })
-                    .then(res => {
-                        //console.log(`model.page() returned (success)`)
-                        savePage(res.data.page, view, module)
-                        extra.value.pageNoB1 = pageNoB1
-                        //extra.value.viewIndex = viewIndex
-                        return true
-                    })
-                    .catch(err => {
-                        showSnackbar(`main.loadPage() failed`)
-                        console.log(`loadPage failed. err: ${JSON.stringify(err, null, 2)}`)
-                        return false
-                    })
-                    .finally(() => {
-                        //console.log(`main.loadPage() finally`)
-                        return true
-                    })
-                return true
+        //if view is chips, use a slice into the 'main' collection's array
+        if (view.name === 'Chips') {
+            extra.value.pageNoB1 = pageNoB1
+            const slice = array.value.slice(start, start + ipp)
+            savePage(slice, view, module)
+            return true
         }
+
+        //'media' and 'table' views require db access 
+        const ids = array.value.slice(start, start + ipp).map(x => x.id);
+
+        if (ids.length === 0) {
+            console.log(`ids.length is 0 - returning`)
+            savePage([], view, module)
+            return true
+        }
+
+        return await send('model/page', 'post', { model: module, view: view.name, ids })
+            .then(res => {
+                //console.log(`model.page() returned (success)`)
+                savePage(res.data.page, view, module)
+                extra.value.pageNoB1 = pageNoB1
+                //extra.value.viewIndex = viewIndex
+                return true
+            })
+            .catch(err => {
+                showSnackbar(`main.loadPage() failed`)
+                console.log(`loadPage failed. err: ${JSON.stringify(err, null, 2)}`)
+                return false
+            })
     }
 
     function savePage(apiPage: TApiPage[], view: TCView, module: TModule): void {

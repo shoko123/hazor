@@ -9,7 +9,7 @@
     </v-main>
     <v-footer />
   </v-app>
-  <Modal />
+  <ModalCarousel />
 </template>
 
 <script setup lang="ts">
@@ -17,7 +17,7 @@ import { onBeforeUnmount } from 'vue'
 import MenusBoth from './menus/MenusBoth.vue'
 import SnackBar from './notifications/SnackBar.vue'
 import LoadingSpinner from './notifications/loadingSpinner.vue'
-import Modal from './modals/Modal.vue'
+import ModalCarousel from './modals/ModalCarousel.vue'
 import { useXhrStore } from '../scripts/stores/xhr'
 
 onBeforeUnmount(() => {

@@ -62,7 +62,7 @@ export const useFilterStore = defineStore('filter', () => {
       const groupKeyUnderlined = pieces[0].replace(/ /g, "_")
       const paramUnderlined = trio.trio.entities.params[pk].name.replace(/ /g, "_")
 
-      if (query.hasOwnProperty(groupKeyUnderlined)) {
+      if (Object.prototype.hasOwnProperty.call(query, groupKeyUnderlined)) {
         query[groupKeyUnderlined] += ',' + paramUnderlined
       } else {
         query[groupKeyUnderlined] = paramUnderlined
@@ -89,7 +89,7 @@ export const useFilterStore = defineStore('filter', () => {
       //Verify that the group exists. 
       const groupKey = key.replace(/_/g, " ")
 
-      if (!trio.trio.entities.groups.hasOwnProperty(groupKey)) {
+      if (!Object.prototype.hasOwnProperty.call(trio.trio.entities.groups, groupKey)) {
         console.log(`Query parsing Error: "${key}" group doesn't exist. aborting... `)
         throw 'BadGroupNameParsingError'
       }
@@ -106,40 +106,34 @@ export const useFilterStore = defineStore('filter', () => {
 
       //console.log(`key: ${groupKey}\nparams: ${params}\npossibleParams: ${possibleParams}\ngroup: ${JSON.stringify(group, null, 2)}`);
 
-      switch (group.group_type_code) {
-        case 'CS':
-          //sanitize sql injections here
-          params.forEach((x, index) => {
-            selectedFilters.push({ param: group.group_name + '.term' + (index + 1), group_type_code: 'CS', extra: x })
-          })
-          //console.log(`group type 'CS' group: ${groupKey} params: ${JSON.stringify(params, null, 2)}`)
-          break
+      if (group.group_type_code === 'CS') {
+        //sanitize sql injections here
+        params.forEach((x, index) => {
+          selectedFilters.push({ param: group.group_name + '.term' + (index + 1), group_type_code: 'CS', extra: x })
+        })
+      } else if (group.group_type_code === 'OB') {
+        const orderGroup = <TGroupOrderBy>trio.trio.entities.groups['Order By']
+        const options = orderGroup.options.map(x => x.name)
 
-        case 'OB':
-          const orderGroup = <TGroupOrderBy>trio.trio.entities.groups['Order By']
-          const options = orderGroup.options.map(x => x.name)
-
-          params.forEach((x, index) => {
-            if (!['.A', '.D'].includes(x.slice(-2))) {
-              console.log(`Query parsing Error: "${x}" order param doesn't end with '.A' or '.D'. aborting... `)
-              throw 'OrderByFormatParsingError'
-            }
-            if (!options.includes(x.slice(0, -2))) {
-              console.log(`Query parsing Error: "${x}" param doesn't exist in group ${key}. aborting... `)
-              throw 'OrderByBadNameParsingError'
-            }
-            selectedFilters.push({ param: group.group_name + '.ob' + (index + 1), group_type_code: 'OB', extra: x })
-          })
-
-          break
-        default:
-          params.forEach(x => {
-            if (!possibleParams.includes(x)) {
-              console.log(`Query parsing Error: "${x}" param doesn't exist in group ${key}. aborting... `)
-              throw 'ParamNotInGroupParsingError'
-            }
-            selectedFilters.push({ param: group.group_name + '.' + x, group_type_code: group.group_type_code, extra: "" })
-          })
+        params.forEach((x, index) => {
+          if (!['.A', '.D'].includes(x.slice(-2))) {
+            console.log(`Query parsing Error: "${x}" order param doesn't end with '.A' or '.D'. aborting... `)
+            throw 'OrderByFormatParsingError'
+          }
+          if (!options.includes(x.slice(0, -2))) {
+            console.log(`Query parsing Error: "${x}" param doesn't exist in group ${key}. aborting... `)
+            throw 'OrderByBadNameParsingError'
+          }
+          selectedFilters.push({ param: group.group_name + '.ob' + (index + 1), group_type_code: 'OB', extra: x })
+        })
+      } else {
+        params.forEach(x => {
+          if (!possibleParams.includes(x)) {
+            console.log(`Query parsing Error: "${x}" param doesn't exist in group ${key}. aborting... `)
+            throw 'ParamNotInGroupParsingError'
+          }
+          selectedFilters.push({ param: group.group_name + '.' + x, group_type_code: group.group_type_code, extra: "" })
+        })
       }
 
       //assign parameters to their correct 'filter' category
@@ -213,20 +207,27 @@ export const useFilterStore = defineStore('filter', () => {
           break
 
         case 'OB':
-          console.log(`processing Order By group`)
-          const orderGroup = <TGroupOrderBy>trio.trio.entities.groups['Order By']
-          const options = orderGroup.options
-          params.forEach(x => {
-            const data = options.find(y => y.name === x.slice(0, -2));
-            all.order_by.push({
-              column_name: (<TGroupOrderByOptionObject>data).column_name, asc: x.slice(-1) === 'A'
-            })
-          })
+          processOrderBy(params, all.order_by)
       }
     }
 
     //console.log(`urlQueryToApiFilters()\nquery: ${JSON.stringify(all, null, 2)}`);
     return { success: true, data: { apiFilters: all, selectedFilters } }
+  }
+
+  function processOrderBy(params: string[],
+    order_by: {
+      column_name: string,
+      asc: boolean,
+    }[]) {
+    console.log(`processing Order By group`)
+    const orderGroup = <TGroupOrderBy>trio.trio.entities.groups['Order By']
+    params.forEach(x => {
+      const data = orderGroup.options.find(y => y.name === x.slice(0, -2));
+      order_by.push({
+        column_name: (<TGroupOrderByOptionObject>data).column_name, asc: x.slice(-1) === 'A'
+      })
+    })
   }
 
   function addRemoveSearchParam(paramKey: string) {
@@ -245,8 +246,10 @@ export const useFilterStore = defineStore('filter', () => {
       switch (trio.trio.entities.groups[pieces[0]].group_type_code) {
         case 'OB':
           trio.setOrderByString(x, "")
+          break
         case 'CS':
           trio.setFilterSearchTerm(x, "")
+          break
         default:
         //nothing to do except remove from selectedFilters
       }
@@ -260,8 +263,10 @@ export const useFilterStore = defineStore('filter', () => {
       switch (x.group_type_code) {
         case 'OB':
           trio.setOrderByString(x.param, x.extra)
+          break
         case 'CS':
           trio.setFilterSearchTerm(x.param, x.extra)
+          break
         default:
           selectedFilterParams.value.push(x.param)
       }
@@ -283,7 +288,7 @@ export const useFilterStore = defineStore('filter', () => {
       return -1
     }
   }
-  
+
   return {
     selectedFilterParams,
     orderAllNames,

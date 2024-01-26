@@ -4,7 +4,7 @@
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useRouter, type LocationQueryRaw, type RouteLocationNormalized, type RouteLocationRaw } from 'vue-router'
-import type { TParseModuleData, TRouteInfo, TPageName, TParseErrorDetails, TPlanAction, TPrepareError, TModule } from '../../../types/routesTypes';
+import type { TParseModuleData, TRouteInfo, TPageName, TParseErrorDetails, TPlanAction, TModule } from '../../../types/routesTypes';
 
 import { useRoutesParserStore } from './routesParser'
 import { useRoutesPlanTransitionStore } from './routesPlanTransition'
@@ -78,7 +78,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         to.value.url_full_path = handle_to.fullPath
         //parse module 
         //console.log(`A.current: ${JSON.stringify(current.value, null, 2)}\nto: ${JSON.stringify(to.value, null, 2)})`)
-        if (handle_to.params.hasOwnProperty('module')) {
+        if( Object.prototype.hasOwnProperty.call(handle_to.params, "module")){
             const res = parseModule(<string>handle_to.params.module)
             if (res.success) {
                 const data = <TParseModuleData>res.data

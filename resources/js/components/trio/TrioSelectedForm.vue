@@ -8,11 +8,17 @@
         {{ d.emptyTitle }}
       </div>
       <v-list v-if="d.data.length">
-        <v-list-item v-for="cat in d.data">
+        <v-list-item
+          v-for="(cat, keyC) in d.data"
+          :key="keyC"
+        >
           <div class="font-weight-bold">
             {{ cat.name }}
           </div>
-          <v-list-item v-for="group in cat.groups">
+          <v-list-item
+            v-for="(group, keyG) in cat.groups"
+            :key="keyG"
+          >
             <v-list-item-title>
               <v-container
                 fluid
@@ -21,7 +27,8 @@
                 <v-row class="pa-2 ma-2">
                   <div>{{ group.key }}:</div>
                   <v-chip
-                    v-for="param in group.params"
+                    v-for="(param, keyP) in group.params"
+                    :key="keyP"
                     class="ml-2 mb-2"
                   >
                     {{ param }}

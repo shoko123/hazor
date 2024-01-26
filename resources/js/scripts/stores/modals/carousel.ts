@@ -34,7 +34,7 @@ export const useCarouselStore = defineStore('carousel', () => {
 
   async function open(source: TCollectionName, openIndex: number) {
     collectionName.value = source
-    //console.log(`carousel.open() source: ${collectionName.value} index: ${openIndex} item: ${JSON.stringify(item, null, 2)}`)
+    //console.log(`carousel.open() source: ${collectionName.value} index: ${openIndex}`)
     await load(c.itemByIndex(source, openIndex))
     index.value = openIndex
     isOpen.value = true
@@ -118,31 +118,6 @@ export const useCarouselStore = defineStore('carousel', () => {
     } else if (collectionName.value === 'media') {
       console.log(`carousel.close() media not loading new page (YET)`)
     }
-
-    // switch (collectionName.value) {
-    //   case 'main':
-    //     const view = extra.value.views[extra.value.viewIndex]
-
-    //     if (!c.itemIsInPage(<number>carouselItemDetails.value?.id)) {
-    //       const index = c.itemIndexById(<number>carouselItemDetails.value?.id)
-    //       await c.loadPageByItemIndex(collectionName.value, view, index, derived.value.module)
-    //         .then(res => {
-    //           console.log(`carousel.close() loaded a new page`)
-    //         })
-    //         .catch(err => {
-    //           console.log(`carousel.close() loaded a new page failed`)
-    //           throw err
-    //         })
-    //         .finally(() => {
-    //           showSpinner(false)
-    //         })
-    //     } else {
-    //       console.log(`carousel.close() no need to load a new page`)
-    //     }
-    //     break;
-    //   case 'media':
-    //     console.log(`carousel.close() media not loading new page (YET)`)
-    // }
     isOpen.value = false
   }
 
