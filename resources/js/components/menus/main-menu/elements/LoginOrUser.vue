@@ -35,6 +35,7 @@
 import { computed } from 'vue'
 import { useAuthStore } from '../../../../scripts/stores/auth';
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain';
+import { useNotificationsStore } from '../../../../scripts/stores/notifications'
 import { storeToRefs } from 'pinia'
 
 type TUserOption = 'Dashboard' | 'Logout'
@@ -42,7 +43,7 @@ type TUserOption = 'Dashboard' | 'Logout'
 let auth = useAuthStore()
 let { routerPush } = useRoutesMainStore()
 let { current } = storeToRefs(useRoutesMainStore())
-
+const { showSnackbar } = useNotificationsStore()
 let options: TUserOption[] = ['Dashboard', 'Logout']
 
 const showLoginButton = computed(() => {
@@ -53,14 +54,18 @@ function loginClick() {
   routerPush('login')
 }
 
-function userOptionsClicked(item: TUserOption) {
+async function userOptionsClicked(item: TUserOption) {
   switch (item) {
     case "Logout":
-      auth.logout()
-      break;
+      {
+        const res = await auth.logout()
+        showSnackbar(res ? 'You have successfully logged out.' : 'Logout Failed!')
+       
+      } 
+      break
     case "Dashboard":
       console.log("Dashboard clicked")
-      break;
+      break
   }
 }
 </script>

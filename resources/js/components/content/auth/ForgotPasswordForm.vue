@@ -37,12 +37,11 @@
 import { computed, reactive } from 'vue'
 import { useAuthStore } from '../../../scripts/stores/auth'
 import { useNotificationsStore } from '../../../scripts/stores/notifications'
-
-let { showSnackbar } = useNotificationsStore()
-let { attemptForgotPassword, resetAndGoTo } = useAuthStore()
-
 import { useVuelidate } from "@vuelidate/core"
 import { required, email } from "@vuelidate/validators"
+
+const { showSnackbar } = useNotificationsStore()
+const { logout, forgotPassword, resetAndGoTo, openDialog } = useAuthStore()
 
 const data = reactive({
   email: "",
@@ -69,7 +68,25 @@ async function send() {
     return
   }
 
-  await attemptForgotPassword(data)
+  const res1 = await logout()
+  if (!res1) {
+    showSnackbar('logout request failed. Redirected to home page')
+    resetAndGoTo('home')
+    return
+  }
+  
+  const res2 = await forgotPassword(data)
+  if (res2.success) {
+    openDialog(`A password reset was sent to ${data.email}. Please check your email, reset password then click below to continue to the login page.`)
+    return
+  }
+  
+  if (res2.status === 422) {
+    showSnackbar(`${res2.message}`)
+  } else {
+    showSnackbar(`forgot-password request failed. Error: ${res2.message}. Redirected to home page`)
+    resetAndGoTo('home')
+  }
 }
 
 function goToLogin() {

@@ -1,7 +1,7 @@
-import axios from 'axios';
+import axios from 'axios'
 import { defineStore } from 'pinia'
-
 type TXhrMethod = "get" | "put" | "post" | "delete"
+type TXhrResult<T> = { success: boolean, data: T | null, message: string, status: number }
 
 export const useXhrStore = defineStore('xhr', () => {
 
@@ -21,6 +21,27 @@ export const useXhrStore = defineStore('xhr', () => {
     //console.log(`setAxios success. res: ${JSON.stringify(res, null, 2)}`); 
   }
 
+  async function send2<T=null>(endpoint: string, method: TXhrMethod, data?: object): Promise<TXhrResult<T>> {
+    const fullUrl = endpoint.substring(0, 8) === 'fortify/' ? `${axios.defaults.baseURL}/${endpoint}` : `${axios.defaults.baseURL}/api/${endpoint}`
+    console.log(`xhr.send() endpoint: ${fullUrl}`)
+    try {
+      const res = await axios<T>({
+        url: fullUrl,
+        method,
+        data: (data === undefined) ? null : data
+      })
+      return { success: true, data: res.data, message: res.statusText, status: res.status }
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        const resp = { success: false, data: null, status: err.response ? err.response.status : 777, message: err.response?.data?.message }
+        console.log(`**** axios.err **** resData:${JSON.stringify(resp, null, 2)}`);
+        return resp
+      } else {
+        return { success: false, data: null, status: 999, message: 'unexpected error' }
+      }
+    }
+  }
+
   async function send(endpoint: string, method: TXhrMethod, data?: object) {
     const fullUrl = endpoint.substring(0, 8) === 'fortify/' ? `${axios.defaults.baseURL}/${endpoint}` : `${axios.defaults.baseURL}/api/${endpoint}`
     console.log(`xhr.send() endpoint: ${fullUrl}`)
@@ -37,25 +58,7 @@ export const useXhrStore = defineStore('xhr', () => {
         //consoleLogErrors(err)
         console.log(`**** axios.err ****\n${JSON.stringify(err, null, 2)}`);
         throw err
-      });
+      })
   }
-
-  /*
-  async function consoleLogErrors(err: any) {
-    // The request was made and the server responded with a status code
-    // that falls out of the range of 2xx
-    if (err.response) {
-      console.log(`axios.err.response status: ${err.response.status} \ndata: ${JSON.stringify(err.response.data, null, 2)}`);
-      //console.log(`headers: ${err.response.headers}`)
-    } else if (err.request) {
-      // The request was made but no response was received
-      console.log(`axios.err no response received request: ${JSON.stringify(err.request, null, 2)}`);
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log(`axios.Error: ${err.message}`);
-    }
-    //console.log(`axios.config: ${JSON.stringify(err.config, null, 2)}`);
-  }
-*/
-  return { setAxios, send }
+  return { setAxios, send, send2 }
 })

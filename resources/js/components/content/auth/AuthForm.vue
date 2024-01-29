@@ -39,11 +39,12 @@ import ForgotPasswordDialog from './ForgotPasswordDialog.vue'
 import ResetPasswordForm from './ResetPasswordForm.vue'
 import ResetPasswordDialog from './ResetPasswordDialog.vue'
 
+const { resetAndGoTo } = useAuthStore()
 const { dialog } = storeToRefs(useAuthStore())
 const { current } = storeToRefs(useRoutesMainStore())
 
 onMounted(() => {
-  dialog.value = { open: false, message: '' }
+  resetAndGoTo()
 })
 
 const parts = computed(() => {

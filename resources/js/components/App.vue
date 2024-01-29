@@ -18,10 +18,10 @@ import MenusBoth from './menus/MenusBoth.vue'
 import SnackBar from './notifications/SnackBar.vue'
 import LoadingSpinner from './notifications/loadingSpinner.vue'
 import ModalCarousel from './modals/ModalCarousel.vue'
-import { useXhrStore } from '../scripts/stores/xhr'
+import { useAuthStore } from '../scripts/stores/auth'
 
+const { logout } = useAuthStore()
 onBeforeUnmount(() => {
-    const { send } = useXhrStore()
-    send('fortify/logout', 'post')
+  logout()
 })
 </script>

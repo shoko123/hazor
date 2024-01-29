@@ -1,5 +1,5 @@
 <template>
-  <template v-if="isUnauthinticated">
+  <template v-if="!isLoggedIn">
     <div class="text-subtitle-1 text-medium-emphasis">
       Email
     </div>
@@ -82,10 +82,11 @@ onMounted(() => {
 })
 
 let { showSnackbar } = useNotificationsStore()
-let { attemptResetPassword, userStatus } = useAuthStore()
+let { resetPassword, getUser, openDialog } = useAuthStore()
+
 
 const visible = ref(false)
-const uStat = ref<'verified' | 'not-verified' | 'server-error' | 'unauthenticated'>('unauthenticated')
+let isLoggedIn = ref(false)
 
 const data = reactive({
   email: "",
@@ -95,8 +96,10 @@ const data = reactive({
 })
 
 async function prefetch() {
-  uStat.value = await userStatus()
-  //console.log(`ResetPwdFrm.prefetch() res: ${JSON.stringify(uStat, null, 2)}`)
+  const res = await getUser()
+  if (res.success) {
+    isLoggedIn.value = true
+  }
 }
 
 const rules = computed(() => {
@@ -137,28 +140,23 @@ async function send() {
     return
   }
 
-  await attemptResetPassword(data)
+  const res = await resetPassword(data)
+ 
+  if (res.success) {
+    openDialog(`Your password was successfuly reset. Please close this tab and follow the instructions in the app to login.`)
+  }  else {
+    openDialog(`Password-reset request failed. Please close this tab and try later.`)   
+  }
 }
 
 async function closeTab() {
   window.close()
 }
 
-const isUnauthinticated = computed(() => {
-  return uStat.value === 'unauthenticated'
-})
-
 const problemText = computed(() => {
-  switch (uStat.value) {
-    case 'server-error':
-      return 'There was a problem accessing the server. Please close this tab and try later'
-    case 'verified':
-    case 'not-verified':
-      return `You are currently logged in and therefore can't reset your password.\
-  Please close this tab and log out of the application before clicking the email verification link in your email.`
-    default:
-      return ''
-  }
+  return isLoggedIn.value ? `You are currently logged in and therefore can't reset your password.\
+  Please close this tab and log out of the application before clicking the reset-password link in your email.`
+    : ''
 })
 </script>
 

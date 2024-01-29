@@ -83,8 +83,8 @@ import { computed, ref, reactive } from 'vue'
 import { useAuthStore } from '../../../scripts/stores/auth'
 import { useNotificationsStore } from '../../../scripts/stores/notifications';
 
-let { showSnackbar } = useNotificationsStore()
-let { attemptRegister, resetAndGoTo } = useAuthStore()
+const { showSnackbar } = useNotificationsStore()
+const { logout, register, resetAndGoTo, openDialog } = useAuthStore()
 
 import { useVuelidate } from "@vuelidate/core"
 import { required, email, minLength, maxLength, helpers, sameAs, } from "@vuelidate/validators"
@@ -139,7 +139,28 @@ async function register1() {
     console.log(`validation errors: ${JSON.stringify(v$.value.$errors, null, 2)} silent: ${JSON.stringify(v$.value.$silentErrors, null, 2)}`)
     return
   }
-  await attemptRegister(data)
+
+  //before attempting to register, logout
+  const res1 = await logout()
+  if (!res1) {
+    showSnackbar('Logout failed. Redirected to Home Page')
+    resetAndGoTo('home')
+  }
+
+  const res2 = await register(data)
+  if (!res2.success) {
+    if (res2.status === 422) {
+      showSnackbar(<string>res2.message)
+    }
+    else {
+      showSnackbar(`Registration Error: ${<string>res2.message} Redirected to home page.`)
+      resetAndGoTo('home')
+    }
+    return
+  }
+
+  //if successful, a verification email was sent. verification handeling is done in the dialog form.
+  openDialog(`A verification email has been sent to ${data.email}. After verifying your email please click below to close this tab`)
 }
 
 function goToLogin() {

@@ -21,12 +21,10 @@ class PermissionController extends Controller
         $me = User::findOrFail($user->id);
 
         return response()->json([
-            'user' => [
                 'name' => $user->name,
                 'id' => $user->id,
                 'is_verified' => !($user->email_verified_at === null),
                 'permissions' => $me->getAllPermissions()->pluck('name'),
-            ]
         ], 200);
     }
 }
