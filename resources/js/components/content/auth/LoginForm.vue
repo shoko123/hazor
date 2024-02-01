@@ -3,27 +3,53 @@
     Email
   </div>
 
-  <v-text-field v-model="data.email" :error-messages="emailErrors" density="compact" placeholder="Email address"
-    prepend-inner-icon="mdi-email-outline" variant="outlined" />
+  <v-text-field
+    v-model="data.email"
+    :error-messages="emailErrors"
+    density="compact"
+    placeholder="Email address"
+    prepend-inner-icon="mdi-email-outline"
+    variant="outlined"
+  />
 
   <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
     Password
 
-    <a class="text-caption text-decoration-none text-blue" @click="goTo('forgot-password')">
+    <a
+      class="text-caption text-decoration-none text-blue"
+      @click="goTo('forgot-password')"
+    >
       Forgot password?</a>
   </div>
 
-  <v-text-field v-model="data.password" :error-messages="passwordErrors"
-    :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'" density="compact"
-    placeholder="Enter your password" prepend-inner-icon="mdi-lock-outline" variant="outlined"
-    @click:append-inner="visible = !visible" />
+  <v-text-field
+    v-model="data.password"
+    :error-messages="passwordErrors"
+    :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+    :type="visible ? 'text' : 'password'"
+    density="compact"
+    placeholder="Enter your password"
+    prepend-inner-icon="mdi-lock-outline"
+    variant="outlined"
+    @click:append-inner="visible = !visible"
+  />
 
-  <v-btn block class="mb-8" color="blue" size="large" variant="tonal" @click="login">
+  <v-btn
+    block
+    class="mb-8"
+    color="blue"
+    size="large"
+    variant="tonal"
+    @click="login"
+  >
     Log In
   </v-btn>
 
   <div class="d-flex justify-center">
-    <a class="text-blue text-decoration-none" @click="goTo('register')">
+    <a
+      class="text-blue text-decoration-none"
+      @click="goTo('register')"
+    >
       Not Registered?<v-icon icon="mdi-chevron-right" />
     </a>
   </div>
@@ -32,8 +58,7 @@
 <script setup lang="ts">
 import { computed, ref, reactive } from 'vue'
 import { storeToRefs } from 'pinia'
-import type { TUser } from '@/js/types/authTypes'
-import { type TPageName } from '@/js/types/routesTypes'
+import type { TPageName } from '@/js/types/routesTypes'
 import { useAuthStore } from '../../../scripts/stores/auth'
 import { useNotificationsStore } from '../../../scripts/stores/notifications'
 import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
@@ -89,20 +114,19 @@ async function login() {
   let res = await loginGetUser(data)
   if (res.success) {
     showSnackbar('You have successfully logged in')
-    user.value = <TUser>res.user
+    user.value = res.data
     if (['/auth/register', '/auth/forgot-password'].includes(<string>current.value.preLoginFullPath)) {
       routerPush('home')
     } else {
       router.push(<string>current.value.preLoginFullPath)
     }
-    return
-  }
-  
-  if (res.status === 422) {
-    showSnackbar(<string>res.message)
   } else {
-    showSnackbar(`Error! ${<string>res.message}. Redirected to home page`)
-    routerPush('home')
+    if (res.status === 422) {
+      showSnackbar(<string>res.message)
+    } else {
+      showSnackbar(`Error! ${<string>res.message}. Redirected to home page`)
+      routerPush('home')
+    }
   }
 }
 

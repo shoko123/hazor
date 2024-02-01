@@ -30,7 +30,7 @@ class DigModelReadController extends Controller
     public function page(PageRequest $r, DigModel $m)
     {
         $validated = $r->validated();
-        
+
         if ($validated["view"] === "Tabular") {
             $page = $m->page($validated["ids"], $validated["view"]);
 
@@ -43,9 +43,7 @@ class DigModelReadController extends Controller
                     return new FaunaPageTabularResourceCollection($page);
             }
         } else {
-            return response()->json([
-                "page" => $m->page($validated["ids"], $validated["view"]),
-            ], 200);
+            return response()->json($m->page($validated["ids"], $validated["view"]), 200);
         }
     }
 

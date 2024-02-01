@@ -1,15 +1,14 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { TCollectionExtra, TApiArray, TApiArrayMain, TApiPageMainGallery, TApiPageMainTabular, TItemsPerView, TCView, TApiPage, TCollectionView, TPageMainGallery, TPageMain, TPageMainChips } from '@/js/types/collectionTypes'
-import { TModule } from '../../../types/routesTypes'
+import type { TCollectionExtra, TApiArray, TApiArrayMain, TApiPageMainGallery, TApiPageMainTabular,TApiPageTableLocus, TApiPageTableStone, TApiPageTableFauna, TItemsPerView, TCView, TApiPage, TCollectionView, TPageMainGallery, TPageMain, TPageMainChips } from '@/js/types/collectionTypes'
+import type { TModule } from '../../../types/routesTypes'
+import type { TXhrResult } from '../../../types/generalTypes'
 import { useModuleStore } from '../module'
 import { useXhrStore } from '../xhr'
 import { useMediaStore } from '../media'
-import { useNotificationsStore } from '../notifications'
 
 export const useCollectionMainStore = defineStore('collectionMain', () => {
-    const { send } = useXhrStore()
-    const { showSnackbar } = useNotificationsStore()
+    const { send2 } = useXhrStore()
     const { buildMedia } = useMediaStore()
     const { tagFromSlug } = useModuleStore()
 
@@ -52,6 +51,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         const start = (pageNoB1 - 1) * ipp
 
         console.log(`collectionMain.loadPage() view: ${view.name} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1} module: ${module} `);
+
         //if view is chips, use a slice into the 'main' collection's array
         if (view.name === 'Chips') {
             extra.value.pageNoB1 = pageNoB1
@@ -60,7 +60,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
             return true
         }
 
-        //'media' and 'table' views require db access 
+        //'Gallery' and 'Tabular' views require db access 
         const ids = array.value.slice(start, start + ipp).map(x => x.id);
 
         if (ids.length === 0) {
@@ -69,19 +69,44 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
             return true
         }
 
-        return await send('model/page', 'post', { model: module, view: view.name, ids })
-            .then(res => {
-                //console.log(`model.page() returned (success)`)
-                savePage(res.data.page, view, module)
+        if (view.name === 'Gallery') {
+            const res = await send2<TApiPageMainGallery[]>('model/page', 'post', { model: module, view: view.name, ids })
+            if (res.success) {
+                savePage(res.data, view, module)
                 extra.value.pageNoB1 = pageNoB1
-                //extra.value.viewIndex = viewIndex
                 return true
-            })
-            .catch(err => {
-                showSnackbar(`main.loadPage() failed`)
-                console.log(`loadPage failed. err: ${JSON.stringify(err, null, 2)}`)
+            } else {
+                console.log(`loadPage failed. err: ${JSON.stringify(res.message, null, 2)}`)
                 return false
-            })
+            }
+        } else {   
+            //TODO fix this rediculous Type casting. 
+         let res : TXhrResult<TApiPageMainTabular[]> | null = null
+            console.log(`CollectionMain.loadPage() before tabular`)
+            switch(module){
+                case 'Locus': {    
+                    res = await send2<TApiPageTableLocus[]>('model/page', 'post', { model: module, view: view.name, ids })               
+                } break                
+                case 'Stone': {    
+                    res = await send2<TApiPageTableStone[]>('model/page', 'post', { model: module, view: view.name, ids })
+                 
+                } break                
+                case 'Fauna': 
+                default: {    
+                    res = await send2<TApiPageTableFauna[]>('model/page', 'post', { model: module, view: view.name, ids })       
+                } break                
+            }
+            console.log(`CollectionMain.loadPage() after tabular resolved`)
+            const tmp = <TXhrResult<TApiPageMainTabular[]>><unknown>res
+            if (tmp.success) {
+                savePage(tmp.data, view, module)
+                extra.value.pageNoB1 = pageNoB1
+                return true
+            } else {
+                console.log(`loadPage failed. err: ${JSON.stringify(tmp.message, null, 2)}`)
+                return false
+            }  
+        }
     }
 
     function savePage(apiPage: TApiPage[], view: TCView, module: TModule): void {

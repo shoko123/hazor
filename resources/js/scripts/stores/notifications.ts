@@ -34,12 +34,17 @@ export const useNotificationsStore = defineStore('notifications', () => {
         snackbar.value.timeout = timeout * 1000
         snackbar.value.model = true
     }
+
     //call with a message to show; call with false to hide
     function showSpinner(param: boolean | string) {
-        spinner.value.model = !!param      
-        if (param) {
+        if (param === false) {
+            spinner.value.message = ''
+            spinner.value.model = false
+        } else {
             spinner.value.message = <string>param
+            spinner.value.model = true
         }
     }
+
     return { snackbar, spinner, showSnackbar, showSpinner }
 })

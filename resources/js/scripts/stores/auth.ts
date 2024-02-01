@@ -2,11 +2,11 @@
 //handles and stores user's login and capabilities
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { useXhrStore } from './xhr'
-import { useRoutesMainStore } from './routes/routesMain'
 import type { TLoginForm, TRegistrationForm, TForgotPasswordForm, TResetPasswordForm, TUser } from '@/js/types/authTypes'
 import type { TPageName } from '@/js/types/routesTypes'
-type TEmptyResult = { success: boolean, message: string | null, status: number }//used for empty data apis
+import type { TXhrEmptyResult, TXhrResult } from '@/js/types/generalTypes'
+import { useXhrStore } from './xhr'
+import { useRoutesMainStore } from './routes/routesMain'
 
 export const useAuthStore = defineStore('auth', () => {
   const { send2 } = useXhrStore()
@@ -21,74 +21,59 @@ export const useAuthStore = defineStore('auth', () => {
   })
 
   const permissions = computed(() => {
-    return user.value === null ? [] : (<TUser>user.value).permissions
+    return user.value === null ? [] : user.value.permissions
   })
 
   function openDialog(message: string) {
     dialog.value = { open: true, message }
   }
 
-  async function logout(): Promise<boolean> {
+  async function logout(): Promise<TXhrEmptyResult> {
     console.log("auth.logout")
     user.value = null
-    const res = await send2<TUser>('fortify/logout', 'post')
-    return res.success
+    return await send2<TUser>('fortify/logout', 'post')
   }
 
-  async function register(form: TRegistrationForm): Promise<TEmptyResult> {
+  async function register(form: TRegistrationForm): Promise<TXhrEmptyResult> {
     console.log("auth.register()")
     user.value = null
-
-    const res = await send2<null>('fortify/register', 'post', form)
-    return { success: res.success, message: res.message, status: res.status }
+    return await send2('fortify/register', 'post', form)
   }
 
-  type TGetUser = { success: boolean, user?: TUser, message: string | null, status: number }
-
-  async function getUser(): Promise<TGetUser> {
+  async function getUser(): Promise<TXhrResult<TUser>> {
+    console.log("auth.getUser()")    
     const res = await send2<TUser>('about/me', 'get')
     if (res.success) {
-      return { success: true, user: <TUser>res.data, message: null, status: res.status }
+      return res
+    } else {
+      return { success: false, message: res.message, status: res.status }
     }
-    return { success: false, message: 'Failed to access user.', status: res.status }
   }
 
-  type TLoginResultData = { two_factor: boolean }
-  type TLoginUserResult = { success: boolean, user?: TUser, message: string | null, status: number }
-
-  async function loginGetUser(form: TLoginForm): Promise<TLoginUserResult> {
-    //    async function loginGetUser(form: TLoginForm): Promise<'OK' | 'credentials_problem' | 'not-verified' | 'server_access_problem'> {
-    console.log("auth.loginGetUser()")
+  async function loginGetUser(form: TLoginForm): Promise<TXhrResult<TUser>> {
     user.value = null
-
-    const res2 = await send2<TLoginResultData>('fortify/login', 'post', form)
-    if (!res2.success) {
-      return { success: false, message: res2.message, status: res2.status }
+    const res = await send2<{ two_factor: boolean }>('fortify/login', 'post', form)
+    if (res.success) {
+      return await getUser()
+    } else {
+      return res
     }
-
-    return await getUser()
   }
 
-  type TSendVerificationEmailResult = { success: boolean, message: string | null }
-  async function sendVerificationNatification(): Promise<TSendVerificationEmailResult> {
+  //currently not used, maybe later add option to re-send verification email
+  async function sendVerificationNatification(): Promise<TXhrEmptyResult> {
     console.log("auth.sendVerificationNatification")
-    const res4 = await send2<null>('fortify/email/verification-notification', 'post')
-    if (!res4.success) {
-      return { success: false, message: res4.message }
-    }
-    return { success: true, message: null }
+    return await send2('fortify/email/verification-notification', 'post')
   }
 
-  async function forgotPassword(form: TForgotPasswordForm): Promise<TEmptyResult> {
+  async function forgotPassword(form: TForgotPasswordForm): Promise<TXhrEmptyResult> {
     console.log("auth.forgotPassword()")
-    const res = await send2('fortify/forgot-password', 'post', form)
-    return { success: res.success, message: res.message, status: res.status }
+    return await send2('fortify/forgot-password', 'post', form)
   }
 
-  async function resetPassword(form: TResetPasswordForm): Promise<TEmptyResult> {
+  async function resetPassword(form: TResetPasswordForm): Promise<TXhrEmptyResult> {
     console.log("auth.resetPassword()")
-    const res = await send2('fortify/reset-password', 'post', form)
-    return { success: res.success, message: res.message, status: res.status }
+    return send2('fortify/reset-password', 'post', form)
   }
 
   function resetAndGoTo(routeName: TPageName | null = null) {

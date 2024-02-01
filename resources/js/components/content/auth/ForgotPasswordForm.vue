@@ -69,23 +69,22 @@ async function send() {
   }
 
   const res1 = await logout()
-  if (!res1) {
+  if (!res1.success) {
     showSnackbar('logout request failed. Redirected to home page')
     resetAndGoTo('home')
     return
   }
-  
+
   const res2 = await forgotPassword(data)
   if (res2.success) {
     openDialog(`A password reset was sent to ${data.email}. Please check your email, reset password then click below to continue to the login page.`)
-    return
-  }
-  
-  if (res2.status === 422) {
-    showSnackbar(`${res2.message}`)
   } else {
-    showSnackbar(`forgot-password request failed. Error: ${res2.message}. Redirected to home page`)
-    resetAndGoTo('home')
+    if (res2.status === 422) {
+      showSnackbar(`${res2.message}`)
+    } else {
+      showSnackbar(`forgot-password request failed. Error: ${res2.message}. Redirected to home page`)
+      resetAndGoTo('home')
+    }
   }
 }
 

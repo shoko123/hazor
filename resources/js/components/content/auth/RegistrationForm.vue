@@ -142,13 +142,17 @@ async function register1() {
 
   //before attempting to register, logout
   const res1 = await logout()
-  if (!res1) {
+  if (!res1.success) {
     showSnackbar('Logout failed. Redirected to Home Page')
     resetAndGoTo('home')
   }
 
   const res2 = await register(data)
-  if (!res2.success) {
+
+  if (res2.success) {
+    //if successful, a verification email was sent by laravel. Verification handeling is done in the dialog form.
+    openDialog(`A verification email has been sent to ${data.email}. After verifying your email please click below to close this tab`)
+  } else {
     if (res2.status === 422) {
       showSnackbar(<string>res2.message)
     }
@@ -156,11 +160,7 @@ async function register1() {
       showSnackbar(`Registration Error: ${<string>res2.message} Redirected to home page.`)
       resetAndGoTo('home')
     }
-    return
   }
-
-  //if successful, a verification email was sent. verification handeling is done in the dialog form.
-  openDialog(`A verification email has been sent to ${data.email}. After verifying your email please click below to close this tab`)
 }
 
 function goToLogin() {

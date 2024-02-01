@@ -38,12 +38,14 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '../../../../scripts/stores/auth'
-
+import { useNotificationsStore } from '../../../../scripts/stores/notifications'
 const { authenticated, accessibility } = storeToRefs(useAuthStore())
 const { logout } = useAuthStore()
+const { showSnackbar } = useNotificationsStore()
 
-function logoutClicked() {
-  logout()
+async function logoutClicked() {
+  const res = await logout()
+  showSnackbar(res.success ? 'You have successfully logged out.' : 'Logout Failed!')
 }
 
 const disableLinks = computed(() => {

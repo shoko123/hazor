@@ -1,7 +1,7 @@
 <template>
   <Teleport to="#modal">
     <v-overlay
-      :model-value="spinner.isOn"
+      :model-value="spinner.model"
       class="align-center justify-center"
     >
       <v-progress-circular

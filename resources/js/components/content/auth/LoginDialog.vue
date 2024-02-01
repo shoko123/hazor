@@ -20,17 +20,17 @@ const { showSnackbar } = useNotificationsStore()
 
 async function checkIfVerified() {
   const res = await getUser()
-  if (!res.success) {
+  if (res.success) {
+    if (res.data.is_verified) {
+      showSnackbar('Thank you for completing your email verification! You are redirected to the login page')
+      resetAndGoTo('login')
+    } else {
+      showSnackbar("Your email has not been verified! Please check email and verify!")
+    }
+  } else {
     showSnackbar('get-user request failed. Redirected to the home page')
     resetAndGoTo('home')
-    return
   }
-  if (res.user?.is_verified) {
-    showSnackbar('Thank you for completing your email verification! You are redirected to the login page')
-    resetAndGoTo('login')
-    return
-  }
-  showSnackbar("Your email has not been verified! Please check email and verify!")
 }
 </script>
 

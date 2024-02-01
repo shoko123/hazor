@@ -10,17 +10,17 @@ import { useNotificationsStore } from '../notifications'
 import { useMediaStore } from '../media'
 import { useModuleStore } from '../module'
 import { useItemStore } from '../item'
-
+import { useRoutesMainStore } from '../routes/routesMain'
 
 export const useCarouselStore = defineStore('carousel', () => {
   const c = useCollectionsStore()
   const { extra } = storeToRefs(useCollectionMainStore())
-  const { send } = useXhrStore()
-  const { showSpinner } = useNotificationsStore()
+  const { send2 } = useXhrStore()
+  const { showSpinner, showSnackbar } = useNotificationsStore()
   const { derived } = storeToRefs(useItemStore())
   const { buildMedia } = useMediaStore()
   const { tagFromSlug } = useModuleStore()
-
+  const { routerPush } = useRoutesMainStore()
   const isOpen = ref<boolean>(false)
   const collectionName = ref<TCollectionName>('main')
   const index = ref<number>(-1)
@@ -47,52 +47,52 @@ export const useCarouselStore = defineStore('carousel', () => {
   }
 
   async function load(item: TApiArray) {
-    let url = ""
-    const data = { model: "", id: 0 }
-
-    //related carousel item needs no DB access
+    // let sendParams = { url = ''
     if (collectionName.value === 'related') {
-      carouselItemDetails.value = { ...(<TApiArrayRelated>item), tag: tagFromSlug(derived.value.module, (<TApiArrayRelated>item).slug), media: buildMedia((<TApiArrayRelated>item).media, (<TApiArrayRelated>item).module) }
-    } else {
-      url = collectionName.value === 'main' ? 'model/carousel' : 'media/carousel'
-      data["model"] = derived.value.module
-      data["id"] = collectionName.value === 'main' ? (<TApiArrayMain>item).id : item["id"]
+
+      const tmp = <TApiArrayRelated>item
+      carouselItemDetails.value = { ...tmp, tag: tagFromSlug(tmp.module, tmp.slug), media: buildMedia(tmp.media, tmp.module) }
+    }
+    else {
       showSpinner(`Loading item`)
-      const res = await send(url, 'post', data)
       if (collectionName.value === 'main') {
-        saveMain(res.data)
+        const res = await send2<TApiCarouselMain>('model/carousel', 'post', { id: (<TApiArrayMain>item).id, model: derived.value.module })
+        if (res.success) {
+          carouselItemDetails.value = {
+            module: res.data.module,
+            id: res.data.id,
+            slug: res.data.slug,
+            tag: tagFromSlug(derived.value.module, res.data.slug),
+            short: res.data.short,
+            media: buildMedia(res.data.urls, derived.value.module)
+          }
+        } else {
+          showSnackbar('Failed to load carousel item. Redirected to home page.')
+          routerPush('home')
+        }
       } else {
-        saveMedia(res.data)
+        showSpinner(`Loading item`)
+        const res = await send2<TApiCarouselMedia>('media/carousel', 'post', { id: item.id })
+        if (res.success) {
+          carouselItemDetails.value = {
+            id: item.id,
+            tag: <string>derived.value.tag,
+            media: buildMedia(res.data.urls),
+            size: (res.data.size / 1000000).toFixed(2).toString() + 'MB',
+            collection_name: res.data.collection_name,
+            file_name: res.data.file_name,
+            order_column: res.data.order_column,
+            title: res.data.title,
+            text: res.data.text
+          }
+        } else {
+          showSnackbar('Failed to load carousel item. Redirected to home page.')
+          routerPush('home')
+        }
       }
+      showSpinner(false)
     }
 
-    //console.log(`carousel.load() url: ${url}. data: ${JSON.stringify(data, null, 2)}`)
-    showSpinner(false)
-  }
-
-  function saveMain(data: TApiCarouselMain) {
-    carouselItemDetails.value = {
-      module: data.module,
-      id: data.id,
-      slug: data.slug,
-      tag: tagFromSlug(derived.value.module, data.slug),
-      short: data.short,
-      media: buildMedia(data.urls, derived.value.module)
-    }
-  }
-
-  function saveMedia(data: TApiCarouselMedia) {
-    carouselItemDetails.value = {
-      id: data.id,
-      tag: <string>derived.value.tag,
-      media: buildMedia(data.urls),
-      size: (data.size / 1000000).toFixed(2).toString() + 'MB',
-      collection_name: data.collection_name,
-      file_name: data.file_name,
-      order_column: data.order_column,
-      title: data.title,
-      text: data.text
-    }
   }
 
   async function close() {

@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\ModelGroup\ModelGroup;
 use App\Models\App\DigModel;
 use App\Models\DigModels\Locus;
@@ -80,5 +81,7 @@ class AppServiceProvider extends ServiceProvider
             'Stone' => 'App\Models\DigModels\Stone',
             'Fauna' => 'App\Models\DigModels\Fauna',
         ]);
+
+        JsonResource::withoutWrapping();
     }
 }

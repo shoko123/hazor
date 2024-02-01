@@ -43,7 +43,8 @@ import { storeToRefs } from 'pinia'
 import { useDisplay } from 'vuetify'
 
 import type { TCollectionName } from '@/js/types/collectionTypes'
-import { useItemStore } from '../../scripts/stores/item';
+import { useItemStore } from '../../scripts/stores/item'
+import { useNotificationsStore } from '../../scripts/stores/notifications'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 
 import CollectionPageGallery from './CollectionPageGallery.vue'
@@ -58,6 +59,7 @@ const props = defineProps<{
 let { collection, loadPage, toggleCollectionView } = useCollectionsStore()
 let { derived } = storeToRefs(useItemStore())
 const { smAndDown, mdAndDown } = useDisplay()
+const { showSpinner, showSnackbar } = useNotificationsStore()
 
 const viewToIcon = {
   Gallery: 'mdi-image-area',
@@ -74,11 +76,24 @@ const ico = computed(() => {
   return viewToIcon[displayOption.value]
 })
 
+async function asynLoadPage(val: number) {
+  showSpinner('Loading page...')
+    const res = await loadPage(props.source, val, meta.value.view, derived.value.module)
+    if(!res){
+                      showSnackbar(`main.loadPage() failed`)
+    }
+    showSpinner(false)
+}
+
 const page = computed({
   get: () => { return paginator.value.page },
   set: val => {
     //console.log(`Collection.page.set to ${val}`)
-    loadPage(props.source, val, meta.value.view, derived.value.module)
+    asynLoadPage(val)
+
+    //////////
+    //loadPage(props.source, val, meta.value.view, derived.value.module)
+    ///////////////
   }
 })
 

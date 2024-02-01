@@ -59,8 +59,7 @@ async function userOptionsClicked(item: TUserOption) {
     case "Logout":
       {
         const res = await auth.logout()
-        showSnackbar(res ? 'You have successfully logged out.' : 'Logout Failed!')
-       
+        showSnackbar(res.success ? 'You have successfully logged out.' : 'Logout Failed!')
       } 
       break
     case "Dashboard":
