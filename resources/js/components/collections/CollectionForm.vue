@@ -55,7 +55,6 @@ const props = defineProps<{
   source: TCollectionName
 }>()
 
-
 let { collection, loadPage, toggleCollectionView } = useCollectionsStore()
 let { derived } = storeToRefs(useItemStore())
 const { smAndDown, mdAndDown } = useDisplay()
@@ -78,22 +77,17 @@ const ico = computed(() => {
 
 async function asynLoadPage(val: number) {
   showSpinner('Loading page...')
-    const res = await loadPage(props.source, val, meta.value.view, derived.value.module)
-    if(!res){
-                      showSnackbar(`main.loadPage() failed`)
-    }
-    showSpinner(false)
+  const res = await loadPage(props.source, val, meta.value.view, derived.value.module)
+  if (!res) {
+    showSnackbar(`main.loadPage() failed`)
+  }
+  showSpinner(false)
 }
 
 const page = computed({
   get: () => { return paginator.value.page },
   set: val => {
-    //console.log(`Collection.page.set to ${val}`)
     asynLoadPage(val)
-
-    //////////
-    //loadPage(props.source, val, meta.value.view, derived.value.module)
-    ///////////////
   }
 })
 
@@ -112,9 +106,9 @@ const header = computed(() => {
 
   switch (props.source) {
     case 'main':
-      headerText = smAndDown.value ? 
-      `Collection(${meta.value.length}): ${pageInfo}` : 
-      `${derived.value.module} Collection(${meta.value.length}): ${pageInfo}, items (${meta.value.firstItemNo}-${meta.value.lastItemNo})`
+      headerText = smAndDown.value ?
+        `Collection(${meta.value.length}): ${pageInfo}` :
+        `${derived.value.module} Collection(${meta.value.length}): ${pageInfo}, items (${meta.value.firstItemNo}-${meta.value.lastItemNo})`
       break
     case 'media':
       headerText = smAndDown.value ? `Media(${meta.value.length}) ${pageInfo}` : `${derived.value.moduleAndTag} - Media(${meta.value.length}) ${pageInfo}`

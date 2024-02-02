@@ -68,8 +68,7 @@ export const useItemStore = defineStore('item', () => {
 
     const selectedLookups = moduleStore.lookups.map(x => {
       return getParamKeyByGroupAndId(x.group_name, fieldsObj[x.column_name])
-    }
-    )
+    })
 
     //console.log(`saveitemFieldsPlus() selectedLookups:\n${selectedLookups}`)
     selectedItemParams.value = [...apiItem.model_tags, ...apiItem.global_tags, ...selectedLookups]

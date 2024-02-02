@@ -6,10 +6,10 @@
 //activities (e.g. clear, copy current -> new,), before
 //proceeding to the new route.
 
-import type {  TPlanAction, TPrepareResponse, TModule, TParseQueryData, TParseErrorDetails } from '@/js/types/routesTypes'
-import type { LocationQuery } from 'vue-router'
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import type { TPlanAction, TPrepareResponse, TModule, TParseErrorDetails } from '@/js/types/routesTypes'
+import type { LocationQuery } from 'vue-router'
 import { useXhrStore } from '../xhr'
 import { useTrioStore } from '../trio/trio'
 import { useFilterStore } from '../trio/filter'
@@ -20,10 +20,10 @@ import { useNotificationsStore } from '../notifications'
 import { useItemStore } from '../item'
 import { useRoutesMainStore } from './routesMain'
 import { useRoutesParserStore } from './routesParser'
-import { EmptyResultSetError } from '../../setups/routes/errors'
+import { TApiArrayMain } from '@/js/types/collectionTypes'
 
 export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
-  const xhr = useXhrStore()
+  const { send, send2 } = useXhrStore()
   const n = useNotificationsStore()
   const m = useModuleStore()
   const c = useCollectionsStore()
@@ -33,6 +33,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   const f = useFilterStore()
   const { trioReset, setTrio } = useTrioStore()
   const { setItemMedia } = useMediaStore()
+
   const fromUndef = ref<boolean>(false)
 
   async function prepareForNewRoute(module: TModule, query: LocationQuery, slug: string, plan: TPlanAction[], fromUndefined: boolean): Promise<TPrepareResponse> {
@@ -55,15 +56,16 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           })
           break
 
-        case 'collection.load':
-          await loadMainCollection(module, query).catch(err => {
-            if (err === EmptyResultSetError) {
-              throw err
-            } else {
-              throw 'CollectionLoadError'
-            }
-          })
+        case 'collection.load': {
+          n.showSpinner(`Loading ${module} collection...`)
+          const res = await loadMainCollection(module, query)
+          n.showSpinner(false)
 
+          if (!res.success) {
+            n.showSnackbar(`${res.message}. Redirected to home page.`)
+            throw res.message === 'Empty result set' ? 'EmptyResultSet' : 'CollectionLoadError'
+          }
+        }
           break
 
         case 'collection.clear':
@@ -111,7 +113,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   async function loadModule(module: TModule) {
     trioReset()
     n.showSpinner('Loading module data ...')
-    return xhr.send('model/init', 'post', { model: module })
+    return send('model/init', 'post', { model: module })
       .then(res => {
         //console.log(`loadModule() res:\n${JSON.stringify(res, null, 2)}`)
         //console.log(`model(${module}).init() returned (success)`)
@@ -120,7 +122,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
         m.welcomeText = res.data.welcome_text
 
         c.resetCollectionsViewIndex()
-        i.setItemViewIndex(0)        
+        i.setItemViewIndex(0)
         i.itemViews = res.data.display_options.item_views
         c.clear(['main', 'media', 'related'])
 
@@ -154,44 +156,34 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     //console.log(`loadCollectionAndItem done!`)
   }
 
-  async function loadMainCollection(module: TModule, query: LocationQuery) {
-    let queryRes
-    try {
-      queryRes = f.urlQueryToApiFilters(query)
-      //console.log(`loadMainCollection()  queryRes:  ${JSON.stringify(queryRes, null, 2)}`)
-    }
-    catch (err) {
+  async function loadMainCollection(module: TModule, query: LocationQuery): Promise<{ success: boolean, message: string }> {
+    const res1 = f.urlQueryToApiFilters(query)
+    console.log(`loadMainCollection parse result: res: ${JSON.stringify(res1, null, 2)}`)
+    if (!res1.success) {
       console.log(`parseQuery() failed`)
-      throw err
+      return { success: false, message: `${res1.message}` }
     }
-    if (!queryRes.success) {
-      throw (<TParseErrorDetails>queryRes.data).error
-    }
-    const apiQuery = <TParseQueryData>queryRes.data
+
+    //const apiQuery = <TParseQueryData>queryRes.data
     if (fromUndef.value) {
-      f.setFiltersFromUrlQuery(apiQuery.selectedFilters)
+      f.setFiltersFromUrlQuery(res1.selectedFilters)
     }
 
-    n.showSpinner(`Loading ${module} collection...`)
-    //console.log(`prepare.loadMainCollection()`)
-    return xhr.send('model/index', 'post', { model: module, query: apiQuery.apiFilters })
-      .then(res => {
-        if (res.data.collection.length === 0) {
-          throw EmptyResultSetError
-        }
-        r.to.queryParams = query
-        c.setArray('main', res.data.collection)
-        //console.log(`collection loaded successfully`)
-      })
-      .catch(err => {
-        console.log(`loadMainCollection() failed. err: ${JSON.stringify(err, null, 2)}`)
-        throw err
-      })
-      .finally(() => {
-        n.showSpinner(false)
-      })
-  }
+    const res2 = await send2<TApiArrayMain[]>('model/index', 'post', { model: module, query: res1.apiFilters })
 
+    if (res2.success) {
+      if (res2.data.length === 0) {
+        console.log(`loadMainCollection() err: empty result set`)
+        return { success: false, message: 'Empty result set' }
+      }
+      r.to.queryParams = query
+      c.setArray('main', res2.data)
+      return { success: true, message: '' }
+    } else {
+      console.log(`loadMainCollection() err: ${res2.message}`)
+      return { success: false, message: <string>res2.message }
+    }
+  }
 
   async function loadItem(module: TModule, slug: string,) {
     //console.log(`prepare.loadItem() slug: ${slug}`)
@@ -204,7 +196,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     n.showSpinner(`Loading ${module} item...`)
 
     try {
-      const res = await xhr.send('model/show', 'post', { model: module, slug: slug, params: sp.data })
+      const res = await send('model/show', 'post', { model: module, slug: slug, params: sp.data })
       //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
       r.to.slug = res.data.slug
       r.to.idParams = res.data.id_params

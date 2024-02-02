@@ -38,7 +38,6 @@ type TRouteInfo = {
     queryParams: object | undefined,
     preLoginFullPath: string | undefined
 }
-type TRouteEntityFlags = { module: boolean, collection: boolean, item: boolean, page: boolean }
 
 type TParseErrorDetails = {
     error: TParsingError,
@@ -84,9 +83,11 @@ type TParseQueryData = {
     selectedFilters: TSelectedFilterFromQuery[]
 }
 
-type TParseUrlQueryResponse = {
+type TParseUrlQuery = {
     success: boolean,
-    data: TParseErrorDetails | TParseQueryData
+    apiFilters:TApiFilters,
+    selectedFilters: TSelectedFilterFromQuery[],
+    message: string
 }
 
 type TPlanResponse = {
@@ -98,6 +99,7 @@ type TPrepareResponse = {
     success: boolean,
     errorDetails?: TPrepareError
 }
+
 export {
     TPageName,
     TUrlModule,
@@ -107,13 +109,12 @@ export {
     TParseModuleData,
     TParseSlugResponse,
     TParseSlugData,
+    TParseUrlQuery,
     TParseErrorDetails,
     TParseUrlModuleResponse,
     TParseQueryData,
-    TParseUrlQueryResponse,
     TApiFilters,
     TSelectedFilterFromQuery,
-    TRouteEntityFlags,
     TPlanResponse,
     TPlanAction,
     TPlanError,

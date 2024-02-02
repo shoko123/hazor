@@ -54,7 +54,7 @@ export const useCarouselStore = defineStore('carousel', () => {
       carouselItemDetails.value = { ...tmp, tag: tagFromSlug(tmp.module, tmp.slug), media: buildMedia(tmp.media, tmp.module) }
     }
     else {
-      showSpinner(`Loading item`)
+      showSpinner(`Loading carousel item...`)
       if (collectionName.value === 'main') {
         const res = await send2<TApiCarouselMain>('model/carousel', 'post', { id: (<TApiArrayMain>item).id, model: derived.value.module })
         if (res.success) {
@@ -71,7 +71,6 @@ export const useCarouselStore = defineStore('carousel', () => {
           routerPush('home')
         }
       } else {
-        showSpinner(`Loading item`)
         const res = await send2<TApiCarouselMedia>('media/carousel', 'post', { id: item.id })
         if (res.success) {
           carouselItemDetails.value = {

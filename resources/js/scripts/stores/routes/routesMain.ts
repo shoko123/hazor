@@ -11,7 +11,6 @@ import { useRoutesPlanTransitionStore } from './routesPlanTransition'
 import { useRoutesPrepareStore } from './routesPrepare'
 import { useAuthStore } from '../auth'
 import { useNotificationsStore } from '../notifications'
-import { EmptyResultSetError } from '../../setups/routes/errors'
 import { useCollectionMainStore } from '../collections/collectionMain'
 import { useFilterStore } from '../trio/filter'
 
@@ -121,12 +120,12 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         }
         catch (err) {
             inTransition.value = false
-            if (err === EmptyResultSetError && handle_from.name === 'filter') {
+            if (err === 'EmptyResultSet' && handle_from.name === 'filter') {
                 console.log(`EMPTY ERROR`)
                 showSnackbar('No results returned. Please modify query and resubmit!')
                 return { name: 'filter' }
             }
-            showSnackbar('Unexpected Error - redirceted to Home page')
+            //showSnackbar('Unexpected Error - redirceted to Home page')
             console.log(`unexpected prepare() error: ${JSON.stringify(err, null, 2)} redirect to home`);
             return goHome()
         }

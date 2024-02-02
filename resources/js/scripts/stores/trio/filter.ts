@@ -1,15 +1,17 @@
 // stores/trio.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-
-import type { TGroupValue, TGroupOrderBy, TGroupOrderByOptionObject, } from '../../../types/trioTypes'
-import type { IObject } from '../../../types/generalTypes'
-import type { TParseUrlQueryResponse, TParseQueryData, TApiFilters, TSelectedFilterFromQuery } from '@/js/types/routesTypes'
+import type { TGroupValue, TGroupOrderBy, TGroupOrderByOptionObject, } from '@/js/types/trioTypes'
+import type { TParseUrlQuery, TApiFilters, TSelectedFilterFromQuery } from '@/js/types/routesTypes'
+import type { IStringObject } from '@/js/types/generalTypes'
+import type { TApiArrayMain } from '@/js/types/collectionTypes'
 import { useTrioStore } from './trio'
 import { useXhrStore } from '../xhr'
 import { useRoutesMainStore } from '../routes/routesMain'
 
 export const useFilterStore = defineStore('filter', () => {
+  const { send2 } = useXhrStore()
+  const { current } = storeToRefs(useRoutesMainStore())
   const trio = useTrioStore()
   const selectedFilterParams = ref<string[]>([])
 
@@ -54,8 +56,8 @@ export const useFilterStore = defineStore('filter', () => {
     })
   }
 
-  function filtersToQueryObject(): IObject {
-    const query: IObject = {}
+  function filtersToQueryObject(): IStringObject {
+    const query: IStringObject = {}
     selectedFilterParams.value.forEach(pk => {
 
       const pieces = pk.split('.')
@@ -72,7 +74,7 @@ export const useFilterStore = defineStore('filter', () => {
     return query
   }
 
-  function urlQueryToApiFilters(qp: IObject): TParseUrlQueryResponse {
+  function urlQueryToApiFilters(qp: IStringObject): TParseUrlQuery {
     //console.log(`urlQueryToApiFilters().urlQuery: ${JSON.stringify(qp, null, 2)}`);
     const all: TApiFilters = {
       model_tag_ids: [],
@@ -90,8 +92,8 @@ export const useFilterStore = defineStore('filter', () => {
       const groupKey = key.replace(/_/g, " ")
 
       if (!Object.prototype.hasOwnProperty.call(trio.trio.entities.groups, groupKey)) {
-        console.log(`Query parsing Error: "${key}" group doesn't exist. aborting... `)
-        throw 'BadGroupNameParsingError'
+        console.log(`Query parsing Error: "${key}" group doesn't exist`)
+        return { success: false, apiFilters: all, selectedFilters: [], message: 'Group name doesn`t exist.' }
       }
 
       const group = trio.trio.entities.groups[groupKey]
@@ -105,7 +107,6 @@ export const useFilterStore = defineStore('filter', () => {
       })
 
       //console.log(`key: ${groupKey}\nparams: ${params}\npossibleParams: ${possibleParams}\ngroup: ${JSON.stringify(group, null, 2)}`);
-
       if (group.group_type_code === 'CS') {
         //sanitize sql injections here
         params.forEach((x, index) => {
@@ -115,25 +116,25 @@ export const useFilterStore = defineStore('filter', () => {
         const orderGroup = <TGroupOrderBy>trio.trio.entities.groups['Order By']
         const options = orderGroup.options.map(x => x.name)
 
-        params.forEach((x, index) => {
+        for (const [index, x] of params.entries()) {
           if (!['.A', '.D'].includes(x.slice(-2))) {
             console.log(`Query parsing Error: "${x}" order param doesn't end with '.A' or '.D'. aborting... `)
-            throw 'OrderByFormatParsingError'
+            return { success: false, apiFilters: all, selectedFilters: [], message: `Query parsing Error: "${x}" order param doesn't end with '.A' or '.D'.` }
           }
           if (!options.includes(x.slice(0, -2))) {
-            console.log(`Query parsing Error: "${x}" param doesn't exist in group ${key}. aborting... `)
-            throw 'OrderByBadNameParsingError'
+            console.log(`Query parsing Error: "${x}" param doesn't exist in group ${key}.`)
+            return { success: false, apiFilters: all, selectedFilters: [], message: `Query parsing Error: "${x}" param doesn't exist in group ${key}.` }
           }
           selectedFilters.push({ param: group.group_name + '.ob' + (index + 1), group_type_code: 'OB', extra: x })
-        })
+        }
       } else {
-        params.forEach(x => {
+        for (const [index, x] of params.entries()) {
           if (!possibleParams.includes(x)) {
-            console.log(`Query parsing Error: "${x}" param doesn't exist in group ${key}. aborting... `)
-            throw 'ParamNotInGroupParsingError'
+            console.log(`Query parsing Error: param[${index}] "${x}" doesn't exist in group "${key}".`)
+            return { success: false, apiFilters: all, selectedFilters: [], message: `Query parsing Error: param[${index}] "${x}" doesn't exist in group "${key}".` }
           }
           selectedFilters.push({ param: group.group_name + '.' + x, group_type_code: group.group_type_code, extra: "" })
-        })
+        }
       }
 
       //assign parameters to their correct 'filter' category
@@ -185,6 +186,7 @@ export const useFilterStore = defineStore('filter', () => {
             column_name: (<TGroupValue>trio.trio.entities.groups[groupKey]).column_name, vals: params
           })
           break
+
         case 'BF':
           switch (key) {
             case 'Media':
@@ -196,13 +198,7 @@ export const useFilterStore = defineStore('filter', () => {
               break
             default:
               console.log(`Query parsing Error: Unrecognized bespoke group ${key}. aborting... `)
-              return {
-                success: false,
-                data: {
-                  error: 'BadQueryParams',
-                  message: `Query parsing Error: Unrecognized bespoke group ${key}. aborting... `
-                }
-              }
+              return { success: false, apiFilters: all, selectedFilters: [], message: `Query parsing Error: Unrecognized bespoke group ${key}.` }
           }
           break
 
@@ -212,7 +208,7 @@ export const useFilterStore = defineStore('filter', () => {
     }
 
     //console.log(`urlQueryToApiFilters()\nquery: ${JSON.stringify(all, null, 2)}`);
-    return { success: true, data: { apiFilters: all, selectedFilters } }
+    return { success: true, apiFilters: all, selectedFilters, message: 'urlQuery parsing successsful' }
   }
 
   function processOrderBy(params: string[],
@@ -274,19 +270,10 @@ export const useFilterStore = defineStore('filter', () => {
   }
 
   async function getCount() {
-    const { send } = useXhrStore()
-    const { current } = storeToRefs(useRoutesMainStore())
     const q = filtersToQueryObject()
-    const apiFilters = urlQueryToApiFilters(q)
-
-    try {
-      const res = await send('model/index', 'post', { model: current.value.module, query: (<TParseQueryData>apiFilters.data).apiFilters })
-      return res.data.collection.length
-    }
-    catch (err) {
-      console.log(`**** getCount() - failed err: ${JSON.stringify(err, null, 2)}`)
-      return -1
-    }
+    const res1 = urlQueryToApiFilters(q)
+    const res2 = await send2<TApiArrayMain[]>('model/index', 'post', { model: current.value.module, query: res1.apiFilters })
+    return res2.success ? res2.data.length : -1
   }
 
   return {
