@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import type { TGroupValue, TGroupOrderBy, TGroupOrderByOptionObject, } from '@/js/types/trioTypes'
 import type { TParseUrlQuery, TApiFilters, TSelectedFilterFromQuery } from '@/js/types/routesTypes'
-import type { IStringObject } from '@/js/types/generalTypes'
+import type { IObject } from '@/js/types/generalTypes'
 import type { TApiArrayMain } from '@/js/types/collectionTypes'
 import { useTrioStore } from './trio'
 import { useXhrStore } from '../xhr'
@@ -56,8 +56,8 @@ export const useFilterStore = defineStore('filter', () => {
     })
   }
 
-  function filtersToQueryObject(): IStringObject {
-    const query: IStringObject = {}
+  function filtersToQueryObject(): IObject {
+    const query: IObject = {}
     selectedFilterParams.value.forEach(pk => {
 
       const pieces = pk.split('.')
@@ -74,7 +74,7 @@ export const useFilterStore = defineStore('filter', () => {
     return query
   }
 
-  function urlQueryToApiFilters(qp: IStringObject): TParseUrlQuery {
+  function urlQueryToApiFilters(qp: IObject): TParseUrlQuery {
     //console.log(`urlQueryToApiFilters().urlQuery: ${JSON.stringify(qp, null, 2)}`);
     const all: TApiFilters = {
       model_tag_ids: [],

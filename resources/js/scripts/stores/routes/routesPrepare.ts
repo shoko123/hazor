@@ -62,7 +62,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           n.showSpinner(false)
 
           if (!res.success) {
-            n.showSnackbar(`${res.message}. Redirected to home page.`)
+            n.showSnackbar(`${res.message}`)
             throw res.message === 'Empty result set' ? 'EmptyResultSet' : 'CollectionLoadError'
           }
         }
@@ -153,7 +153,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       .catch(err => {
         throw err
       });
-    //console.log(`loadCollectionAndItem done!`)
   }
 
   async function loadMainCollection(module: TModule, query: LocationQuery): Promise<{ success: boolean, message: string }> {
@@ -214,7 +213,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
   async function loadPage(firstPage: boolean): Promise<void> {
-    //console.log(`prepare.loadPage()`)
     return await c.loadPageByItemIndex('main', c.collection('main').value.meta.view, firstPage ? 0 : i.itemIndex, r.to.module)
   }
 
@@ -235,7 +233,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
   function prepareForMedia(): void {
     console.log(`prepareForMedia()`)
-    //
   }
 
   return { prepareForNewRoute }

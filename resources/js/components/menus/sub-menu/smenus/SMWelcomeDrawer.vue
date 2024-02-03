@@ -23,9 +23,9 @@ function toCollection() {
 
 async function toItem() {
   const { firstSlug } = useCollectionsStore()
-  const firstUid = await firstSlug()
-  if (firstUid) {
-    routerPush('show', firstUid)
+  const res = await firstSlug()
+  if (res.success) {
+    routerPush('show', res.data)
   } else {
     console.log(`failed to get first slug`)
   }

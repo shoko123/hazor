@@ -23,7 +23,7 @@ async function checkIfVerified() {
   if (res.success) {
     if (res.data.is_verified) {
       showSnackbar('Thank you for completing your email verification! You are redirected to the login page')
-      resetAndGoTo('home')
+      resetAndGoTo('login')
     } else {
       showSnackbar("Your email has not been verified! Please check email and verify!")
     }

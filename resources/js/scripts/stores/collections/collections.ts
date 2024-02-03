@@ -1,9 +1,9 @@
 // collection.ts
 //handles all collections and loading of pages
-import { defineStore } from 'pinia'
 import { computed } from 'vue'
-import { TCollectionName, TCollectionMeta, TApiArray, TCView, TCollectionView } from '@/js/types/collectionTypes'
-import { TModule } from '../../../types/routesTypes'
+import { defineStore, storeToRefs } from 'pinia'
+import type { TCollectionName, TCollectionMeta, TApiArray, TCView, TCollectionView } from '@/js/types/collectionTypes'
+import type { TModule } from '@/js/types/routesTypes'
 import { useXhrStore } from '../xhr'
 import { useRoutesMainStore } from '../routes/routesMain'
 import { useNotificationsStore } from '../notifications'
@@ -13,7 +13,9 @@ import { useCollectionRelatedStore } from './collectionRelated'
 
 export const useCollectionsStore = defineStore('collections', () => {
     const { showSpinner } = useNotificationsStore()
-    
+    const { send2 } = useXhrStore()
+    const { current } = storeToRefs(useRoutesMainStore())
+
     function getCollection(source: TCollectionName) {
         switch (source) {
             case 'main':
@@ -73,15 +75,13 @@ export const useCollectionsStore = defineStore('collections', () => {
     }
 
     async function toggleCollectionView(name: TCollectionName) {
-        const { getModule } = useRoutesMainStore()
-        const module = getModule()
         const meta = collectionMeta(name)
         const currentView = meta.views[meta.viewIndex]
         const newViewIndex = (meta.viewIndex + 1) % meta.views.length
         const newView = meta.views[newViewIndex]
         const index = meta.firstItemNo - 1
-        console.log(`toggleCollectionView() collection: ${name}  module: ${module} views: ${meta.itemsPerPage}  current view: ${currentView.name}  new view: ${newView.name} index: ${index}`);
-        await loadPageByItemIndex(name, newView, index, module)
+        console.log(`toggleCollectionView() collection: ${name}  module: ${current.value.module} views: ${meta.itemsPerPage}  current view: ${currentView.name}  new view: ${newView.name} index: ${index}`);
+        await loadPageByItemIndex(name, newView, index, current.value.module)
         const c = getCollection(name)
         c.extra.viewIndex = newViewIndex
     }
@@ -134,24 +134,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     }
 
     async function firstSlug() {
-        const xhr = useXhrStore();
-        const { current } = useRoutesMainStore()
-
-        console.log(`firstSlug model: ${current.module}`)
-        showSpinner(`Finding first item ...`)
-        return xhr.send('model/firstSlug', 'post', { model: current.module })
-            .then(res => {
-                console.log(`firstSlug() returned ${res.data.slug}`)
-                //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
-                return res.data.slug
-            })
-            .catch(() => {
-                console.log(`firstSlug() failed`)
-                return false
-            })
-            .finally(() => {
-                showSpinner(false)
-            })
+        return await send2<string>('model/firstSlug', 'post', { model: current.value.module })
     }
 
     const mainCollection = computed(() => {
@@ -199,7 +182,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         itemByIndex,
         setArray,
         loadPage,
-        setCollectionViews,        
+        setCollectionViews,
         toggleCollectionView,
         clear,
         resetCollectionsViewIndex,

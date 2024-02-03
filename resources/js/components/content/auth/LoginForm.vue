@@ -70,7 +70,7 @@ const { showSnackbar } = useNotificationsStore()
 const { loginGetUser } = useAuthStore()
 const { user } = storeToRefs(useAuthStore())
 const { current } = storeToRefs(useRoutesMainStore())
-const { routerPush } = useRoutesMainStore()
+const { routerPush, pushHome } = useRoutesMainStore()
 
 const data = reactive({
   email: "",
@@ -124,8 +124,7 @@ async function login() {
     if (res.status === 422) {
       showSnackbar(<string>res.message)
     } else {
-      showSnackbar(`Error! ${<string>res.message}. Redirected to home page`)
-      routerPush('home')
+      pushHome(`Error! ${<string>res.message}. Redirected to home page`)
     }
   }
 }

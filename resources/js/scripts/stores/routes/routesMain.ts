@@ -4,7 +4,7 @@
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useRouter, type LocationQueryRaw, type RouteLocationNormalized, type RouteLocationRaw } from 'vue-router'
-import type { TParseModuleData, TRouteInfo, TPageName, TParseErrorDetails, TPlanAction, TModule } from '../../../types/routesTypes';
+import type { TParseModuleData, TRouteInfo, TPageName, TParseErrorDetails, TPlanAction, TModule } from '@/js/types/routesTypes'
 
 import { useRoutesParserStore } from './routesParser'
 import { useRoutesPlanTransitionStore } from './routesPlanTransition'
@@ -15,6 +15,10 @@ import { useCollectionMainStore } from '../collections/collectionMain'
 import { useFilterStore } from '../trio/filter'
 
 export const useRoutesMainStore = defineStore('routesMain', () => {
+    const router = useRouter()
+    const { parseModule } = useRoutesParserStore()
+    const { planTransition } = useRoutesPlanTransitionStore()
+    const { showSnackbar } = useNotificationsStore()
 
     const urlModuleFromModule: { [key in TModule]: string; } = {
         Home: 'home',
@@ -24,10 +28,6 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         Fauna: 'fauna',
         Stone: "stones"
     }
-
-    const router = useRouter()
-    const { parseModule } = useRoutesParserStore()
-    const { planTransition } = useRoutesPlanTransitionStore()
 
     const current = ref<TRouteInfo>({
         url_module: undefined,
@@ -53,10 +53,8 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
     const inTransition = ref(false)
 
-
-
     async function handleRouteChange(handle_to: RouteLocationNormalized, handle_from: RouteLocationNormalized): Promise<RouteLocationRaw | boolean> {
-        const { showSnackbar } = useNotificationsStore()
+        //have to be here to prevent circular reference
         const { prepareForNewRoute } = useRoutesPrepareStore()
         const { authenticated } = storeToRefs(useAuthStore())
 
@@ -77,7 +75,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         to.value.url_full_path = handle_to.fullPath
         //parse module 
         //console.log(`A.current: ${JSON.stringify(current.value, null, 2)}\nto: ${JSON.stringify(to.value, null, 2)})`)
-        if( Object.prototype.hasOwnProperty.call(handle_to.params, "module")){
+        if (Object.prototype.hasOwnProperty.call(handle_to.params, "module")) {
             const res = parseModule(<string>handle_to.params.module)
             if (res.success) {
                 const data = <TParseModuleData>res.data
@@ -87,7 +85,8 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             else {
                 console.log(`parseModule returned ${JSON.stringify(res, null, 2)}`)
                 showSnackbar(`${(<TParseErrorDetails>res.data).message}; redirected to Home Page`)
-                return goHome()
+                inTransition.value = false
+        return { name: 'home' }
             }
         } else {
             to.value.module = 'Home'
@@ -103,7 +102,8 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         if (!planResponse.success) {
             console.log("plan failed...")
             showSnackbar(`Routes transition error ${planResponse.data}; redirected to Home Page`)
-            return goHome()
+            inTransition.value = false
+            return { name: 'home' }
         }
 
         console.log(`Plan successful: ${JSON.stringify(planResponse.data, null, 2)}`)
@@ -127,27 +127,20 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             }
             //showSnackbar('Unexpected Error - redirceted to Home page')
             console.log(`unexpected prepare() error: ${JSON.stringify(err, null, 2)} redirect to home`);
-            return goHome()
+            inTransition.value = false
+            return { name: 'home' }
         }
     }
 
     function authorize(path: string) {
-        const auth = useAuthStore()
-        //console.log(`authorize() to.path: ${path} authUsersOnly: ${main.authenticatedUsersOnly}\nisLoggedIn: ${auth.authenticated}`);
+        //has to be here to prevent circular reference        
+        const { authenticated, accessibility } = storeToRefs(useAuthStore())
+        
         if (path === "/auth/login" || path === "/") {
-            return true;
-        } else if (auth.accessibility.authenticatedUsersOnly && !auth.authenticated) {
-            return false
-        } else {
-            //console.log('authorize - TRUE')
-            return true;
+            return true
         }
+        return !(accessibility.value.authenticatedUsersOnly && !authenticated.value)
     }
-
-    // function handlePrepareError(errorDetails: TPrepareError): Promise<RouteLocationRaw | boolean> {
-    //     console.log(`handlePrepareError: ${JSON.stringify(errorDetails)}`)
-    //     return Promise.resolve(false)
-    // }
 
     function finalizeRouting(handle_to: RouteLocationNormalized, handle_from: RouteLocationNormalized) {
         current.value.name = <TPageName>handle_to.name
@@ -175,35 +168,14 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         //current.value = JSON.parse(JSON.stringify(to.value))
     }
 
-    function goHome() {
+    function pushHome(message = '') {
         console.log(`goHome`)
         inTransition.value = false
-        return { name: 'home' }
+        if (message !== '') {
+            showSnackbar(message)
+        }
+        routerPush('home')
     }
-
-    function getRouteInfo() {
-        return current
-    }
-
-    function getToRouteInfo() {
-        return to
-    }
-
-    function getModule() {
-        return current.value.module
-    }
-
-    function getUrlModule() {
-        return current.value.url_module
-    }
-
-    function getToModule() {
-        return to.value.module
-    }
-    function toAndCurrentAreTheSameModule() {
-        return to.value.module === current.value.module
-    }
-
 
     function routerPush(routeName: string, slug: string = "none", module: TModule | "current" = "current", keepQuery: boolean = true) {
         let urlModule, query = null
@@ -224,23 +196,21 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
                 router.push({ name: routeName, params: { module: 'auth' } })
                 break
 
-
-
             case 'welcome':
             case 'filter':
             case 'create':
-                urlModule = (module === "current") ? getUrlModule() : urlModuleFromModule[module]
+                urlModule = (module === "current") ? current.value.url_module : urlModuleFromModule[module]
                 router.push({ name: routeName, params: { module: urlModule } })
                 break
 
             case 'index':
-                urlModule = (module === "current") ? getUrlModule() : urlModuleFromModule[module]
+                urlModule = (module === "current") ? current.value.url_module : urlModuleFromModule[module]
                 query = keepQuery ? current.value.queryParams : ""
                 router.push({ name: 'index', params: { module: urlModule }, query: <LocationQueryRaw>query })
                 break
 
             case 'show':
-                urlModule = (module === "current") ? getUrlModule() : urlModuleFromModule[module]
+                urlModule = (module === "current") ? current.value.url_module : urlModuleFromModule[module]
                 query = keepQuery ? current.value.queryParams : ""
                 router.push({ name: 'show', params: { module: urlModule, slug: slug }, query: <LocationQueryRaw>query })
                 break
@@ -248,7 +218,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             case 'update':
             case 'media':
             case 'tag':
-                router.push({ name: routeName, params: { module: getUrlModule(), slug: slug } })
+                router.push({ name: routeName, params: { module: current.value.url_module, slug: slug } })
                 break
         }
     }
@@ -256,7 +226,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     function moveFromItemToItem(slug: string, id: number, module: TModule | "current" = "current") {
         const { itemIndexById } = useCollectionMainStore()
         const { clearSelectedFilters } = useFilterStore()
-        const { showSnackbar } = useNotificationsStore()
+
         console.log(`moveFromItemToItem "${current.value.module} ${current.value.slug}" -> "${module} ${slug}" (id: ${id})`)
         if (current.value.module === module) {
             if (current.value.slug === slug) {
@@ -277,5 +247,5 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             routerPush('show', slug, module, false)
         }
     }
-    return { inTransition, getModule, getUrlModule, getToModule, getRouteInfo, getToRouteInfo, toAndCurrentAreTheSameModule, current, to, handleRouteChange, routerPush, moveFromItemToItem }
+    return { inTransition, current, to, handleRouteChange, routerPush, pushHome, moveFromItemToItem }
 })

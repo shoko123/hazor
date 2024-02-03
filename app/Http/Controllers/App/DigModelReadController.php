@@ -80,9 +80,6 @@ class DigModelReadController extends Controller
     public function firstSlug(DigModel $m)
     {
         $first = $m->firstSlug();
-        return response()->json([
-            "message" => "ReadController.firstSlug()",
-            "slug" => $first,
-        ], 200);
+        return response()->json($first, 200);
     }
 }

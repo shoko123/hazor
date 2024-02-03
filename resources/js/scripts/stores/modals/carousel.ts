@@ -16,11 +16,12 @@ export const useCarouselStore = defineStore('carousel', () => {
   const c = useCollectionsStore()
   const { extra } = storeToRefs(useCollectionMainStore())
   const { send2 } = useXhrStore()
-  const { showSpinner, showSnackbar } = useNotificationsStore()
+  const { showSpinner } = useNotificationsStore()
   const { derived } = storeToRefs(useItemStore())
   const { buildMedia } = useMediaStore()
   const { tagFromSlug } = useModuleStore()
-  const { routerPush } = useRoutesMainStore()
+  const { pushHome } = useRoutesMainStore()
+
   const isOpen = ref<boolean>(false)
   const collectionName = ref<TCollectionName>('main')
   const index = ref<number>(-1)
@@ -30,7 +31,6 @@ export const useCarouselStore = defineStore('carousel', () => {
     const collection = c.collection(<TCollectionName>collectionName.value)
     return collection.value.array.length
   })
-
 
   async function open(source: TCollectionName, openIndex: number) {
     collectionName.value = source
@@ -67,8 +67,7 @@ export const useCarouselStore = defineStore('carousel', () => {
             media: buildMedia(res.data.urls, derived.value.module)
           }
         } else {
-          showSnackbar('Failed to load carousel item. Redirected to home page.')
-          routerPush('home')
+          pushHome('Failed to load carousel item. Redirected to home page.')
         }
       } else {
         const res = await send2<TApiCarouselMedia>('media/carousel', 'post', { id: item.id })
@@ -85,8 +84,7 @@ export const useCarouselStore = defineStore('carousel', () => {
             text: res.data.text
           }
         } else {
-          showSnackbar('Failed to load carousel item. Redirected to home page.')
-          routerPush('home')
+          pushHome('Failed to load carousel item. Redirected to home page.')
         }
       }
       showSpinner(false)
