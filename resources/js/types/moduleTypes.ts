@@ -1,3 +1,21 @@
+type TMod = 'Locus' | 'Stone' | 'Fauna'
+
+type TModuleTypes = {
+        moduleName: 'Locus',
+        fields: TLocusFields,
+} | {
+        moduleName: 'Stone',
+        fields: TStoneFields,
+} | {
+        moduleName: 'Fauna',
+        fields: TFaunaFields,
+}
+
+type TTmpFields<TM extends TMod> = Extract<TModuleTypes, { moduleName: TM }>
+type TNewFields<TM extends TMod> = TTmpFields<TM>['fields']
+
+type TGenericFields = TModuleTypes['fields']
+
 type TLocusFields = {
         id: number,
         name: string,
@@ -13,11 +31,8 @@ type TLocusFields = {
         notes: string
         elevation: string,
 }
-type TLocusModify = keyof Pick<TLocusFields, 'id' | 'name' | 'area' | 'locus_no' |'stratum' | 'year' | 'square' |  'addendum' | 'type' | 'cross_ref' | 'description' | 'notes' >
-type TLocusLookup = keyof Pick<TLocusFields, 'id' >
-
-type TLocusField = keyof TLocusFields
-
+type TLocusModify = keyof Pick<TLocusFields, 'id' | 'name' | 'area' | 'locus_no' | 'stratum' | 'year' | 'square' | 'addendum' | 'type' | 'cross_ref' | 'description' | 'notes'>
+type TLocusLookup = keyof Pick<TLocusFields, 'id'>
 
 type TStoneFields = {
         id: number,
@@ -39,10 +54,8 @@ type TStoneFields = {
         base_type_id: number,
         order_column: number | null
 }
-type TStoneModify = keyof Pick<TStoneFields, 'id' | 'area' | 'locus' |'basket' | 'stone_no' | 'date' |  'year' | 'prov_notes' | 'type' | 'material_code' | 'dimensions' | 'rim_diameter' | 'description' | 'notes' | 'publication'>
-type TStoneLookup = keyof Pick<TStoneFields, 'id' |'material_id' | 'base_type_id' >
-
-type TStoneField = keyof TStoneFields
+type TStoneModify = keyof Pick<TStoneFields, 'id' | 'area' | 'locus' | 'basket' | 'stone_no' | 'date' | 'year' | 'prov_notes' | 'type' | 'material_code' | 'dimensions' | 'rim_diameter' | 'description' | 'notes' | 'publication'>
+type TStoneLookup = keyof Pick<TStoneFields, 'id' | 'material_id' | 'base_type_id'>
 
 type TFaunaFields = {
         id: number,
@@ -75,19 +88,17 @@ type TFaunaFields = {
 type TFaunaModify = keyof Pick<TFaunaFields, 'id' | 'area' | 'locus' | 'basket' | 'stratum' | 'registration_clean' | 'taxon' | 'taxon_common_name' | 'fragment_present' | 'anatomical_label' | 'element' | 'modifications' | 'phase' | 'age'>
 type TFaunaLookup = keyof Pick<TFaunaFields, 'id' | 'base_taxon_id' | 'scope_id' | 'material_id' | 'symmetry_id' | 'fusion_proximal_id' | 'fusion_distal_id'>
 
-type TFaunaField = keyof TFaunaFields
-
-type TFields = TLocusFields | TStoneFields | TFaunaFields
 type TModify = TLocusModify | TStoneModify | TFaunaModify
 type TLookup = TLocusLookup | TStoneLookup | TFaunaLookup
 
-type TColumnName = TLocusField | TStoneField | TFaunaField
+
 export {
         TLocusFields,
         TStoneFields,
         TFaunaFields,
-        TFields,
+        TGenericFields,
         TModify,
         TLookup,
-        TColumnName
+        TMod,
+        TNewFields
 }

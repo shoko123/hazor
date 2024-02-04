@@ -1,5 +1,6 @@
 // routesStore.js
-import type { TSlugParams, TIdParams } from '../types/moduleIdParamsTypes';
+import type { TSlugParams, TIdParams } from '../types/moduleIdParamsTypes'
+
 type TPageName = 'home' | 'welcome' | 'filter' | 'index' | 'show' | 'create' | 'update' | 'tag' | 'media' | 'login' | 'register' | 'forgot-password' | 'reset-password'
 type TUrlModule = 'auth' | 'admin' | 'loci' | 'fauna' | 'stones' | ''
 type TModule = 'Home' | 'Auth' | 'Admin' | 'Locus' | 'Fauna' | 'Stone'
@@ -57,9 +58,16 @@ type TParseSlugData = {
     slug: string,
     url_params: TSlugParams
 }
+
 type TParseSlugResponse = {
     success: boolean,
     data: TParseErrorDetails | TSlugParams
+}
+
+type TParseSlug<D> = {
+    success: boolean,
+    params: D,
+    message: string
 }
 
 type TSelectedFilterFromQuery = {
@@ -78,12 +86,7 @@ type TApiFilters = {
         order_by: { column_name: string, asc: boolean }[],
 }
 
-type TParseQueryData = {
-    apiFilters:TApiFilters,
-    selectedFilters: TSelectedFilterFromQuery[]
-}
-
-type TParseUrlQuery = {
+type TParseQuery = {
     success: boolean,
     apiFilters:TApiFilters,
     selectedFilters: TSelectedFilterFromQuery[],
@@ -109,10 +112,9 @@ export {
     TParseModuleData,
     TParseSlugResponse,
     TParseSlugData,
-    TParseUrlQuery,
+    TParseQuery,
     TParseErrorDetails,
     TParseUrlModuleResponse,
-    TParseQueryData,
     TApiFilters,
     TSelectedFilterFromQuery,
     TPlanResponse,

@@ -1,7 +1,7 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TFields } from '@/js/types/moduleFieldsTypes'
+import type { TGenericFields } from '@/js/types/moduleTypes'
 import type { TApiItemShow } from '@/js/types/itemTypes'
 import type { TApiArrayMain } from '@/js/types/collectionTypes'
 import type { IObject } from '@/js/types/generalTypes'
@@ -24,7 +24,7 @@ export const useItemStore = defineStore('item', () => {
   const { orderSelectedParams, getParamKeyByGroupAndId } = useTrioStore()
   const { showSnackbar, showSpinner } = useNotificationsStore()
 
-  const fields = ref<TFields | undefined>(undefined)
+  const fields = ref<TGenericFields | undefined>(undefined)
   const slug = ref<string | undefined>(undefined)
   const tag = ref<string | undefined>(undefined)
   const short = ref<string | undefined>(undefined)
@@ -37,7 +37,7 @@ export const useItemStore = defineStore('item', () => {
   const itemIndex = ref<number>(-1)
 
   const id = computed(() => {
-    return typeof fields.value === 'undefined' ? -1 : (<TFields>fields.value).id
+    return typeof fields.value === 'undefined' ? -1 : (<TGenericFields>fields.value).id
   })
 
   const itemView = computed(() => {
@@ -58,9 +58,9 @@ export const useItemStore = defineStore('item', () => {
     }
   })
 
+  function saveitemFieldsPlus<F>(apiItem: TApiItemShow<F>) {
 
-  function saveitemFieldsPlus(apiItem: TApiItemShow) {
-    fields.value = apiItem.fields
+    fields.value = <TGenericFields>apiItem.fields
     const fieldsObj = <IObject>apiItem.fields
     slug.value = apiItem.slug
     short.value = apiItem.short
@@ -73,6 +73,31 @@ export const useItemStore = defineStore('item', () => {
     //console.log(`saveitemFieldsPlus() selectedLookups:\n${selectedLookups}`)
     selectedItemParams.value = [...apiItem.model_tags, ...apiItem.global_tags, ...selectedLookups]
     orderSelectedParams(selectedItemParams.value)
+  }
+
+  //return the newly created/update item's slug (need it only for create())
+  async function upload<F>(isCreate: boolean, newFields: TGenericFields): Promise<TApiItemShow<F>> {
+    console.log(`item.upload isCreate: ${isCreate}, module: ${current.value.module}, fields: ${JSON.stringify(newFields, null, 2)}`)
+    const res = await send('model/store', isCreate ? 'post' : 'put', { model: current.value.module, item: newFields, id: newFields.id })
+      .catch(err => {
+        showSnackbar(`model.store failed!`)
+        //console.log(`model.store  failed. err: ${JSON.stringify(err, null, 2)}`)
+        throw err
+      })
+
+    if (isCreate) {
+      setItemMedia([])
+      saveitemFieldsPlus(res.data)
+      const newIndex = pushToArray({ "id": res.data.fields.id, "slug": res.data.slug })
+      itemIndex.value = newIndex
+      //console.log(`item pushed to main array. index: ${itemIndex.value}`)
+    } else {
+      fields.value = res.data.fields
+      slug.value = res.data.slug
+    }
+    console.log(`model.store() returned (success) ${JSON.stringify(res.data, null, 2)}`)
+    showSnackbar(`${current.value.module} ${isCreate ? "created" : "updated"} successfully! redirecting to item`)
+    return res.data
   }
 
   function itemClear() {
@@ -98,37 +123,12 @@ export const useItemStore = defineStore('item', () => {
     return mainArrayItem.slug
   }
 
-  //return the newly created/update item's slug (need it only for create())
-  async function upload(isCreate: boolean, newFields: TFields): Promise<TApiItemShow> {
-    console.log(`item.upload isCreate: ${isCreate}, module: ${current.value.module}, fields: ${JSON.stringify(newFields, null, 2)}`)
-    const res = await send('model/store', isCreate ? 'post' : 'put', { model: current.value.module, item: newFields, id: newFields.id })
-      .catch(err => {
-        showSnackbar(`model.store failed!`)
-        //console.log(`model.store  failed. err: ${JSON.stringify(err, null, 2)}`)
-        throw err
-      })
-
-    if (isCreate) {
-      setItemMedia([])
-      saveitemFieldsPlus(res.data)
-      const newIndex = pushToArray({ "id": res.data.fields.id, "slug": res.data.slug })
-      itemIndex.value = newIndex
-      //console.log(`item pushed to main array. index: ${itemIndex.value}`)
-    } else {
-      fields.value = res.data.fields
-      slug.value = res.data.slug
-    }
-    console.log(`model.store() returned (success) ${JSON.stringify(res.data, null, 2)}`)
-    showSnackbar(`${current.value.module} ${isCreate ? "created" : "updated"} successfully! redirecting to item`)
-    return res.data
-  }
-
   async function destroy(): Promise<string | null> {
     const { removeItemFromArrayById } = useCollectionMainStore()
-    const prev = next('main', itemIndexById((<TFields>fields.value).id), false)
+    const prev = next('main', itemIndexById((<TGenericFields>fields.value).id), false)
 
     showSpinner('Accessing DB to delete record')
-    await send("model/destroy", 'post', { model: current.value.module, id: (<TFields>fields.value).id })
+    await send("model/destroy", 'post', { model: current.value.module, id: (<TGenericFields>fields.value).id })
       .catch((err) => {
         showSnackbar("Failed to delete item!", 'red')
         showSpinner(false)
@@ -139,7 +139,7 @@ export const useItemStore = defineStore('item', () => {
     showSnackbar("Item deleted successfully")
     showSpinner(false)
     console.log(`${current.value.module}item.destroy() success!`)
-    const newLength = removeItemFromArrayById((<TFields>fields.value).id)
+    const newLength = removeItemFromArrayById((<TGenericFields>fields.value).id)
 
     //go to 'previous' slug or to module.home (if array.length is 1)
     if (newLength === 0) {

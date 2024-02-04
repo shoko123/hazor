@@ -2,7 +2,6 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
 import { TModule } from '../../types/routesTypes'
-import { TColumnName } from '../../types/moduleFieldsTypes'
 import { useMediaStore } from './media'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useLocusStore } from './modules/locus'
@@ -13,7 +12,7 @@ export const useModuleStore = defineStore('module', () => {
   const { bucketUrl } = storeToRefs(useMediaStore())
   const { current } = storeToRefs(useRoutesMainStore())
   const counts = ref({ items: 0, media: 0 })
-  const lookups = ref<{ column_name: TColumnName, group_name: string }[]>([])
+  const lookups = ref<{ column_name: string, group_name: string }[]>([])
   const welcomeText = ref<string>("")
 
   const backgroundImage = computed(() => {

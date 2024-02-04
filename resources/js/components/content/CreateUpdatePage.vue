@@ -32,23 +32,22 @@
 
 <script lang="ts" setup>
 
-import { type Component } from 'vue'
-import { type Validation } from "@vuelidate/core"
-import { computed } from 'vue'
+import { computed, type Component } from 'vue'
 import { storeToRefs } from 'pinia'
-
+import { type Validation } from "@vuelidate/core"
 import { type TApiItemShow } from '@/js/types/itemTypes'
-import StoneNew from '../modules/stones/StoneNew.vue'
-import FaunaNew from '../modules/fauna/FaunaNew.vue'
-import LocusNew from '../modules/loci/LocusNew.vue'
 
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useItemStore } from '../../scripts/stores/item'
-import { TFields } from '@/js/types/moduleFieldsTypes'
+import { TGenericFields } from '@/js/types/moduleTypes'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 import { useLocusStore } from '../../scripts/stores/modules/locus'
 import { useStoneStore } from '../../scripts/stores/modules/stone'
 import { useFaunaStore } from '../../scripts/stores/modules/fauna'
+
+import StoneNew from '../modules/stones/StoneNew.vue'
+import FaunaNew from '../modules/fauna/FaunaNew.vue'
+import LocusNew from '../modules/loci/LocusNew.vue'
 
 const props = defineProps<{
   isCreate: boolean
@@ -77,7 +76,7 @@ const formNew = computed<Component>(() => {
   }
 })
 
-function beforeStore(isCreate: boolean, fields: TFields) {
+function beforeStore(isCreate: boolean, fields: TGenericFields) {
   let store
   switch (current.value.module) {
     case 'Locus':
@@ -96,7 +95,7 @@ function beforeStore(isCreate: boolean, fields: TFields) {
   return store.beforeStore(props.isCreate, fields)
 }
 
-async function submit(v: Validation, data: TFields) {
+async function submit(v: Validation, data: TGenericFields) {
   //console.log(`CreateUpdate.submit() data: ${JSON.stringify(data, null, 2)}`)
 
   // vuelidate validation
@@ -117,14 +116,14 @@ async function submit(v: Validation, data: TFields) {
     return
   }
 
-  const itemDetails = await upload(props.isCreate, <TFields>fieldsToSend).catch(err => {
+  const itemDetails = await upload(props.isCreate, <TGenericFields>fieldsToSend).catch(err => {
     console.log(`CreateUpdate.upload failed errors: ${JSON.stringify(err, null, 2)}`)
     throw 'FailedToUpload'
   })
 
   //console.log(`CreateUpdate.after upload() res: ${JSON.stringify(slug, null, 2)}`)
   if (props.isCreate) {
-    routerPush('show', (<TApiItemShow>itemDetails).slug)
+    routerPush('show', (<TApiItemShow<TGenericFields>>itemDetails).slug)
   } else {
     routerPush('show', <string>current.value.slug)
   }

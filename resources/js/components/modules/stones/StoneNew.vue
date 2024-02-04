@@ -147,7 +147,7 @@
 
 <script lang="ts" setup>
 import { useTrioStore } from '../../../scripts/stores/trio/trio'
-import { TStoneFields } from '@/js/types/moduleFieldsTypes'
+import { TStoneFields } from '@/js/types/moduleTypes'
 import { onMounted, reactive, computed } from "vue"
 import { storeToRefs } from 'pinia'
 import { useVuelidate } from "@vuelidate/core"

@@ -92,10 +92,10 @@
 
 <script lang="ts" setup>
 
-import type { TLocusFields } from '@/js/types/moduleFieldsTypes'
-import { onMounted, reactive, computed } from "vue"
+import { onMounted, reactive, computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useVuelidate } from "@vuelidate/core";
+import type { TLocusFields } from '@/js/types/moduleTypes'
+import { useVuelidate } from "@vuelidate/core"
 import { required, minValue, maxValue, maxLength, helpers } from "@vuelidate/validators";
 import { useItemStore } from '../../../scripts/stores/item'
 import { useTrioStore } from '../../../scripts/stores/trio/trio'
@@ -112,9 +112,7 @@ onMounted(() => {
 })
 
 const { fields } = storeToRefs(useItemStore())
-
-
-let { trio } = storeToRefs(useTrioStore())
+const { trio } = storeToRefs(useTrioStore())
 
 let data: TLocusFields = reactive({
   id: 0,
@@ -142,7 +140,6 @@ const nameValidator = helpers.regex(/^\d{1,5}$|^\d{1,5}[a-c]$|^\d{2}-\d{3}$|^\d{
 const areas = computed(() => {
   return trio.value.entities.groups["Area"].params.map(x => trio.value.entities.params[x].name)
 })
-
 
 const rules = computed(() => {
   return {

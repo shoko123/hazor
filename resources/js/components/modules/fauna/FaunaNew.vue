@@ -113,11 +113,11 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, computed } from "vue"
+import { onMounted, reactive, computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useVuelidate } from "@vuelidate/core";
+import { useVuelidate } from "@vuelidate/core"
 import { required, maxLength, minValue, maxValue } from "@vuelidate/validators";
-import { TFaunaFields } from '@/js/types/moduleFieldsTypes'
+import { TFaunaFields } from '@/js/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 
 const props = defineProps<{
@@ -132,7 +132,6 @@ onMounted(() => {
   }
   console.log(`FaunaNew.Mount fields: ${JSON.stringify(data, null, 2)}`)
 })
-
 
 const data: TFaunaFields = reactive({
   id: 0,

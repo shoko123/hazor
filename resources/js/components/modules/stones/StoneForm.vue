@@ -140,7 +140,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { TStoneFields } from '@/js/types/moduleFieldsTypes'
+import { TStoneFields } from '@/js/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 
 let i = useItemStore()

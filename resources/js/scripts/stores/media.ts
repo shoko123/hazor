@@ -1,5 +1,5 @@
 // stores/media.js
-import { TFields } from '@/js/types/moduleFieldsTypes'
+import { TGenericFields } from '@/js/types/moduleTypes'
 import { TMediaOfItem } from '@/js/types/mediaTypes'
 import { TModule } from '@/js/types/routesTypes'
 import { TMediaUrls, TApiArrayMedia } from '@/js/types/collectionTypes'
@@ -121,7 +121,7 @@ export const useMediaStore = defineStore('media', () => {
       fd.append("media_files[]", file, file.name);
     });
 
-    const idAsString = (<TFields>i.fields).id as unknown as string
+    const idAsString = (<TGenericFields>i.fields).id as unknown as string
     fd.append("model", r.current.module);
     fd.append("model_id", idAsString);
     fd.append("media_collection_name", mediaCollectionName.value)
@@ -143,8 +143,8 @@ export const useMediaStore = defineStore('media', () => {
   async function destroy(media_id: number) {
     const r = useRoutesMainStore()
     const i = useItemStore()
-    console.log(`destroy() media_id: ${media_id}, model: ${r.current.module}, model_id: ${(<TFields>i.fields).id}`)
-    return send("media/destroy", 'post', { media_id, model: r.current.module, model_id: (<TFields>i.fields).id })
+    console.log(`destroy() media_id: ${media_id}, model: ${r.current.module}, model_id: ${(<TGenericFields>i.fields).id}`)
+    return send("media/destroy", 'post', { media_id, model: r.current.module, model_id: (<TGenericFields>i.fields).id })
       .then((res) => {
         showUploader.value = false
         showSnackbar("Media deleted successfully")

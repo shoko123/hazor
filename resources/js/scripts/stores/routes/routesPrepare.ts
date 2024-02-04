@@ -9,6 +9,8 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { TPlanAction, TPrepareResponse, TModule, TParseErrorDetails } from '@/js/types/routesTypes'
+import type { TGenericFields } from '@/js/types/moduleTypes'
+import type { TApiItemShow} from '@/js/types/itemTypes'
 import type { LocationQuery } from 'vue-router'
 import { useXhrStore } from '../xhr'
 import { useTrioStore } from '../trio/trio'
@@ -25,12 +27,13 @@ import { TApiArrayMain } from '@/js/types/collectionTypes'
 export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   const { send, send2 } = useXhrStore()
   const n = useNotificationsStore()
-  const m = useModuleStore()
+
   const c = useCollectionsStore()
   const i = useItemStore();
   const r = useRoutesMainStore()
   const p = useRoutesParserStore()
   const f = useFilterStore()
+  const m = useModuleStore()
   const { trioReset, setTrio } = useTrioStore()
   const { setItemMedia } = useMediaStore()
 
@@ -163,7 +166,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       return { success: false, message: `${res1.message}` }
     }
 
-    //const apiQuery = <TParseQueryData>queryRes.data
     if (fromUndef.value) {
       f.setFiltersFromUrlQuery(res1.selectedFilters)
     }
@@ -185,6 +187,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
   async function loadItem(module: TModule, slug: string,) {
+    //const tmp: TNewFields<'Fauna'> = {base_taxon_id: 56}
     //console.log(`prepare.loadItem() slug: ${slug}`)
     const sp = p.parseSlug(module, slug)
     if (!sp.success) {
@@ -194,22 +197,39 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
     n.showSpinner(`Loading ${module} item...`)
 
-    try {
-      const res = await send('model/show', 'post', { model: module, slug: slug, params: sp.data })
-      //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
+ const res = await send2<TApiItemShow<TGenericFields>>('model/show', 'post', { model: module, slug: slug, params: sp.data })
+
+ if (res.success) {
       r.to.slug = res.data.slug
-      r.to.idParams = res.data.id_params
+      //r.to.idParams = res.data.id_params
       setItemMedia(res.data.media)
       c.setArray('related', res.data.related)
       i.saveitemFieldsPlus(res.data)
       n.showSpinner(false)
-      return true
+ 
+  return { success: true, message: '' }
+} else {
+ 
+  return { success: false, message: <string>res.message }
+}
 
-    } catch (err) {
-      console.log(`*********** loadItem() failed **************`)
-      n.showSpinner(false)
-      throw err
-    }
+    ///////////
+    // try {
+    //   const res = await send('model/show', 'post', { model: module, slug: slug, params: sp.data })
+    //   //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
+    //   r.to.slug = res.data.slug
+    //   r.to.idParams = res.data.id_params
+    //   setItemMedia(res.data.media)
+    //   c.setArray('related', res.data.related)
+    //   i.saveitemFieldsPlus(res.data)
+    //   n.showSpinner(false)
+    //   return true
+
+    // } catch (err) {
+    //   console.log(`*********** loadItem() failed **************`)
+    //   n.showSpinner(false)
+    //   throw err
+    // }
   }
 
   async function loadPage(firstPage: boolean): Promise<void> {

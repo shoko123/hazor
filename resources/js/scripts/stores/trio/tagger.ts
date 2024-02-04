@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import type { TGroupValue, TColumnValueUpdateInfo } from '../../../types/trioTypes'
 import type { IObject } from '../../../types/generalTypes'
-import type { TFields } from '@/js/types/moduleFieldsTypes'
+import type { TGenericFields } from '@/js/types/moduleTypes'
 import { useXhrStore } from '../xhr'
 import { useItemStore } from '../item'
 import { useTrioStore } from './trio'
@@ -64,7 +64,7 @@ export const useTaggerStore = defineStore('tagger', () => {
 
     const data = {
       model: current.value.module,
-      id: (<TFields>fields.value).id,
+      id: (<TGenericFields>fields.value).id,
       ids: globalTagIds,
       model_tag_ids: modelTagIds,
       columns

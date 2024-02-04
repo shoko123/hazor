@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 import { defineStore } from 'pinia'
-import { TStoneFields, TFields } from '@/js/types/moduleFieldsTypes'
+import { TStoneFields, TGenericFields } from '@/js/types/moduleTypes'
 import { TParseSlugResponse } from '@/js/types/routesTypes'
 
 export const useStoneStore = defineStore('stone', () => {
@@ -28,7 +28,7 @@ export const useStoneStore = defineStore('stone', () => {
     return slug.replace('.', '/')
   }
 
-  function beforeStore(isCreate: boolean, fields: TFields): TFields | false {
+  function beforeStore(isCreate: boolean, fields: TGenericFields): TGenericFields | false {
     //console.log(`stone.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
     const sf = <TStoneFields>fields
     if (isCreate) {
