@@ -59,7 +59,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                         }
 
                     default:
-                        return { success: false, data: 'BadTransition' }
+                        return { success: false, message: 'Error: Bad transition.' }
                 }
                 break
 
@@ -81,7 +81,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                         }
 
                     default:
-                        return { success: false, data: 'BadTransition' }
+                        return { success: false, message: 'Error: Bad transition.' }
                 }
 
             case 'index':
@@ -101,7 +101,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                     case 'show':
                         return { success: true, data: ['page.load', 'item.clear'] }
                     default:
-                        return { success: false, data: 'BadTransition' }
+                        return { success: false, message: 'Error: Bad transition.' }
                 }
                 break
 
@@ -118,7 +118,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                                 return { success: true, data: ['item.load', 'item.setIndexInCollection'] }
                             }
                         }
-                        return { success: false, data: 'BadTransition' }
+                        return { success: false, message: 'Error: Bad transition.' }
 
                     case 'home':
                         return { success: true, data: ['module.load', 'collection.item.load', 'item.setIndexInCollection'] }
@@ -141,7 +141,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                     case 'media':
                         return { success: true, data: [] }
                     default:
-                        return { success: false, data: 'BadTransition' }
+                        return { success: false, message: 'Error: Bad transition.' }
                 }
                 break
 
@@ -150,31 +150,33 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                     case 'show':
                         return { success: true, data: [] }
                     default:
-                        return { success: false, data: 'BadTransition' }
+                        return { success: false, message: 'Error: Bad transition.' }
                 }
             case 'update':
                 switch (from.name) {
                     case 'show':
                         return { success: true, data: [] }
                     default:
-                        return { success: false, data: 'BadTransition' }
+                        return { success: false, message: 'Error: Bad transition.' }
                 }
             case 'tag':
                 switch (from.name) {
                     case 'show':
                         return { success: true, data: [] }
                     default:
-                        return { success: false, data: 'BadTransition' }
+                        return { success: false, message: 'Error: Bad transition.' }
                 }
             case 'media':
                 switch (from.name) {
                     case 'show':
                         return { success: true, data: ['item.prepareForMedia'] }
                     default:
-                        return { success: false, data: 'BadTransition' }
+                        return { success: false, message: 'Error: Bad transition.' }
+
                 }
             default:
-                return { success: false, data: 'BadTransition' }
+                return { success: false, message: 'Error: Bad transition.' }
+
         }
     }
     return { planTransition }

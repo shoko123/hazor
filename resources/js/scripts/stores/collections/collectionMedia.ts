@@ -60,14 +60,14 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
         array.value[indexB] = { ...temp }
     }
 
-    async function loadPage(pageNoB1: number, view: TCView, module: TModule): Promise<boolean> {
+    async function loadPage(pageNoB1: number, view: TCView, module: TModule) {
         view
         module
         //console.log(`collectionMedia.loadPage() view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1} module: ${module} `);
         extra.value.pageNoB1 = pageNoB1
         //extra.value.viewIndex = viewIndex
         //extra.value.viewIndex = extra.value.views.indexOf(view)
-        return true
+        return { success: true, message: '' }
 
     }
 

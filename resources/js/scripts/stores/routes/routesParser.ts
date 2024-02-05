@@ -1,7 +1,7 @@
 // routesStore.js
 //handles the entire routing mechanism - parsing, loading resources, error handling
 import { defineStore } from 'pinia'
-import type { TModule, TParseUrlModuleResponse, TParseSlugResponse, } from '../../../types/routesTypes'
+import type { TModule } from '../../../types/routesTypes'
 import { useLocusStore } from '../modules/locus'
 import { useFaunaStore } from '../modules/fauna'
 import { useStoneStore } from '../modules/stone'
@@ -16,7 +16,7 @@ const moduleConversion = {
 
 export const useRoutesParserStore = defineStore('routesParser', () => {
 
-    function parseModule(module: string): TParseUrlModuleResponse {
+    function parseModule(module: string) {
         //console.log(`parseModule() module: "${module}"`)
         switch (module) {
             case "admin":
@@ -26,22 +26,20 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
             case 'fauna':
                 //m.to.module = <TModule>moduleConversion[module]
                 //m.to.url_module = module
-                return { success: true, data: { module: <TModule>moduleConversion[module], url_module: module } }
+                return { success: true, module: <TModule>moduleConversion[module], url_module: module , message: '' }
 
             default:
                 console.log(`******* URL Parser error: Unsupported module name "${module}" *********`)
                 return {
                     success: false,
-                    data: {
-                        error: 'BadModuleName',
-                        message: `unknown url module "${module}"`
-                    }
+                    data: {},
+                    message: `Error: unknown url module "${module}"`
                 }
         }
     }
 
 
-    function parseSlug(module: TModule, slug: string): TParseSlugResponse {
+    function parseSlug(module: TModule, slug: string) {
         //console.log(`parseSlug() module: ${module}, slug: ${slug}`);
         let store
         switch (module) {
@@ -58,9 +56,9 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
                 break
 
             default:
-                return { success: false, data: { error: "BadIdFormat", message: "bad store name" } }
+                return { success: false, data: null, message: `Error: bad module name ${module}` }
         }
-        return store.slugParamsFromSlug(slug)
+        return store.validateSlug(slug)
     }
 
     return { parseModule, parseSlug }

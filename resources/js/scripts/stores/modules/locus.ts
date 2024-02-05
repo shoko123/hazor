@@ -1,7 +1,6 @@
-import {  computed } from 'vue'
+import { computed } from 'vue'
 import { defineStore } from 'pinia'
-import { TLocusFields, TGenericFields } from '@/js/types/moduleTypes'
-import type { TParseSlugResponse } from '../../../types/routesTypes'
+import { TLocusFields, TGenericFields, TFuncValidateSlug } from '@/js/types/moduleTypes'
 
 export const useLocusStore = defineStore('locus', () => {
   const reNameIsLocusNo = /^\d{1,5}$/
@@ -9,22 +8,20 @@ export const useLocusStore = defineStore('locus', () => {
   // const reNameIsYearHyphenLocusNo = /^\d{2}-\d{3}$/
   // const reNameIsYearAreaHyphenLocusNo = /^\d{2}[A-Z]\d{1}-\d{3}$/
 
-  function slugParamsFromSlug(slug: string): TParseSlugResponse {
+  const validateSlug: TFuncValidateSlug = function(slug: string) { 
     const arr = slug.split('.');
-    if (arr.length === 1) {
+
+    if (arr.length === 2) {
       return {
-        success: false, data: {
-          error: "BadIdFormat",
-          message: "No . [dot] detected in slug"
-        }
+        success: true,
+        data: {
+          area: arr[0],
+          name: arr[1]
+        },
+        message: '',
       }
     }
-    return {
-      success: true, data: {
-        area: arr[0],
-        name: arr[1]
-      }
-    }
+    return { success: false, data: null, message: "No . [dot] detected in slug." }
   }
 
   function tagFromSlug(slug: string): string {
@@ -63,7 +60,7 @@ export const useLocusStore = defineStore('locus', () => {
   return {
     beforeStore,
     tagFromSlug,
-    slugParamsFromSlug,
+    validateSlug,
     headers
   }
 })

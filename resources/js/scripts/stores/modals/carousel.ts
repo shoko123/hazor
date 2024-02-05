@@ -49,7 +49,6 @@ export const useCarouselStore = defineStore('carousel', () => {
   async function load(item: TApiArray) {
     // let sendParams = { url = ''
     if (collectionName.value === 'related') {
-
       const tmp = <TApiArrayRelated>item
       carouselItemDetails.value = { ...tmp, tag: tagFromSlug(tmp.module, tmp.slug), media: buildMedia(tmp.media, tmp.module) }
     }
@@ -98,17 +97,12 @@ export const useCarouselStore = defineStore('carousel', () => {
       const view = extra.value.views[extra.value.viewIndex]
       if (!c.itemIsInPage(<number>carouselItemDetails.value?.id)) {
         const index = c.itemIndexById(<number>carouselItemDetails.value?.id)
-        await c.loadPageByItemIndex(collectionName.value, view, index, derived.value.module)
-          .then(() => {
-            console.log(`carousel.close() loaded a new page`)
-          })
-          .catch(err => {
-            console.log(`carousel.close() loaded a new page failed`)
-            throw err
-          })
-          .finally(() => {
-            showSpinner(false)
-          })
+        showSpinner('Loading a new page...')
+        const res = await c.loadPageByItemIndex(collectionName.value, view, index, derived.value.module)
+          showSpinner(false)
+          if(!res.success) {
+            pushHome('Failed to load page. Redirected to home page.')
+          }
       } else {
         console.log(`carousel.close() no need to load a new page`)
       }

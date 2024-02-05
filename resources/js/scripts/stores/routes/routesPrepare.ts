@@ -8,9 +8,9 @@
 
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { TPlanAction, TPrepareResponse, TModule, TParseErrorDetails } from '@/js/types/routesTypes'
+import type { TPlanAction, TModule } from '@/js/types/routesTypes'
 import type { TGenericFields } from '@/js/types/moduleTypes'
-import type { TApiItemShow} from '@/js/types/itemTypes'
+import type { TApiItemShow } from '@/js/types/itemTypes'
 import type { LocationQuery } from 'vue-router'
 import { useXhrStore } from '../xhr'
 import { useTrioStore } from '../trio/trio'
@@ -39,24 +39,32 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
   const fromUndef = ref<boolean>(false)
 
-  async function prepareForNewRoute(module: TModule, query: LocationQuery, slug: string, plan: TPlanAction[], fromUndefined: boolean): Promise<TPrepareResponse> {
+  async function prepareForNewRoute(module: TModule, query: LocationQuery, slug: string, plan: TPlanAction[], fromUndefined: boolean): Promise<{ success: boolean, message: string }> {
     fromUndef.value = fromUndefined
     for (const x of plan) {
       switch (x) {
-        case 'module.load':
-          await loadModule(module).catch(() => {
-            throw 'ModuleInitError'
-          })
+        case 'module.load': {
+          n.showSpinner('Loading module data ...')
+          const res = await loadModule(module)
+          n.showSpinner(false)
+          if (!res.success) {
+            return res
+          }
+        }
           break
 
         case 'module.clear':
           trioReset()
           break
 
-        case 'collection.item.load':
-          await loadCollectionAndItem(module, query, slug).catch(() => {
-            throw "LoadCollectionAndItemFError"
-          })
+        case 'collection.item.load': {
+          n.showSpinner('Loading collection and item...')
+          const res = await loadCollectionAndItem(module, query, slug)
+          n.showSpinner(false)
+          if (!res.success) {
+            return res
+          }
+        }
           break
 
         case 'collection.load': {
@@ -65,8 +73,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           n.showSpinner(false)
 
           if (!res.success) {
-            n.showSnackbar(`${res.message}`)
-            throw res.message === 'Empty result set' ? 'EmptyResultSet' : 'CollectionLoadError'
+            return res
           }
         }
           break
@@ -75,10 +82,14 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           c.clear(['main', 'media', 'related'])
           break
 
-        case 'item.load':
-          await loadItem(module, slug).catch(() => {
-            throw 'ItemLoadError'
-          })
+        case 'item.load': {
+          n.showSpinner(`Loading ${module} item...`)
+          const res = await loadItem(module, slug)
+          n.showSpinner(false)
+          if (!res.success) {
+            return res
+          }
+        }
           break
 
         case 'item.clear':
@@ -88,16 +99,28 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
         case 'item.setIndexInCollection':
           if (!itemSetIndexInCollection()) {
-            throw 'ItemNotFoundInCollectionError'
+            return { success: false, message: 'Error: Item not found in Collection.' }
           }
           break
 
-        case 'page.load':
-          await loadPage(false)
+        case 'page.load': {
+          n.showSpinner(`Loading ${module} page...`)
+          const res = await loadPage(false)
+          n.showSpinner(false)
+          if (!res.success) {
+            return res
+          }
+        }
           break
 
-        case 'page.load1':
-          await loadPage(true)
+        case 'page.load1': {
+          n.showSpinner(`Loading ${module} page...`)
+          const res = await loadPage(true)
+          n.showSpinner(false)
+          if (!res.success) {
+            return res
+          }
+        }
           break
 
         case 'item.prepareForMedia':
@@ -106,16 +129,15 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
         default:
           console.log(`PrepareForNewRoute() Bad Action: ${x}`)
-          throw 'RoutingBadActionError'
+          return { success: false, message: 'Error: Routing Unexpected error' }
       }
     }
     //console.log(`PrepareForNewRoute() success after completing queue`)
-    return { success: true }
+    return { success: true, message: '' }
   }
 
-  async function loadModule(module: TModule) {
+  async function loadModule(module: TModule): Promise<{ success: boolean, message: string }> {
     trioReset()
-    n.showSpinner('Loading module data ...')
     return send('model/init', 'post', { model: module })
       .then(res => {
         //console.log(`loadModule() res:\n${JSON.stringify(res, null, 2)}`)
@@ -133,29 +155,29 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
         c.setCollectionViews('main', res.data.display_options.main_collection_views)
         c.setCollectionViews('related', res.data.display_options.related_collection_views)
 
-        return true
+        return { success: true, message: '' }
       })
       .catch(err => {
-        n.showSnackbar(`Navigation to new routes failed. Navigation cancelled`)
         console.log(`Navigation to new routes failed with err: ${JSON.stringify(err, null, 2)}`)
-        throw err;
+        return { success: false, message: `Error: failed to load module ${module}` }
       })
-      .finally(() => {
-        n.showSpinner(false)
-      })
+
   }
 
   async function loadCollectionAndItem(module: TModule, query: LocationQuery, slug: string) {
-    n.showSpinner(`Loading Module ${module} ...`)
     console.log(`prepare.loadCollectionAndItem()`)
 
-    await Promise.all([
+    const res = await Promise.all([
       loadMainCollection(module, query),
       loadItem(module, slug)
     ])
-      .catch(err => {
-        throw err
-      });
+
+    for (const x of res) {
+      if (!x.success) {
+        return x
+      }
+    }
+    return res[0]
   }
 
   async function loadMainCollection(module: TModule, query: LocationQuery): Promise<{ success: boolean, message: string }> {
@@ -175,7 +197,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     if (res2.success) {
       if (res2.data.length === 0) {
         console.log(`loadMainCollection() err: empty result set`)
-        return { success: false, message: 'Empty result set' }
+        return { success: false, message: 'Error: Empty result set' }
       }
       r.to.queryParams = query
       c.setArray('main', res2.data)
@@ -186,54 +208,30 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     }
   }
 
-  async function loadItem(module: TModule, slug: string,) {
-    //const tmp: TNewFields<'Fauna'> = {base_taxon_id: 56}
-    //console.log(`prepare.loadItem() slug: ${slug}`)
+  async function loadItem(module: TModule, slug: string): Promise<{ success: boolean, message: string }> {
+    //console.log(`loadItem() slug: ${slug}`)
     const sp = p.parseSlug(module, slug)
     if (!sp.success) {
       console.log(`parseSlug() failed`)
-      throw (<TParseErrorDetails>sp.data).error
+      return { success: false, message: sp.message }
     }
 
-    n.showSpinner(`Loading ${module} item...`)
+    const res = await send2<TApiItemShow<TGenericFields>>('model/show', 'post', { model: module, slug: slug, params: sp.data })
 
- const res = await send2<TApiItemShow<TGenericFields>>('model/show', 'post', { model: module, slug: slug, params: sp.data })
-
- if (res.success) {
+    if (res.success) {
       r.to.slug = res.data.slug
-      //r.to.idParams = res.data.id_params
       setItemMedia(res.data.media)
       c.setArray('related', res.data.related)
       i.saveitemFieldsPlus(res.data)
-      n.showSpinner(false)
- 
-  return { success: true, message: '' }
-} else {
- 
-  return { success: false, message: <string>res.message }
-}
-
-    ///////////
-    // try {
-    //   const res = await send('model/show', 'post', { model: module, slug: slug, params: sp.data })
-    //   //console.log(`show() returned (success). res: ${JSON.stringify(res, null, 2)}`)
-    //   r.to.slug = res.data.slug
-    //   r.to.idParams = res.data.id_params
-    //   setItemMedia(res.data.media)
-    //   c.setArray('related', res.data.related)
-    //   i.saveitemFieldsPlus(res.data)
-    //   n.showSpinner(false)
-    //   return true
-
-    // } catch (err) {
-    //   console.log(`*********** loadItem() failed **************`)
-    //   n.showSpinner(false)
-    //   throw err
-    // }
+      return { success: true, message: '' }
+    } else {
+      return { success: false, message: res.message }
+    }
   }
 
-  async function loadPage(firstPage: boolean): Promise<void> {
-    return await c.loadPageByItemIndex('main', c.collection('main').value.meta.view, firstPage ? 0 : i.itemIndex, r.to.module)
+  async function loadPage(firstPage: boolean): Promise<{ success: boolean, message: string }> {
+    const res = await c.loadPageByItemIndex('main', c.collection('main').value.meta.view, firstPage ? 0 : i.itemIndex, r.to.module)
+    return res
   }
 
   async function itemSetIndexInCollection(): Promise<boolean> {

@@ -4,7 +4,7 @@
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useRouter, type LocationQueryRaw, type RouteLocationNormalized, type RouteLocationRaw } from 'vue-router'
-import type { TParseModuleData, TRouteInfo, TPageName, TParseErrorDetails, TPlanAction, TModule } from '@/js/types/routesTypes'
+import type { TRouteInfo, TPageName, TPlanAction, TModule } from '@/js/types/routesTypes'
 
 import { useRoutesParserStore } from './routesParser'
 import { useRoutesPlanTransitionStore } from './routesPlanTransition'
@@ -53,8 +53,8 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
     const inTransition = ref(false)
 
-    async function handleRouteChange(handle_to: RouteLocationNormalized, handle_from: RouteLocationNormalized): Promise<RouteLocationRaw | boolean> {
-        //have to be here to prevent circular reference
+    async function handleRouteChange(handle_to: RouteLocationNormalized, handle_from: RouteLocationNormalized): Promise<RouteLocationRaw | true> {
+        //These elements have to be here to prevent circular reference
         const { prepareForNewRoute } = useRoutesPrepareStore()
         const { authenticated } = storeToRefs(useAuthStore())
 
@@ -73,20 +73,20 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
         to.value.name = <TPageName>handle_to.name
         to.value.url_full_path = handle_to.fullPath
+        
         //parse module 
         //console.log(`A.current: ${JSON.stringify(current.value, null, 2)}\nto: ${JSON.stringify(to.value, null, 2)})`)
         if (Object.prototype.hasOwnProperty.call(handle_to.params, "module")) {
             const res = parseModule(<string>handle_to.params.module)
             if (res.success) {
-                const data = <TParseModuleData>res.data
-                to.value.module = data.module
-                to.value.url_module = data.url_module
+                to.value.module = <TModule>res.module
+                to.value.url_module = res.url_module
             }
             else {
                 console.log(`parseModule returned ${JSON.stringify(res, null, 2)}`)
-                showSnackbar(`${(<TParseErrorDetails>res.data).message}; redirected to Home Page`)
+                showSnackbar(`${res.message}. redirected to Home Page`)
                 inTransition.value = false
-        return { name: 'home' }
+                return { name: 'home' }
             }
         } else {
             to.value.module = 'Home'
@@ -97,45 +97,41 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
         //verify that the transition is legal and prepare the plan required for a successful transition.
 
-        const planResponse = planTransition(handle_to, handle_from)
+        const res1 = planTransition(handle_to, handle_from)
 
-        if (!planResponse.success) {
+        if (!res1.success) {
             console.log("plan failed...")
-            showSnackbar(`Routes transition error ${planResponse.data}; redirected to Home Page`)
+            showSnackbar(`${res1.message} Redirected to Home Page`)
             inTransition.value = false
             return { name: 'home' }
         }
 
-        console.log(`Plan successful: ${JSON.stringify(planResponse.data, null, 2)}`)
-        //prepare - access server and load stuff (async)
+        console.log(`Plan successful: ${JSON.stringify(res1.data, null, 2)}`)
+
+        //Access server and load stuff (async)
         inTransition.value = true
 
-        try {
-            await prepareForNewRoute(to.value.module, handle_to.query, <string>handle_to.params.slug, <TPlanAction[]>planResponse.data, handle_from.name === undefined)
+        const res = await prepareForNewRoute(to.value.module, handle_to.query, <string>handle_to.params.slug, <TPlanAction[]>res1.data, handle_from.name === undefined)
+        if (res.success) {
             finalizeRouting(handle_to, handle_from)
-
-            //console.log(`router.beforeEach returned ${JSON.stringify(res, null, 2)}`);
+        } else {
             inTransition.value = false
-            return true
-        }
-        catch (err) {
-            inTransition.value = false
-            if (err === 'EmptyResultSet' && handle_from.name === 'filter') {
-                console.log(`EMPTY ERROR`)
+            if (res.message === 'Error: Empty result set' && handle_from.name === 'filter') {
                 showSnackbar('No results returned. Please modify query and resubmit!')
                 return { name: 'filter' }
+            } else {
+                return { name: 'home' }
             }
-            //showSnackbar('Unexpected Error - redirceted to Home page')
-            console.log(`unexpected prepare() error: ${JSON.stringify(err, null, 2)} redirect to home`);
-            inTransition.value = false
-            return { name: 'home' }
         }
+        //console.log(`router.beforeEach returned ${JSON.stringify(res, null, 2)}`);
+        inTransition.value = false
+        return true
     }
 
     function authorize(path: string) {
         //has to be here to prevent circular reference        
         const { authenticated, accessibility } = storeToRefs(useAuthStore())
-        
+
         if (path === "/auth/login" || path === "/") {
             return true
         }

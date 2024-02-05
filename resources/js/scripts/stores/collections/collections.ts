@@ -6,13 +6,11 @@ import type { TCollectionName, TCollectionMeta, TApiArray, TCView, TCollectionVi
 import type { TModule } from '@/js/types/routesTypes'
 import { useXhrStore } from '../xhr'
 import { useRoutesMainStore } from '../routes/routesMain'
-import { useNotificationsStore } from '../notifications'
 import { useCollectionMainStore } from './collectionMain'
 import { useCollectionMediaStore } from './collectionMedia'
 import { useCollectionRelatedStore } from './collectionRelated'
 
 export const useCollectionsStore = defineStore('collections', () => {
-    const { showSpinner } = useNotificationsStore()
     const { send2 } = useXhrStore()
     const { current } = storeToRefs(useRoutesMainStore())
 
@@ -57,21 +55,18 @@ export const useCollectionsStore = defineStore('collections', () => {
         c.setArray(data)
     }
 
-    async function loadPage(name: TCollectionName, pageNoB1: number, view: TCView, module: TModule): Promise<boolean> {
+    async function loadPage(name: TCollectionName, pageNoB1: number, view: TCView, module: TModule) {
         //console.log(`loadPage() source: ${name}  module: ${module} view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1}`);
-
         const c = getCollection(name)
-        showSpinner(`Loading Page ...`)
-        await c.loadPage(pageNoB1, view, module)
-        showSpinner(false)
-        return true
+        const res = await c.loadPage(pageNoB1, view, module)
+        return res
     }
 
     async function loadPageByItemIndex(collectionName: TCollectionName, view: TCView, index: number, module: TModule,) {
         const ipp = view.ipp
         const pageNoB0 = Math.floor(index / ipp)
         //console.log(`loadPageByItemIndex() collectionName: ${collectionName} view: ${view} index: ${index} module: ${module}`)
-        await loadPage(collectionName, pageNoB0 + 1, view, module)
+        return await loadPage(collectionName, pageNoB0 + 1, view, module)
     }
 
     async function toggleCollectionView(name: TCollectionName) {

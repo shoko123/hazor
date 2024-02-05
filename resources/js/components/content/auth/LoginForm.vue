@@ -122,9 +122,9 @@ async function login() {
     }
   } else {
     if (res.status === 422) {
-      showSnackbar(<string>res.message)
+      showSnackbar(res.message)
     } else {
-      pushHome(`Error! ${<string>res.message}. Redirected to home page`)
+      pushHome(`Error! ${res.message}. Redirected to home page`)
     }
   }
 }

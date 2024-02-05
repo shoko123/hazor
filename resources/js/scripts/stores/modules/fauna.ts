@@ -1,15 +1,14 @@
-import {  computed } from 'vue'
+import { computed } from 'vue'
 import { defineStore } from 'pinia'
-import { TFaunaFields, TGenericFields } from '@/js/types/moduleTypes'
-import { TParseSlugResponse } from '@/js/types/routesTypes'
+import { TFaunaFields, TGenericFields, TFuncValidateSlug } from '@/js/types/moduleTypes'
 
 export const useFaunaStore = defineStore('fauna', () => {
 
-  function slugParamsFromSlug(slug: string): TParseSlugResponse {
+  const validateSlug: TFuncValidateSlug = function(slug: string) { 
     return {
-      success: true, data: {
-        label: slug as unknown as string,
-      }
+      success: true,
+      data: { label: slug },
+      message: ''
     }
   }
 
@@ -52,7 +51,7 @@ export const useFaunaStore = defineStore('fauna', () => {
   return {
     beforeStore,
     tagFromSlug,
-    slugParamsFromSlug,
+    validateSlug,
     headers
   }
 })

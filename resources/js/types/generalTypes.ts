@@ -8,7 +8,7 @@ interface IStringObject {
 }
 
 type TXhrMethod = "get" | "put" | "post" | "delete"
-type TXhrResult<T> = { success: true, data: T, message: string, status: number } |  { success: false, message: string | undefined, status: number } 
+type TXhrResult<T> = { success: true, data: T, message: string, status: number } |  { success: false, message: string, status: number } 
 type TXhrEmptyResult = { success: boolean, message: string | undefined, status: number }
 
 export {

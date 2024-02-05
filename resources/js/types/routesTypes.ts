@@ -1,12 +1,9 @@
 // routesStore.js
-import type { TSlugParams, TIdParams } from '../types/moduleIdParamsTypes'
+import type { TIdParams } from '../types/moduleIdParamsTypes'
 
 type TPageName = 'home' | 'welcome' | 'filter' | 'index' | 'show' | 'create' | 'update' | 'tag' | 'media' | 'login' | 'register' | 'forgot-password' | 'reset-password'
 type TUrlModule = 'auth' | 'admin' | 'loci' | 'fauna' | 'stones' | ''
 type TModule = 'Home' | 'Auth' | 'Admin' | 'Locus' | 'Fauna' | 'Stone'
-type TParsingError = 'BadModuleName' | 'BadIdFormat' | 'BadQueryParams'
-type TPlanError = 'MutateTransitionError' | 'BadTransition' | 'NotImplementedYet'
-type TPrepareError = 'GenericPrepareError' | 'UnauthorizeError' | 'ServerConnectionError' | 'ModuleInitFailure' | 'ItemLoadFailure' | 'CollectionLoadFailure' | 'ItemNotFound' | 'EmptyResultSet' | 'ItemNotInResultSet'
 
 
 type TPlanAction =
@@ -26,9 +23,6 @@ type TPlanAction =
     'page.load' | //load pageB1 according to current item
     'page.load1' //load pageB1 = 1
 
-
-
-
 type TRouteInfo = {
     url_module: TUrlModule | undefined,
     slug: string | undefined,
@@ -38,36 +32,6 @@ type TRouteInfo = {
     idParams: TIdParams | undefined,
     queryParams: object | undefined,
     preLoginFullPath: string | undefined
-}
-
-type TParseErrorDetails = {
-    error: TParsingError,
-    message: string
-}
-
-type TParseModuleData = {
-    module: TModule,
-    url_module: TUrlModule
-}
-type TParseUrlModuleResponse = {
-    success: boolean,
-    data: TParseErrorDetails | TParseModuleData
-}
-
-type TParseSlugData = {
-    slug: string,
-    url_params: TSlugParams
-}
-
-type TParseSlugResponse = {
-    success: boolean,
-    data: TParseErrorDetails | TSlugParams
-}
-
-type TParseSlug<D> = {
-    success: boolean,
-    params: D,
-    message: string
 }
 
 type TSelectedFilterFromQuery = {
@@ -94,32 +58,23 @@ type TParseQuery = {
 }
 
 type TPlanResponse = {
-    success: boolean,
-    data: TPlanError | TPlanAction[]
+    success: true,
+    data: TPlanAction[]
+} | {
+    success: false,
+    message: string
 }
 
-type TPrepareResponse = {
-    success: boolean,
-    errorDetails?: TPrepareError
-}
+
 
 export {
     TPageName,
     TUrlModule,
     TModule,
     TRouteInfo,
-    TParsingError,
-    TParseModuleData,
-    TParseSlugResponse,
-    TParseSlugData,
     TParseQuery,
-    TParseErrorDetails,
-    TParseUrlModuleResponse,
     TApiFilters,
     TSelectedFilterFromQuery,
     TPlanResponse,
     TPlanAction,
-    TPlanError,
-    TPrepareResponse,
-    TPrepareError
 }

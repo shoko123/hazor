@@ -76,12 +76,14 @@ const ico = computed(() => {
 })
 
 async function asynLoadPage(val: number) {
-  showSpinner('Loading page...')
+  console.log(`asyncLoadPage`)
+  showSpinner('Loading page...')   
   const res = await loadPage(props.source, val, meta.value.view, derived.value.module)
+  console.log(`asyncLoadPage - after await`)
+  showSpinner(false)  
   if (!res) {
     showSnackbar(`main.loadPage() failed`)
   }
-  showSpinner(false)
 }
 
 const page = computed({
@@ -148,8 +150,10 @@ const displayOption = computed(() => {
   return meta.value.view.name
 })
 
-function toggleCollectionDisplayOption() {
-  toggleCollectionView(props.source)
+async function toggleCollectionDisplayOption() {
+  showSpinner('Toggle view - loading page...')  
+  await toggleCollectionView(props.source)
+  showSpinner(false) 
 }
 
 </script>

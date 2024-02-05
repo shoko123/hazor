@@ -1,27 +1,27 @@
 import { computed } from 'vue'
 import { defineStore } from 'pinia'
-import { TStoneFields, TGenericFields } from '@/js/types/moduleTypes'
-import { TParseSlugResponse } from '@/js/types/routesTypes'
+import { TStoneFields, TGenericFields, TFuncValidateSlug } from '@/js/types/moduleTypes'
 
 export const useStoneStore = defineStore('stone', () => {
-  
-  function slugParamsFromSlug(slug: string): TParseSlugResponse {
-    const arr = slug.split('.');
+  const validateSlug: TFuncValidateSlug = function(slug: string) { 
+    const arr = slug.split('.')
+
     if (arr.length === 1) {
       return {
-        success: false, data: {
-          error: "BadIdFormat",
-          message: "No . detected in slug"
-        }
+        success: false,
+        data: null,
+        message: "No . [dot] detected in slug"
+      }
+    } else {
+      return {
+        success: true, data: {
+          basket: arr[0],
+          stone_no: arr[1]
+        },
+        message: ''
       }
     }
-    return {
-      success: true, data: {
-        basket: arr[0],
-        stone_no: arr[1] as unknown as number
-      }
-    }
-  }
+  } 
 
   function tagFromSlug(slug: string): string {
     //console.log(`Stone.tagFromSlug()`)
@@ -60,7 +60,7 @@ export const useStoneStore = defineStore('stone', () => {
 
   return {
     beforeStore,
-    slugParamsFromSlug,
+    validateSlug,
     tagFromSlug,
     headers
   }

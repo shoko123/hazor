@@ -3,12 +3,18 @@ type TMod = 'Locus' | 'Stone' | 'Fauna'
 type TModuleTypes = {
         moduleName: 'Locus',
         fields: TLocusFields,
+        modify: TLocusModify,
+        lookups: TLocusLookup
 } | {
         moduleName: 'Stone',
         fields: TStoneFields,
+        modify: TStoneModify,
+        lookups: TStoneLookup
 } | {
         moduleName: 'Fauna',
         fields: TFaunaFields,
+        modify: TFaunaModify,
+        lookups: TFaunaLookup
 }
 
 type TTmpFields<TM extends TMod> = Extract<TModuleTypes, { moduleName: TM }>
@@ -91,6 +97,7 @@ type TFaunaLookup = keyof Pick<TFaunaFields, 'id' | 'base_taxon_id' | 'scope_id'
 type TModify = TLocusModify | TStoneModify | TFaunaModify
 type TLookup = TLocusLookup | TStoneLookup | TFaunaLookup
 
+type TFuncValidateSlug = (slug: string) =>  { success: true, data: object, message: string } | { success: false, data: null, message: string }
 
 export {
         TLocusFields,
@@ -100,5 +107,6 @@ export {
         TModify,
         TLookup,
         TMod,
-        TNewFields
+        TNewFields,
+        TFuncValidateSlug
 }

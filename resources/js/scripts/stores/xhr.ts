@@ -40,6 +40,7 @@ export const useXhrStore = defineStore('xhr', () => {
     }
   }
 
+  //TODO delete this after transition to send2()
   async function send(endpoint: string, method: TXhrMethod, data?: object) {
     const fullUrl = endpoint.substring(0, 8) === 'fortify/' ? `${axios.defaults.baseURL}/${endpoint}` : `${axios.defaults.baseURL}/api/${endpoint}`
     console.log(`xhr.send() endpoint: ${fullUrl}`)

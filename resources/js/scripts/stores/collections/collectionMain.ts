@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { TCollectionExtra, TApiArray, TApiArrayMain, TApiPageMainGallery, TApiPageMainTabular,TApiPageTableLocus, TApiPageTableStone, TApiPageTableFauna, TItemsPerView, TCView, TApiPage, TCollectionView, TPageMainGallery, TPageMain, TPageMainChips } from '@/js/types/collectionTypes'
+import type { TCollectionExtra, TApiArray, TApiArrayMain, TApiPageMainGallery, TApiPageMainTabular, TItemsPerView, TCView, TApiPage, TCollectionView, TPageMainGallery, TPageMain, TPageMainChips } from '@/js/types/collectionTypes'
 import type { TModule } from '../../../types/routesTypes'
-import type { TXhrResult } from '../../../types/generalTypes'
 import { useModuleStore } from '../module'
 import { useXhrStore } from '../xhr'
 import { useMediaStore } from '../media'
@@ -46,7 +45,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         extra.value.length = data.length
     }
 
-    async function loadPage(pageNoB1: number, view: TCView, module: TModule): Promise<boolean> {
+    async function loadPage(pageNoB1: number, view: TCView, module: TModule) {
         const ipp = view.ipp
         const start = (pageNoB1 - 1) * ipp
 
@@ -57,7 +56,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
             extra.value.pageNoB1 = pageNoB1
             const slice = array.value.slice(start, start + ipp)
             savePage(slice, view, module)
-            return true
+            return { success: true, message: '' }
         }
 
         //'Gallery' and 'Tabular' views require db access 
@@ -66,46 +65,17 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         if (ids.length === 0) {
             console.log(`ids.length is 0 - returning`)
             savePage([], view, module)
-            return true
+            return { success: false, message: 'Error: page size 0.' }
         }
 
-        if (view.name === 'Gallery') {
-            const res = await send2<TApiPageMainGallery[]>('model/page', 'post', { model: module, view: view.name, ids })
-            if (res.success) {
-                savePage(res.data, view, module)
-                extra.value.pageNoB1 = pageNoB1
-                return true
-            } else {
-                console.log(`loadPage failed. err: ${JSON.stringify(res.message, null, 2)}`)
-                return false
-            }
-        } else {   
-            //TODO fix this rediculous Type casting. 
-         let res : TXhrResult<TApiPageMainTabular[]> | null = null
-            console.log(`CollectionMain.loadPage() before tabular`)
-            switch(module){
-                case 'Locus': {    
-                    res = await send2<TApiPageTableLocus[]>('model/page', 'post', { model: module, view: view.name, ids })               
-                } break                
-                case 'Stone': {    
-                    res = await send2<TApiPageTableStone[]>('model/page', 'post', { model: module, view: view.name, ids })
-                 
-                } break                
-                case 'Fauna': 
-                default: {    
-                    res = await send2<TApiPageTableFauna[]>('model/page', 'post', { model: module, view: view.name, ids })       
-                } break                
-            }
-            console.log(`CollectionMain.loadPage() after tabular resolved`)
-            const tmp = <TXhrResult<TApiPageMainTabular[]>><unknown>res
-            if (tmp.success) {
-                savePage(tmp.data, view, module)
-                extra.value.pageNoB1 = pageNoB1
-                return true
-            } else {
-                console.log(`loadPage failed. err: ${JSON.stringify(tmp.message, null, 2)}`)
-                return false
-            }  
+        const res = await send2<TApiPage[]>('model/page', 'post', { model: module, view: view.name, ids })
+        if (res.success) {
+            savePage(res.data, view, module)
+            extra.value.pageNoB1 = pageNoB1
+            return { success: true, message: '' }
+        } else {
+            console.log(`loadPage failed. err: ${JSON.stringify(res.message, null, 2)}`)
+            return { success: false, message: res.message }
         }
     }
 
