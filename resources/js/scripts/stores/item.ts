@@ -20,9 +20,9 @@ export const useItemStore = defineStore('item', () => {
   const { collection, itemByIndex, itemIndexById, next } = useCollectionsStore()
   const moduleStore = useModuleStore()
   const { setItemMedia } = useMediaStore()
-  const { send } = useXhrStore()
+  const { send, send2 } = useXhrStore()
   const { orderSelectedParams, getParamKeyByGroupAndId } = useTrioStore()
-  const { showSnackbar, showSpinner } = useNotificationsStore()
+  const { showSnackbar } = useNotificationsStore()
 
   const fields = ref<TGenericFields | undefined>(undefined)
   const slug = ref<string | undefined>(undefined)
@@ -123,29 +123,25 @@ export const useItemStore = defineStore('item', () => {
     return mainArrayItem.slug
   }
 
-  async function destroy(): Promise<string | null> {
+  async function itemRemove(): Promise<{success: true, slug: string | null } | {success: false, message: string }> {
     const { removeItemFromArrayById } = useCollectionMainStore()
     const prev = next('main', itemIndexById((<TGenericFields>fields.value).id), false)
 
-    showSpinner('Accessing DB to delete record')
-    await send("model/destroy", 'post', { model: current.value.module, id: (<TGenericFields>fields.value).id })
-      .catch((err) => {
-        showSnackbar("Failed to delete item!", 'red')
-        showSpinner(false)
-        console.log(`Destroy failed! err:\n ${JSON.stringify(err, null, 2)}`)
-        throw (`${current.value.module} item.destroy() failed`)
-      })
 
-    showSnackbar("Item deleted successfully")
-    showSpinner(false)
-    console.log(`${current.value.module}item.destroy() success!`)
+    const res = await send2<TApiItemShow<TGenericFields>>('model/destroy', 'post', { model: current.value.module, slug: slug.value, id: fields.value?.id })
+
+    if (!res.success) {    
+      return res
+    }
+  
+    console.log(`${current.value.module}item.itemRemove() success!`)
     const newLength = removeItemFromArrayById((<TGenericFields>fields.value).id)
 
     //go to 'previous' slug or to module.home (if array.length is 1)
     if (newLength === 0) {
-      return null
+      return {success: true, slug: null }
     } else {
-      return (<TApiArrayMain>prev.item).slug
+      return {success: true, slug:(<TApiArrayMain>prev.item).slug}
     }
   }
 
@@ -167,6 +163,6 @@ export const useItemStore = defineStore('item', () => {
     setItemViewIndex,
     saveitemFieldsPlus,
     upload,
-    destroy
+    itemRemove
   }
 })

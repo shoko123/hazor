@@ -55,9 +55,11 @@ export const useCollectionsStore = defineStore('collections', () => {
         c.setArray(data)
     }
 
-    async function loadPage(name: TCollectionName, pageNoB1: number, view: TCView, module: TModule) {
+    async function loadGenericPage(name: TCollectionName, pageNoB1: number, view: TCView, module: TModule) {
         //console.log(`loadPage() source: ${name}  module: ${module} view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1}`);
+
         const c = getCollection(name)
+
         const res = await c.loadPage(pageNoB1, view, module)
         return res
     }
@@ -66,7 +68,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         const ipp = view.ipp
         const pageNoB0 = Math.floor(index / ipp)
         //console.log(`loadPageByItemIndex() collectionName: ${collectionName} view: ${view} index: ${index} module: ${module}`)
-        return await loadPage(collectionName, pageNoB0 + 1, view, module)
+        return await loadGenericPage(collectionName, pageNoB0 + 1, view, module)
     }
 
     async function toggleCollectionView(name: TCollectionName) {
@@ -176,7 +178,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         collection,
         itemByIndex,
         setArray,
-        loadPage,
+        loadGenericPage,
         setCollectionViews,
         toggleCollectionView,
         clear,

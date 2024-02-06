@@ -1,6 +1,5 @@
 // routesStore.js
-import type { TIdParams } from '../types/moduleIdParamsTypes'
-
+import type { TCView } from '../types/collectionTypes'
 type TPageName = 'home' | 'welcome' | 'filter' | 'index' | 'show' | 'create' | 'update' | 'tag' | 'media' | 'login' | 'register' | 'forgot-password' | 'reset-password'
 type TUrlModule = 'auth' | 'admin' | 'loci' | 'fauna' | 'stones' | ''
 type TModule = 'Home' | 'Auth' | 'Admin' | 'Locus' | 'Fauna' | 'Stone'
@@ -29,7 +28,6 @@ type TRouteInfo = {
     url_full_path: string | undefined,
     name: TPageName,
     module: TModule,
-    idParams: TIdParams | undefined,
     queryParams: object | undefined,
     preLoginFullPath: string | undefined
 }
@@ -65,7 +63,7 @@ type TPlanResponse = {
     message: string
 }
 
-
+type TFuncLoadPage =  (pageNoB1: number, view: TCView, module: TModule) =>  Promise<{ success: true, message: string } | { success: false, message: string }>
 
 export {
     TPageName,
@@ -77,4 +75,5 @@ export {
     TSelectedFilterFromQuery,
     TPlanResponse,
     TPlanAction,
+    TFuncLoadPage
 }

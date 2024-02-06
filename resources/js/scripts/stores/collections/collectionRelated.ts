@@ -2,7 +2,7 @@
 //handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { TModule } from '../../../types/routesTypes'
+import { TModule, TFuncLoadPage } from '../../../types/routesTypes'
 import { TCollectionExtra, TCollectionView, TItemsPerView, TApiArrayRelated, TCView, TApiArray, TPageRelatedGallery, TPageRelatedChips, TPageRelatedTabular } from '@/js/types/collectionTypes'
 import { useMediaStore } from '../media'
 import { useModuleStore } from '../module'
@@ -102,7 +102,7 @@ export const useCollectionRelatedStore = defineStore('collectionRelated', () => 
         extra.value.length = data.length
     }
 
-    async function loadPage(pageNoB1: number, view: TCView, module: TModule) {
+    const loadPage: TFuncLoadPage = async function(pageNoB1: number, view: TCView, module: TModule) { 
         //related page is a sub-array of array, determined by computed(array, pageNoB1). So, just set pageNoB1
         view
         module

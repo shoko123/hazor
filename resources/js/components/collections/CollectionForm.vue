@@ -46,7 +46,7 @@ import type { TCollectionName } from '@/js/types/collectionTypes'
 import { useItemStore } from '../../scripts/stores/item'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
-
+import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import CollectionPageGallery from './CollectionPageGallery.vue'
 import CollectionPageChips from './CollectionPageChips.vue'
 import CollectionPageTabular from './CollectionPageTabular.vue'
@@ -55,10 +55,11 @@ const props = defineProps<{
   source: TCollectionName
 }>()
 
-let { collection, loadPage, toggleCollectionView } = useCollectionsStore()
-let { derived } = storeToRefs(useItemStore())
+const { collection, loadGenericPage, toggleCollectionView } = useCollectionsStore()
+const { pushHome } = useRoutesMainStore()
+const { derived } = storeToRefs(useItemStore())
+const { showSpinner } = useNotificationsStore()
 const { smAndDown, mdAndDown } = useDisplay()
-const { showSpinner, showSnackbar } = useNotificationsStore()
 
 const viewToIcon = {
   Gallery: 'mdi-image-area',
@@ -76,13 +77,11 @@ const ico = computed(() => {
 })
 
 async function asynLoadPage(val: number) {
-  console.log(`asyncLoadPage`)
-  showSpinner('Loading page...')   
-  const res = await loadPage(props.source, val, meta.value.view, derived.value.module)
-  console.log(`asyncLoadPage - after await`)
-  showSpinner(false)  
-  if (!res) {
-    showSnackbar(`main.loadPage() failed`)
+  showSpinner('Loading page...')
+  const res = await loadGenericPage(props.source, val, meta.value.view, derived.value.module)
+  showSpinner(false)
+  if (!res.success) {
+    pushHome(`${res.message}. Redirected to home page`)
   }
 }
 
@@ -151,9 +150,9 @@ const displayOption = computed(() => {
 })
 
 async function toggleCollectionDisplayOption() {
-  showSpinner('Toggle view - loading page...')  
+  showSpinner('Toggle view - loading page...')
   await toggleCollectionView(props.source)
-  showSpinner(false) 
+  showSpinner(false)
 }
 
 </script>

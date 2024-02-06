@@ -35,7 +35,6 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         url_full_path: undefined,
         module: 'Home',
         name: 'home',
-        idParams: undefined,
         queryParams: undefined,
         preLoginFullPath: undefined
     })
@@ -46,7 +45,6 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         url_full_path: undefined,
         module: 'Home',
         name: 'home',
-        idParams: undefined,
         queryParams: undefined,
         preLoginFullPath: undefined
     })
@@ -152,11 +150,9 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             case 'media':
             case 'tag':
                 current.value.slug = <string>handle_to.params.slug
-                current.value.idParams = to.value.idParams
                 break
             default:
                 current.value.slug = undefined
-                current.value.idParams = undefined
         }
 
         //console.log(`finalizing routing. current: ${JSON.stringify(current.value)}`)

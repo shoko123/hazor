@@ -204,7 +204,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       return { success: true, message: '' }
     } else {
       console.log(`loadMainCollection() err: ${res2.message}`)
-      return { success: false, message: <string>res2.message }
+      return { success: false, message: res2.message }
     }
   }
 

@@ -2,7 +2,7 @@
 //handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { TModule } from '../../../types/routesTypes'
+import { TModule, TFuncLoadPage } from '../../../types/routesTypes'
 import { TCollectionExtra, TCView, TApiArrayMedia, TApiArray, TCollectionView, TPageMediaGallery } from '@/js/types/collectionTypes'
 import { useMediaStore } from '../media'
 
@@ -60,7 +60,7 @@ export const useCollectionMediaStore = defineStore('collectionMedia', () => {
         array.value[indexB] = { ...temp }
     }
 
-    async function loadPage(pageNoB1: number, view: TCView, module: TModule) {
+    const loadPage: TFuncLoadPage = async function(pageNoB1: number, view: TCView, module: TModule) { 
         view
         module
         //console.log(`collectionMedia.loadPage() view: ${view} pageB1: ${pageNoB1}  ipp: ${ipp} startIndex: ${start} endIndex: ${start + ipp - 1} module: ${module} `);

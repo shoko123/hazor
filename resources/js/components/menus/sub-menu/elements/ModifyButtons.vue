@@ -85,13 +85,15 @@ import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain
 import { useItemStore } from '../../../../scripts/stores/item'
 import { useCollectionMediaStore } from '../../../../scripts/stores/collections/collectionMedia'
 import { useTaggerStore } from '../../../../scripts/stores/trio/tagger'
+import { useNotificationsStore } from '../../../../scripts/stores/notifications'
 
 const { routerPush } = useRoutesMainStore()
 const { current } = storeToRefs(useRoutesMainStore())
 const { permissions } = storeToRefs(useAuthStore())
 const { array } = storeToRefs(useCollectionMediaStore())
 const { derived } = storeToRefs(useItemStore())
-const { destroy } = useItemStore()
+const { itemRemove } = useItemStore()
+const { showSpinner, showSnackbar } = useNotificationsStore()
 
 const module = computed(() => {
   return current.value.module
@@ -132,19 +134,22 @@ async function itemDelete() {
 
   if (!confirm("Are you sure you want to delete this item?")) { return }
 
-  let slug = null;
-  try {
-    slug = await destroy()
-  } catch (error) {
-    console.log(`Delete item failed error: ${error}`)
+  showSpinner('Deleting item...')
+  let res = await itemRemove()
+  showSpinner(false)
+
+  if (!res.success) {
+    showSnackbar(`Failed to delete item. ${res.message}`, 'red')
     return
   }
 
-  if (slug !== null) {
-    routerPush('show', slug)
-  } else {
-    console.log(`Last item in array deleted - goto Welcome page`)
+
+  if (res.slug === null) {
+    showSnackbar('Item deleted successfully. Redirected to Welcome page')
     routerPush('welcome', 'none')
+  } else {
+    showSnackbar('Item deleted successfully.')
+    routerPush('show', res.slug)
   }
 }
 
