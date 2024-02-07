@@ -12,7 +12,6 @@ import { useXhrStore } from './xhr'
 import { useModuleStore } from './module'
 import { useMediaStore } from './media'
 import { useTrioStore } from './trio/trio'
-import { useNotificationsStore } from './notifications'
 
 export const useItemStore = defineStore('item', () => {
   const { pushToArray } = useCollectionMainStore()
@@ -20,9 +19,8 @@ export const useItemStore = defineStore('item', () => {
   const { collection, itemByIndex, itemIndexById, next } = useCollectionsStore()
   const moduleStore = useModuleStore()
   const { setItemMedia } = useMediaStore()
-  const { send, send2 } = useXhrStore()
+  const { send2 } = useXhrStore()
   const { orderSelectedParams, getParamKeyByGroupAndId } = useTrioStore()
-  const { showSnackbar } = useNotificationsStore()
 
   const fields = ref<TGenericFields | undefined>(undefined)
   const slug = ref<string | undefined>(undefined)
@@ -76,14 +74,14 @@ export const useItemStore = defineStore('item', () => {
   }
 
   //return the newly created/update item's slug (need it only for create())
-  async function upload<F>(isCreate: boolean, newFields: TGenericFields): Promise<TApiItemShow<F>> {
+  async function upload(isCreate: boolean, newFields: TGenericFields): Promise<{ success: true, slug: string } | { success: false, message: string }> {
     console.log(`item.upload isCreate: ${isCreate}, module: ${current.value.module}, fields: ${JSON.stringify(newFields, null, 2)}`)
-    const res = await send('model/store', isCreate ? 'post' : 'put', { model: current.value.module, item: newFields, id: newFields.id })
-      .catch(err => {
-        showSnackbar(`model.store failed!`)
-        //console.log(`model.store  failed. err: ${JSON.stringify(err, null, 2)}`)
-        throw err
-      })
+
+    const res = await send2<TApiItemShow<TGenericFields>>('model/store', isCreate ? 'post' : 'put', { model: current.value.module, item: newFields, id: newFields.id })
+    if (!res.success) {
+      return res
+    }
+
 
     if (isCreate) {
       setItemMedia([])
@@ -95,9 +93,8 @@ export const useItemStore = defineStore('item', () => {
       fields.value = res.data.fields
       slug.value = res.data.slug
     }
-    console.log(`model.store() returned (success) ${JSON.stringify(res.data, null, 2)}`)
-    showSnackbar(`${current.value.module} ${isCreate ? "created" : "updated"} successfully! redirecting to item`)
-    return res.data
+
+    return { success: true, slug: <string>slug.value }
   }
 
   function itemClear() {
@@ -123,25 +120,25 @@ export const useItemStore = defineStore('item', () => {
     return mainArrayItem.slug
   }
 
-  async function itemRemove(): Promise<{success: true, slug: string | null } | {success: false, message: string }> {
+  async function itemRemove(): Promise<{ success: true, slug: string | null } | { success: false, message: string }> {
     const { removeItemFromArrayById } = useCollectionMainStore()
     const prev = next('main', itemIndexById((<TGenericFields>fields.value).id), false)
 
 
     const res = await send2<TApiItemShow<TGenericFields>>('model/destroy', 'post', { model: current.value.module, slug: slug.value, id: fields.value?.id })
 
-    if (!res.success) {    
+    if (!res.success) {
       return res
     }
-  
+
     console.log(`${current.value.module}item.itemRemove() success!`)
     const newLength = removeItemFromArrayById((<TGenericFields>fields.value).id)
 
-    //go to 'previous' slug or to module.home (if array.length is 1)
+    //return of slug === null means that is was the last element in the current array.
     if (newLength === 0) {
-      return {success: true, slug: null }
+      return { success: true, slug: null }
     } else {
-      return {success: true, slug:(<TApiArrayMain>prev.item).slug}
+      return { success: true, slug: (<TApiArrayMain>prev.item).slug }
     }
   }
 

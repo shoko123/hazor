@@ -32,7 +32,7 @@ export const useXhrStore = defineStore('xhr', () => {
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         console.log(`**** axios.err **** resData:${JSON.stringify({ message: err.response?.data?.message, status: err.response ? err.response.status : 777 }, null, 2)}`);
-        return { success: false, message: err.response?.data?.message, status: err.response ? err.response.status : 777 }
+        return { success: false, message: err.response?.data?.message.substring(0,200), status: err.response ? err.response.status : 777 }
       } else {
         console.log(`**** axios.err **** no-response or setup error`);
         return { success: false, status: 999, message: 'unexpected error' }

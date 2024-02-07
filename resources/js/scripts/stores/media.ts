@@ -9,21 +9,18 @@ import { defineStore } from 'pinia'
 
 import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
-import { useNotificationsStore } from '../../scripts/stores/notifications'
-
 import { useCollectionMediaStore } from '../../scripts/stores/collections/collectionMedia'
 import { useItemStore } from '../../scripts/stores/item'
-
+import { useNotificationsStore } from '../../scripts/stores/notifications'
 
 export const useMediaStore = defineStore('media', () => {
-  const { showSnackbar, } = useNotificationsStore()
-  const { send } = useXhrStore()
-
+  const { send2 } = useXhrStore()
+  const { showSnackbar } = useNotificationsStore()
   //both bucketUrl and mediaCollectionNames are initiated at app.init()
   const bucketUrl = ref("")
   const mediaCollectionNames = ref<string[]>([])
 
- //Media collection index
+  //Media collection index
   const mediaCollectionName = ref("Photo")
   const showUploader = ref<boolean>(false)
 
@@ -51,17 +48,17 @@ export const useMediaStore = defineStore('media', () => {
       }
     }
   }
- 
+
   function setItemMedia(media: TApiArrayMedia[]) {
     const cm = useCollectionMediaStore()
     cm.setArray(media)
   }
 
-
-  //upload
+  //mediaUpload
   const images = ref<File[]>([])
   const imagesAsBrowserReadable = ref<string[]>([])
   const loadingToBrowser = ref<boolean>(false)
+
   const mediaReady = computed(() => {
     return images.value.length !== 0 && !loadingToBrowser.value
   })
@@ -73,6 +70,7 @@ export const useMediaStore = defineStore('media', () => {
       clear()
       return
     }
+
     images.value.forEach((file) => {
       if (file.size > 1024 * 1024 * 2) {
         alert(`File ${file.name} exceeds max allowed 2MB - Upload aborted!`);
@@ -83,13 +81,13 @@ export const useMediaStore = defineStore('media', () => {
 
     loadingToBrowser.value = true
     //console.log("Load files - started")
-    await Promise.all(images.value.map(async (image) => { addImage(image) }))
-      .catch(() => {
-        console.log(`Error encountered when loading files - clearing files`)
-        loadingToBrowser.value = false
-        clear()
-        return
-      })
+    try {
+      await Promise.all(images.value.map(async (image) => { addImage(image) }))
+    } catch {
+      showSnackbar(`Files upload to browser failed. Please try again later.`)
+      clear()
+    }
+
     loadingToBrowser.value = false
     //console.log("Load files -finished")
   }
@@ -112,7 +110,7 @@ export const useMediaStore = defineStore('media', () => {
     orderChanged.value = false
   }
 
-  async function upload() {
+  async function mediaUpload() {
     const i = useItemStore()
     const r = useRoutesMainStore()
     const fd = new FormData();
@@ -126,71 +124,67 @@ export const useMediaStore = defineStore('media', () => {
     fd.append("model_id", idAsString);
     fd.append("media_collection_name", mediaCollectionName.value)
 
-    return send("media/upload", 'post', fd)
-      .then((res) => {
-        showUploader.value = false
-        setItemMedia(res.data)
-        clear()
-        showSnackbar("Media uploaded successfully")
-      })
-      .catch((err) => {
-        showSnackbar("Media upload failed. Please try later!", 'red')
-        console.log(`mediaUpload failed! err:\n ${JSON.stringify(err, null, 2)}`)
-      })
+    const res = await send2<TApiArrayMedia[]>('media/upload', 'post', fd)
+    if (res.success) {
+      showUploader.value = false
+      setItemMedia(res.data)
+      clear()
+      return { success: true }
+    } else {
+      return { success: false, message: res.message }
+    }
   }
 
-//destroy
-  async function destroy(media_id: number) {
+  //media destroy
+  async function mediaDestroy(media_id: number) {
     const r = useRoutesMainStore()
     const i = useItemStore()
     console.log(`destroy() media_id: ${media_id}, model: ${r.current.module}, model_id: ${(<TGenericFields>i.fields).id}`)
-    return send("media/destroy", 'post', { media_id, model: r.current.module, model_id: (<TGenericFields>i.fields).id })
-      .then((res) => {
-        showUploader.value = false
-        showSnackbar("Media deleted successfully")
-        setItemMedia(res.data)
-      })
-      .catch((err) => {
-        console.log(`media.dstroy failed! err:\n ${JSON.stringify(err, null, 2)}`)
-      })
+
+    const res = await send2<TApiArrayMedia[]>('media/destroy', 'post', { media_id, model: r.current.module, model_id: (<TGenericFields>i.fields).id })
+    if (res.success) {
+      showUploader.value = false
+      setItemMedia(res.data)
+      return { success: true }
+    }
+    return { success: false, message: res.message }
   }
 
-  //reorder media
-
+  //media reorder 
   const orderChanged = ref(false)
 
-  async function reorder() {
+  async function mediaReorder() {
     const r = useRoutesMainStore()
     const i = useItemStore()
     const cm = useCollectionMediaStore()
-    const ordered = cm.array.map((x, index) => {return {id: x.id, order: index + 1}})
+    const ordered = cm.array.map((x, index) => { return { id: x.id, order: index + 1 } })
     console.log(`reorder()  model: ${r.current.module}, id: ${i.fields?.id} ,ordered: ${JSON.stringify(ordered, null, 2)}`)
-    return send("media/reorder", 'post', { model: r.current.module, model_id: i.fields?.id, ordered })
-    .then(() => {
+
+    const res = await send2<TApiArrayMedia[]>('media/reorder', 'post', { model: r.current.module, model_id: i.fields?.id, ordered })
+
+    if (res.success) {
       showUploader.value = false
-      showSnackbar("Reorder completed successfully")
-    })
-    .catch((err) => {
-      console.log(`media.reorder failed! err:\n ${JSON.stringify(err, null, 2)}`)
-    })
+      return { success: res.success }
+    }
+    return { success: false, message: res.message }
   }
 
   return {
-    initMedia,
     bucketUrl,
-    buildMedia,
-    setItemMedia,
+    mediaReady,
+    orderChanged,
     showUploader,
     mediaCollectionNames,
     mediaCollectionName,
-    upload,
     images,
     imagesAsBrowserReadable,
+    initMedia,
+    buildMedia,
     onInputChange,
-    mediaReady,
     clear,
-    destroy,
-    orderChanged,
-    reorder
+    mediaDestroy,
+    mediaReorder,
+    setItemMedia,
+    mediaUpload,
   }
 })

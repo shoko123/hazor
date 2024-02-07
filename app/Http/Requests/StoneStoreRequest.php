@@ -15,7 +15,7 @@ class StoneStoreRequest extends DigModelStoreRequest
         'item.area' => 'in:A,A1,A2,A3,A4,A5,A6,A7,M,M1,M2,M68,XX',
         'item.locus' => 'max:50',
         'item.basket' => 'required|max:50',
-        'item.stone_no' => 'required|min:0|max:99',
+        'item.stone_no' => 'required|numeric|min:0|max:99',
         'item.date' => 'string|max:10|nullable',
         'item.year' => 'numeric|min:1950|max:2025|nullable',
         'item.prov_notes' => 'max:200',

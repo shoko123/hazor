@@ -36,30 +36,21 @@ export const useTaggerStore = defineStore('tagger', () => {
     selectedNewItemParams.value.forEach(paramKey => {
       const group = trio.trio.entities.groups[parseParamKey(paramKey, false)]
 
-      if (group.group_type_code === "TG") {
-        globalTagIds.push(trio.trio.entities.params[paramKey].id)
-      } else if (group.group_type_code === "TM") {
-        modelTagIds.push(trio.trio.entities.params[paramKey].id)
-      } else if (["CL", "CV"].includes(group.group_type_code)) {
-        const param = trio.trio.entities.params[paramKey]
-        const column_name = (<TGroupValue>group).column_name
-        columns.push({ column_name, val: group.group_type_code === "CL" ? param.id : param.name })
+      switch (group.group_type_code) {
+        case "TG":
+          globalTagIds.push(trio.trio.entities.params[paramKey].id)
+          break
+        case "TM":
+          modelTagIds.push(trio.trio.entities.params[paramKey].id)
+          break
+        case "CL":
+        case "CV": {
+          const param = trio.trio.entities.params[paramKey]
+          const column_name = (<TGroupValue>group).column_name
+          columns.push({ column_name, val: group.group_type_code === "CL" ? param.id : param.name })
+        }
+          break
       }
-
-      // switch (group.group_type_code) {
-      //   case "TG":
-      //     globalTagIds.push(trio.trio.entities.params[paramKey].id)
-      //     break
-      //   case "TM":
-      //     modelTagIds.push(trio.trio.entities.params[paramKey].id)
-      //     break
-      //   case "CL":
-      //   case "CV":
-      //     const param = trio.trio.entities.params[paramKey]
-      //     const column_name = (<TGroupValue>group).column_name
-      //     columns.push({ column_name, val: group.group_type_code === "CL" ? param.id : param.name })
-      //     break
-      // }
     })
 
     const data = {

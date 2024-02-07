@@ -26,38 +26,55 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import type { TPageMediaGallery } from '../../types/collectionTypes'
 import { useMediaStore } from '../../scripts/stores/media'
 import { useCollectionMediaStore } from '../../scripts/stores/collections/collectionMedia'
+import { useNotificationsStore } from '../../scripts/stores/notifications'
 
-const props = defineProps<{  
+const props = defineProps<{
   itemIndex: number,
-  record: TPageMediaGallery  
+  record: TPageMediaGallery
 }>()
 
-const m = useMediaStore()
-const cm = useCollectionMediaStore()
+const { mediaDestroy } = useMediaStore()
+const { orderChanged } = storeToRefs(useMediaStore())
+const { switchArrayItems } = useCollectionMediaStore()
+const { array } = storeToRefs(useCollectionMediaStore())
+const { showSpinner, showSnackbar } = useNotificationsStore()
 
 const disableLeft = computed(() => {
-  return (cm.array.length === 1 || props.itemIndex === 0)
+  return (array.value.length === 1 || props.itemIndex === 0)
 })
 
 const disableRight = computed(() => {
-  return (cm.array.length === 1 || props.itemIndex === cm.array.length - 1)
+  return (array.value.length === 1 || props.itemIndex === array.value.length - 1)
 })
 
 function switchMedia(withLeft: boolean) {
   console.log(`switchMedia with ${withLeft === true ? "Left" : "Right"}`)
-  m.orderChanged = true
-  cm.switchArrayItems(props.itemIndex, withLeft ? props.itemIndex - 1 : props.itemIndex + 1)
+  orderChanged.value = true
+
+  switchArrayItems(props.itemIndex, withLeft ? props.itemIndex - 1 : props.itemIndex + 1)
+}
+
+async function deleteMedia() {
+  if (!confirm("Are you sure you want to delete this media item?")) { 
+    return 
+  }
+
+  showSpinner('Deleting media...')
+  const res = await mediaDestroy(props.record.id)
+  showSpinner(false)
+
+  if (res.success) {
+    showSnackbar('Media deleted successfully.')
+  } else {
+    showSnackbar(`Media deletion failed. Error: ${res.message}`)
+  }
 }
 
 // function edit() {
 //   //TODO edit media text
 // }
-
-function deleteMedia() {
-  if (!confirm("Are you sure you want to delete this media item?")) { return }
-  m.destroy(props.record.id)
-}
 </script>

@@ -104,11 +104,13 @@
 <script lang="ts" setup>
 import { computed, onMounted } from 'vue'
 import { useMediaStore } from '../../scripts/stores/media'
+import { useNotificationsStore } from '../../scripts/stores/notifications'
 
 onMounted(() => {
   document.getElementById('fileInput')?.click()
 })
 const m = useMediaStore()
+const { showSpinner, showSnackbar } = useNotificationsStore()
 
 const mediaReady = computed(() => {
   return m.mediaReady
@@ -160,7 +162,15 @@ function openMultiItemSelector() {
 }
 
 async function upload() {
-  await m.upload()
+  showSpinner('Uploading media...')
+  const res = await m.mediaUpload()
+  showSpinner(false)
+
+  if (res.success) {
+    showSnackbar('Media uploaded successfully.')
+  } else {
+    showSnackbar(`Media upload failed. Error: ${res.message}`)
+  }
 }
 
 </script>

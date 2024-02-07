@@ -35,7 +35,6 @@
 import { computed, type Component } from 'vue'
 import { storeToRefs } from 'pinia'
 import { type Validation } from "@vuelidate/core"
-import { type TApiItemShow } from '@/js/types/itemTypes'
 
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useItemStore } from '../../scripts/stores/item'
@@ -53,7 +52,7 @@ const props = defineProps<{
   isCreate: boolean
 }>()
 
-let { showSnackbar } = useNotificationsStore()
+let { showSpinner, showSnackbar } = useNotificationsStore()
 let { upload } = useItemStore()
 let { routerPush } = useRoutesMainStore()
 let { current } = storeToRefs(useRoutesMainStore())
@@ -116,14 +115,20 @@ async function submit(v: Validation, data: TGenericFields) {
     return
   }
 
-  const itemDetails = await upload(props.isCreate, <TGenericFields>fieldsToSend).catch(err => {
-    console.log(`CreateUpdate.upload failed errors: ${JSON.stringify(err, null, 2)}`)
-    throw 'FailedToUpload'
-  })
+  showSpinner(`${props.isCreate ? "Creating" : "Updating"} ${current.value.module} item...`)
+  const res = await upload(props.isCreate, fieldsToSend)
+  showSpinner(false)
 
-  //console.log(`CreateUpdate.after upload() res: ${JSON.stringify(slug, null, 2)}`)
+  if(!res.success){
+    showSnackbar(`Failed to ${props.isCreate ? "create" : "update"} item. ${res.message}`, 'red')
+    return
+  }
+
+  showSnackbar(`${current.value.module} item ${props.isCreate ? "created" : "updated"} successfully!`)
+  console.log(`CreateUpdate. success! res: ${JSON.stringify(res, null, 2)}`)
+  
   if (props.isCreate) {
-    routerPush('show', (<TApiItemShow<TGenericFields>>itemDetails).slug)
+    routerPush('show', res.slug)
   } else {
     routerPush('show', <string>current.value.slug)
   }
