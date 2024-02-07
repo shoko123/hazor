@@ -90,11 +90,13 @@ import { storeToRefs } from 'pinia'
 import { useTrioStore } from '../../scripts/stores/trio/trio'
 import { useTaggerStore } from '../../scripts/stores/trio/tagger'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
+import { useNotificationsStore } from '../../scripts/stores/notifications'
 
 const { routerPush } = useRoutesMainStore()
-let { visibleCategories, visibleGroups, visibleParams, categoryIndex, groupIndex } = storeToRefs(useTrioStore())
-let { resetCategoryAndGroupIndices, paramClicked } = useTrioStore()
-let { sync, clearSelectedNewItemParams, copyCurrentToNew } = useTaggerStore()
+const { visibleCategories, visibleGroups, visibleParams, categoryIndex, groupIndex } = storeToRefs(useTrioStore())
+const { resetCategoryAndGroupIndices, paramClicked } = useTrioStore()
+const { sync, clearSelectedNewItemParams, copyCurrentToNew } = useTaggerStore()
+const { showSpinner, showSnackbar } = useNotificationsStore()
 
 const header = computed(() => {
   return 'Item Tags Selector'
@@ -140,12 +142,17 @@ function pClicked(paramIndex: number) {
 }
 
 async function submit() {
-  await sync().catch(() => {
-    console.log(`***** Sync failed *****`)
-  })
-  resetCategoryAndGroupIndices()
-  clearSelectedNewItemParams
-  routerPush('back1')
+  showSpinner('Syncing tags...')
+  const res = await sync()
+  showSpinner(false)
+
+  if (res.success) {
+    resetCategoryAndGroupIndices()
+    clearSelectedNewItemParams
+    routerPush('back1')
+  } else {
+    showSnackbar(`Syncing of tags failed. Error: ${res.message}`)
+  }
 }
 
 function cancel() {

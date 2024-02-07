@@ -25,7 +25,7 @@ export const useTaggerStore = defineStore('tagger', () => {
   }
 
   async function sync() {
-    const { send } = useXhrStore()
+    const { send2 } = useXhrStore()
 
     const { current } = storeToRefs(useRoutesMainStore())
     console.log(`trio.sync()`)
@@ -53,28 +53,23 @@ export const useTaggerStore = defineStore('tagger', () => {
       }
     })
 
-    const data = {
+    const res = await send2<boolean>('tags/sync', 'post', {
       model: current.value.module,
       id: (<TGenericFields>fields.value).id,
       ids: globalTagIds,
       model_tag_ids: modelTagIds,
       columns
-    }
-
-    console.log(`tags.sync() data: ${JSON.stringify(data, null, 2)}`)
-
-    await send('tags/sync', 'post', data)
-      .catch(err => {
-        console.log(`tags.sync() failed. err: ${JSON.stringify(err, null, 2)}`)
-        throw err
-      })
-
-    //once back successfully from server, update locally
-    selectedItemParams.value = [...selectedNewItemParams.value]
-    const fieldsAsAnObject = fields.value as unknown as IObject
-    columns.forEach(x => {
-      fieldsAsAnObject[x.column_name] = x.val
     })
+
+    if(res.success){
+      selectedItemParams.value = [...selectedNewItemParams.value]
+      const fieldsAsAnObject = fields.value as unknown as IObject
+      columns.forEach(x => {
+        fieldsAsAnObject[x.column_name] = x.val
+      })  
+      return { success: true}   
+    }
+    return { success: false, message: res.message}
   }
 
   //When clearing params, set columns lookup and value to default (index 0)

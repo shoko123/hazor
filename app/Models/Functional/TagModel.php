@@ -62,10 +62,6 @@ class TagModel
 
 
         //Return 'success' or throw an exception with any failure.
-        //(too lazy to re-read and format values as newItemParamKeys and column fields which
-        //are already available at the front end),
-        return [
-            "msg" => "TagModel.sync() success"
-        ];
+        return true;
     }
 }
