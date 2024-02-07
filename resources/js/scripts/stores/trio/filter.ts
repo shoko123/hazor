@@ -10,7 +10,7 @@ import { useXhrStore } from '../xhr'
 import { useRoutesMainStore } from '../routes/routesMain'
 
 export const useFilterStore = defineStore('filter', () => {
-  const { send2 } = useXhrStore()
+  const { send } = useXhrStore()
   const { current } = storeToRefs(useRoutesMainStore())
   const trio = useTrioStore()
   const selectedFilterParams = ref<string[]>([])
@@ -272,7 +272,7 @@ export const useFilterStore = defineStore('filter', () => {
   async function getCount() {
     const q = filtersToQueryObject()
     const res1 = urlQueryToApiFilters(q)
-    const res2 = await send2<TApiArrayMain[]>('model/index', 'post', { model: current.value.module, query: res1.apiFilters })
+    const res2 = await send<TApiArrayMain[]>('model/index', 'post', { model: current.value.module, query: res1.apiFilters })
     return res2.success ? res2.data.length : -1
   }
 

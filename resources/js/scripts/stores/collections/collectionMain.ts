@@ -7,7 +7,7 @@ import { useXhrStore } from '../xhr'
 import { useMediaStore } from '../media'
 
 export const useCollectionMainStore = defineStore('collectionMain', () => {
-    const { send2 } = useXhrStore()
+    const { send } = useXhrStore()
     const { buildMedia } = useMediaStore()
     const { tagFromSlug } = useModuleStore()
 
@@ -68,7 +68,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
             return { success: false, message: 'Error: page size 0.' }
         }
 
-        const res = await send2<TApiPage[]>('model/page', 'post', { model: module, view: view.name, ids })
+        const res = await send<TApiPage[]>('model/page', 'post', { model: module, view: view.name, ids })
         if (res.success) {
             savePage(res.data, view, module)
             extra.value.pageNoB1 = pageNoB1

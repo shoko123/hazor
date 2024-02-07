@@ -19,9 +19,9 @@ export const useXhrStore = defineStore('xhr', () => {
     }
   }
 
-  async function send2<T = null>(endpoint: string, method: TXhrMethod, data?: object): Promise<TXhrResult<T>> {
+  async function send<T = null>(endpoint: string, method: TXhrMethod, data?: object): Promise<TXhrResult<T>> {
     const fullUrl = endpoint.substring(0, 8) === 'fortify/' ? `${axios.defaults.baseURL}/${endpoint}` : `${axios.defaults.baseURL}/api/${endpoint}`
-    console.log(`xhr.send2() endpoint: ${fullUrl}`)
+    console.log(`xhr.send() endpoint: ${fullUrl}`)
     try {
       const res = await axios<T>({
         url: fullUrl,
@@ -39,25 +39,5 @@ export const useXhrStore = defineStore('xhr', () => {
       }
     }
   }
-
-  //TODO delete this after transition to send2()
-  async function send(endpoint: string, method: TXhrMethod, data?: object) {
-    const fullUrl = endpoint.substring(0, 8) === 'fortify/' ? `${axios.defaults.baseURL}/${endpoint}` : `${axios.defaults.baseURL}/api/${endpoint}`
-    console.log(`xhr.send() endpoint: ${fullUrl}`)
-    return axios({
-      url: fullUrl,
-      method,
-      data: (data === undefined) ? null : data
-    })
-      .then(res => {
-        //console.log(`xhr success. res: ${JSON.stringify(res, null, 2)}`); 
-        return res;
-      })
-      .catch(err => {
-        //consoleLogErrors(err)
-        console.log(`**** axios.err ****\n${JSON.stringify(err, null, 2)}`);
-        throw err
-      })
-  }
-  return { setAxios, send, send2 }
+  return { setAxios, send }
 })

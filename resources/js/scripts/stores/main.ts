@@ -4,7 +4,7 @@ import { useXhrStore } from './xhr'
 import { useAuthStore } from './auth'
 import { useMediaStore } from './media'
 
-type TAppInitResultData = {
+type sendApiAppInit = {
   appUrl: string,
   bucketUrl: string,
   accessibility: {
@@ -18,14 +18,14 @@ type TAppInitResultData = {
 export const useMainStore = defineStore('main', () => {
   const { initMedia } = useMediaStore()
   const { accessibility } = storeToRefs(useAuthStore())
-  const { send2 } = useXhrStore()
+  const { send } = useXhrStore()
 
   const initialized = ref(false)
 
   async function appInit() {
-    const res = await send2<TAppInitResultData>('app/init', 'get')
+    const res = await send<sendApiAppInit>('app/init', 'get')
     if (res.success) {
-      const data = <TAppInitResultData>res.data
+      const data = <sendApiAppInit>res.data
       initMedia(data.bucketUrl, data.media_collections)
       accessibility.value = data.accessibility
       initialized.value = true

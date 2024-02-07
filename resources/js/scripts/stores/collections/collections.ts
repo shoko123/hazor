@@ -11,7 +11,7 @@ import { useCollectionMediaStore } from './collectionMedia'
 import { useCollectionRelatedStore } from './collectionRelated'
 
 export const useCollectionsStore = defineStore('collections', () => {
-    const { send2 } = useXhrStore()
+    const { send } = useXhrStore()
     const { current } = storeToRefs(useRoutesMainStore())
 
     function getCollection(source: TCollectionName) {
@@ -131,7 +131,7 @@ export const useCollectionsStore = defineStore('collections', () => {
     }
 
     async function firstSlug() {
-        return await send2<string>('model/firstSlug', 'post', { model: current.value.module })
+        return await send<string>('model/firstSlug', 'post', { model: current.value.module })
     }
 
     const mainCollection = computed(() => {

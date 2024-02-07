@@ -9,7 +9,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { TPlanAction, TModule } from '@/js/types/routesTypes'
-import type { TGenericFields } from '@/js/types/moduleTypes'
+import type { TGenericFields, TApiModuleInit } from '@/js/types/moduleTypes'
 import type { TApiItemShow } from '@/js/types/itemTypes'
 import type { LocationQuery } from 'vue-router'
 import { useXhrStore } from '../xhr'
@@ -25,7 +25,7 @@ import { useRoutesParserStore } from './routesParser'
 import { TApiArrayMain } from '@/js/types/collectionTypes'
 
 export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
-  const { send, send2 } = useXhrStore()
+  const { send } = useXhrStore()
   const n = useNotificationsStore()
 
   const c = useCollectionsStore()
@@ -138,30 +138,24 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
   async function loadModule(module: TModule): Promise<{ success: boolean, message: string }> {
     trioReset()
-    return send('model/init', 'post', { model: module })
-      .then(res => {
-        //console.log(`loadModule() res:\n${JSON.stringify(res, null, 2)}`)
-        //console.log(`model(${module}).init() returned (success)`)
-        m.counts = res.data.counts
-        m.lookups = res.data.lookups
-        m.welcomeText = res.data.welcome_text
+    const res = await send<TApiModuleInit>('model/init', 'post', { model: module })
+    if (res.success) {
+      m.counts = res.data.counts
+      m.lookups = res.data.lookups
+      m.welcomeText = res.data.welcome_text
 
-        c.resetCollectionsViewIndex()
-        i.setItemViewIndex(0)
-        i.itemViews = res.data.display_options.item_views
-        c.clear(['main', 'media', 'related'])
+      c.resetCollectionsViewIndex()
+      i.setItemViewIndex(0)
+      i.itemViews = res.data.display_options.item_views
+      c.clear(['main', 'media', 'related'])
 
-        setTrio(res.data.trio)
-        c.setCollectionViews('main', res.data.display_options.main_collection_views)
-        c.setCollectionViews('related', res.data.display_options.related_collection_views)
-
-        return { success: true, message: '' }
-      })
-      .catch(err => {
-        console.log(`Navigation to new routes failed with err: ${JSON.stringify(err, null, 2)}`)
-        return { success: false, message: `Error: failed to load module ${module}` }
-      })
-
+      setTrio(res.data.trio)
+      c.setCollectionViews('main', res.data.display_options.main_collection_views)
+      c.setCollectionViews('related', res.data.display_options.related_collection_views)
+      return { success: true, message: '' }
+    } else {
+      return { success: false, message: `Error: failed to load module ${module}` }
+    }
   }
 
   async function loadCollectionAndItem(module: TModule, query: LocationQuery, slug: string) {
@@ -192,7 +186,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       f.setFiltersFromUrlQuery(res1.selectedFilters)
     }
 
-    const res2 = await send2<TApiArrayMain[]>('model/index', 'post', { model: module, query: res1.apiFilters })
+    const res2 = await send<TApiArrayMain[]>('model/index', 'post', { model: module, query: res1.apiFilters })
 
     if (res2.success) {
       if (res2.data.length === 0) {
@@ -216,7 +210,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       return { success: false, message: sp.message }
     }
 
-    const res = await send2<TApiItemShow<TGenericFields>>('model/show', 'post', { model: module, slug: slug, params: sp.data })
+    const res = await send<TApiItemShow<TGenericFields>>('model/show', 'post', { model: module, slug: slug, params: sp.data })
 
     if (res.success) {
       r.to.slug = res.data.slug

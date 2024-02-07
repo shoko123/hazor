@@ -1,4 +1,8 @@
 // trioTypes.ts
+type TApiTrio = {
+  [key: string]: object
+}
+
 type TCategory = {
   id: number,
   name: string,
@@ -99,6 +103,7 @@ type TrioSourceName = 'Item' | 'New' | 'Filter'
 type TmpGroup = { groupName: string, params: string[], categoryKey: string, selectedCount: number }
 
 export {
+  TApiTrio,
   TCategory,
   TGroupValue,
   TGroupTag,

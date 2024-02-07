@@ -43,7 +43,7 @@
       color="blue"
       size="large"
       variant="tonal"
-      @click="send"
+      @click="sendResetPassword"
     >
       Reset Password
     </v-btn>
@@ -132,7 +132,7 @@ const password_confirmationErrors = computed(() => {
   return <string>(v$.value.password_confirmation.$error ? v$.value.password_confirmation.$errors[0].$message : undefined)
 })
 
-async function send() {
+async function sendResetPassword() {
   await v$.value.$validate()
   if (v$.value.$error || v$.value.$silentErrors.length > 0) {
     showSnackbar("Please correct the marked errors!", "orange")

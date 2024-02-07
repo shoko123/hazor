@@ -25,7 +25,7 @@ export const useTaggerStore = defineStore('tagger', () => {
   }
 
   async function sync() {
-    const { send2 } = useXhrStore()
+    const { send } = useXhrStore()
 
     const { current } = storeToRefs(useRoutesMainStore())
     console.log(`trio.sync()`)
@@ -53,7 +53,7 @@ export const useTaggerStore = defineStore('tagger', () => {
       }
     })
 
-    const res = await send2<boolean>('tags/sync', 'post', {
+    const res = await send<boolean>('tags/sync', 'post', {
       model: current.value.module,
       id: (<TGenericFields>fields.value).id,
       ids: globalTagIds,

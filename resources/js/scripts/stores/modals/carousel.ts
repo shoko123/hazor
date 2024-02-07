@@ -15,7 +15,7 @@ import { useRoutesMainStore } from '../routes/routesMain'
 export const useCarouselStore = defineStore('carousel', () => {
   const c = useCollectionsStore()
   const { extra } = storeToRefs(useCollectionMainStore())
-  const { send2 } = useXhrStore()
+  const { send } = useXhrStore()
   const { showSpinner } = useNotificationsStore()
   const { derived } = storeToRefs(useItemStore())
   const { buildMedia } = useMediaStore()
@@ -55,7 +55,7 @@ export const useCarouselStore = defineStore('carousel', () => {
     else {
       showSpinner(`Loading carousel item...`)
       if (collectionName.value === 'main') {
-        const res = await send2<TApiCarouselMain>('model/carousel', 'post', { id: (<TApiArrayMain>item).id, model: derived.value.module })
+        const res = await send<TApiCarouselMain>('model/carousel', 'post', { id: (<TApiArrayMain>item).id, model: derived.value.module })
         if (res.success) {
           carouselItemDetails.value = {
             module: res.data.module,
@@ -69,7 +69,7 @@ export const useCarouselStore = defineStore('carousel', () => {
           pushHome('Failed to load carousel item. Redirected to home page.')
         }
       } else {
-        const res = await send2<TApiCarouselMedia>('media/carousel', 'post', { id: item.id })
+        const res = await send<TApiCarouselMedia>('media/carousel', 'post', { id: item.id })
         if (res.success) {
           carouselItemDetails.value = {
             id: item.id,

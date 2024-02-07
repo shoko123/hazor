@@ -19,7 +19,7 @@ export const useItemStore = defineStore('item', () => {
   const { collection, itemByIndex, itemIndexById, next } = useCollectionsStore()
   const moduleStore = useModuleStore()
   const { setItemMedia } = useMediaStore()
-  const { send2 } = useXhrStore()
+  const { send } = useXhrStore()
   const { orderSelectedParams, getParamKeyByGroupAndId } = useTrioStore()
 
   const fields = ref<TGenericFields | undefined>(undefined)
@@ -77,7 +77,7 @@ export const useItemStore = defineStore('item', () => {
   async function upload(isCreate: boolean, newFields: TGenericFields): Promise<{ success: true, slug: string } | { success: false, message: string }> {
     console.log(`item.upload isCreate: ${isCreate}, module: ${current.value.module}, fields: ${JSON.stringify(newFields, null, 2)}`)
 
-    const res = await send2<TApiItemShow<TGenericFields>>('model/store', isCreate ? 'post' : 'put', { model: current.value.module, item: newFields, id: newFields.id })
+    const res = await send<TApiItemShow<TGenericFields>>('model/store', isCreate ? 'post' : 'put', { model: current.value.module, item: newFields, id: newFields.id })
     if (!res.success) {
       return res
     }
@@ -125,7 +125,7 @@ export const useItemStore = defineStore('item', () => {
     const prev = next('main', itemIndexById((<TGenericFields>fields.value).id), false)
 
 
-    const res = await send2<TApiItemShow<TGenericFields>>('model/destroy', 'post', { model: current.value.module, slug: slug.value, id: fields.value?.id })
+    const res = await send<TApiItemShow<TGenericFields>>('model/destroy', 'post', { model: current.value.module, slug: slug.value, id: fields.value?.id })
 
     if (!res.success) {
       return res

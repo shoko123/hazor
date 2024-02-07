@@ -13,6 +13,6 @@ const app = createApp(App)
 const { setAxios } = useXhrStore()
 setAxios()
 
-router.isReady().then(() => {
-    app.mount('#app')
-})
+await router.isReady()
+app.mount('#app')
+

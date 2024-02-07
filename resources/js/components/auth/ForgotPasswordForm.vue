@@ -18,7 +18,7 @@
     color="blue"
     size="large"
     variant="tonal"
-    @click="send"
+    @click="sendForgotPassword"
   >
     Send Email
   </v-btn>
@@ -59,7 +59,7 @@ const emailErrors = computed(() => {
   return <string>(v$.value.email.$error ? v$.value.email.$errors[0].$message : undefined)
 })
 
-async function send() {
+async function sendForgotPassword() {
   await v$.value.$validate();
   console.log(`after validate() errors: ${JSON.stringify(v$.value.$errors, null, 2)}`)
   if (v$.value.$error || v$.value.$silentErrors.length > 0) {

@@ -14,7 +14,7 @@ import { useItemStore } from '../../scripts/stores/item'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 
 export const useMediaStore = defineStore('media', () => {
-  const { send2 } = useXhrStore()
+  const { send } = useXhrStore()
   const { showSnackbar } = useNotificationsStore()
   //both bucketUrl and mediaCollectionNames are initiated at app.init()
   const bucketUrl = ref("")
@@ -124,7 +124,7 @@ export const useMediaStore = defineStore('media', () => {
     fd.append("model_id", idAsString);
     fd.append("media_collection_name", mediaCollectionName.value)
 
-    const res = await send2<TApiArrayMedia[]>('media/upload', 'post', fd)
+    const res = await send<TApiArrayMedia[]>('media/upload', 'post', fd)
     if (res.success) {
       showUploader.value = false
       setItemMedia(res.data)
@@ -141,7 +141,7 @@ export const useMediaStore = defineStore('media', () => {
     const i = useItemStore()
     console.log(`destroy() media_id: ${media_id}, model: ${r.current.module}, model_id: ${(<TGenericFields>i.fields).id}`)
 
-    const res = await send2<TApiArrayMedia[]>('media/destroy', 'post', { media_id, model: r.current.module, model_id: (<TGenericFields>i.fields).id })
+    const res = await send<TApiArrayMedia[]>('media/destroy', 'post', { media_id, model: r.current.module, model_id: (<TGenericFields>i.fields).id })
     if (res.success) {
       showUploader.value = false
       setItemMedia(res.data)
@@ -160,7 +160,7 @@ export const useMediaStore = defineStore('media', () => {
     const ordered = cm.array.map((x, index) => { return { id: x.id, order: index + 1 } })
     console.log(`reorder()  model: ${r.current.module}, id: ${i.fields?.id} ,ordered: ${JSON.stringify(ordered, null, 2)}`)
 
-    const res = await send2<TApiArrayMedia[]>('media/reorder', 'post', { model: r.current.module, model_id: i.fields?.id, ordered })
+    const res = await send<TApiArrayMedia[]>('media/reorder', 'post', { model: r.current.module, model_id: i.fields?.id, ordered })
 
     if (res.success) {
       showUploader.value = false

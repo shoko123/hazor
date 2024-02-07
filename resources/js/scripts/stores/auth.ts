@@ -9,7 +9,7 @@ import { useXhrStore } from './xhr'
 import { useRoutesMainStore } from './routes/routesMain'
 
 export const useAuthStore = defineStore('auth', () => {
-  const { send2 } = useXhrStore()
+  const { send } = useXhrStore()
   const { routerPush } = useRoutesMainStore()
 
   const user = ref<TUser | null>(null)
@@ -31,18 +31,18 @@ export const useAuthStore = defineStore('auth', () => {
   async function logout(): Promise<TXhrEmptyResult> {
     console.log("auth.logout")
     user.value = null
-    return await send2<TUser>('fortify/logout', 'post')
+    return await send<TUser>('fortify/logout', 'post')
   }
 
   async function register(form: TRegistrationForm): Promise<TXhrEmptyResult> {
     console.log("auth.register()")
     user.value = null
-    return await send2('fortify/register', 'post', form)
+    return await send('fortify/register', 'post', form)
   }
 
   async function getUser(): Promise<TXhrResult<TUser>> {
     console.log("auth.getUser()")    
-    const res = await send2<TUser>('about/me', 'get')
+    const res = await send<TUser>('about/me', 'get')
     if (res.success) {
       return res
     } else {
@@ -52,7 +52,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function loginGetUser(form: TLoginForm): Promise<TXhrResult<TUser>> {
     user.value = null
-    const res = await send2<{ two_factor: boolean }>('fortify/login', 'post', form)
+    const res = await send<{ two_factor: boolean }>('fortify/login', 'post', form)
     if (res.success) {
       return await getUser()
     } else {
@@ -63,17 +63,17 @@ export const useAuthStore = defineStore('auth', () => {
   //currently not used, maybe later add option to re-send verification email
   async function sendVerificationNatification(): Promise<TXhrEmptyResult> {
     console.log("auth.sendVerificationNatification")
-    return await send2('fortify/email/verification-notification', 'post')
+    return await send('fortify/email/verification-notification', 'post')
   }
 
   async function forgotPassword(form: TForgotPasswordForm): Promise<TXhrEmptyResult> {
     console.log("auth.forgotPassword()")
-    return await send2('fortify/forgot-password', 'post', form)
+    return await send('fortify/forgot-password', 'post', form)
   }
 
   async function resetPassword(form: TResetPasswordForm): Promise<TXhrEmptyResult> {
     console.log("auth.resetPassword()")
-    return send2('fortify/reset-password', 'post', form)
+    return send('fortify/reset-password', 'post', form)
   }
 
   function resetAndGoTo(routeName: TPageName | null = null) {
