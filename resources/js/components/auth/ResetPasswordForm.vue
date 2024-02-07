@@ -68,8 +68,8 @@
 <script setup lang="ts">
 import { computed, ref, reactive, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { useAuthStore } from '../../../scripts/stores/auth'
-import { useNotificationsStore } from '../../../scripts/stores/notifications';
+import { useAuthStore } from '../../scripts/stores/auth'
+import { useNotificationsStore } from '../../scripts/stores/notifications';
 import { useVuelidate } from "@vuelidate/core"
 import { required, email, minLength, helpers, sameAs } from "@vuelidate/validators"
 

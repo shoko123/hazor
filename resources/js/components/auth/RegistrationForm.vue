@@ -80,8 +80,8 @@
 
 <script setup lang="ts">
 import { computed, ref, reactive } from 'vue'
-import { useAuthStore } from '../../../scripts/stores/auth'
-import { useNotificationsStore } from '../../../scripts/stores/notifications';
+import { useAuthStore } from '../../scripts/stores/auth'
+import { useNotificationsStore } from '../../scripts/stores/notifications';
 
 const { showSnackbar } = useNotificationsStore()
 const { logout, register, resetAndGoTo, openDialog } = useAuthStore()

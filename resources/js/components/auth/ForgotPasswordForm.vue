@@ -35,8 +35,8 @@
 
 <script setup lang="ts">
 import { computed, reactive } from 'vue'
-import { useAuthStore } from '../../../scripts/stores/auth'
-import { useNotificationsStore } from '../../../scripts/stores/notifications'
+import { useAuthStore } from '../../scripts/stores/auth'
+import { useNotificationsStore } from '../../scripts/stores/notifications'
 import { useVuelidate } from "@vuelidate/core"
 import { required, email } from "@vuelidate/validators"
 

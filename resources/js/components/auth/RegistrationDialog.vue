@@ -11,8 +11,8 @@
 <script setup lang="ts">
 //This form is shown after registration - 
 //proceed only after verification!
-import { useAuthStore } from '../../../scripts/stores/auth'
-import { useNotificationsStore } from '../../../scripts/stores/notifications'
+import { useAuthStore } from '../../scripts/stores/auth'
+import { useNotificationsStore } from '../../scripts/stores/notifications'
 
 const { getUser, resetAndGoTo } = useAuthStore()
 

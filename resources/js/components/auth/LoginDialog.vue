@@ -12,8 +12,8 @@
 //This form is only shown if after login, user is found to be not verified - 
 //proceed only after email verification!
 
-import { useAuthStore } from '../../../scripts/stores/auth'
-import { useNotificationsStore } from '../../../scripts/stores/notifications'
+import { useAuthStore } from '../../scripts/stores/auth'
+import { useNotificationsStore } from '../../scripts/stores/notifications'
 
 const { getUser, resetAndGoTo } = useAuthStore()
 const { showSnackbar } = useNotificationsStore()

@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 
-import { useAuthStore } from '../../../scripts/stores/auth'
+import { useAuthStore } from '../../scripts/stores/auth'
 
 let { resetAndGoTo } = useAuthStore()
 

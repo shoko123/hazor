@@ -28,8 +28,8 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useAuthStore } from '../../../scripts/stores/auth'
-import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
+import { useAuthStore } from '../../scripts/stores/auth'
+import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import LoginForm from './LoginForm.vue'
 import LoginDialog from './LoginDialog.vue'
 import RegistrationForm from './RegistrationForm.vue'

@@ -59,10 +59,10 @@
 import { computed, ref, reactive } from 'vue'
 import { storeToRefs } from 'pinia'
 import type { TPageName } from '@/js/types/routesTypes'
-import { useAuthStore } from '../../../scripts/stores/auth'
-import { useNotificationsStore } from '../../../scripts/stores/notifications'
-import { useRoutesMainStore } from '../../../scripts/stores/routes/routesMain'
-import { router } from '../../../scripts/setups/vue-router'
+import { useAuthStore } from '../../scripts/stores/auth'
+import { useNotificationsStore } from '../../scripts/stores/notifications'
+import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
+import { router } from '../../scripts/setups/vue-router'
 import { useVuelidate } from "@vuelidate/core"
 import { required, email, minLength, helpers } from '@vuelidate/validators'
 

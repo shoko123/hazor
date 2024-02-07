@@ -33,8 +33,8 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useDisplay } from 'vuetify'
-import { useModuleStore } from '../../../scripts/stores/module'
-import AuthForm from './AuthForm.vue'
+import { useModuleStore } from '../../scripts/stores/module'
+import AuthForm from '../auth/AuthForm.vue'
 
 const { backgroundImage } = storeToRefs(useModuleStore())
 const { smAndDown } = useDisplay()

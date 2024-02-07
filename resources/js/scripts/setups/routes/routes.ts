@@ -16,22 +16,22 @@ const routes = [
   },
   {
     path: '/:module(auth)/login',
-    component: () => import('@/components/content/auth/AuthPage.vue'),
+    component: () => import('@/components/content/AuthPage.vue'),
     name: 'login',
   },
   {
     path: '/:module(auth)/register',
-    component: () => import('@/components/content/auth/AuthPage.vue'),
+    component: () => import('@/components/content/AuthPage.vue'),
     name: 'register',
   },
   {
     path: '/:module(auth)/forgot-password',
-    component: () => import('@/components/content/auth/AuthPage.vue'),
+    component: () => import('@/components/content/AuthPage.vue'),
     name: 'forgot-password',
   },  
   {
     path: '/:module(auth)/reset-password/:slug',
-    component: () => import('@/components/content/auth/AuthPage.vue'),
+    component: () => import('@/components/content/AuthPage.vue'),
     name: 'reset-password',
   },  
   {
