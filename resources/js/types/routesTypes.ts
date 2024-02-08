@@ -1,8 +1,28 @@
 // routesStore.js
 import type { TCView } from '@/js/types/collectionTypes'
-type TPageName = 'home' | 'welcome' | 'filter' | 'index' | 'show' | 'create' | 'update' | 'tag' | 'media' | 'login' | 'register' | 'forgot-password' | 'reset-password'
-type TUrlModule = 'auth' | 'admin' | 'loci' | 'fauna' | 'stones' | ''
-type TModule = 'Home' | 'Auth' | 'Admin' | 'Locus' | 'Fauna' | 'Stone'
+
+
+type TUrlModule = 'loci' | 'fauna' | 'stones'
+type TModule = 'Locus' | 'Fauna' | 'Stone'
+
+type TRoutes =
+    { name: 'home' } |
+    { name: 'welcome', params: { module: TUrlModule }, } |
+    { name: 'filter', module: TModule, params: { module: TUrlModule }, } |
+    { name: 'index', module: TModule, params: { module: TUrlModule, query: string }, } |
+    { name: 'show', module: TModule, params: { module: TUrlModule, query: string, slug: string }, } |
+    { name: 'create', module: TModule, params: { module: TUrlModule }, } |
+    { name: 'update', module: TModule, params: { module: TUrlModule, slug: string, action: 'update' }, } |
+    { name: 'tag', module: TModule, params: { module: TUrlModule, slug: string, action: 'tag' }, } |
+    { name: 'media', media: TModule, params: { module: TUrlModule, slug: string, action: 'media' }, } |
+    { name: 'login', } |
+    { name: 'register' } |
+    { name: 'forgot-password' } |
+    { name: 'reset-password' } |
+    { name: 'reset-dashboard' }
+
+
+type TPageName = Pick<TRoutes, 'name'>['name']
 
 
 type TPlanAction =
@@ -23,11 +43,11 @@ type TPlanAction =
     'page.load1' //load pageB1 = 1
 
 type TRouteInfo = {
-    url_module: TUrlModule | undefined,
+    name: TPageName,    
+    url_module: TUrlModule | null,
     slug: string | undefined,
     url_full_path: string | undefined,
-    name: TPageName,
-    module: TModule,
+    module: TModule | null,
     queryParams: object | undefined,
     preLoginFullPath: string | undefined
 }
@@ -40,17 +60,17 @@ type TSelectedFilterFromQuery = {
 
 type TApiFilters = {
     model_tag_ids: number[],
-        global_tag_ids: number[],
-        column_values: { column_name: string, vals: string[] }[],
-        column_lookup_ids: { column_name: string, vals: number[] }[],
-        column_search: { column_name: string, vals: string[] }[],
-        bespoke: { name: string, vals: string[] }[],
-        order_by: { column_name: string, asc: boolean }[],
+    global_tag_ids: number[],
+    column_values: { column_name: string, vals: string[] }[],
+    column_lookup_ids: { column_name: string, vals: number[] }[],
+    column_search: { column_name: string, vals: string[] }[],
+    bespoke: { name: string, vals: string[] }[],
+    order_by: { column_name: string, asc: boolean }[],
 }
 
 type TParseQuery = {
     success: boolean,
-    apiFilters:TApiFilters,
+    apiFilters: TApiFilters,
     selectedFilters: TSelectedFilterFromQuery[],
     message: string
 }
@@ -63,7 +83,7 @@ type TPlanResponse = {
     message: string
 }
 
-type TFuncLoadPage =  (pageNoB1: number, view: TCView, module: TModule) =>  Promise<{ success: true, message: string } | { success: false, message: string }>
+type TFuncLoadPage = (pageNoB1: number, view: TCView, module: TModule) => Promise<{ success: true, message: string } | { success: false, message: string }>
 
 export {
     TPageName,

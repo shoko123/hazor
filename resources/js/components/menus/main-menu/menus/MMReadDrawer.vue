@@ -23,7 +23,7 @@
   </v-list-item>
   <v-divider />
   <div v-if="!authenticated">
-    <v-list-item :to="{ name: 'login', params: { module: 'auth' } }">
+    <v-list-item :to="{ name: 'login' }">
       Login
     </v-list-item>
   </div>

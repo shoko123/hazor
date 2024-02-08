@@ -20,8 +20,8 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
 
         //console.log(`changes: ${JSON.stringify(changed, null, 2)}`)
 
-        if (['auth', 'admin'].includes(to.module) ||
-            ['auth', 'admin'].includes(from.module)) {
+        if (['login', 'register', 'reset-password', 'forgot-password'].includes(<string>to.name) ||
+            ['login', 'register', 'reset-password', 'forgot-password'].includes(<string>from.name)) {
             return { success: true, data: [] }
         }
 

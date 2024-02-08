@@ -16,11 +16,23 @@ export const useModuleStore = defineStore('module', () => {
   const welcomeText = ref<string>("")
 
   const backgroundImage = computed(() => {
-    const module = current.value.module
-    return ['welcome', 'login', 'register', 'forgot-password', 'reset-password'].includes(current.value.name) ? {
-      fullUrl: `${bucketUrl.value}app/background/${module}.jpg`,
-      tnUrl: `${bucketUrl.value}app/background/${module}-tn.jpg`
-    } : undefined
+    switch (current.value.name) {
+      case 'welcome':
+        return {
+          fullUrl: `${bucketUrl.value}app/background/${current.value.module}.jpg`,
+          tnUrl: `${bucketUrl.value}app/background/${current.value.module}-tn.jpg`
+        }
+      case 'login':
+      case 'register':
+      case 'forgot-password':
+      case 'reset-password':
+        return {
+          fullUrl: `${bucketUrl.value}app/background/Auth.jpg`,
+          tnUrl: `${bucketUrl.value}app/background/Auth-tn.jpg`
+        }
+      default:
+        return undefined
+    }
   })
 
   function tagFromSlug(module: TModule, slug: string): string {
@@ -41,7 +53,7 @@ export const useModuleStore = defineStore('module', () => {
     }
   }
   const getCurrentModuleStore = computed(() => {
-    return getStore(current.value.module)
+    return getStore(<TModule>current.value.module)
   })
 
   return { counts, backgroundImage, welcomeText, getCurrentModuleStore, lookups, tagFromSlug }

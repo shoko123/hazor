@@ -4,7 +4,7 @@
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useRouter, type LocationQueryRaw, type RouteLocationNormalized, type RouteLocationRaw } from 'vue-router'
-import type { TRouteInfo, TPageName, TPlanAction, TModule } from '@/js/types/routesTypes'
+import type { TRouteInfo, TPageName, TPlanAction, TModule, TUrlModule } from '@/js/types/routesTypes'
 
 import { useRoutesParserStore } from './routesParser'
 import { useRoutesPlanTransitionStore } from './routesPlanTransition'
@@ -21,29 +21,26 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     const { showSnackbar } = useNotificationsStore()
 
     const urlModuleFromModule: { [key in TModule]: string; } = {
-        Home: 'home',
-        Auth: 'auth',
-        Admin: 'admin',
         Locus: 'loci',
         Fauna: 'fauna',
         Stone: "stones"
     }
 
     const current = ref<TRouteInfo>({
-        url_module: undefined,
+        url_module: null,
         slug: undefined,
         url_full_path: undefined,
-        module: 'Home',
+        module: null,
         name: 'home',
         queryParams: undefined,
         preLoginFullPath: undefined
     })
 
     const to = ref<TRouteInfo>({
-        url_module: undefined,
+        url_module: null,
         slug: undefined,
         url_full_path: undefined,
-        module: 'Home',
+        module: null,
         name: 'home',
         queryParams: undefined,
         preLoginFullPath: undefined
@@ -66,7 +63,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
         if (!authorize(handle_to.path)) {
             showSnackbar('Unauthorized; redirected to Login Page')
-            return { name: 'login', params: { module: 'auth' } }
+            return { name: 'login' }
         }
 
         to.value.name = <TPageName>handle_to.name
@@ -78,7 +75,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             const res = parseModule(<string>handle_to.params.module)
             if (res.success) {
                 to.value.module = <TModule>res.module
-                to.value.url_module = res.url_module
+                to.value.url_module = <TUrlModule>res.url_module
             }
             else {
                 console.log(`parseModule returned ${JSON.stringify(res, null, 2)}`)
@@ -87,8 +84,8 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
                 return { name: 'home' }
             }
         } else {
-            to.value.module = 'Home'
-            to.value.url_module = ''
+            to.value.module = null
+            to.value.url_module = null
         }
 
         //console.log(`after successful module parse. to: ${JSON.stringify(to.value, null, 2)})`)
@@ -109,7 +106,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         //Access server and load stuff (async)
         inTransition.value = true
 
-        const res = await prepareForNewRoute(to.value.module, handle_to.query, <string>handle_to.params.slug, <TPlanAction[]>res1.data, handle_from.name === undefined)
+        const res = await prepareForNewRoute(<TModule>to.value.module, handle_to.query, <string>handle_to.params.slug, <TPlanAction[]>res1.data, handle_from.name === undefined)
         if (res.success) {
             finalizeRouting(handle_to, handle_from)
         } else {
@@ -142,7 +139,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
         current.value.url_module = to.value.url_module
         current.value.queryParams = ['index', 'show'].includes(current.value.name) ? handle_to.query : undefined
         current.value.url_full_path = handle_to.fullPath
-        current.value.preLoginFullPath = to.value.url_module === 'auth' ? handle_from.fullPath : undefined
+        current.value.preLoginFullPath = to.value.name === 'login' ? handle_from.fullPath : undefined
 
         switch (handle_to.name) {
             case 'show':
@@ -185,7 +182,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
             case 'register':
             case 'forgot-password':
             case 'reset-password':
-                router.push({ name: routeName, params: { module: 'auth' } })
+                router.push({ name: routeName })
                 break
 
             case 'welcome':

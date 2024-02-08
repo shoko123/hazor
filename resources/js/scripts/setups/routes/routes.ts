@@ -5,37 +5,37 @@ const routes = [
     name: 'home'
   },
   {
-    path: '/:module(admin)/dashboard',
+    path: '/admin/dashboard',
     component: () => import('@/components/content/admin/DashboardPage.vue'),
     name: 'dashboard'
   },
   {
-    path: '/:module(admin)/:catchAll(.*)',
+    path: '/admin/:catchAll(.*)',
     component: () => import('@/components/routes/NotFound.vue'),    
     name: 'not-found-admin'
   },
   {
-    path: '/:module(auth)/login',
+    path: '/auth/login',
     component: () => import('@/components/content/AuthPage.vue'),
     name: 'login',
   },
   {
-    path: '/:module(auth)/register',
+    path: '/auth/register',
     component: () => import('@/components/content/AuthPage.vue'),
     name: 'register',
   },
   {
-    path: '/:module(auth)/forgot-password',
+    path: '/auth/forgot-password',
     component: () => import('@/components/content/AuthPage.vue'),
     name: 'forgot-password',
   },  
   {
-    path: '/:module(auth)/reset-password/:slug',
+    path: '/auth/reset-password/:slug',
     component: () => import('@/components/content/AuthPage.vue'),
     name: 'reset-password',
   },  
   {
-    path: "/:module(auth)/:catchAll(.*)",
+    path: "/auth/:catchAll(.*)",
     component: () => import('@/components/routes/NotFound.vue'),    
     name: 'not-found'
   },

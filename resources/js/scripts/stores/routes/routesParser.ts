@@ -7,26 +7,19 @@ import { useFaunaStore } from '../modules/fauna'
 import { useStoneStore } from '../modules/stone'
 
 const moduleConversion = {
-    auth: 'Auth',
-    admin: 'Admin',
     loci: 'Locus',
     fauna: 'Fauna',
     stones: "Stone"
 }
 
 export const useRoutesParserStore = defineStore('routesParser', () => {
-
     function parseModule(module: string) {
         //console.log(`parseModule() module: "${module}"`)
         switch (module) {
-            case "admin":
-            case "auth":
             case "loci":
             case "stones":
             case 'fauna':
-                //m.to.module = <TModule>moduleConversion[module]
-                //m.to.url_module = module
-                return { success: true, module: <TModule>moduleConversion[module], url_module: module , message: '' }
+                return { success: true, module: <TModule>moduleConversion[module], url_module: module, message: '' }
 
             default:
                 console.log(`******* URL Parser error: Unsupported module name "${module}" *********`)
@@ -37,7 +30,6 @@ export const useRoutesParserStore = defineStore('routesParser', () => {
                 }
         }
     }
-
 
     function parseSlug(module: TModule, slug: string) {
         //console.log(`parseSlug() module: ${module}, slug: ${slug}`);

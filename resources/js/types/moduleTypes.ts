@@ -20,9 +20,9 @@ type TModuleTypes = {
 }
 
 type TApiModuleInit = {
-        counts: {items: number, media: number},
-        display_options: {item_views: string[], main_collection_views: TCollectionView[], related_collection_views: TCollectionView[]},
-        lookups: {column_name: string, group_name: string}[],
+        counts: { items: number, media: number },
+        display_options: { item_views: string[], main_collection_views: TCollectionView[], related_collection_views: TCollectionView[] },
+        lookups: { column_name: string, group_name: string }[],
         trio: TApiTrio,
         welcome_text: string
 }
@@ -107,7 +107,7 @@ type TFaunaLookup = keyof Pick<TFaunaFields, 'id' | 'base_taxon_id' | 'scope_id'
 type TModify = TLocusModify | TStoneModify | TFaunaModify
 type TLookup = TLocusLookup | TStoneLookup | TFaunaLookup
 
-type TFuncValidateSlug = (slug: string) =>  { success: true, data: object, message: string } | { success: false, data: null, message: string }
+type TFuncValidateSlug = (slug: string) => { success: true, data: object, message: string } | { success: false, data: null, message: string }
 
 export {
         TApiModuleInit,
