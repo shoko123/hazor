@@ -38,7 +38,7 @@ import { type Validation } from "@vuelidate/core"
 
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useItemStore } from '../../scripts/stores/item'
-import { TGenericFields } from '@/js/types/moduleTypes'
+import { TFieldsUnion } from '@/js/types/moduleTypes'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 import { useLocusStore } from '../../scripts/stores/modules/locus'
 import { useStoneStore } from '../../scripts/stores/modules/stone'
@@ -75,7 +75,7 @@ const formNew = computed<Component>(() => {
   }
 })
 
-function beforeStore(isCreate: boolean, fields: TGenericFields) {
+function beforeStore(isCreate: boolean, fields: TFieldsUnion) {
   let store
   switch (current.value.module) {
     case 'Locus':
@@ -94,7 +94,7 @@ function beforeStore(isCreate: boolean, fields: TGenericFields) {
   return store.beforeStore(props.isCreate, fields)
 }
 
-async function submit(v: Validation, data: TGenericFields) {
+async function submit(v: Validation, data: TFieldsUnion) {
   //console.log(`CreateUpdate.submit() data: ${JSON.stringify(data, null, 2)}`)
 
   // vuelidate validation

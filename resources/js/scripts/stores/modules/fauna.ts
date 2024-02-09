@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 import { defineStore } from 'pinia'
-import { TFaunaFields, TGenericFields, TFuncValidateSlug } from '@/js/types/moduleTypes'
+import { TFieldsGeneric, TFieldsUnion, TFuncValidateSlug } from '@/js/types/moduleTypes'
 
 export const useFaunaStore = defineStore('fauna', () => {
 
@@ -16,9 +16,9 @@ export const useFaunaStore = defineStore('fauna', () => {
     return slug
   }
 
-  function beforeStore(isCreate: boolean, fields: TGenericFields): TGenericFields | false {
+  function beforeStore(isCreate: boolean, fields: TFieldsUnion): TFieldsUnion | false {
     console.log(`fauna.beforStores() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
-    const sf = <TFaunaFields>fields
+    const sf = <TFieldsGeneric<'Fauna'>>fields
     if (isCreate) {
       const rf = { ...sf }
       //do something here

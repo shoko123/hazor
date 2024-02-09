@@ -1,36 +1,31 @@
 import type { TApiTrio } from '@/js/types/trioTypes'
 import type { TCollectionView } from '@/js/types/collectionTypes'
-type TMod = 'Locus' | 'Stone' | 'Fauna'
 
 type TModuleTypes = {
-        moduleName: 'Locus',
+        url: 'loci',
+        name: 'Locus',
         fields: TLocusFields,
         modify: TLocusModify,
         lookups: TLocusLookup
 } | {
-        moduleName: 'Stone',
+        url: 'stones',
+        name: 'Stone',
         fields: TStoneFields,
         modify: TStoneModify,
         lookups: TStoneLookup
 } | {
-        moduleName: 'Fauna',
+        url: 'fauna',
+        name: 'Fauna',
         fields: TFaunaFields,
         modify: TFaunaModify,
         lookups: TFaunaLookup
 }
 
-type TApiModuleInit = {
-        counts: { items: number, media: number },
-        display_options: { item_views: string[], main_collection_views: TCollectionView[], related_collection_views: TCollectionView[] },
-        lookups: { column_name: string, group_name: string }[],
-        trio: TApiTrio,
-        welcome_text: string
-}
+type TModule = TModuleTypes['name']
+type TUrlModule = TModuleTypes['url']
 
-type TTmpFields<TM extends TMod> = Extract<TModuleTypes, { moduleName: TM }>
-type TNewFields<TM extends TMod> = TTmpFields<TM>['fields']
-
-type TGenericFields = TModuleTypes['fields']
+type TFieldsUnion = TModuleTypes['fields']
+type TFieldsGeneric<TM extends TModule> = Extract<TModuleTypes, { name: TM }>['fields']
 
 type TLocusFields = {
         id: number,
@@ -109,15 +104,20 @@ type TLookup = TLocusLookup | TStoneLookup | TFaunaLookup
 
 type TFuncValidateSlug = (slug: string) => { success: true, data: object, message: string } | { success: false, data: null, message: string }
 
+type TApiModuleInit = {
+        counts: { items: number, media: number },
+        display_options: { item_views: string[], main_collection_views: TCollectionView[], related_collection_views: TCollectionView[] },
+        lookups: { column_name: string, group_name: string }[],
+        trio: TApiTrio,
+        welcome_text: string
+}
 export {
-        TApiModuleInit,
-        TLocusFields,
-        TStoneFields,
-        TFaunaFields,
-        TGenericFields,
+        TModule,
+        TUrlModule,
+        TFieldsUnion,    
+        TFieldsGeneric,
         TModify,
         TLookup,
-        TMod,
-        TNewFields,
+        TApiModuleInit,
         TFuncValidateSlug
 }

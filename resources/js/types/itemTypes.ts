@@ -2,7 +2,7 @@
 //showTypes.ts
 //types returned from 'show' api route
 import { TApiArrayMedia, TApiArrayRelated } from "@/js/types/collectionTypes"
-import { TGenericFields } from "@/js/types/moduleTypes"
+import { TFieldsUnion } from "@/js/types/moduleTypes"
 
 type TApiItemShow<F> = {
         fields: F,
@@ -15,7 +15,7 @@ type TApiItemShow<F> = {
 }
 
 type TApiItemUpdate = {
-        fields: TGenericFields,
+        fields: TFieldsUnion,
         slug: string,
 }
 

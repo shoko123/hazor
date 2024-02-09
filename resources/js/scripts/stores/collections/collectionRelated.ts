@@ -2,7 +2,8 @@
 //handles all collections and loading of pages
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { TModule, TFuncLoadPage } from '../../../types/routesTypes'
+import type { TModule } from '@/js/types/moduleTypes'
+import type { TFuncLoadPage } from '@/js/types/routesTypes'
 import { TCollectionExtra, TCollectionView, TItemsPerView, TApiArrayRelated, TCView, TApiArray, TPageRelatedGallery, TPageRelatedChips, TPageRelatedTabular } from '@/js/types/collectionTypes'
 import { useMediaStore } from '../media'
 import { useModuleStore } from '../module'

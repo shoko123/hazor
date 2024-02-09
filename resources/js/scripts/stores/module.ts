@@ -1,7 +1,7 @@
 // stores/module.ts
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
-import { TModule } from '../../types/routesTypes'
+import type { TModule } from '../../types/moduleTypes'
 import { useMediaStore } from './media'
 import { useRoutesMainStore } from './routes/routesMain'
 import { useLocusStore } from './modules/locus'

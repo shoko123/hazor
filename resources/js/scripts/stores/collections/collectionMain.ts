@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { TCollectionExtra, TApiArray, TApiArrayMain, TApiPageMainGallery, TApiPageMainTabular, TItemsPerView, TCView, TApiPage, TCollectionView, TPageMainGallery, TPageMain, TPageMainChips } from '@/js/types/collectionTypes'
-import type { TModule, TFuncLoadPage } from '../../../types/routesTypes'
+import type { TFuncLoadPage } from '@/js/types/routesTypes'
+import type { TModule } from '@/js/types/moduleTypes'
 import { useModuleStore } from '../module'
 import { useXhrStore } from '../xhr'
 import { useMediaStore } from '../media'
@@ -45,7 +46,7 @@ export const useCollectionMainStore = defineStore('collectionMain', () => {
         extra.value.length = data.length
     }
 
-    const loadPage: TFuncLoadPage = async function(pageNoB1: number, view: TCView, module: TModule) { 
+    const loadPage: TFuncLoadPage = async function (pageNoB1: number, view: TCView, module: TModule) {
         const ipp = view.ipp
         const start = (pageNoB1 - 1) * ipp
 

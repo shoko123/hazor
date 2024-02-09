@@ -8,8 +8,8 @@
 
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { TPlanAction, TModule } from '@/js/types/routesTypes'
-import type { TGenericFields, TApiModuleInit } from '@/js/types/moduleTypes'
+import type { TPlanAction,  } from '@/js/types/routesTypes'
+import type { TFieldsUnion, TApiModuleInit, TModule} from '@/js/types/moduleTypes'
 import type { TApiItemShow } from '@/js/types/itemTypes'
 import type { LocationQuery } from 'vue-router'
 import { useXhrStore } from '../xhr'
@@ -210,7 +210,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       return { success: false, message: sp.message }
     }
 
-    const res = await send<TApiItemShow<TGenericFields>>('model/show', 'post', { model: module, slug: slug, params: sp.data })
+    const res = await send<TApiItemShow<TFieldsUnion>>('model/show', 'post', { model: module, slug: slug, params: sp.data })
 
     if (res.success) {
       r.to.slug = res.data.slug
@@ -224,7 +224,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
   async function loadPage(firstPage: boolean): Promise<{ success: boolean, message: string }> {
-    const res = await c.loadPageByItemIndex('main', c.collection('main').value.meta.view, firstPage ? 0 : i.itemIndex, r.to.module)
+    const res = await c.loadPageByItemIndex('main', c.collection('main').value.meta.view, firstPage ? 0 : i.itemIndex, <TModule>r.to.module)
     return res
   }
 

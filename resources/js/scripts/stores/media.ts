@@ -1,8 +1,8 @@
 // stores/media.js
-import { TGenericFields } from '@/js/types/moduleTypes'
+import { TFieldsUnion } from '@/js/types/moduleTypes'
 import { TMediaOfItem } from '@/js/types/mediaTypes'
-import { TModule } from '@/js/types/routesTypes'
-import { TMediaUrls, TApiArrayMedia } from '@/js/types/collectionTypes'
+import type { TModule } from '@/js/types/moduleTypes'
+import type { TMediaUrls, TApiArrayMedia } from '@/js/types/collectionTypes'
 
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
@@ -119,8 +119,8 @@ export const useMediaStore = defineStore('media', () => {
       fd.append("media_files[]", file, file.name);
     });
 
-    const idAsString = (<TGenericFields>i.fields).id as unknown as string
-    fd.append("model", r.current.module);
+    const idAsString = (<TFieldsUnion>i.fields).id as unknown as string
+    fd.append("model", <TModule>r.current.module);
     fd.append("model_id", idAsString);
     fd.append("media_collection_name", mediaCollectionName.value)
 
@@ -139,9 +139,9 @@ export const useMediaStore = defineStore('media', () => {
   async function mediaDestroy(media_id: number) {
     const r = useRoutesMainStore()
     const i = useItemStore()
-    console.log(`destroy() media_id: ${media_id}, model: ${r.current.module}, model_id: ${(<TGenericFields>i.fields).id}`)
+    console.log(`destroy() media_id: ${media_id}, model: ${r.current.module}, model_id: ${(<TFieldsUnion>i.fields).id}`)
 
-    const res = await send<TApiArrayMedia[]>('media/destroy', 'post', { media_id, model: r.current.module, model_id: (<TGenericFields>i.fields).id })
+    const res = await send<TApiArrayMedia[]>('media/destroy', 'post', { media_id, model: r.current.module, model_id: (<TFieldsUnion>i.fields).id })
     if (res.success) {
       showUploader.value = false
       setItemMedia(res.data)

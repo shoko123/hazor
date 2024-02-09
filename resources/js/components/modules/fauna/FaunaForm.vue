@@ -132,13 +132,13 @@
 <script lang="ts" setup>
 
 import { computed } from 'vue'
-import { TFaunaFields } from '@/js/types/moduleTypes'
+import { TFieldsGeneric } from '@/js/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 
-let i = useItemStore()
+let { fields } = useItemStore()
 
 const item = computed(() => {
-  return i.fields as unknown as TFaunaFields
+  return fields as TFieldsGeneric<'Fauna'>
 })
 
 const registratioIsClean = computed(() => {

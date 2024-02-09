@@ -1,9 +1,6 @@
 // routesStore.js
 import type { TCView } from '@/js/types/collectionTypes'
-
-
-type TUrlModule = 'loci' | 'fauna' | 'stones'
-type TModule = 'Locus' | 'Fauna' | 'Stone'
+import type { TModule, TUrlModule } from '@/js/types/moduleTypes'
 
 type TRoutes =
     { name: 'home' } |
@@ -21,9 +18,7 @@ type TRoutes =
     { name: 'reset-password' } |
     { name: 'reset-dashboard' }
 
-
-type TPageName = Pick<TRoutes, 'name'>['name']
-
+type TPageName = TRoutes['name']
 
 type TPlanAction =
     'module.load' |
@@ -44,10 +39,10 @@ type TPlanAction =
 
 type TRouteInfo = {
     name: TPageName,    
-    url_module: TUrlModule | null,
+    url_module: TUrlModule | undefined,
     slug: string | undefined,
     url_full_path: string | undefined,
-    module: TModule | null,
+    module: TModule | undefined,
     queryParams: object | undefined,
     preLoginFullPath: string | undefined
 }
@@ -87,8 +82,6 @@ type TFuncLoadPage = (pageNoB1: number, view: TCView, module: TModule) => Promis
 
 export {
     TPageName,
-    TUrlModule,
-    TModule,
     TRouteInfo,
     TParseQuery,
     TApiFilters,

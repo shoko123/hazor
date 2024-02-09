@@ -3,7 +3,7 @@
 import { computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import type { TCollectionName, TCollectionMeta, TApiArray, TCView, TCollectionView } from '@/js/types/collectionTypes'
-import type { TModule } from '@/js/types/routesTypes'
+import type { TModule } from '@/js/types/moduleTypes'
 import { useXhrStore } from '../xhr'
 import { useRoutesMainStore } from '../routes/routesMain'
 import { useCollectionMainStore } from './collectionMain'
@@ -78,7 +78,7 @@ export const useCollectionsStore = defineStore('collections', () => {
         const newView = meta.views[newViewIndex]
         const index = meta.firstItemNo - 1
         console.log(`toggleCollectionView() collection: ${name}  module: ${current.value.module} views: ${meta.itemsPerPage}  current view: ${currentView.name}  new view: ${newView.name} index: ${index}`);
-        await loadPageByItemIndex(name, newView, index, current.value.module)
+        await loadPageByItemIndex(name, newView, index, <TModule>current.value.module)
         const c = getCollection(name)
         c.extra.viewIndex = newViewIndex
     }

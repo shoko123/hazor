@@ -117,7 +117,7 @@ import { onMounted, reactive, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useVuelidate } from "@vuelidate/core"
 import { required, maxLength, minValue, maxValue } from "@vuelidate/validators";
-import { TFaunaFields } from '@/js/types/moduleTypes'
+import { TFieldsGeneric } from '@/js/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 
 const props = defineProps<{
@@ -133,7 +133,7 @@ onMounted(() => {
   console.log(`FaunaNew.Mount fields: ${JSON.stringify(data, null, 2)}`)
 })
 
-const data: TFaunaFields = reactive({
+const data: TFieldsGeneric<'Fauna'> = reactive({
   id: 0,
   uri: "",
   label: "",

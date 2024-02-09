@@ -94,7 +94,7 @@
 
 import { onMounted, reactive, computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import type { TLocusFields } from '@/js/types/moduleTypes'
+import type { TFieldsGeneric } from '@/js/types/moduleTypes'
 import { useVuelidate } from "@vuelidate/core"
 import { required, minValue, maxValue, maxLength, helpers } from "@vuelidate/validators";
 import { useItemStore } from '../../../scripts/stores/item'
@@ -114,7 +114,7 @@ onMounted(() => {
 const { fields } = storeToRefs(useItemStore())
 const { trio } = storeToRefs(useTrioStore())
 
-let data: TLocusFields = reactive({
+let data: TFieldsGeneric<'Locus'> = reactive({
   id: 0,
   name: "",
   area: "XX",

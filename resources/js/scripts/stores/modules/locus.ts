@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 import { defineStore } from 'pinia'
-import { TLocusFields, TGenericFields, TFuncValidateSlug } from '@/js/types/moduleTypes'
+import { TFieldsGeneric, TFieldsUnion, TFuncValidateSlug } from '@/js/types/moduleTypes'
 
 export const useLocusStore = defineStore('locus', () => {
   const reNameIsLocusNo = /^\d{1,5}$/
@@ -28,9 +28,9 @@ export const useLocusStore = defineStore('locus', () => {
     return slug.replace('.', '/')
   }
 
-  function beforeStore(isCreate: boolean, fields: TGenericFields): TGenericFields | false {
+  function beforeStore(isCreate: boolean, fields: TFieldsUnion): TFieldsUnion | false {
     //console.log(`locus.beforStore() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
-    const lf = <TLocusFields>fields
+    const lf = <TFieldsGeneric<'Locus'>>fields
     if (isCreate) {
       const rf = { ...lf }
       if (reNameIsLocusNo) {

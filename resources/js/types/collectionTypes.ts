@@ -1,7 +1,7 @@
 // collectionTypes.ts
 
 import { TMediaOfItem, TMediaUrls } from '@/js/types/mediaTypes'
-import { TModule } from '@/js/types/routesTypes'
+import { TModule } from '@/js/types/moduleTypes'
 
 type TCollectionView = 'Gallery' | 'Chips' | 'Tabular'
 type TCollectionName = 'main' | 'media' | 'related'
@@ -12,7 +12,7 @@ type TCView = { name: TCollectionView, ipp: number }
 type TApiArrayMain = { id: number, slug: string }
 type TApiArrayMedia = { id: number, order_column: number, urls: TMediaUrls }
 type TApiArrayRelated = {
-        id: number,        
+        id: number,
         relation_name: string,
         module: TModule,
         slug: string,

@@ -1,7 +1,7 @@
 // routesStore.js
 //handles the entire routing mechanism - parsing, loading resources, error handling
 import { defineStore } from 'pinia'
-import type { TModule } from '../../../types/routesTypes'
+import type { TModule } from '../../../types/moduleTypes'
 import { useLocusStore } from '../modules/locus'
 import { useFaunaStore } from '../modules/fauna'
 import { useStoneStore } from '../modules/stone'

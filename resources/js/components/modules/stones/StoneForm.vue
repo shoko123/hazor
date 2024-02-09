@@ -140,16 +140,16 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { TStoneFields } from '@/js/types/moduleTypes'
+import { TFieldsGeneric } from '@/js/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 
-let i = useItemStore()
+let { fields } = useItemStore()
 
 const rimDiameterInCm = computed(() => {
   return item.value.rim_diameter === null ? "" : item.value.rim_diameter / 10
 })
 const item = computed(() => {
-  return <TStoneFields>i.fields
+  return <TFieldsGeneric<'Stone'>>fields
 })
 const stone = computed(() => {
   return item.value.basket + `-${item.value.stone_no}`

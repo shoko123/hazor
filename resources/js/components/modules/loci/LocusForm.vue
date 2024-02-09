@@ -67,7 +67,7 @@
         filled
       />
     </v-row>
-    
+
     <v-row
       wrap
       no-gutters
@@ -94,13 +94,13 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { TLocusFields } from '@/js/types/moduleTypes'
+import { TFieldsGeneric } from '@/js/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 
-let i = useItemStore()
+let { fields } = useItemStore()
 
 const item = computed(() => {
-  return i.fields as unknown as TLocusFields
+  return fields as TFieldsGeneric<'Locus'>
 })
 
 </script>

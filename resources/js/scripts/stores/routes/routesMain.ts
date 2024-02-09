@@ -4,7 +4,8 @@
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useRouter, type LocationQueryRaw, type RouteLocationNormalized, type RouteLocationRaw } from 'vue-router'
-import type { TRouteInfo, TPageName, TPlanAction, TModule, TUrlModule } from '@/js/types/routesTypes'
+import type { TModule, TUrlModule} from '@/js/types/moduleTypes'
+import type { TRouteInfo, TPageName, TPlanAction,  } from '@/js/types/routesTypes'
 
 import { useRoutesParserStore } from './routesParser'
 import { useRoutesPlanTransitionStore } from './routesPlanTransition'
@@ -27,20 +28,20 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
     }
 
     const current = ref<TRouteInfo>({
-        url_module: null,
+        url_module: undefined,
         slug: undefined,
         url_full_path: undefined,
-        module: null,
+        module: undefined,
         name: 'home',
         queryParams: undefined,
         preLoginFullPath: undefined
     })
 
     const to = ref<TRouteInfo>({
-        url_module: null,
+        url_module: undefined,
         slug: undefined,
         url_full_path: undefined,
-        module: null,
+        module: undefined,
         name: 'home',
         queryParams: undefined,
         preLoginFullPath: undefined
@@ -84,8 +85,8 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
                 return { name: 'home' }
             }
         } else {
-            to.value.module = null
-            to.value.url_module = null
+            to.value.module = undefined
+            to.value.url_module = undefined
         }
 
         //console.log(`after successful module parse. to: ${JSON.stringify(to.value, null, 2)})`)

@@ -1,7 +1,7 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TGenericFields } from '@/js/types/moduleTypes'
+import type { TFieldsUnion, TModule } from '@/js/types/moduleTypes'
 import type { TApiItemShow } from '@/js/types/itemTypes'
 import type { TApiArrayMain } from '@/js/types/collectionTypes'
 import type { IObject } from '@/js/types/generalTypes'
@@ -22,7 +22,7 @@ export const useItemStore = defineStore('item', () => {
   const { send } = useXhrStore()
   const { orderSelectedParams, getParamKeyByGroupAndId } = useTrioStore()
 
-  const fields = ref<TGenericFields | undefined>(undefined)
+  const fields = ref<TFieldsUnion | undefined>(undefined)
   const slug = ref<string | undefined>(undefined)
   const tag = ref<string | undefined>(undefined)
   const short = ref<string | undefined>(undefined)
@@ -35,7 +35,7 @@ export const useItemStore = defineStore('item', () => {
   const itemIndex = ref<number>(-1)
 
   const id = computed(() => {
-    return typeof fields.value === 'undefined' ? -1 : (<TGenericFields>fields.value).id
+    return typeof fields.value === 'undefined' ? -1 : (<TFieldsUnion>fields.value).id
   })
 
   const itemView = computed(() => {
@@ -58,11 +58,11 @@ export const useItemStore = defineStore('item', () => {
 
   function saveitemFieldsPlus<F>(apiItem: TApiItemShow<F>) {
 
-    fields.value = <TGenericFields>apiItem.fields
+    fields.value = <TFieldsUnion>apiItem.fields
     const fieldsObj = <IObject>apiItem.fields
     slug.value = apiItem.slug
     short.value = apiItem.short
-    tag.value = moduleStore.tagFromSlug(current.value.module, apiItem.slug)
+    tag.value = moduleStore.tagFromSlug(<TModule>current.value.module, apiItem.slug)
 
     const selectedLookups = moduleStore.lookups.map(x => {
       return getParamKeyByGroupAndId(x.group_name, fieldsObj[x.column_name])
@@ -74,10 +74,10 @@ export const useItemStore = defineStore('item', () => {
   }
 
   //return the newly created/update item's slug (need it only for create())
-  async function upload(isCreate: boolean, newFields: TGenericFields): Promise<{ success: true, slug: string } | { success: false, message: string }> {
+  async function upload(isCreate: boolean, newFields: TFieldsUnion): Promise<{ success: true, slug: string } | { success: false, message: string }> {
     console.log(`item.upload isCreate: ${isCreate}, module: ${current.value.module}, fields: ${JSON.stringify(newFields, null, 2)}`)
 
-    const res = await send<TApiItemShow<TGenericFields>>('model/store', isCreate ? 'post' : 'put', { model: current.value.module, item: newFields, id: newFields.id })
+    const res = await send<TApiItemShow<TFieldsUnion>>('model/store', isCreate ? 'post' : 'put', { model: current.value.module, item: newFields, id: newFields.id })
     if (!res.success) {
       return res
     }
@@ -122,17 +122,17 @@ export const useItemStore = defineStore('item', () => {
 
   async function itemRemove(): Promise<{ success: true, slug: string | null } | { success: false, message: string }> {
     const { removeItemFromArrayById } = useCollectionMainStore()
-    const prev = next('main', itemIndexById((<TGenericFields>fields.value).id), false)
+    const prev = next('main', itemIndexById((<TFieldsUnion>fields.value).id), false)
 
 
-    const res = await send<TApiItemShow<TGenericFields>>('model/destroy', 'post', { model: current.value.module, slug: slug.value, id: fields.value?.id })
+    const res = await send<TApiItemShow<TFieldsUnion>>('model/destroy', 'post', { model: current.value.module, slug: slug.value, id: fields.value?.id })
 
     if (!res.success) {
       return res
     }
 
     console.log(`${current.value.module}item.itemRemove() success!`)
-    const newLength = removeItemFromArrayById((<TGenericFields>fields.value).id)
+    const newLength = removeItemFromArrayById((<TFieldsUnion>fields.value).id)
 
     //return of slug === null means that is was the last element in the current array.
     if (newLength === 0) {

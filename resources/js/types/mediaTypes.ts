@@ -1,5 +1,5 @@
 // mediaTypes.ts
-import { TModule } from '@/js/types/routesTypes'
+import { TModule } from '@/js/types/moduleTypes'
 import { TPageRelatedGallery } from '@/js/types/collectionTypes'
 
 type TMediaUrls = { full: string, tn: string }

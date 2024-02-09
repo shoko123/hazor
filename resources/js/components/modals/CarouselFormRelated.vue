@@ -19,8 +19,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { type TModule } from '@/js/types/routesTypes'
-import { type TCarouselRelated } from '@/js/types/mediaTypes'
+import type { TModule } from '@/js/types/moduleTypes'
+import type { TCarouselRelated } from '@/js/types/mediaTypes'
 
 
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
