@@ -175,10 +175,10 @@ class StoneGroup extends ModelGroup implements ModelGroupInterface
                 "Production",
                 "Basic Typology"
             ],
-            "Typology" => [
-                "Vessel Type",
+            "Typology" => [     
                 "Passive Subtype",
-                "Active Subtype",
+                "Active Subtype", 
+                "Vessel Type",    
                 "Vessel Part",
                 "Vessel Base",
                 "Vessel Wall",

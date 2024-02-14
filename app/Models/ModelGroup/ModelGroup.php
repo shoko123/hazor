@@ -185,6 +185,6 @@ abstract class ModelGroup
             }
             array_push($trio, $category);
         }
-        return ["trio" => $trio, 'lookups' => self::$lookups];
+        return ["trio" => $trio, "trio2" => $trio, 'lookups' => self::$lookups];
     }
 }

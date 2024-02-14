@@ -1,4 +1,5 @@
 import type { TApiTrio } from '@/js/types/trioTypes'
+import type { TApiTrio2 } from '@/js/types/trioTypes2'
 import type { TCollectionView } from '@/js/types/collectionTypes'
 
 type TModuleTypes = {
@@ -109,6 +110,7 @@ type TApiModuleInit = {
         display_options: { item_views: string[], main_collection_views: TCollectionView[], related_collection_views: TCollectionView[] },
         lookups: { column_name: string, group_name: string }[],
         trio: TApiTrio,
+        trio2: TApiTrio2,
         welcome_text: string
 }
 export {

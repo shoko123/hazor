@@ -9,7 +9,7 @@ import { useRoutesMainStore } from '../routes/routesMain'
 
 export const useTrioStore = defineStore('trio', () => {
   const { selectedFilterParams } = storeToRefs(useFilterStore())
-
+  const { current } = storeToRefs(useRoutesMainStore())
   const trio = ref<Trio>({
     entities: {
       categories: {},
@@ -31,7 +31,6 @@ export const useTrioStore = defineStore('trio', () => {
   const groupIndex = ref<number>(0)
 
   const selected = computed(() => {
-    const { current } = storeToRefs(useRoutesMainStore())
     const { selectedNewItemParams } = storeToRefs(useTaggerStore())
     switch (current.value.name) {
       case 'filter':
@@ -44,12 +43,10 @@ export const useTrioStore = defineStore('trio', () => {
   })
 
   const isFilter = computed(() => {
-    const { current } = storeToRefs(useRoutesMainStore())
     return current.value.name === 'filter'
   })
 
   const isNewParams = computed(() => {
-    const { current } = storeToRefs(useRoutesMainStore())
     return current.value.name === 'tag'
   })
 

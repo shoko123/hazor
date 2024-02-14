@@ -1,7 +1,5 @@
 // trioTypes.ts
-type TApiTrio = {
-  [key: string]: object
-}
+type TApiTrio = {name: string, groups: object[]}[]
 
 type TCategory = {
   id: number,
