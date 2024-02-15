@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\ModelGroup;
+namespace App\Models\Groups\Models;
 
 use App\Models\Interfaces\ModelGroupInterface;
-use App\Models\ModelGroup\ModelGroup;
+use App\Models\Groups\ModelGroup;
 
-require_once 'global_tag_groups.php';
+require_once app_path() . '/Models/Groups/global_tag_groups.php';
 
 class LocusGroup extends ModelGroup implements ModelGroupInterface
 {

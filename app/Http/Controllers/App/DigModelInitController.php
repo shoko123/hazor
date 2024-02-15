@@ -5,7 +5,7 @@ namespace App\Http\Controllers\App;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\App\DigModel;
-use App\Models\ModelGroup\ModelGroup;
+use App\Models\Groups\ModelGroup;
 
 class DigModelInitController extends Controller
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\ModelGroup;
+namespace App\Models\Groups\Models;
 
 use App\Models\Interfaces\ModelGroupInterface;
-use App\Models\ModelGroup\ModelGroup;
+use App\Models\Groups\ModelGroup;
 
-require_once 'global_tag_groups.php';
+require_once app_path() . '/Models/Groups/global_tag_groups.php';
 
 class FaunaGroup  extends ModelGroup implements ModelGroupInterface
 {
@@ -41,6 +41,7 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
         "Registration Clean" => [
             "group_type_code" => "CB",
             "column_name" => "registration_clean",
+            "params" => [["name" => "True"], ["name" => "False"]]//true label, false label
         ],
         "Scope" => [
             "group_type_code" => "CL",

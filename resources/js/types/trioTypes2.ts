@@ -13,133 +13,132 @@ type TApiParamNameAndBool = TApiParamName & {
   bool_names: [string, string]
 }
 
-type TApiParamUnion = string | TApiParamNameAndId | TApiParamName | TApiParamNameAndColumn | TApiParamName | TApiParamNameAndBool | null
+type TApiParamUnion = string | TApiParamName | TApiParamNameAndId | TApiParamNameAndColumn | TApiParamNameAndBool | null
 
-type TApiGroupBasic<TCode extends TTrioCodeUnion, TApiParam extends TApiParamUnion> = {
-  group_type_code: TCode,
+type TApiGroupBasic = {
+  group_type_code: TTrioCodeUnion,
   group_name: string,
-  params: TApiParam[],
+  params: TApiParamUnion[],
 }
-type TApiGroupColumn<TCode extends TTrioCodeUnion, TApiParam extends TApiParamUnion> = TApiGroupBasic<TCode, TApiParam> & {
+type TApiGroupColumn = TApiGroupBasic & {
   column_name: string
 }
 
-type TApiGroupTag<TCode extends TTrioCodeUnion, TApiParam extends TApiParamUnion> = TApiGroupBasic<TCode, TApiParam> & {
+type TApiGroupTag = TApiGroupBasic & {
+  group_id: number,
   dependency: null | string[],
   multiple: boolean,
 }
 
-type TApiGroupUnion<TCode extends TTrioCodeUnion> = TApiGroupBasic<TCode, TApiParamUnion> | TApiGroupColumn<TCode, TApiParamUnion> | TApiGroupTag<TCode, TApiParamUnion>
 
-type TGroupTag = {
-  group_type_code: 'TG' | 'TM',
-  groupLabel: string,
-  paramKeys: string[],
-  dependency: null | string[],
-  multiple: boolean,
-  categoryIndex: number,
+type TApiGroupUnion = TApiGroupBasic | TApiGroupColumn | TApiGroupTag
+
+//////////// Front-end types /////////////////
+
+type TParam = {
+  text: string,
+  extra: null | number | string,
+
+}
+type TParamLocal = TParam & {
+  groupKey: string,
 }
 
-type TGroupColumn = {
-  group_type_code: 'CV',
-  groupLabel: string,
-  columnName: string,
-  paramKeys: string[],
+// type TParamBase = {
+//   groupKey: string,
+//   text: string,
+// }
+
+// type TParamBaseAndId = TParamBase & {
+//   id: number
+// }
+
+// type TParamOrderBy = TParamBase & {
+//   column_name: string,
+// }
+
+type TGroupBase = { label: string, code: TTrioCodeUnion, params: TParam[]}
+
+type TGroupTag = TGroupBase & {
   dependency: string[],
-  categoryIndex: number,
+  multiple: boolean,
+  group_id: number
 }
 
-type TParamText = {
-  groupKey: string,
-  paramLabel: string,
-}
-type TParamTextAndId = {
-  groupKey: string,
-  paramLabel: string,
-  id: number
-}
-type TParamOrderBy = {
-  groupKey: string,
-  paramOrderByLabel: string,
-}
-type TParamSearch = {
-  groupKey: string,
-  searchText: string,
-}
 
-type TGroupLocalParams = {
-  group_type_code: 'MD',
-  group_name: string,
-  paramKeys: string[],
-  categoryIndex: number,
+type TGroupColumn = TGroupBase & {
+  columnName: string,
+  dependency: string[],
 }
+type TGroupUnion = TGroupBase | TGroupColumn | TGroupTag
+ 
 
-type TGroupOrderBy = {
-  group_type_code: 'OB',
-  group_name: string,
-  paramKeys: string[],
-  categoryIndex: number,
+type TGroupLocalBase = Omit<TGroupBase, "params"> & {
+  paramKeys: string[], categoryIndex: number
 }
-
+type TGroupLocalColumn = Omit<TGroupColumn, "params"> & {
+  paramKeys: string[], categoryIndex: number
+}
+type TGroupLocalTag = Omit<TGroupTag, "params"> & {
+  paramKeys: string[], categoryIndex: number
+}
+type TGroupLocalUnion = TGroupLocalBase | TGroupLocalColumn | TGroupLocalTag
 ////////////
 type TTrioAll = {
-  code: 'TG',
-  apiGroup: TApiGroupTag<'TG', TApiParamNameAndId>,
-  group: TGroupTag,
-  params: TParamTextAndId,
-
-} | {
   code: 'TM',
-  apiGroup: TApiGroupTag<'TM', TApiParamNameAndId>,
+  apiGroup: TApiGroupTag,
+  apiParam: TApiParamNameAndId,
   group: TGroupTag,
-  params: TParamTextAndId,
+} | {
+  code: 'TG',
+  apiGroup: TApiGroupTag,
+  apiParam: TApiParamNameAndId,
+  group: TGroupTag,
 } | {
   code: 'CL',
-  apiGroup: TApiGroupTag<'CL', TApiParamNameAndId>,
+  apiGroup: TApiGroupColumn,
+  apiParam: TApiParamNameAndId,
   group: TGroupColumn,
-  params: TParamTextAndId,
 } | {
   code: 'CV',
-  apiGroup: TApiGroupTag<'CL', string>,
+  apiGroup: TApiGroupTag,
+  apiParam: string,
   group: TGroupColumn,
-  params: TParamText,
 } | {
   code: 'CR',
-  apiGroup: TApiGroupTag<'CR', TApiParamName>,
+  apiGroup: TApiGroupTag,
+  apiParam: string,
   group: TGroupColumn,
-  params: TParamText
 
 } | {
   code: 'CB',
-  apiGroup: TApiGroupTag<'CB', TApiParamNameAndBool>,
+  apiGroup: TApiGroupBasic,
+  apiParam: TApiParamNameAndBool,
   group: TGroupColumn,
-  params: {
-    groupKey: string,
-    label: string,
-    value: boolean
-  }
 } | {
   code: 'CS',
-  apiGroup: TApiGroupColumn<'CS', null>,
+  apiGroup: TApiGroupColumn,
+  apiParam: null,
   group: TGroupColumn,
-  params: TParamSearch
 } | {
   code: 'MD',
-  apiGroup: TApiGroupColumn<'CS', null>,
+  apiGroup: TApiGroupColumn,
+  apiParam: TApiParamNameAndId,
   group: TGroupColumn,
-  params: TParamText
+
 
 } | {
   code: 'BF',
-  apiGroup: TApiGroupColumn<'CS', TApiParamNameAndId>,
+  apiGroup: TApiGroupColumn,
+  apiParam: TApiParamNameAndId,
   group: TGroupColumn,
-  params: TParamText
+
 
 } | {
   code: 'OB',
-  apiGroup: TApiGroupColumn<'CS', TApiParamNameAndColumn>,
-  group: TGroupOrderBy,
-  params: TParamOrderBy
+  apiGroup: TApiGroupColumn,
+  apiParam: TApiParamNameAndId,
+  group: TGroupBase,
 }
 
 
@@ -148,19 +147,44 @@ type TTrioApiGroupUnion = TTrioAll['apiGroup']
 type TTrioGroupUnion = TTrioAll['group']
 type TTrioAllGeneric<TM extends TTrioCodeUnion> = Extract<TTrioAll, { code: TM }>
 
+
+type TParamObj = { [key: string]: TParamLocal }
+type TGroupObj = { [key: string]: TGroupLocalUnion }
+type TCategoriesArray = { name: string, groupKeys: string[] }[]
+type TTrio = { categories: TCategoriesArray, groupsObj: TGroupObj, paramsObj: TParamObj}
+
 //type TApiGroup = { group_name: string, group_type_code: TTrioCodeUnion, params: TApiParamUnion[] }
-type TApiTrio2 = { name: string, groups: TApiGroupUnion<TTrioCodeUnion>[] }[]
+type TApiTrio2 = { name: string, groups: TApiGroupUnion[] }[]
 
 export {
   TApiParamNameAndId,
+  TApiParamName,
+  TApiParamNameAndBool,
+  TApiGroupBasic,
   TApiGroupColumn,
+  TApiGroupTag,
+  TApiGroupUnion,
   TTrioApiGroupUnion,
-  TParamSearch,
   TTrioCodeUnion,
   TTrioAll,
   TApiTrio2,
   TTrioAllGeneric,
-  TTrioGroupUnion
+  TTrioGroupUnion,
+  TGroupBase,
+  TGroupTag,
+  TGroupColumn,
+  TGroupLocalBase,
+  TGroupLocalColumn,
+  TGroupLocalTag,
+  TParam,
+  TParamLocal,
+  TGroupUnion,
+  TGroupLocalUnion,
+  TTrio,
+  TParamObj,
+  TGroupObj,
+  TCategoriesArray
+
   //   TCategory,
   //   TGroupValue,
   //   TGroupTag,
