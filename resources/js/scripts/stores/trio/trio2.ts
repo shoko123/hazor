@@ -10,31 +10,12 @@ export const useTrio2Store = defineStore('trio2', () => {
  const { normalizeTrio2 } = useTrioNormalizerStore2()
 
 
-  const trio = ref<TTrio>({categories: [], groupsObj: {}, paramsObj: {}})
+  const trio = ref<TTrio>({categories: [], groupsObj: {}, paramsObj: {}, groupLabelToKey: {}})
 
   function setTrio2(apiTrio: TApiTrio2) {
-    trio.value = {categories: [], groupsObj: {}, paramsObj: {}}
+    trio.value = {categories: [], groupsObj: {}, paramsObj: {}, groupLabelToKey: {}}
       trio.value = normalizeTrio2(apiTrio);
 
-
-  }
-
-
-  function paramDetails(paramKey: string) {
-    //console.log(`paramDetails(${paramKey}) `)
-    // if (paramKey in paramsObj.value) {
-    //   const prm = paramsObj[paramKey]
-    //   const grp = groupsObj[prm.groupKey]
-    //   //console.log(`paramDetails(${paramKey}) =>  ${JSON.stringify(paramsObj.value[paramKey], null, 2)}. grp:  ${JSON.stringify(grp, null, 2)}`)
-    //   return {
-    //     text: paramsObj[paramKey].text,
-    //     code: grp.code,
-    //     groupLabel: grp.label
-    //   }
-    // } else {
-    //   //console.log(`paramDetails(${paramKey}) =>  undefined`)
-    //   return undefined
-    // }
 
   }
 
@@ -62,7 +43,7 @@ export const useTrio2Store = defineStore('trio2', () => {
     let grpList = []
     for (const [key, value] of Object.entries(trio.value.groupsObj)) {
       let g = grpList.push(groupDetails(key))
-    console.log(`grpList(${key}) =>  ${JSON.stringify(g, null, 2)}`)
+    //console.log(`grpList(${key}) =>  ${JSON.stringify(g, null, 2)}`)
 
     }
     return grpList

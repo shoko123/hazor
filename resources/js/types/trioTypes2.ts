@@ -21,7 +21,8 @@ type TApiGroupBasic = {
   params: TApiParamUnion[],
 }
 type TApiGroupColumn = TApiGroupBasic & {
-  column_name: string
+  column_name: string,
+  dependency: null | string[],
 }
 
 type TApiGroupTag = TApiGroupBasic & {
@@ -44,18 +45,7 @@ type TParamLocal = TParam & {
   groupKey: string,
 }
 
-// type TParamBase = {
-//   groupKey: string,
-//   text: string,
-// }
 
-// type TParamBaseAndId = TParamBase & {
-//   id: number
-// }
-
-// type TParamOrderBy = TParamBase & {
-//   column_name: string,
-// }
 
 type TGroupBase = { label: string, code: TTrioCodeUnion, params: TParam[]}
 
@@ -151,7 +141,8 @@ type TTrioAllGeneric<TM extends TTrioCodeUnion> = Extract<TTrioAll, { code: TM }
 type TParamObj = { [key: string]: TParamLocal }
 type TGroupObj = { [key: string]: TGroupLocalUnion }
 type TCategoriesArray = { name: string, groupKeys: string[] }[]
-type TTrio = { categories: TCategoriesArray, groupsObj: TGroupObj, paramsObj: TParamObj}
+type TGroupLabelToKey = { [key: string]: string }
+type TTrio = { categories: TCategoriesArray, groupsObj: TGroupObj, paramsObj: TParamObj, groupLabelToKey: TGroupLabelToKey}
 
 //type TApiGroup = { group_name: string, group_type_code: TTrioCodeUnion, params: TApiParamUnion[] }
 type TApiTrio2 = { name: string, groups: TApiGroupUnion[] }[]
@@ -183,7 +174,8 @@ export {
   TTrio,
   TParamObj,
   TGroupObj,
-  TCategoriesArray
+  TCategoriesArray,
+  TGroupLabelToKey
 
   //   TCategory,
   //   TGroupValue,
