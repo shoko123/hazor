@@ -4,6 +4,7 @@ namespace App\Models\Groups;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\Tags\TagGroup;
+use App\Models\Functional\MediaModel;
 use Exception;
 
 abstract class ModelGroup
@@ -54,12 +55,10 @@ abstract class ModelGroup
             case "CS": //column search
                 return $this->getTextualSearchGroupDetails($group_name, $group);
 
-            case "BF": //bespoke
-                return $this->getBespokeFilterGroupDetails($group_name, $group);
-
-
             case "OB": //order by values
                 return $this->getOrderByDetails($group_name, $group);
+            case "MD": //media
+                return $this->getMediaGroupDetails($group_name, $group);
         }
         return [];
     }
@@ -70,6 +69,7 @@ abstract class ModelGroup
         if (is_null($group)) {
             throw new Exception("***MODEL INIT() ERROR*** Group * " . $group_name . " * NOT FOUND");
         }
+
         switch ($group["group_type_code"]) {
             case "TG": //tags global
                 return $this->getGlobalTagsGroupDetails2($group_name, $group);
@@ -96,6 +96,11 @@ abstract class ModelGroup
 
             case "OB": //order by values
                 return $this->getOrderByDetails2($group_name, $group);
+            case "MD": //media
+                return array_merge($group, [
+                    "group_name" => $group_name,
+                    "params"  => null
+                ]);
         }
         return [];
     }
@@ -111,6 +116,15 @@ abstract class ModelGroup
         ]);
     }
 
+    private function getMediaGroupDetails($group_name, $group)
+    {
+        return array_merge($group, [
+            "group_name" => $group_name,
+            "params" => collect( MediaModel::media_collections())->map(function ($y, $key) {
+                return ["id" => $key, "name" => $y];
+            })
+        ]);
+    }
 
     private function getLookupGroupDetails2($group_name, $group)
     {
@@ -208,7 +222,7 @@ abstract class ModelGroup
             ->first();
 
         return array_merge($group, [
-            "label" => $group_name,
+            "group_name" => $group_name,
             "group_id" => $gtg->id,
             "multiple" => true,
             "params"  => $gtg->tags->map(function ($y) {
@@ -334,7 +348,7 @@ abstract class ModelGroup
             }
             array_push($trio, $category);
         }
-  foreach ($cats as $name => $group_names) {
+        foreach ($cats as $name => $group_names) {
             $category = ["name" => $name, "groups" => []];
             foreach ($group_names as $group_name) {
                 array_push($category["groups"], $this->getGroupDetails2($group_name));
@@ -342,7 +356,7 @@ abstract class ModelGroup
             array_push($trio2, $category);
         }
 
-        
-        return ["trio" => $trio, "trio2" => $trio, 'lookups' => self::$lookups];
+
+        return ["trio" => $trio, "trio2" => $trio2, 'lookups' => self::$lookups];
     }
 }

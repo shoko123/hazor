@@ -1,9 +1,7 @@
 <?php
-
 namespace App\Models\Functional;
 
 use App\Models\App\DigModel;
-use Illuminate\Http\Request;
 use Exception;
 
 use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
@@ -18,6 +16,7 @@ class MediaModel
 
     static public function media_collections()
     {
+        //These have to match SELECT distinct collection_name FROM hazor.media;
         return ['Photo', 'Drawing', 'Photo and Drawing', 'Plan', 'Misc'];
     }
 

@@ -14,6 +14,7 @@ export const useFilterStore = defineStore('filter', () => {
   const { current } = storeToRefs(useRoutesMainStore())
   const trio = useTrioStore()
   const selectedFilterParams = ref<string[]>([])
+  const selectedFilterParams2 = ref<string[]>([])
 
   const orderSelectedNames = computed(() => {
     const orderParamKeys = selectedFilterParams.value.filter(x => {
@@ -187,7 +188,7 @@ export const useFilterStore = defineStore('filter', () => {
           })
           break
 
-        case 'BF':
+        case 'MD':
           switch (key) {
             case 'Media':
               all.bespoke.push({ name: key, vals: params })
@@ -251,6 +252,7 @@ export const useFilterStore = defineStore('filter', () => {
       }
     })
     selectedFilterParams.value = []
+    selectedFilterParams2.value = []
   }
 
   function setFiltersFromUrlQuery(filters: TSelectedFilterFromQuery[]) {
@@ -278,6 +280,7 @@ export const useFilterStore = defineStore('filter', () => {
 
   return {
     selectedFilterParams,
+    selectedFilterParams2,
     orderAllNames,
     orderSelectedNames,
     orderAvailableNames,

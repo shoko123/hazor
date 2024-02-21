@@ -1,13 +1,10 @@
 
 <?php
-
-use App\Models\Functional\MediaModel;
 function globalGroups()
 {
     return [
         "Media" => [
-            "group_type_code" => "BF",
-            "params"  => MediaModel::media_collections()
+            "group_type_code" => "MD",
         ],
         "Periods (Top-Level)" => [
             "group_type_code" => "TG",

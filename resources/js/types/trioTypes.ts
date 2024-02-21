@@ -7,7 +7,7 @@ type TCategory = {
   groups: string[]
 }
 
-type TGroupType = 'TM' | 'TG' | 'CL' | 'CV' | 'CB' | 'CS' | 'CR' | 'BF' | 'OB'
+type TGroupType = 'TM' | 'TG' | 'CL' | 'CV' | 'CB' | 'CS' | 'CR' | 'MD' | 'OB'
 
 type TGroupOrderByOptionObject = {
   name: string,

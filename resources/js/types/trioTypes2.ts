@@ -31,8 +31,12 @@ type TApiGroupTag = TApiGroupBasic & {
   multiple: boolean,
 }
 
+type TApiGroupOrderBy = TApiGroupBasic & {
+  options: TApiParamNameAndColumn[],
+}
 
-type TApiGroupUnion = TApiGroupBasic | TApiGroupColumn | TApiGroupTag
+
+type TApiGroupUnion = TApiGroupBasic | TApiGroupColumn | TApiGroupTag | TApiGroupOrderBy
 
 //////////// Front-end types /////////////////
 
@@ -118,7 +122,7 @@ type TTrioAll = {
 
 
 } | {
-  code: 'BF',
+  code: 'MD',
   apiGroup: TApiGroupColumn,
   apiParam: TApiParamNameAndId,
   group: TGroupColumn,
@@ -142,7 +146,7 @@ type TParamObj = { [key: string]: TParamLocal }
 type TGroupObj = { [key: string]: TGroupLocalUnion }
 type TCategoriesArray = { name: string, groupKeys: string[] }[]
 type TGroupLabelToKey = { [key: string]: string }
-type TTrio = { categories: TCategoriesArray, groupsObj: TGroupObj, paramsObj: TParamObj, groupLabelToKey: TGroupLabelToKey}
+type TTrio = { categories: TCategoriesArray, groupsObj: TGroupObj, paramsObj: TParamObj}
 
 //type TApiGroup = { group_name: string, group_type_code: TTrioCodeUnion, params: TApiParamUnion[] }
 type TApiTrio2 = { name: string, groups: TApiGroupUnion[] }[]
@@ -155,10 +159,12 @@ export {
   TApiGroupColumn,
   TApiGroupTag,
   TApiGroupUnion,
+  TApiGroupOrderBy,
   TTrioApiGroupUnion,
   TTrioCodeUnion,
   TTrioAll,
   TApiTrio2,
+  TApiParamNameAndColumn,
   TTrioAllGeneric,
   TTrioGroupUnion,
   TGroupBase,

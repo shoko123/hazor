@@ -1,7 +1,7 @@
 // stores/trio.js
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
-import type { TApiTrio2, TApiGroupColumn, TGroupUnion, TGroupLocalUnion, TApiGroupTag, TApiGroupBasic, TParamObj, TTrio, TGroupObj, TCategoriesArray, TGroupLocalBase, TGroupLocalColumn, TGroupLocalTag, TParam, TGroupLabelToKey, TApiParamNameAndId, TApiParamName } from '../../../types/trioTypes2'
+import type { TApiTrio2, TApiGroupColumn, TGroupUnion, TGroupLocalUnion, TApiGroupTag, TApiGroupBasic, TParamObj, TApiParamNameAndColumn, TGroupObj, TCategoriesArray, TApiGroupOrderBy, TGroupLocalColumn, TGroupLocalTag, TParam, TGroupLabelToKey, TApiParamNameAndId, TApiParamName } from '../../../types/trioTypes2'
 import { useMediaStore } from '../media'
 
 export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
@@ -11,6 +11,7 @@ export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
   let groupsObj: TGroupObj = {}
   let paramsObj: TParamObj = {}
   let groupLabelToKey: TGroupLabelToKey = {}
+  let orderByOptions: TApiParamNameAndColumn[] = []
   let catCnt = 0, grpCnt = 0, prmCnt = 0
 
   function reset() {
@@ -30,6 +31,7 @@ export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
         categories[catCnt].groupKeys.push(grpKey)
         let group: TGroupUnion = { label: '', code: 'CV', params: [] }
 
+        //console.log(`normalize2() before handle group #${grpCnt}`)
         switch (grp.group_type_code) {
           case 'CL':
             group = handleCL(<TApiGroupColumn>grp)
@@ -55,22 +57,19 @@ export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
           case 'MD':
             group = handleMD(<TApiGroupBasic>grp)
             break
-          case 'BF':
-            group = handleBF(<TApiGroupColumn>grp)
-            break
+       
           case 'OB':
-            group = handleOB(<TApiGroupColumn>grp)
+            group = handleOB(<TApiGroupOrderBy>grp)
             break
           default:
         }
-        //groupsObj[grpKey] = group//{ label: grp.group_name, code: grp.group_type_code, paramKeys: [], categoryIndex: catCnt }
         saveGroupAndParams(grpKey, group)
         grpCnt++
       })
       catCnt++
     })
 
-    return { categories, groupsObj, paramsObj, groupLabelToKey }
+    return { trio: {categories, groupsObj, paramsObj}, groupLabelToKey, orderByOptions }
   }
   function saveGroupAndParams(grpKey: string, grp: TGroupUnion) {
     //console.log(`saveGroup(): ${JSON.stringify(grp, null, 2)}`);
@@ -93,9 +92,11 @@ export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
   }
 
   function processDependency(dependency: string[]) {
+    //console.log(`processDep() groupLabelToKey: ${JSON.stringify(groupLabelToKey, null, 2)}`);        
     return dependency === null ? [] : dependency.map(x => {
       const pieces = x.split('.')
       const group = groupsObj[groupLabelToKey[pieces[0]]]
+       //console.log(`groupLabel: ${pieces[0]}. key: ${groupLabelToKey[pieces[0]]}  `);      
       return group.paramKeys.find(x => paramsObj[x].text === pieces[1])
     })
   }
@@ -168,7 +169,6 @@ export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
   }
 
   function handleMD(grp: TApiGroupBasic) {
-    //console.log(`handleMD()mediaGroupNames: ${JSON.stringify(mediaCollectionNames.value, null, 2)}`);
     return {
       label: grp.group_name,
       code: grp.group_type_code,
@@ -182,11 +182,12 @@ export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
       params: [],
     }
   }
-  function handleOB(grp: TApiGroupColumn) {
+  function handleOB(grp: TApiGroupOrderBy) {
+    orderByOptions = grp.options
     return {
       label: grp.group_name,
       code: grp.group_type_code,
-      params: [],
+      params: (<TApiParamNameAndColumn[]>grp.params).map(x => { return { text: "", extra: null } }),
     }
   }
   function assert(condition: unknown, msg?: string): asserts condition {

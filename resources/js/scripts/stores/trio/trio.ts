@@ -132,13 +132,13 @@ export const useTrioStore = defineStore('trio', () => {
   function groupIsAvailable(groupKey: string) {
     const g = trio.value.entities.groups[groupKey]
 
-    //if source is 'New' don't show CS, CR, BF and OB groups.
-    if (isNewParams.value && ["CS", "BF", "CR", "CB", "OB"].includes(g.group_type_code)) {
+    //if source is 'New' don't show CS, CR, MD and OB groups.
+    if (isNewParams.value && ["CS", "MD", "CR", "CB", "OB"].includes(g.group_type_code)) {
       return false
     }
 
     //if source is filter, and not TM or TG all these groups are available.
-    if (["CS", "CV", "CR", "CB", "BF", "OB"].includes(g.group_type_code)) {
+    if (["CS", "CV", "CR", "CB", "MD", "OB"].includes(g.group_type_code)) {
       return true
     }
 

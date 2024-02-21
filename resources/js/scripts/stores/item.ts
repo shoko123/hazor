@@ -27,6 +27,7 @@ export const useItemStore = defineStore('item', () => {
   const tag = ref<string | undefined>(undefined)
   const short = ref<string | undefined>(undefined)
   const selectedItemParams = ref<string[]>([])
+  const selectedItemParams2 = ref<string[]>([])  
   const ready = ref<boolean>(false)
 
   const itemViews = ref<string[]>([])
@@ -104,6 +105,7 @@ export const useItemStore = defineStore('item', () => {
     short.value = undefined
     tag.value = undefined
     selectedItemParams.value = []
+    selectedItemParams2.value = []
   }
 
   function nextSlug(isRight: boolean) {
@@ -151,6 +153,7 @@ export const useItemStore = defineStore('item', () => {
     id,
     derived,
     selectedItemParams,
+    selectedItemParams2,
     itemIndex,
     nextSlug,
     itemClear,

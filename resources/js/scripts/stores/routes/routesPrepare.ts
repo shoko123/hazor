@@ -14,7 +14,7 @@ import type { TApiItemShow } from '@/js/types/itemTypes'
 import type { LocationQuery } from 'vue-router'
 import { useXhrStore } from '../xhr'
 import { useTrioStore } from '../trio/trio'
-import { useTrio2Store } from '../trio/trio2'
+import { useTrioStore2 } from '../trio/trio2'
 import { useFilterStore } from '../trio/filter'
 import { useCollectionsStore } from '../collections/collections'
 import { useMediaStore } from '../media'
@@ -36,7 +36,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   const f = useFilterStore()
   const m = useModuleStore()
   const { trioReset, setTrio } = useTrioStore()
-  const { setTrio2 } = useTrio2Store()
+  const { setTrio2, trioReset2 } = useTrioStore2()
   const { setItemMedia } = useMediaStore()
 
   const fromUndef = ref<boolean>(false)
@@ -57,6 +57,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
         case 'module.clear':
           trioReset()
+          trioReset2()
           break
 
         case 'collection.item.load': {
@@ -140,6 +141,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
   async function loadModule(module: TModule): Promise<{ success: boolean, message: string }> {
     trioReset()
+    trioReset2()
     const res = await send<TApiModuleInit>('model/init', 'post', { model: module })
     if (res.success) {
       m.counts = res.data.counts

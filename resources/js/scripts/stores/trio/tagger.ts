@@ -13,6 +13,7 @@ export const useTaggerStore = defineStore('tagger', () => {
   const trio = useTrioStore()
   const { fields, selectedItemParams } = storeToRefs(useItemStore())
   const selectedNewItemParams = ref<string[]>([])
+  const selectedNewItemParams2 = ref<string[]>([])
 
   function copyCurrentToNew() {
     selectedNewItemParams.value = [...selectedItemParams.value]
@@ -85,6 +86,7 @@ export const useTaggerStore = defineStore('tagger', () => {
 
   return {
     selectedNewItemParams,
+    selectedNewItemParams2,
     clearSelectedNewItemParams,
     copyCurrentToNew,
     sync
