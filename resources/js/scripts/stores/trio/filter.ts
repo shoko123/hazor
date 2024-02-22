@@ -83,6 +83,7 @@ export const useFilterStore = defineStore('filter', () => {
       column_values: [],
       column_lookup_ids: [],
       column_search: [],
+      media: [],
       bespoke: [],
       order_by: [],
     }

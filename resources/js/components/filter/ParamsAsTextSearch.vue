@@ -1,90 +1,18 @@
 <template>
   <v-container>
     <v-row no-gutters>
-      <v-col
-        cols="12"
-        sm="3"
-      >
-        <v-card
-          class="mx-auto"
-          variant="outlined"
-        >
+      <v-col cols="12" sm="8">
+        <v-card class="mx-auto" variant="outlined">
           <v-card-item>
-            <v-text-field
-              v-model="search1"
-              label="search term1"
-              name="search1"
-              filled
-            />
-            OR
-            <v-text-field
-              v-model="search2"
-              label="search term2"
-              name="search2"
-              filled
-            />
-            OR
-            <v-text-field
-              v-model="search3"
-              label="search term3"
-              name="search3" 
-              filled
-            />
+            <v-text-field v-for="(item, index) in textSearchValues" :key="index" v-model="textSearchValues[index]"
+              @update:modelValue='(val) => changeOccured(index, val)' :label="`${searchGroupLabel} term-${index + 1}`"
+              :name="`search-${index + 1}`" filled>
+            </v-text-field>
           </v-card-item>
         </v-card>
       </v-col>
-      <v-col
-        cols="12"
-        sm="1"
-      >
-        <v-row
-          justify="center"
-          no-gutters
-        >
-          OR
-        </v-row>
-      </v-col>
-      <v-col
-        cols="12"
-        sm="3"
-        class="ml-2"
-      >
-        <v-card
-          class="mx-auto"
-          variant="outlined"
-        >
-          <v-card-item>
-            <v-text-field
-              v-model="search4"
-              label="search term4"
-              name="search4"
-              filled
-            />
-            OR
-            <v-text-field
-              v-model="search5"
-              label="search term5"
-              name="search5"
-              filled
-            />
-            OR
-            <v-text-field
-              v-model="search6"
-              label="search term6"
-              name="search6"
-              filled
-            />
-          </v-card-item>
-        </v-card>
-      </v-col>
-      <v-col
-        cols="12"
-        sm="2"
-      >
-        <v-btn
-          class="ml-2"
-          @click="clearClicked"
-        >
+      <v-col cols="12" sm="2">
+        <v-btn class="ml-2" @click="clearClicked">
           Clear
         </v-btn>
       </v-col>
@@ -94,142 +22,59 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { useTrioStore } from '../../scripts/stores/trio/trio'
+import { storeToRefs } from 'pinia'
+import { useTrioStore2 } from '../../scripts/stores/trio/trio2'
 import { useFilterStore } from '../../scripts/stores/trio/filter'
 
-let filter = useFilterStore()
-let trio = useTrioStore()
-let searchText = ref<string>("")
 
-const params = computed(() => {
+const { selectedFilterParams2 } = storeToRefs(useFilterStore())
+const { trio, groupIndex, visibleGroups } = storeToRefs(useTrioStore2())
+
+
+const textSearchParamKeys = computed(() => {
   //console.log(`TextSearch.params: ${JSON.stringify(trio.visibleParams.value, null, 2)}`)
-  return trio.visibleParams
+  return visibleGroups.value[groupIndex.value].params
 })
 
-const search1 = computed({
-  get: () => {
-    return params.value[0].name
-  },
-  set: val => {
-    let currentIsEmpty = params.value[0].name === ""
-    let newIsEmpty = val === ""
-    searchText.value = val
-    trio.setFilterSearchTerm(params.value[0].paramKey, searchText.value)
+const searchGroupLabel = computed(() => {
+  return visibleGroups.value[groupIndex.value].name
+})
 
-    if (currentIsEmpty && !newIsEmpty) {
-      filter.addRemoveSearchParam(params.value[0].paramKey)
-    }
-    if (!currentIsEmpty && newIsEmpty) {
-      filter.addRemoveSearchParam(params.value[0].paramKey)
-    }
+const textSearchValues = computed(() => {
+  let vals: string[] = []
+  textSearchParamKeys.value.forEach(x => {
+    vals.push(trio.value.paramsObj[x].text)
+  })
+  return vals
+})
+
+function changeOccured(index: number, val: any) {
+  const paramKey = textSearchParamKeys.value[index]
+  console.log(`changeOccured() index: ${index} setting param with key ${paramKey} to: ${val}`)
+  trio.value.paramsObj[paramKey].text = val
+
+  //add/remove from selected filters
+  const inSelected = selectedFilterParams2.value.includes(paramKey)
+  if (inSelected && val === '') {
+    const i = selectedFilterParams2.value.indexOf(paramKey)
+    selectedFilterParams2.value.splice(i, 1)
   }
-
-})
-
-const search2 = computed({
-  get: () => {
-    return params.value[1].name
-  },
-  set: val => {
-    let currentIsEmpty = params.value[1].name === ""
-    let newIsEmpty = val === ""
-    searchText.value = val
-    trio.setFilterSearchTerm(params.value[1].paramKey, searchText.value)
-
-    if (currentIsEmpty && !newIsEmpty) {
-      filter.addRemoveSearchParam(params.value[1].paramKey)
-    }
-    if (!currentIsEmpty && newIsEmpty) {
-      filter.addRemoveSearchParam(params.value[1].paramKey)
-    }
+  if (!inSelected && val !== '') {
+    selectedFilterParams2.value.push(paramKey)
   }
-
-})
-const search3 = computed({
-  get: () => {
-    return params.value[2].name
-  },
-  set: val => {
-    let currentIsEmpty = params.value[2].name === ""
-    let newIsEmpty = val === ""
-    searchText.value = val
-    trio.setFilterSearchTerm(params.value[2].paramKey, searchText.value)
-
-    if (currentIsEmpty && !newIsEmpty) {
-      filter.addRemoveSearchParam(params.value[2].paramKey)
-    }
-    if (!currentIsEmpty && newIsEmpty) {
-      filter.addRemoveSearchParam(params.value[2].paramKey)
-    }
-  }
-
-})
-const search4 = computed({
-  get: () => {
-    return params.value[3].name
-  },
-  set: val => {
-    let currentIsEmpty = params.value[3].name === ""
-    let newIsEmpty = val === ""
-    searchText.value = val
-    trio.setFilterSearchTerm(params.value[3].paramKey, searchText.value)
-
-    if (currentIsEmpty && !newIsEmpty) {
-      filter.addRemoveSearchParam(params.value[3].paramKey)
-    }
-    if (!currentIsEmpty && newIsEmpty) {
-      filter.addRemoveSearchParam(params.value[3].paramKey)
-    }
-  }
-
-})
-
-const search5 = computed({
-  get: () => {
-    return params.value[4].name
-  },
-  set: val => {
-    let currentIsEmpty = params.value[4].name === ""
-    let newIsEmpty = val === ""
-    searchText.value = val
-    trio.setFilterSearchTerm(params.value[4].paramKey, searchText.value)
-
-    if (currentIsEmpty && !newIsEmpty) {
-      filter.addRemoveSearchParam(params.value[4].paramKey)
-    }
-    if (!currentIsEmpty && newIsEmpty) {
-      filter.addRemoveSearchParam(params.value[4].paramKey)
-    }
-  }
-
-})
-const search6 = computed({
-  get: () => {
-    return params.value[5].name
-  },
-  set: val => {
-    let currentIsEmpty = params.value[5].name === ""
-    let newIsEmpty = val === ""
-    searchText.value = val
-    trio.setFilterSearchTerm(params.value[5].paramKey, searchText.value)
-
-    if (currentIsEmpty && !newIsEmpty) {
-      filter.addRemoveSearchParam(params.value[5].paramKey)
-    }
-    if (!currentIsEmpty && newIsEmpty) {
-      filter.addRemoveSearchParam(params.value[5].paramKey)
-    }
-  }
-
-})
+}
 
 function clearClicked() {
-  search1.value = ""
-  search2.value = ""
-  search3.value = ""
-  search4.value = ""
-  search5.value = ""
-  search6.value = ""  
+  console.log(`clear()`)
+  textSearchParamKeys.value.forEach(x => {
+    trio.value.paramsObj[x].text = ''
+
+    //if currently in selectedFilters, then remove.
+    if (selectedFilterParams2.value.includes(x)) {
+      const i = selectedFilterParams2.value.indexOf(x)
+      selectedFilterParams2.value.splice(i, 1)
+    }
+  })
 }
 
 </script>
