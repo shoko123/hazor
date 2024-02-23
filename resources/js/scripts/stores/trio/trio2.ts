@@ -8,10 +8,9 @@ import { useRoutesMainStore } from '../routes/routesMain'
 import { useTaggerStore } from './tagger'
 
 export const useTrioStore2 = defineStore('trio2', () => {
-  const { selectedFilterParams2 } = storeToRefs(useFilterStore())
-  const { normalizeTrio2 } = useTrioNormalizerStore2()
+  const { normalizeTrio2 } = useTrioNormalizerStore2()  
   const { current } = storeToRefs(useRoutesMainStore())
-
+  
   const trio = ref<TTrio>({ categories: [], groupsObj: {}, paramsObj: {} })
   const groupLabelToKey = ref<TGroupLabelToKey>({})
   const orderByOptions = ref<TApiParamNameAndColumn[]>([])
@@ -252,10 +251,11 @@ export const useTrioStore2 = defineStore('trio2', () => {
   })
 
   const selected = computed(() => {
-    const { selectedNewItemParams2 } = storeToRefs(useTaggerStore())
+    const filterStore = useFilterStore()
+    const { selectedNewItemParams2 } = storeToRefs(useTaggerStore())   
     switch (current.value.name) {
       case 'filter':
-        return selectedFilterParams2.value
+        return filterStore.selectedFilterParams2
       case 'tag':
         return selectedNewItemParams2.value
       default:
@@ -264,9 +264,11 @@ export const useTrioStore2 = defineStore('trio2', () => {
   })
 
   function trioReset2() {
-    const { selectedNewItemParams } = storeToRefs(useTaggerStore())
-    selectedNewItemParams.value = []
-    selectedFilterParams2.value = []
+    const { resetSelectedFilters } = useFilterStore()
+    const { resetNewItemParams } = useTaggerStore()    
+    resetNewItemParams()
+    resetSelectedFilters()
+
     groupIndex.value = 0
     categoryIndex.value = 0
     trio.value = { categories: [], groupsObj: {}, paramsObj: {} }
@@ -313,6 +315,10 @@ export const useTrioStore2 = defineStore('trio2', () => {
     return grpList
   })
 
+  const currentGroup = computed(() => {
+    return trio.value.groupsObj[visibleGroups.value[groupIndex.value].groupKey]
+  })
+
   return {
     trio,
     groupLabelToKey,
@@ -322,6 +328,7 @@ export const useTrioStore2 = defineStore('trio2', () => {
     setTrio2,
     categoryIndex,
     groupIndex,
+    currentGroup,    
     visibleCategories,
     visibleGroups,
     visibleParams,

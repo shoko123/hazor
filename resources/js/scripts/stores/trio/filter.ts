@@ -6,6 +6,7 @@ import type { TParseQuery, TApiFilters, TSelectedFilterFromQuery } from '@/js/ty
 import type { IObject } from '@/js/types/generalTypes'
 import type { TApiArrayMain } from '@/js/types/collectionTypes'
 import { useTrioStore } from './trio'
+import { useTrioStore2 } from './trio2'
 import { useXhrStore } from '../xhr'
 import { useRoutesMainStore } from '../routes/routesMain'
 
@@ -13,6 +14,8 @@ export const useFilterStore = defineStore('filter', () => {
   const { send } = useXhrStore()
   const { current } = storeToRefs(useRoutesMainStore())
   const trio = useTrioStore()
+
+
   const selectedFilterParams = ref<string[]>([])
   const selectedFilterParams2 = ref<string[]>([])
 
@@ -237,6 +240,10 @@ export const useFilterStore = defineStore('filter', () => {
     }
   }
 
+  function resetSelectedFilters() {
+    selectedFilterParams2.value = []
+  }
+
   function clearSelectedFilters() {
     console.log(`filter.clearSelectedFilters()`)
     selectedFilterParams.value.forEach(x => {
@@ -279,12 +286,63 @@ export const useFilterStore = defineStore('filter', () => {
     return res2.success ? res2.data.length : -1
   }
 
+  const currentGroupFromTrio = computed(() => {
+    const trio2 = useTrioStore2()
+    return trio2.currentGroup
+  })
+  const textSearchParamKeys = computed(() => {
+    return currentGroupFromTrio.value.paramKeys
+  })
+
+  const textSearchValues = computed(() => {
+    const trio2 = useTrioStore2()
+    if (trio2.currentGroup.code !== 'CS') {
+      return []
+    }
+    let vals: string[] = []
+    textSearchParamKeys.value.forEach(x => {
+      vals.push(trio2.trio.paramsObj[x].text)
+    })
+    return vals
+  })
+
+  function searchTextChanged(index: number, val: any) {
+    const trio2 = useTrioStore2()
+    const paramKey = textSearchParamKeys.value[index]
+    console.log(`changeOccured() index: ${index} setting param with key ${paramKey} to: ${val}`)
+    trio2.trio.paramsObj[paramKey].text = val
+
+    //add/remove from selected filters
+    const inSelected = selectedFilterParams2.value.includes(paramKey)
+    if (inSelected && val === '') {
+      const i = selectedFilterParams2.value.indexOf(paramKey)
+      selectedFilterParams2.value.splice(i, 1)
+    }
+    if (!inSelected && val !== '') {
+      selectedFilterParams2.value.push(paramKey)
+    }
+  }
+
+  function searchTextClearCurrent() {
+    const trio2 = useTrioStore2()
+    console.log(`clear()`)
+    textSearchParamKeys.value.forEach(x => {
+      trio2.trio.paramsObj[x].text = ''
+
+      //if currently in selectedFilters, then remove.
+      if (selectedFilterParams2.value.includes(x)) {
+        const i = selectedFilterParams2.value.indexOf(x)
+        selectedFilterParams2.value.splice(i, 1)
+      }
+    })
+  }
   return {
     selectedFilterParams,
     selectedFilterParams2,
     orderAllNames,
     orderSelectedNames,
     orderAvailableNames,
+    textSearchValues,
     orderParamClicked,
     orderClear,
     filtersToQueryObject,
@@ -292,6 +350,9 @@ export const useFilterStore = defineStore('filter', () => {
     addRemoveSearchParam,
     clearSelectedFilters,
     setFiltersFromUrlQuery,
-    getCount
+    getCount,
+    resetSelectedFilters,
+    searchTextChanged,
+    searchTextClearCurrent
   }
 })

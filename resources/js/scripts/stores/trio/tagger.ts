@@ -19,6 +19,10 @@ export const useTaggerStore = defineStore('tagger', () => {
     selectedNewItemParams.value = [...selectedItemParams.value]
   }
 
+  function resetNewItemParams() {
+    selectedNewItemParams.value = []
+  }
+
   function parseParamKey(paramKey: string, getParam = true): string {
     //console.log(`parseParamKey() key: ${paramKey} value: ${trio.entities.params[paramKey]}`)
     const pieces = paramKey.split('.')
@@ -88,6 +92,7 @@ export const useTaggerStore = defineStore('tagger', () => {
     selectedNewItemParams,
     selectedNewItemParams2,
     clearSelectedNewItemParams,
+    resetNewItemParams,
     copyCurrentToNew,
     sync
   }
