@@ -187,7 +187,7 @@ export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
     return {
       label: grp.group_name,
       code: grp.group_type_code,
-      params: (<TApiParamNameAndColumn[]>grp.params).map(x => { return { text: "", extra: null } }),
+      params: Array(grp.options.length).fill({ text: '', extra: null }),
     }
   }
   function assert(condition: unknown, msg?: string): asserts condition {

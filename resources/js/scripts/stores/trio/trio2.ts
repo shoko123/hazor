@@ -327,10 +327,39 @@ export const useTrioStore2 = defineStore('trio2', () => {
     return vals
   })
 
+  ////////////////////////
+  const orderByGroup = computed(() => {
+    if (!groupLabelToKey.value.hasOwnProperty('Order By')) { return undefined }
+    
+    return trio.value.groupsObj[groupLabelToKey.value["Order By"]]
+  })
+
+  const orderBySelected = computed(() => {
+    if (orderByGroup.value === undefined) { return [] }
+
+    return orderByGroup.value.paramKeys.filter(x => {
+      let label = trio.value.paramsObj[x].text
+      return label !== ''
+    }).map(x => { return { label: trio.value.paramsObj[x].text, key: x } })
+  })
+
+  const orderByAvailable = computed(() => {
+    if (orderByGroup.value === undefined) { return [] }
+
+    return orderByOptions.value.filter(x => {
+      return !orderBySelected.value.some(y =>  y.label.slice(0, -2) === x.name )
+    })
+  })
+
+
+
   return {
     trio,
     groupLabelToKey,
     orderByOptions,
+    orderByGroup,
+    orderByAvailable,
+    orderBySelected,
     groups,
     textSearchValues,
     trioReset2,

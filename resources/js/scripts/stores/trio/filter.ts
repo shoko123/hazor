@@ -20,46 +20,7 @@ export const useFilterStore = defineStore('filter', () => {
   const selectedFilterParams = ref<string[]>([])
   const selectedFilterParams2 = ref<string[]>([])
 
-  const orderSelectedNames = computed(() => {
-    const orderParamKeys = selectedFilterParams.value.filter(x => {
-      return (x.split('.')[0] === 'Order By')
-    })
-    const names = <string[]>orderParamKeys.map(y => (trio.trio.entities.params[y].name))
-    return names
-  })
 
-  const orderAllNames = computed(() => {
-    if (trio.trio.result.length === 0) { return [] }
-    const orderGroup = <TGroupOrderBy>trio.trio.entities.groups['Order By']
-    return orderGroup.options.map(x => x.name)
-  })
-
-  const orderAvailableNames = computed(() => {
-    const osn = orderSelectedNames.value.map(x => x.slice(0, -2))
-    return orderAllNames.value.filter(x => !osn.includes(x))
-  })
-
-  function orderParamClicked(index: number, asc: boolean) {
-    const i = orderSelectedNames.value.length
-    const nameToSet = `${orderAvailableNames.value[index]}.${asc ? 'A' : 'D'}`
-    const paramKey = `Order By.ob${i + 1}`
-    console.log(`paramClicked(${index}) nameToSet: ${nameToSet} indexToset: ${i} paramKey: ${paramKey}`)
-    trio.setOrderByString(paramKey, nameToSet)
-    selectedFilterParams.value.push(paramKey)
-  }
-
-  function orderClear() {
-    const orderParamKeys = selectedFilterParams.value.filter(x => {
-      return (x.split('.')[0] === 'Order By')
-    })
-
-    console.log(`orderClear currently selected #: ${orderParamKeys.length}`)
-    orderParamKeys.forEach(x => {
-      trio.setOrderByString(x, "")
-      const i = selectedFilterParams.value.indexOf(x.slice(0, -2))
-      selectedFilterParams.value.splice(i, 1)
-    })
-  }
 
   function filtersToQueryObject(): IObject {
     const query: IObject = {}
@@ -242,6 +203,7 @@ export const useFilterStore = defineStore('filter', () => {
   }
 
   function resetSelectedFilters() {
+    orderByClear()    
     selectedFilterParams2.value = []
   }
 
@@ -261,6 +223,16 @@ export const useFilterStore = defineStore('filter', () => {
       }
     })
     selectedFilterParams.value = []
+
+    for (const [key, value] of Object.entries(trio2.groupLabelToKey)) { 
+      if(trio2.trio.groupsObj[value].code === 'CS') {
+        trio2.trio.groupsObj[value].paramKeys.forEach(x => {
+          trio2.trio.paramsObj[x].text = ''
+          trio2.trio.paramsObj[x].extra = null
+        })
+      }
+    }
+    orderByClear()
     selectedFilterParams2.value = []
   }
 
@@ -294,7 +266,7 @@ export const useFilterStore = defineStore('filter', () => {
 
   function searchTextChanged(index: number, val: any) {
     const paramKey = textSearchParamKeys.value[index]
-    console.log(`changeOccured() index: ${index} setting param with key ${paramKey} to: ${val}`)
+    //console.log(`changeOccured() index: ${index} setting param with key ${paramKey} to: ${val}`)
     trio2.trio.paramsObj[paramKey].text = val
 
     //add/remove from selected filters
@@ -320,14 +292,48 @@ export const useFilterStore = defineStore('filter', () => {
       }
     })
   }
+
+  //order by
+  ///////////
+
+  function orderParamClicked(index: number, asc: boolean) {
+    let orderByParams = trio2.orderByGroup?.paramKeys.map(x => { return { ...trio2.trio.paramsObj[x], key: x } })
+
+    if (orderByParams === undefined) {
+      console.log(`serious error - abort *********`)
+      return
+    }
+
+    const firstEmptyParam = orderByParams.find(x => x.text === '')
+    if (firstEmptyParam === undefined) {
+      console.log(`serious error - abort *********`)
+      return
+    }
+
+    let label = `${trio2.orderByAvailable[index].name}.${asc ? 'A' : 'D'}`
+    // console.log(`paramClicked(${index}) asc: ${asc} params:  ${JSON.stringify(orderByParams, null, 2)} key: ${firstEmptyParam.key} label: ${label}`)
+
+    trio2.trio.paramsObj[firstEmptyParam.key].text = label
+    selectedFilterParams2.value.push(firstEmptyParam.key)
+  }
+
+  function orderByClear() {
+    console.log(`orderClear`)
+    trio2.orderByGroup?.paramKeys.forEach(x => {
+      trio2.trio.paramsObj[x].text = ''
+      if (selectedFilterParams2.value.includes(x)) {
+        const i = selectedFilterParams2.value.indexOf(x)
+        selectedFilterParams2.value.splice(i, 1)
+      }
+    })
+
+
+  }
   return {
     selectedFilterParams,
     selectedFilterParams2,
-    orderAllNames,
-    orderSelectedNames,
-    orderAvailableNames,
     orderParamClicked,
-    orderClear,
+    orderByClear,
     filtersToQueryObject,
     urlQueryToApiFilters,
     addRemoveSearchParam,
