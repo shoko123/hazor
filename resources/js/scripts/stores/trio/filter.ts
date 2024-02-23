@@ -1,7 +1,8 @@
 // stores/trio.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TGroupValue, TGroupOrderBy, TGroupOrderByOptionObject, } from '@/js/types/trioTypes'
+import type { TGroupValue, TGroupOrderBy, TGroupOrderByOptionObject } from '@/js/types/trioTypes'
+import type { TGroupLocalBase, } from '@/js/types/trioTypes2'
 import type { TParseQuery, TApiFilters, TSelectedFilterFromQuery } from '@/js/types/routesTypes'
 import type { IObject } from '@/js/types/generalTypes'
 import type { TApiArrayMain } from '@/js/types/collectionTypes'
@@ -14,7 +15,7 @@ export const useFilterStore = defineStore('filter', () => {
   const { send } = useXhrStore()
   const { current } = storeToRefs(useRoutesMainStore())
   const trio = useTrioStore()
-
+  const trio2 = useTrioStore2()
 
   const selectedFilterParams = ref<string[]>([])
   const selectedFilterParams2 = ref<string[]>([])
@@ -286,28 +287,12 @@ export const useFilterStore = defineStore('filter', () => {
     return res2.success ? res2.data.length : -1
   }
 
-  const currentGroupFromTrio = computed(() => {
-    const trio2 = useTrioStore2()
-    return trio2.currentGroup
-  })
   const textSearchParamKeys = computed(() => {
-    return currentGroupFromTrio.value.paramKeys
-  })
-
-  const textSearchValues = computed(() => {
-    const trio2 = useTrioStore2()
-    if (trio2.currentGroup.code !== 'CS') {
-      return []
-    }
-    let vals: string[] = []
-    textSearchParamKeys.value.forEach(x => {
-      vals.push(trio2.trio.paramsObj[x].text)
-    })
-    return vals
+    const currentGroup = trio2.currentGroup
+    return (<TGroupLocalBase>currentGroup).paramKeys
   })
 
   function searchTextChanged(index: number, val: any) {
-    const trio2 = useTrioStore2()
     const paramKey = textSearchParamKeys.value[index]
     console.log(`changeOccured() index: ${index} setting param with key ${paramKey} to: ${val}`)
     trio2.trio.paramsObj[paramKey].text = val
@@ -324,7 +309,6 @@ export const useFilterStore = defineStore('filter', () => {
   }
 
   function searchTextClearCurrent() {
-    const trio2 = useTrioStore2()
     console.log(`clear()`)
     textSearchParamKeys.value.forEach(x => {
       trio2.trio.paramsObj[x].text = ''
@@ -342,7 +326,6 @@ export const useFilterStore = defineStore('filter', () => {
     orderAllNames,
     orderSelectedNames,
     orderAvailableNames,
-    textSearchValues,
     orderParamClicked,
     orderClear,
     filtersToQueryObject,

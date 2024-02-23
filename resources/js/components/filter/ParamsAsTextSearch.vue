@@ -23,9 +23,9 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { useFilterStore } from '../../scripts/stores/trio/filter'
-
+import { useTrioStore2 } from '../../scripts/stores/trio/trio2'
 const { searchTextChanged, searchTextClearCurrent } = useFilterStore()
-const { textSearchValues } = storeToRefs(useFilterStore())
+const { textSearchValues } = storeToRefs(useTrioStore2())
 
 </script>
 
