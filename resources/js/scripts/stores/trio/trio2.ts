@@ -243,7 +243,7 @@ export const useTrioStore2 = defineStore('trio2', () => {
   }
 
   const visibleParams = computed(() => {
-    if (currentGroup === undefined) { return [] }
+    if (trio.value.categories.length === 0) { return [] }
     const paramKeys = (<TGroupLocalBase>currentGroup.value).paramKeys
     return paramKeys.map(x => { return { ...trio.value.paramsObj[x], selected: selected.value.includes(x), key: x } })
   })
@@ -262,10 +262,10 @@ export const useTrioStore2 = defineStore('trio2', () => {
   })
 
   function trioReset2() {
-    const { resetSelectedFilters } = useFilterStore()
+    const { clearSelectedFilters } = useFilterStore()
     const { resetNewItemParams } = useTaggerStore()
     resetNewItemParams()
-    resetSelectedFilters()
+    clearSelectedFilters()
 
     groupIndex.value = 0
     categoryIndex.value = 0
@@ -330,7 +330,7 @@ export const useTrioStore2 = defineStore('trio2', () => {
   ////////////////////////
   const orderByGroup = computed(() => {
     if (!groupLabelToKey.value.hasOwnProperty('Order By')) { return undefined }
-    
+
     return trio.value.groupsObj[groupLabelToKey.value["Order By"]]
   })
 

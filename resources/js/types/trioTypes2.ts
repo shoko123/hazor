@@ -7,7 +7,7 @@ type TApiParamNameAndId = TApiParamName & {
   id: number
 }
 type TApiParamNameAndColumn = TApiParamName & {
-  column_name: number
+  column_name: string
 }
 type TApiParamNameAndBool = TApiParamName & {
   bool_names: [string, string]
@@ -61,7 +61,7 @@ type TGroupTag = TGroupBase & {
 
 
 type TGroupColumn = TGroupBase & {
-  columnName: string,
+  column_name: string,
   dependency: string[],
 }
 type TGroupUnion = TGroupBase | TGroupColumn | TGroupTag

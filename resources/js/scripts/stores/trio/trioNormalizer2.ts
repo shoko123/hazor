@@ -57,7 +57,7 @@ export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
           case 'MD':
             group = handleMD(<TApiGroupBasic>grp)
             break
-       
+
           case 'OB':
             group = handleOB(<TApiGroupOrderBy>grp)
             break
@@ -69,7 +69,7 @@ export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
       catCnt++
     })
 
-    return { trio: {categories, groupsObj, paramsObj}, groupLabelToKey, orderByOptions }
+    return { trio: { categories, groupsObj, paramsObj }, groupLabelToKey, orderByOptions }
   }
   function saveGroupAndParams(grpKey: string, grp: TGroupUnion) {
     //console.log(`saveGroup(): ${JSON.stringify(grp, null, 2)}`);
@@ -96,7 +96,7 @@ export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
     return dependency === null ? [] : dependency.map(x => {
       const pieces = x.split('.')
       const group = groupsObj[groupLabelToKey[pieces[0]]]
-       //console.log(`groupLabel: ${pieces[0]}. key: ${groupLabelToKey[pieces[0]]}  `);      
+      //console.log(`groupLabel: ${pieces[0]}. key: ${groupLabelToKey[pieces[0]]}  `);      
       return group.paramKeys.find(x => paramsObj[x].text === pieces[1])
     })
   }
@@ -126,7 +126,7 @@ export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
       code: grp.group_type_code,
       params,
       dependency: processDependency(<string[]>grp.dependency),
-      columnName: grp.column_name
+      column_name: grp.column_name
     }
   }
   function handleCV(grp: TApiGroupColumn) {
@@ -137,6 +137,7 @@ export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
       label: grp.group_name,
       code: grp.group_type_code,
       params,
+      column_name: grp.column_name,
     }
   }
   function handleCB(grp: TApiGroupColumn) {
@@ -146,6 +147,7 @@ export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
     return {
       label: grp.group_name,
       code: grp.group_type_code,
+      column_name: grp.column_name,
       params,
     }
   }
@@ -157,14 +159,16 @@ export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
       label: grp.group_name,
       code: grp.group_type_code,
       params,
+      column_name: grp.column_name,
     }
   }
   function handleCS(grp: TApiGroupColumn) {
     return {
-      column_name: grp.column_name,
+    
       label: grp.group_name,
       code: grp.group_type_code,
       params: Array(6).fill({ text: '', extra: null }),
+      column_name: grp.column_name,
     }
   }
 
