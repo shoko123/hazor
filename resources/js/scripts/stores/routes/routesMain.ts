@@ -4,8 +4,8 @@
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useRouter, type LocationQueryRaw, type RouteLocationNormalized, type RouteLocationRaw } from 'vue-router'
-import type { TModule, TUrlModule} from '@/js/types/moduleTypes'
-import type { TRouteInfo, TPageName, TPlanAction,  } from '@/js/types/routesTypes'
+import type { TModule, TUrlModule } from '@/js/types/moduleTypes'
+import type { TRouteInfo, TPageName, TPlanAction, } from '@/js/types/routesTypes'
 
 import { useRoutesParserStore } from './routesParser'
 import { useRoutesPlanTransitionStore } from './routesPlanTransition'
@@ -69,7 +69,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
 
         to.value.name = <TPageName>handle_to.name
         to.value.url_full_path = handle_to.fullPath
-        
+
         //parse module 
         //console.log(`A.current: ${JSON.stringify(current.value, null, 2)}\nto: ${JSON.stringify(to.value, null, 2)})`)
         if (Object.prototype.hasOwnProperty.call(handle_to.params, "module")) {
@@ -116,6 +116,7 @@ export const useRoutesMainStore = defineStore('routesMain', () => {
                 showSnackbar('No results returned. Please modify query and resubmit!')
                 return { name: 'filter' }
             } else {
+                showSnackbar(`Navigation Error: ${res.message}. Redirected to home page`)
                 return { name: 'home' }
             }
         }

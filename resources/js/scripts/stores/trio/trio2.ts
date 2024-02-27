@@ -22,20 +22,26 @@ export const useTrioStore2 = defineStore('trio2', () => {
 
   //A category is visible if at least one of its groups is available 
   const visibleCategories = computed(() => {
-    const visCats: { catName: string, catIndex: number, cnt: number }[] = []
+    const visCats: { catName: string, catIndex: number, hasSelected: boolean }[] = []
+
     for (let [index, cat] of trio.value.categories.entries()) {
       //for (const cat of trio.value.categories) {
       let available = false
+      let hasSelected = false
       for (const grpKey of cat.groupKeys) {
         if (groupIsAvailable(grpKey)) {
           available = true
+          if (trio.value.groupsObj[grpKey].paramKeys.some(r => selected.value.includes(r))) {
+            hasSelected = true
+          }
           break
         }
       }
       if (available) {
-        visCats.push({ catName: cat.name, catIndex: index, cnt: 1 })
+        visCats.push({ catName: cat.name, catIndex: index, hasSelected })
       }
     }
+
     //console.log(`visibleCats: ${JSON.stringify(visCats, null, 2)}`)
 
     return visCats
@@ -185,7 +191,7 @@ export const useTrioStore2 = defineStore('trio2', () => {
 
   //When unselecting a param, unselect dependencies.
   function clearDependecies(paramKey: string) {
-    console.log(`*** clearDependecies param: ${paramKey} currently selected: ${selected.value} ***`)
+    console.log(`*** trio2 clearDependecies param: ${paramKey} currently selected: ${selected.value} ***`)
     //We assume that this param was already removed from paramClickedSource (selectedFilterParams/selectedNewItemParams).
 
     //step 1 - collect all groups affected by unselecting this param
@@ -347,7 +353,7 @@ export const useTrioStore2 = defineStore('trio2', () => {
     if (orderByGroup.value === undefined) { return [] }
 
     return orderByOptions.value.filter(x => {
-      return !orderBySelected.value.some(y =>  y.label.slice(0, -2) === x.name )
+      return !orderBySelected.value.some(y => y.label.slice(0, -2) === x.name)
     })
   })
 

@@ -33,21 +33,6 @@ export const useFilterStore = defineStore('filter', () => {
         q2[groupUlined] = paramUlined
       }
     })
-    ////////////////////////
-    // const query: IObject = {}
-    // selectedFilterParams.value.forEach(pk => {
-
-    //   const pieces = pk.split('.')
-    //   const groupKeyUnderlined = pieces[0].replace(/ /g, "_")
-    //   const paramUnderlined = trio.trio.entities.params[pk].name.replace(/ /g, "_")
-
-    //   if (Object.prototype.hasOwnProperty.call(query, groupKeyUnderlined)) {
-    //     query[groupKeyUnderlined] += ',' + paramUnderlined
-    //   } else {
-    //     query[groupKeyUnderlined] = paramUnderlined
-    //   }
-    // })
-    // console.log(`filtersToQueryObject().query: ${JSON.stringify(query, null, 2)}`);
     console.log(`filtersToQueryObject().q2: ${JSON.stringify(q2, null, 2)}`);
     return q2
   }
@@ -119,16 +104,16 @@ export const useFilterStore = defineStore('filter', () => {
         }
 
         case 'CS': {
-          const i = all.column_values.findIndex(x => {
+          const i = all.column_search.findIndex(x => {
             return x.column_name === (<TGroupLocalColumn>group).column_name
           })
           if (i === -1) {
             //if new group, push the param's group into the groups array with itself as the first param
-            all.column_values.push({ column_name: (<TGroupLocalColumn>group).column_name, vals: [param.text] })
+            all.column_search.push({ column_name: (<TGroupLocalColumn>group).column_name, vals: [param.text] })
 
           } else {
             //if the group is already selected, add param's text to the group's params array
-            all.column_values[i].vals.push(param.text)
+            all.column_search[i].vals.push(param.text)
           }
         }
           break
@@ -143,6 +128,7 @@ export const useFilterStore = defineStore('filter', () => {
         case 'MD': {
           all.media.push(param.text)
         }
+          break
         case 'OB': {
           const ordeByItem = trio2.orderByOptions.find(x => x.name === param.text.slice(0, -2))
           all.order_by.push({ column_name: <string>ordeByItem?.column_name, asc: param.text.slice(-1) === 'A' })
@@ -154,8 +140,8 @@ export const useFilterStore = defineStore('filter', () => {
     return all
   })
 
-  function urlQueryToApiFilters2(qp: LocationQuery): { success: true } | { success: false, message: string } {
-    //console.log(`urlQueryToApiFilters2().urlQuery: ${JSON.stringify(qp, null, 2)}`);
+  function urlQueryToApiFilters(qp: LocationQuery): { success: true } | { success: false, message: string } {
+    //console.log(`urlQueryToApiFilters().urlQuery: ${JSON.stringify(qp, null, 2)}`);
 
     if (qp === null) {
       return { success: true }
@@ -164,209 +150,91 @@ export const useFilterStore = defineStore('filter', () => {
       if (value === null) {
         continue
       }
+
       console.log(`urlQueryEntry(${key}) =>: ${JSON.stringify((<string>value).split(','), null, 2)}`);
 
-      if (key in trio2.groupLabelToKey === false) {
-        return { success: false, message: `Unrecognized Url query parameter "${key}"` }
+      const undoUnderKey = key.replace(/_/g, " ")
+      if (undoUnderKey in trio2.groupLabelToKey === false) {
+        return { success: false, message: `Unrecognized Url query parameter "${undoUnderKey}"` }
       }
-      const group = trio2.trio.groupsObj[trio2.groupLabelToKey[key]]
-      const paramLabels = (<string>value).split(',')
+      const group = trio2.trio.groupsObj[trio2.groupLabelToKey[undoUnderKey]]
+      const paramTexts = (<string>value).split(',')
       switch (group.code) {
-        case 'OB':
-          processOB(group, paramLabels)
+        case 'OB': {
+          const res = processUrlOB(group, paramTexts)
+          if (!res.success) { return res }
+        }
           break
 
-        case 'CS':
-          processCS(group, paramLabels)
+        case 'CS':{
+          const res = processUrlCS(group, paramTexts)
+          if (!res.success) { return res }
+        }
           break
 
-        default:
-          processDefault(group, paramLabels)
+        default: {
+          const res = processUrlDefault(group, paramTexts.map(x => x.replace(/_/g, " ")))
+          if (!res.success) { return res }
+        }
           break
       }
     }
 
     return { success: true }
-    //Verify that the group exists. 
-    //const groupKey = key.replace(/_/g, " ")
-
-
   }
 
-  function processOB(group: TGroupLocalBase, paramLabels: string[]) {
-
-  }
-  function processCS(group: TGroupLocalBase, paramLabels: string[]) {
-
-  }
-  function processDefault(group: TGroupLocalBase, paramLabels: string[]) {
-
-  }
-
-  function urlQueryToApiFilters(qp: IObject): TParseQuery {
-    urlQueryToApiFilters2(<LocationQuery>qp)
-    //console.log(`urlQueryToApiFilters().urlQuery: ${JSON.stringify(qp, null, 2)}`);
-    const all: TApiFilters = {
-      model_tag_ids: [],
-      global_tag_ids: [],
-      column_values: [],
-      column_lookup_ids: [],
-      column_search: [],
-      media: [],
-      bespoke: [],
-      order_by: [],
+  function processUrlDefault(group: TGroupLocalBase, paramTexts: string[]): { success: true } | { success: false, message: string } {
+    for (const x of paramTexts) {
+      const i = group.paramKeys.findIndex(y => trio2.trio.paramsObj[y].text === x)
+      if (i === -1) {
+        return { success: false, message: `*** Url option "${x}" is illegal for parameter "${group.label}".` }
+      }
+      selectedFilterParams2.value.push(group.paramKeys[i])
     }
-    const selectedFilters = <TSelectedFilterFromQuery[]>[]
+    return { success: true }
+  }
+  
+  function processUrlOB(group: TGroupLocalBase, paramTexts: string[]): { success: true } | { success: false, message: string } {
+    let selected: string[] = []
+    for (const x of paramTexts) {
+      const nameOnly = x.slice(0, -2)
+      const lastTwo = x.substring(x.length - 2)
 
-    for (const [key, value] of Object.entries(qp)) {
-      //Verify that the group exists. 
-      const groupKey = key.replace(/_/g, " ")
-
-      if (!Object.prototype.hasOwnProperty.call(trio.trio.entities.groups, groupKey)) {
-        console.log(`Query parsing Error: "${key}" group doesn't exist`)
-        return { success: false, apiFilters: all, selectedFilters: [], message: 'Group name doesn`t exist.' }
+      if (selected.some(y => y === nameOnly)) {
+        return { success: false, message: `Duplicate url Order By parameter "${nameOnly}".` }
       }
 
-      const group = trio.trio.entities.groups[groupKey]
+      const ordeByIndex = trio2.orderByOptions.findIndex(y => y.name === nameOnly)
 
-      //verify that params exist for this group 
-      const underlinedParams = <string[]>value.split(',')
-      const params = underlinedParams.map(x => <string>x.replace(/_/g, " "))
-      const possibleParams = group.params.map(x => {
-        const pieces = x.split('.')
-        return pieces[1]
-      })
-
-      //console.log(`key: ${groupKey}\nparams: ${params}\npossibleParams: ${possibleParams}\ngroup: ${JSON.stringify(group, null, 2)}`);
-      if (group.group_type_code === 'CS') {
-        //sanitize sql injections here
-        params.forEach((x, index) => {
-          selectedFilters.push({ param: group.group_name + '.term' + (index + 1), group_type_code: 'CS', extra: x })
-        })
-      } else if (group.group_type_code === 'OB') {
-        const orderGroup = <TGroupOrderBy>trio.trio.entities.groups['Order By']
-        const options = orderGroup.options.map(x => x.name)
-
-        for (const [index, x] of params.entries()) {
-          if (!['.A', '.D'].includes(x.slice(-2))) {
-            console.log(`Query parsing Error: "${x}" order param doesn't end with '.A' or '.D'. aborting... `)
-            return { success: false, apiFilters: all, selectedFilters: [], message: `Query parsing Error: "${x}" order param doesn't end with '.A' or '.D'.` }
-          }
-          if (!options.includes(x.slice(0, -2))) {
-            console.log(`Query parsing Error: "${x}" param doesn't exist in group ${key}.`)
-            return { success: false, apiFilters: all, selectedFilters: [], message: `Query parsing Error: "${x}" param doesn't exist in group ${key}.` }
-          }
-          selectedFilters.push({ param: group.group_name + '.ob' + (index + 1), group_type_code: 'OB', extra: x })
-        }
-      } else {
-        for (const [index, x] of params.entries()) {
-          if (!possibleParams.includes(x)) {
-            console.log(`Query parsing Error: param[${index}] "${x}" doesn't exist in group "${key}".`)
-            return { success: false, apiFilters: all, selectedFilters: [], message: `Query parsing Error: param[${index}] "${x}" doesn't exist in group "${key}".` }
-          }
-          selectedFilters.push({ param: group.group_name + '.' + x, group_type_code: group.group_type_code, extra: "" })
-        }
+      if (ordeByIndex === undefined || lastTwo !== '.A' && lastTwo !== '.D') {
+        return { success: false, message: `Unrecognized url Order By parameter "${x}".` }
       }
 
-      //assign parameters to their correct 'filter' category
-      switch (group.group_type_code) {
-        case 'TG':
-          all.global_tag_ids.push(...params.map(x => {
-            const paramKey = groupKey + '.' + x
-            return trio.trio.entities.params[paramKey].id
-          }))
-          break
-        case 'TM':
-          all.model_tag_ids.push(...params.map(x => {
-            const paramKey = groupKey + '.' + x
-            return trio.trio.entities.params[paramKey].id
-          }))
-          break
-        case 'CL':
-          //console.log(`urlQueryToApiFilters CL group: ${group.group_name} max: ${group.params.length} selectedParams.length: ${params.length}`)
-
-          //apply filters only if not all selected ('CL' is a partition)
-          if (params.length < trio.trio.entities.groups[groupKey].params.length) {
-            all.column_lookup_ids.push({
-              column_name: (<TGroupValue>trio.trio.entities.groups[groupKey]).column_name,
-              vals: params.map(x => {
-                const paramKey = groupKey + '.' + x
-                return trio.trio.entities.params[paramKey].id
-              })
-            })
-          }
-          break
-
-        case 'CV':
-        case 'CR':
-          //apply filters only if not all selected ('CV' & 'CR' are partitions)
-          if (params.length < trio.trio.entities.groups[groupKey].params.length) {
-            all.column_values.push({ column_name: (<TGroupValue>trio.trio.entities.groups[groupKey]).column_name, vals: params })
-          }
-          break
-
-        case 'CB':
-          //apply filters only if one value is selected ('CB' is boolean)
-          if (params.length === 1) {
-            all.column_values.push({ column_name: (<TGroupValue>trio.trio.entities.groups[groupKey]).column_name, vals: (params[0] === 'True') ? ['1'] : ['0'] })
-          }
-          break
-
-        case 'CS':
-          all.column_search.push({
-            column_name: (<TGroupValue>trio.trio.entities.groups[groupKey]).column_name, vals: params
-          })
-          break
-
-        case 'MD':
-          switch (key) {
-            case 'Media':
-              all.bespoke.push({ name: key, vals: params })
-              break
-
-            case 'Area':
-              all.bespoke.push({ name: key, vals: params })
-              break
-            default:
-              console.log(`Query parsing Error: Unrecognized bespoke group ${key}. aborting... `)
-              return { success: false, apiFilters: all, selectedFilters: [], message: `Query parsing Error: Unrecognized bespoke group ${key}.` }
-          }
-          break
-
-        case 'OB':
-          processOrderBy(params, all.order_by)
+      const firstEmptyParamKey = group.paramKeys.find(x => trio2.trio.paramsObj[x].text === '')
+      if (firstEmptyParamKey === undefined) {
+        return { success: false, message: `Problem with url Order By parameter "${x}".` }
       }
+      trio2.trio.paramsObj[firstEmptyParamKey].text = x
+      selectedFilterParams2.value.push(firstEmptyParamKey)
+      selected.push(nameOnly)
     }
-
-    //console.log(`urlQueryToApiFilters()\nquery: ${JSON.stringify(all, null, 2)}`);
-    return { success: true, apiFilters: all, selectedFilters, message: 'urlQuery parsing successsful' }
+    return { success: true }
   }
 
-  function processOrderBy(params: string[],
-    order_by: {
-      column_name: string,
-      asc: boolean,
-    }[]) {
-    console.log(`processing Order By group`)
-    const orderGroup = <TGroupOrderBy>trio.trio.entities.groups['Order By']
-    params.forEach(x => {
-      const data = orderGroup.options.find(y => y.name === x.slice(0, -2));
-      order_by.push({
-        column_name: (<TGroupOrderByOptionObject>data).column_name, asc: x.slice(-1) === 'A'
-      })
-    })
-  }
-
-  function addRemoveSearchParam(paramKey: string) {
-    if (selectedFilterParams.value.some(x => x === paramKey)) {
-      const i = selectedFilterParams.value.indexOf(paramKey)
-      selectedFilterParams.value.splice(i, 1)
-    } else {
-      selectedFilterParams.value.push(paramKey)
+  function processUrlCS(group: TGroupLocalBase, paramTexts: string[]): { success: true } | { success: false, message: string } {
+    if(paramTexts.length > 6){
+       return { success: false, message: `Url query problem: Too many search terms for parameter "${group.label}".` }
     }
+    for (const x of paramTexts) {
+      const firstEmptyParamKey = group.paramKeys.find(x => trio2.trio.paramsObj[x].text === '')
+      if (firstEmptyParamKey === undefined) {
+        return { success: false, message: `Problem with url search parameter "${x}".` }
+      }
+      trio2.trio.paramsObj[firstEmptyParamKey].text = x
+      selectedFilterParams2.value.push(firstEmptyParamKey)
+    }
+    return { success: true }
   }
-
-
 
   function clearSelectedFilters() {
     console.log(`filter.clearSelectedFilters()`)
@@ -397,41 +265,9 @@ export const useFilterStore = defineStore('filter', () => {
     selectedFilterParams2.value = []
   }
 
-  function setFiltersFromUrlQuery(filters: TSelectedFilterFromQuery[]) {
-    //console.log(`filter.setFiltersFromUrlQuery()`)
-    filters.forEach(x => {
-      switch (x.group_type_code) {
-        case 'OB':
-          trio.setOrderByString(x.param, x.extra)
-          break
-        case 'CS':
-          trio.setFilterSearchTerm(x.param, x.extra)
-          break
-        default:
-          selectedFilterParams.value.push(x.param)
-      }
-    })
-
-    ///////////
-    filters.forEach(x => {
-      switch (x.group_type_code) {
-        case 'OB':
-          trio.setOrderByString(x.param, x.extra)
-          break
-        case 'CS':
-          trio.setFilterSearchTerm(x.param, x.extra)
-          break
-        default:
-          selectedFilterParams.value.push(x.param)
-      }
-    })
-  }
-
   async function getCount() {
-    const q = filtersToQueryObject()
-    const res1 = urlQueryToApiFilters(q)
-    const res2 = await send<TApiArrayMain[]>('model/index', 'post', { model: current.value.module, query: res1.apiFilters })
-    return res2.success ? res2.data.length : -1
+    const res = await send<TApiArrayMain[]>('model/index', 'post', { model: current.value.module, query: apiQueryPayload.value })
+    return res.success ? res.data.length : -1
   }
 
   const textSearchParamKeys = computed(() => {
@@ -512,9 +348,7 @@ export const useFilterStore = defineStore('filter', () => {
     orderByClear,
     filtersToQueryObject,
     urlQueryToApiFilters,
-    addRemoveSearchParam,
     clearSelectedFilters,
-    setFiltersFromUrlQuery,
     getCount,
     searchTextChanged,
     searchTextClearCurrent

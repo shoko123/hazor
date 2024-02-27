@@ -80,8 +80,8 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
         if (!empty($query["column_search"])) {
             $this->applyColumnSearchFilters($query["column_search"]);
         }
-        if (!empty($query["bespoke"])) {
-            $this->applyBespokeFilters($query["bespoke"]);
+        if (!empty($query["media"])) {
+            $this->applyMediaFilter($query["media"]);
         }
     }
 

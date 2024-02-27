@@ -29,14 +29,13 @@
               </thead>
               <tbody>
                 <tr
-                  v-for="(item, index) in orderAvailableNames"
-                  :key="item"
+                  v-for="(item, index) in orderByAvailable"
+                  :key="index"
                 >
-                  <td>{{ item }}</td>
+                  <td>{{ item.name }}</td>
                   <td>
                     <v-btn
                       prepend-icon="mdi-arrow-up"
-                      :disabled="full"
                       @click="orderParamClicked(index, true)"
                     >
                       Add
@@ -45,7 +44,6 @@
                   <td>
                     <v-btn
                       prepend-icon="mdi-arrow-down"
-                      :disabled="full"
                       @click="orderParamClicked(index, false)"
                     >
                       Add
@@ -64,7 +62,7 @@
         <v-row justify="center">
           <v-btn
             class="ma-2"
-            @click="orderClear"
+            @click="orderByClear"
           >
             Clear
           </v-btn>
@@ -78,8 +76,8 @@
           class="mx-auto"
           variant="outlined"
         >
-          <v-card-title class="header py-0 mb-4">
-            SELECTED (Max: 4)
+          <v-card-title class="bg-grey text-black py-0 mb-4">
+            SELECTED
           </v-card-title>
           <v-card-item>
             <v-table>
@@ -114,17 +112,13 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useFilterStore } from '../../scripts/stores/trio/filter'
-
-let { orderAvailableNames, orderSelectedNames } = storeToRefs(useFilterStore())
-let { orderParamClicked, orderClear } = useFilterStore()
+import { useTrioStore2 } from '../../scripts/stores/trio/trio2'
+let { orderByAvailable, orderBySelected } = storeToRefs(useTrioStore2())
+let { orderParamClicked, orderByClear } = useFilterStore()
 
 const selected = computed(() => {
-  return orderSelectedNames.value.map(x => { return { name: x.slice(0, -2), asc: x.slice(-1) === 'A' } })
-})
-
-const full = computed(() => {
-  console.log(`full: ${orderSelectedNames.value.length === 4}`)
-  return orderSelectedNames.value.length === 4
+  // return orderBySelected
+  return orderBySelected.value.map(x => { return { name: x.label.slice(0, -2), asc: x.label.slice(-1) === 'A' } })
 })
 
 </script>

@@ -10,18 +10,18 @@
       :key="index"
       color="blue"
       large
-      @click="paramClicked(index)"
+      @click="paramClicked(param.key)"
     >
-      {{ param.name }}
+      {{ param.text }}
     </v-chip>
   </v-chip-group>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useTrioStore } from '../../scripts/stores/trio/trio'
+import { useTrioStore2 } from '../../scripts/stores/trio/trio2'
 
-let trio = useTrioStore()
+let trio = useTrioStore2()
 
 const params = computed(() => {
   return trio.visibleParams
@@ -40,8 +40,8 @@ const selectedParamIndexes = computed({
   set: val => { val }
 })
 
-function paramClicked(paramIndex: number) {
-    trio.paramClicked(trio.groupIndex, paramIndex)
+function paramClicked(prmKey: string) {
+    trio.paramClicked(prmKey)
 }
 
 </script>

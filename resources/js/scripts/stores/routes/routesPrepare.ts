@@ -181,6 +181,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
   async function loadMainCollection(module: TModule, query: LocationQuery): Promise<{ success: boolean, message: string }> {
+    f.clearSelectedFilters()
     const res1 = f.urlQueryToApiFilters(query)
     console.log(`loadMainCollection parse result: res: ${JSON.stringify(res1, null, 2)}`)
     if (!res1.success) {
@@ -188,11 +189,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       return { success: false, message: `${res1.message}` }
     }
 
-    if (fromUndef.value) {
-      f.setFiltersFromUrlQuery(res1.selectedFilters)
-    }
-
-    const res2 = await send<TApiArrayMain[]>('model/index', 'post', { model: module, query: res1.apiFilters })
+    const res2 = await send<TApiArrayMain[]>('model/index', 'post', { model: module, query: f.apiQueryPayload })
 
     if (res2.success) {
       if (res2.data.length === 0) {

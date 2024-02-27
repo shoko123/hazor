@@ -67,10 +67,10 @@ export const useMenusStore = defineStore('menus', () => {
         pageTxt = ': Filter Page'
         break
       default:
-        pageTxt = ': ' + current.value.name + ' Page'
+        pageTxt = `: ${current.value.name} Page`
         break
     }
-    return `Hazor(${current.value.module})${pageTxt}`
+    return `Hazor${current.value.module  === undefined ? ``: `( ${current.value.module} )`}${pageTxt}`
   })
   return { hasSubMenu, mainMenuType, title }
 })

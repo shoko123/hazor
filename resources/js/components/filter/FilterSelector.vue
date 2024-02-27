@@ -12,9 +12,9 @@
           v-for="(cat, index) in visibleCategories"
           :key="index"
           color="purple"
-          :class="cat.selectedCount > 0 ? 'has-selected' : ''"
+          :class="cat.hasSelected ? 'has-selected' : ''"
         >
-          {{ cat.selectedCount === 0 ? cat.name : `${cat.name}(${cat.selectedCount})` }}
+          {{ cat.hasSelected ? `${cat.catName}(*)` : cat.catName }}
         </v-tab>
       </v-tabs>
 
@@ -34,7 +34,7 @@
         class="ma-2"
       >
         <div v-if="isColumnSearch">
-          <ParamsAsTextSelectors />
+          <ParamsAsTextSearch />
         </div>
         <div v-else-if="isOrderBy">
           <ParamsAsOrderBy />
@@ -50,11 +50,11 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useTrioStore } from '../../scripts/stores/trio/trio'
+import { useTrioStore2 } from '../../scripts/stores/trio/trio2'
 import ParamsAsChips from './ParamsAsChips.vue'
-import ParamsAsTextSelectors from './ParamsAsTextSelectors.vue'
+import ParamsAsTextSearch from './ParamsAsTextSearch.vue'
 import ParamsAsOrderBy from './ParamsAsOrderBy.vue'
-let { visibleCategories, visibleGroups, categoryIndex, groupIndex } = storeToRefs(useTrioStore())
+let { visibleCategories, visibleGroups, categoryIndex, groupIndex } = storeToRefs(useTrioStore2())
 
 const header = computed(() => {
   return 'Filter Selector'
