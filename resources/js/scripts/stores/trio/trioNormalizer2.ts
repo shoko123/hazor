@@ -11,6 +11,7 @@ export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
   let groupsObj: TGroupObj = {}
   let paramsObj: TParamObj = {}
   let groupLabelToKey: TGroupLabelToKey = {}
+  let fieldNameToGroupKey: TGroupLabelToKey = {}
   let orderByOptions: TApiParamNameAndColumn[] = []
   let catCnt = 0, grpCnt = 0, prmCnt = 0
 
@@ -19,6 +20,7 @@ export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
     groupsObj = {}
     paramsObj = {}
     groupLabelToKey = {}
+    fieldNameToGroupKey = {}
     catCnt = 0, grpCnt = 0, prmCnt = 0
   }
 
@@ -69,7 +71,7 @@ export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
       catCnt++
     })
 
-    return { trio: { categories, groupsObj, paramsObj }, groupLabelToKey, orderByOptions }
+    return { trio: { categories, groupsObj, paramsObj }, groupLabelToKey, fieldNameToGroupKey, orderByOptions }
   }
   function saveGroupAndParams(grpKey: string, grp: TGroupUnion) {
     //console.log(`saveGroup(): ${JSON.stringify(grp, null, 2)}`);
@@ -89,6 +91,9 @@ export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
     })
     groupsObj[grpKey] = grpToSave
     groupLabelToKey[grpToSave.label] = grpKey
+    if(['CL', 'CV', 'CR', 'CB'].includes(grp.code)){
+      fieldNameToGroupKey[(<TGroupLocalColumn>grpToSave).column_name] = grpKey
+    }
   }
 
   function processDependency(dependency: string[]) {

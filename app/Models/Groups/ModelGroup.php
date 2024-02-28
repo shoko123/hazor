@@ -129,8 +129,7 @@ abstract class ModelGroup
     private function getLookupGroupDetails2($group_name, $group)
     {
         $params = DB::table($group["table_name"])->get();
-        array_push(self::$lookups, ['column_name' => $group['column_name'], 'group_name' => $group_name]);
-
+        
         return array_merge($group, [
             "group_name" => $group_name,
             "params"  => $params

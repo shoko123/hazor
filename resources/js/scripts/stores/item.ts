@@ -12,6 +12,7 @@ import { useXhrStore } from './xhr'
 import { useModuleStore } from './module'
 import { useMediaStore } from './media'
 import { useTrioStore } from './trio/trio'
+import { useTrioStore2 } from './trio/trio2'
 
 export const useItemStore = defineStore('item', () => {
   const { pushToArray } = useCollectionMainStore()
@@ -21,13 +22,13 @@ export const useItemStore = defineStore('item', () => {
   const { setItemMedia } = useMediaStore()
   const { send } = useXhrStore()
   const { orderSelectedParams, getParamKeyByGroupAndId } = useTrioStore()
-
+  const { trio, fieldNameToGroupKey, groupLabelToKey } = storeToRefs(useTrioStore2())
   const fields = ref<TFieldsUnion | undefined>(undefined)
   const slug = ref<string | undefined>(undefined)
   const tag = ref<string | undefined>(undefined)
   const short = ref<string | undefined>(undefined)
   const selectedItemParams = ref<string[]>([])
-  const selectedItemParams2 = ref<string[]>([])  
+  const selectedItemParams2 = ref<string[]>([])
   const ready = ref<boolean>(false)
 
   const itemViews = ref<string[]>([])
@@ -58,18 +59,53 @@ export const useItemStore = defineStore('item', () => {
   })
 
   function saveitemFieldsPlus<F>(apiItem: TApiItemShow<F>) {
-
+    //const {fieldNameToGroupKey} = storeToRefs( useTrioStore2())
     fields.value = <TFieldsUnion>apiItem.fields
     const fieldsObj = <IObject>apiItem.fields
     slug.value = apiItem.slug
     short.value = apiItem.short
     tag.value = moduleStore.tagFromSlug(<TModule>current.value.module, apiItem.slug)
 
+    //add CV and CL field's "tags"
+    selectedItemParams2.value = []
+    for (const x in fieldNameToGroupKey.value) {
+      const group = trio.value.groupsObj[fieldNameToGroupKey.value[x]]
+      // console.log(`Save item column field: "${x}" groupKey: ${fieldNameToGroupKey.value[x]} groupKeys: ${group.paramKeys}`)
+      // console.log(`fieldVal: ${fieldsObj[x]}`)
+      const paramPropertyToCompare = ['CR', 'CV'].includes(group.code) ? 'text' : 'extra'
+      const paramKey = group.paramKeys.find(y => trio.value.paramsObj[y][paramPropertyToCompare] === fieldsObj[x])
+      if (paramKey === undefined) {
+        console.log(`******serious error while saving item****`)
+        return
+      } else {
+        if (['CV', 'CL'].includes(group.code)) {
+          selectedItemParams2.value.push(paramKey)
+        }
+      }
+    }
+
+    //add model and global tags
+    const all = apiItem.model_tags2.concat(apiItem.global_tags2)
+    for (const x of all) {
+      const group = trio.value.groupsObj[groupLabelToKey.value[x.group_label]]
+      // console.log(`Save item column field: "${x}" groupKey: ${fieldNameToGroupKey.value[x]} groupKeys: ${group.paramKeys}`)
+      // console.log(`fieldVal: ${fieldsObj[x]}`)
+
+      const paramKey = group.paramKeys.find(y => trio.value.paramsObj[y].text === x.tag_text)
+      if (paramKey === undefined) {
+        console.log(`******serious error while saving item****`)
+        return
+      } else {
+        selectedItemParams2.value.push(paramKey)
+      }
+    }
+
+    ////////////////
     const selectedLookups = moduleStore.lookups.map(x => {
       return getParamKeyByGroupAndId(x.group_name, fieldsObj[x.column_name])
     })
 
-    //console.log(`saveitemFieldsPlus() selectedLookups:\n${selectedLookups}`)
+    console.log(`saveitemFieldsPlus() selectedLookups:\n${selectedLookups}`)
     selectedItemParams.value = [...apiItem.model_tags, ...apiItem.global_tags, ...selectedLookups]
     orderSelectedParams(selectedItemParams.value)
   }

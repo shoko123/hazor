@@ -230,6 +230,16 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             return $tag->tag_group->name . '.' . $tag->name;
         });
 
+         //model tags (discrete)        
+         $model_tags2 = $item->model_tags->map(function ($tag, int $key) {
+            return ["group_label" => $tag->tag_group->name, "tag_text" => $tag->name];
+        });
+
+
+        //global tags
+        $global_tags2 = $item->global_tags->map(function ($tag, int $key) {
+            return ["group_label" => $tag->tag_group->name, "tag_text" => $tag->name];
+        });
         //unset
         unset($item->media);
         unset($item->global_tags);
@@ -240,6 +250,8 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             "media" => $mediaArray,
             "global_tags" => $global_tags,
             "model_tags" => $model_tags,
+            "global_tags2" => $global_tags2,
+            "model_tags2" => $model_tags2,            
             "slug" => $item->slug,
             "short" => $item->short,
             "related" => $related
