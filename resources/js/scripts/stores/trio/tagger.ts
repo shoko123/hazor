@@ -22,13 +22,6 @@ export const useTaggerStore = defineStore('tagger', () => {
     selectedNewItemParams2.value = []
   }
 
-  // function parseParamKey(paramKey: string, getParam = true): string {
-  //   //console.log(`parseParamKey() key: ${paramKey} value: ${trio.entities.params[paramKey]}`)
-  //   const pieces = paramKey.split('.')
-  //   return getParam ? trio.trio.entities.params[paramKey].name : pieces[0]
-
-  // }
-
   type TColumnValueUpdateInfo = {
     column_name: string,
     val: number | string
@@ -39,8 +32,9 @@ export const useTaggerStore = defineStore('tagger', () => {
 
     const { current } = storeToRefs(useRoutesMainStore())
     console.log(`trio.sync()`)
-     return { success: true} 
-    const globalTagIds = <number[]>([])
+    return { success: true} 
+    
+     const globalTagIds = <number[]>([])
     const modelTagIds = <number[]>([])
     const columns = <TColumnValueUpdateInfo[]>([])
 

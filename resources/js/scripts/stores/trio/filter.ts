@@ -239,21 +239,6 @@ export const useFilterStore = defineStore('filter', () => {
 
   function clearSelectedFilters() {
     console.log(`filter.clearSelectedFilters()`)
-    // selectedFilterParams.value.forEach(x => {
-    //   const pieces = x.split('.')
-    //   switch (trio.trio.entities.groups[pieces[0]].group_type_code) {
-    //     case 'OB':
-    //       trio.setOrderByString(x, "")
-    //       break
-    //     case 'CS':
-    //       trio.setFilterSearchTerm(x, "")
-    //       break
-    //     default:
-    //     //nothing to do except remove from selectedFilters
-    //   }
-    // })
-    // selectedFilterParams.value = []
-
     for (const [key, value] of Object.entries(trio2.groupLabelToKey)) {
       if (trio2.trio.groupsObj[value].code === 'CS') {
         trio2.trio.groupsObj[value].paramKeys.forEach(x => {

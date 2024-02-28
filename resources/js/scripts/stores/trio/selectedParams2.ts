@@ -74,40 +74,6 @@ export const useTrioSelectedStore2 = defineStore('trioSelected2', () => {
       }
     })
     return cats
-    /*
-    //organize all params into groups array, each item with the group's name and its params array
-    selectedParams.forEach(x => {
-      const pieces = x.split('.')
-      const group = pieces[0]
-      const i = groups.findIndex(g => {
-        return g.key === group
-      })
-
-      if (i === -1) {
-        groups.push({ key: group, params: [trio.value.entities.params[x].name] })
-      } else {
-        groups[i].params.push(trio.value.entities.params[x].name)
-      }
-    })
-
-    //organize all groups into categgories array, each item with the category's name and its groups array
-    groups.forEach(x => {
-      const catKey = trio.value.entities.groups[x.key].categoryKey
-      const i = cats.findIndex(c => {
-        return c.name === catKey
-      })
-
-      if (i === -1) {
-        cats.push({ name: catKey, groups: [x] })
-      } else {
-        cats[i].groups.push(x)
-      }
-    })
-
-    //sort categories according to their order from trio structure
-    cats.sort((a, b) => { return trio.value.result.findIndex(c => c === a.name) - trio.value.result.findIndex(c => c === b.name) })
-    return cats
-    */
   }
 
   const selectedFilterTrio = computed(() => {

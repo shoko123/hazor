@@ -24,7 +24,6 @@
         "eslint-plugin-vue": "^9.20.1",
         "laravel-vite-plugin": "^1.0.1",
         "lodash": "^4.17.21",
-        "normalizr": "^3.6.2",
         "pinia": "^2.1.7",
         "postcss": "^8.4.33",
         "sass": "^1.70.0",

@@ -53,7 +53,7 @@ type TParamLocal = TParam & {
 
 
 
-type TGroupBase = { label: string, code: TTrioCodeUnion, params: TParam[]}
+type TGroupBase = { label: string, code: TTrioCodeUnion, params: TParam[] }
 
 type TGroupTag = TGroupBase & {
   dependency: string[],
@@ -67,7 +67,7 @@ type TGroupColumn = TGroupBase & {
   dependency: string[],
 }
 type TGroupUnion = TGroupBase | TGroupColumn | TGroupTag
- 
+
 
 type TGroupLocalBase = Omit<TGroupBase, "params"> & {
   paramKeys: string[], categoryIndex: number
@@ -148,7 +148,7 @@ type TParamObj = { [key: string]: TParamLocal }
 type TGroupObj = { [key: string]: TGroupLocalUnion }
 type TCategoriesArray = { name: string, groupKeys: string[] }[]
 type TGroupLabelToKey = { [key: string]: string }
-type TTrio = { categories: TCategoriesArray, groupsObj: TGroupObj, paramsObj: TParamObj}
+type TTrio = { categories: TCategoriesArray, groupsObj: TGroupObj, paramsObj: TParamObj }
 
 //type TApiGroup = { group_name: string, group_type_code: TTrioCodeUnion, params: TApiParamUnion[] }
 type TApiTrio2 = { name: string, groups: TApiGroupUnion[] }[]
@@ -184,23 +184,6 @@ export {
   TGroupObj,
   TCategoriesArray,
   TGroupLabelToKey,
+  TrioSourceName,
 
-  //   TCategory,
-  //   TGroupValue,
-  //   TGroupTag,
-  //   TGroupOrderBy,
-  //   TGroupsWithDependency,
-  //   TGroupOrderByOptionObject,
-  //   TGroup,
-  //   TTrioCode,
-  //   TParam,
-  //   TColumnValueUpdateInfo,
-  //   TColumnSearch,
-  //   IGroupObject,
-  //   ICategoryObject,
-  //   TEntities,
-  //   Trio,
-  //   TSelectedParam,
-     TrioSourceName,
-  //   TmpGroup,
 }

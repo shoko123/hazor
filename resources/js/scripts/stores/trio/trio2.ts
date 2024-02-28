@@ -34,7 +34,6 @@ export const useTrioStore2 = defineStore('trio2', () => {
           if (trio.value.groupsObj[grpKey].paramKeys.some(r => selected.value.includes(r))) {
             hasSelected = true
           }
-          break
         }
       }
       if (available) {
@@ -334,10 +333,10 @@ export const useTrioStore2 = defineStore('trio2', () => {
     return vals
   })
 
-  ////////////////////////
   const orderByGroup = computed(() => {
-    if (!groupLabelToKey.value.hasOwnProperty('Order By')) { return undefined }
-
+    if (!groupLabelToKey.value.hasOwnProperty('Order By')) { 
+      return undefined 
+    }
     return trio.value.groupsObj[groupLabelToKey.value["Order By"]]
   })
 

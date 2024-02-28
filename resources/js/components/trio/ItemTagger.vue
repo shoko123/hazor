@@ -143,16 +143,16 @@ function pClicked(paramKey: string) {
 
 async function submit() {
   showSpinner('Syncing tags...')
-  // const res = await sync()
-  // showSpinner(false)
+  const res = await sync()
+  showSpinner(false)
 
-  // if (res.success) {
-  //   resetCategoryAndGroupIndices()
-  //   clearSelectedNewItemParams
-  //   routerPush('back1')
-  // } else {
-  //   showSnackbar(`Syncing of tags failed. Error: ${res.message}`)
-  // }
+  if (res.success) {
+    resetCategoryAndGroupIndices()
+    clearSelectedNewItemParams
+    routerPush('back1')
+  } else {
+    showSnackbar(`Syncing of tags failed. Error: ${res.message}`)
+  }
 }
 
 function cancel() {
