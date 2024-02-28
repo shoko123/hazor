@@ -1,7 +1,6 @@
 // stores/trio.js
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { TGroupValue, TColumnValueUpdateInfo } from '../../../types/trioTypes'
 import type { IObject } from '../../../types/generalTypes'
 import type { TFieldsUnion } from '@/js/types/moduleTypes'
 import { useXhrStore } from '../xhr'
@@ -30,6 +29,11 @@ export const useTaggerStore = defineStore('tagger', () => {
 
   // }
 
+  type TColumnValueUpdateInfo = {
+    column_name: string,
+    val: number | string
+  }
+  
   async function sync() {
     const { send } = useXhrStore()
 

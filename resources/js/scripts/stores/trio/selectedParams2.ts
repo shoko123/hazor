@@ -1,6 +1,6 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { computed } from 'vue'
-import { TrioSourceName } from '../../../types/trioTypes'
+import { TrioSourceName } from '../../../types/trioTypes2'
 
 import { useTrioStore2 } from './trio2'
 import { useItemStore } from '../item'

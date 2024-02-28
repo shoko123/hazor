@@ -12,7 +12,6 @@ export const useModuleStore = defineStore('module', () => {
   const { bucketUrl } = storeToRefs(useMediaStore())
   const { current } = storeToRefs(useRoutesMainStore())
   const counts = ref({ items: 0, media: 0 })
-  const lookups = ref<{ column_name: string, group_name: string }[]>([])
   const welcomeText = ref<string>("")
 
   const backgroundImage = computed(() => {
@@ -56,5 +55,5 @@ export const useModuleStore = defineStore('module', () => {
     return getStore(<TModule>current.value.module)
   })
 
-  return { counts, backgroundImage, welcomeText, getCurrentModuleStore, lookups, tagFromSlug }
+  return { counts, backgroundImage, welcomeText, getCurrentModuleStore, tagFromSlug }
 })

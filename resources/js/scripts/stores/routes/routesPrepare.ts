@@ -141,7 +141,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     const res = await send<TApiModuleInit>('model/init', 'post', { model: module })
     if (res.success) {
       m.counts = res.data.counts
-      m.lookups = res.data.lookups
       m.welcomeText = res.data.welcome_text
 
       c.resetCollectionsViewIndex()

@@ -1,4 +1,3 @@
-import type { TApiTrio } from '@/js/types/trioTypes'
 import type { TApiTrio2 } from '@/js/types/trioTypes2'
 import type { TCollectionView } from '@/js/types/collectionTypes'
 
@@ -7,19 +6,16 @@ type TModuleTypes = {
         name: 'Locus',
         fields: TLocusFields,
         modify: TLocusModify,
-        lookups: TLocusLookup
 } | {
         url: 'stones',
         name: 'Stone',
         fields: TStoneFields,
         modify: TStoneModify,
-        lookups: TStoneLookup
 } | {
         url: 'fauna',
         name: 'Fauna',
         fields: TFaunaFields,
         modify: TFaunaModify,
-        lookups: TFaunaLookup
 }
 
 type TModule = TModuleTypes['name']
@@ -109,7 +105,6 @@ type TApiModuleInit = {
         counts: { items: number, media: number },
         display_options: { item_views: string[], main_collection_views: TCollectionView[], related_collection_views: TCollectionView[] },
         lookups: { column_name: string, group_name: string }[],
-        trio: TApiTrio,
         trio2: TApiTrio2,
         welcome_text: string
 }

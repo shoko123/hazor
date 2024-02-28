@@ -13,8 +13,6 @@ abstract class ModelGroup
     abstract public  function trio(): array;
     protected $eloquent_model_name;
     protected static $groups;
-    protected static $lookups = [];
-
 
     public function __construct($eloquent_model_name = null)
     {
@@ -108,7 +106,6 @@ abstract class ModelGroup
     private function getLookupGroupDetails($group_name, $group)
     {
         $params = DB::table($group["table_name"])->get();
-        array_push(self::$lookups, ['column_name' => $group['column_name'], 'group_name' => $group_name]);
 
         return array_merge($group, [
             "group_name" => $group_name,
@@ -337,16 +334,8 @@ abstract class ModelGroup
     }
     public function buildTrio($cats): array
     {
-        $trio = [];
         $trio2 = [];
 
-        foreach ($cats as $name => $group_names) {
-            $category = ["name" => $name, "groups" => []];
-            foreach ($group_names as $group_name) {
-                array_push($category["groups"], $this->getGroupDetails($group_name));
-            }
-            array_push($trio, $category);
-        }
         foreach ($cats as $name => $group_names) {
             $category = ["name" => $name, "groups" => []];
             foreach ($group_names as $group_name) {
@@ -355,7 +344,6 @@ abstract class ModelGroup
             array_push($trio2, $category);
         }
 
-
-        return ["trio" => $trio, "trio2" => $trio2, 'lookups' => self::$lookups];
+        return ["trio2" => $trio2];
     }
 }

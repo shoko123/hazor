@@ -2,7 +2,6 @@
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import type { LocationQuery, LocationQueryValue } from 'vue-router'
-import type { TGroupValue, TGroupOrderBy, TGroupOrderByOptionObject } from '@/js/types/trioTypes'
 import type { TGroupLocalBase, TGroupLocalColumn } from '@/js/types/trioTypes2'
 import type { TParseQuery, TApiFilters, TSelectedFilterFromQuery } from '@/js/types/routesTypes'
 import type { IObject, IStringObject } from '@/js/types/generalTypes'
@@ -72,6 +71,7 @@ export const useFilterStore = defineStore('filter', () => {
             }
           }
           break
+
         case 'CL': {
           const i = all.column_lookup_ids.findIndex(x => {
             return x.column_name === (<TGroupLocalColumn>group).column_name
@@ -100,6 +100,7 @@ export const useFilterStore = defineStore('filter', () => {
             all.column_values[i].vals.push(<string>param.extra)
           }
         }
+          break
 
         case 'CS': {
           const i = all.column_search.findIndex(x => {
@@ -119,14 +120,17 @@ export const useFilterStore = defineStore('filter', () => {
           all.model_tag_ids.push(<number>param.extra)
         }
           break
+
         case 'TG': {
           all.global_tag_ids.push(<number>param.extra)
         }
           break
+
         case 'MD': {
           all.media.push(param.text)
         }
           break
+
         case 'OB': {
           const ordeByItem = trio2.orderByOptions.find(x => x.name === param.text.slice(0, -2))
           all.order_by.push({ column_name: <string>ordeByItem?.column_name, asc: param.text.slice(-1) === 'A' })
@@ -134,7 +138,6 @@ export const useFilterStore = defineStore('filter', () => {
           break
       }
     })
-
     return all
   })
 
@@ -164,7 +167,7 @@ export const useFilterStore = defineStore('filter', () => {
         }
           break
 
-        case 'CS':{
+        case 'CS': {
           const res = processUrlCS(group, paramTexts)
           if (!res.success) { return res }
         }
@@ -191,7 +194,7 @@ export const useFilterStore = defineStore('filter', () => {
     }
     return { success: true }
   }
-  
+
   function processUrlOB(group: TGroupLocalBase, paramTexts: string[]): { success: true } | { success: false, message: string } {
     let selected: string[] = []
     for (const x of paramTexts) {
@@ -220,8 +223,8 @@ export const useFilterStore = defineStore('filter', () => {
   }
 
   function processUrlCS(group: TGroupLocalBase, paramTexts: string[]): { success: true } | { success: false, message: string } {
-    if(paramTexts.length > 6){
-       return { success: false, message: `Url query problem: Too many search terms for parameter "${group.label}".` }
+    if (paramTexts.length > 6) {
+      return { success: false, message: `Url query problem: Too many search terms for parameter "${group.label}".` }
     }
     for (const x of paramTexts) {
       const firstEmptyParamKey = group.paramKeys.find(x => trio2.trio.paramsObj[x].text === '')

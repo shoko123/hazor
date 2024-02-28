@@ -40,6 +40,8 @@ type TApiGroupUnion = TApiGroupBasic | TApiGroupColumn | TApiGroupTag | TApiGrou
 
 //////////// Front-end types /////////////////
 
+type TrioSourceName = 'Item' | 'New' | 'Filter'
+
 type TParam = {
   text: string,
   extra: null | number | string,
@@ -181,7 +183,7 @@ export {
   TParamObj,
   TGroupObj,
   TCategoriesArray,
-  TGroupLabelToKey
+  TGroupLabelToKey,
 
   //   TCategory,
   //   TGroupValue,
@@ -199,6 +201,6 @@ export {
   //   TEntities,
   //   Trio,
   //   TSelectedParam,
-  //   TrioSourceName,
+     TrioSourceName,
   //   TmpGroup,
 }
