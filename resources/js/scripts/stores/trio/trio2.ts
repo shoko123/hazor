@@ -358,7 +358,10 @@ export const useTrioStore2 = defineStore('trio2', () => {
     })
   })
 
-
+  function resetCategoryAndGroupIndices() {
+    groupIndex.value = 0
+    categoryIndex.value = 0
+  }
 
   return {
     trio,
@@ -378,6 +381,7 @@ export const useTrioStore2 = defineStore('trio2', () => {
     visibleCategories,
     visibleGroups,
     visibleParams,
-    paramClicked
+    paramClicked,
+    resetCategoryAndGroupIndices
   }
 })

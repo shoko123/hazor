@@ -13,7 +13,7 @@
           :key="keyC"
         >
           <div class="font-weight-bold">
-            {{ cat.name }}
+            {{ cat.label }}
           </div>
           <v-list-item
             v-for="(group, keyG) in cat.groups"
@@ -25,7 +25,7 @@
                 class="pa-0 ma-0"
               >
                 <v-row class="pa-2 ma-2">
-                  <div>{{ group.key }}:</div>
+                  <div>{{ group.label }}:</div>
                   <v-chip
                     v-for="(param, keyP) in group.params"
                     :key="keyP"
@@ -48,9 +48,9 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import type { TrioSourceName } from '../../types/trioTypes'
-import { useTrioSelectedStore } from '../../scripts/stores/trio/selectedParams'
+import { useTrioSelectedStore2 } from '../../scripts/stores/trio/selectedParams2'
 import { useItemStore } from '../../scripts/stores/item'
-let { selectedFilterTrio, selectedNewItemTrio, selectedItemTrio } = storeToRefs(useTrioSelectedStore())
+let { selectedFilterTrio, selectedNewItemTrio, selectedItemTrio } = storeToRefs(useTrioSelectedStore2())
 let { derived } = storeToRefs(useItemStore())
 
 const props = defineProps<{

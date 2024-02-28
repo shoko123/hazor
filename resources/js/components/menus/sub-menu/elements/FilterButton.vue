@@ -17,7 +17,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
-import TagsForm from '../../../trio/TrioSelectedForm2.vue'
+import TagsForm from '../../../trio/TrioSelectedForm.vue'
 
 const { routerPush } = useRoutesMainStore()
 

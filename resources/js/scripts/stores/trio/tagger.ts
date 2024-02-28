@@ -11,22 +11,23 @@ import { useRoutesMainStore } from '../routes/routesMain'
 
 export const useTaggerStore = defineStore('tagger', () => {
   const trio = useTrioStore()
-  const { fields, selectedItemParams } = storeToRefs(useItemStore())
+  const { fields, selectedItemParams2 } = storeToRefs(useItemStore())
+  
   const selectedNewItemParams = ref<string[]>([])
   const selectedNewItemParams2 = ref<string[]>([])
-
   function copyCurrentToNew() {
-    selectedNewItemParams.value = [...selectedItemParams.value]
+    selectedNewItemParams2.value = [...selectedItemParams2.value]
   }
 
   function resetNewItemParams() {
-    selectedNewItemParams.value = []
+    selectedNewItemParams2.value = []
   }
 
   function parseParamKey(paramKey: string, getParam = true): string {
     //console.log(`parseParamKey() key: ${paramKey} value: ${trio.entities.params[paramKey]}`)
     const pieces = paramKey.split('.')
     return getParam ? trio.trio.entities.params[paramKey].name : pieces[0]
+
   }
 
   async function sync() {
@@ -34,11 +35,12 @@ export const useTaggerStore = defineStore('tagger', () => {
 
     const { current } = storeToRefs(useRoutesMainStore())
     console.log(`trio.sync()`)
+     return { success: true} 
     const globalTagIds = <number[]>([])
     const modelTagIds = <number[]>([])
     const columns = <TColumnValueUpdateInfo[]>([])
 
-    selectedNewItemParams.value.forEach(paramKey => {
+    selectedNewItemParams2.value.forEach(paramKey => {
       const group = trio.trio.entities.groups[parseParamKey(paramKey, false)]
 
       switch (group.group_type_code) {
@@ -67,7 +69,7 @@ export const useTaggerStore = defineStore('tagger', () => {
     })
 
     if(res.success){
-      selectedItemParams.value = [...selectedNewItemParams.value]
+      selectedItemParams2.value = [...selectedNewItemParams2.value]
       const fieldsAsAnObject = fields.value as unknown as IObject
       columns.forEach(x => {
         fieldsAsAnObject[x.column_name] = x.val
@@ -79,11 +81,11 @@ export const useTaggerStore = defineStore('tagger', () => {
 
   //When clearing params, set columns lookup and value to default (index 0)
   function clearSelectedNewItemParams() {
-    selectedNewItemParams.value = []
-    selectedItemParams.value.forEach(x => {
+    selectedNewItemParams2.value = []
+    selectedItemParams2.value.forEach(x => {
       const pieces = x.split('.')
       if (['CL', 'CV'].includes(trio.trio.entities.groups[pieces[0]].group_type_code)) {
-        selectedNewItemParams.value.push(trio.trio.entities.groups[pieces[0]].params[0])
+        selectedNewItemParams2.value.push(trio.trio.entities.groups[pieces[0]].params[0])
       }
     })
   }

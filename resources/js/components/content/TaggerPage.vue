@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import TagSelector from '../trio/ItemTagsSelector.vue'
+import TagSelector from '../trio/ItemTagger.vue'
 import TagsForm from '../trio/TrioSelectedForm.vue'
 import ItemCard from '../item/item-views/ItemCard.vue'
 </script>

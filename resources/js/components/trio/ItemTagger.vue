@@ -41,9 +41,9 @@
           v-for="(cat, index) in visibleCategories"
           :key="index"
           color="purple"
-          :class="cat.selectedCount > 0 ? 'has-selected' : ''"
+          :class="cat.hasSelected ? 'has-selected' : ''"
         >
-          {{ cat.selectedCount === 0 ? cat.name : `${cat.name}(${cat.selectedCount})` }}
+          {{ cat.hasSelected  ? cat.catName : `${cat.catName}(*)` }}
         </v-tab>
       </v-tabs>
 
@@ -74,9 +74,9 @@
             :key="index"
             color="blue"
             large
-            @click="pClicked(index)"
+            @click="pClicked(param.key)"
           >
-            {{ param.name }}
+            {{ param.text }}
           </v-chip>
         </v-chip-group>
       </v-sheet>
@@ -87,19 +87,19 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useTrioStore } from '../../scripts/stores/trio/trio'
+import { useTrioStore2 } from '../../scripts/stores/trio/trio2'
 import { useTaggerStore } from '../../scripts/stores/trio/tagger'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 
 const { routerPush } = useRoutesMainStore()
-const { visibleCategories, visibleGroups, visibleParams, categoryIndex, groupIndex } = storeToRefs(useTrioStore())
-const { resetCategoryAndGroupIndices, paramClicked } = useTrioStore()
+const { visibleCategories, visibleGroups, visibleParams, categoryIndex, groupIndex } = storeToRefs(useTrioStore2())
+const { resetCategoryAndGroupIndices, paramClicked } = useTrioStore2()
 const { sync, clearSelectedNewItemParams, copyCurrentToNew } = useTaggerStore()
 const { showSpinner, showSnackbar } = useNotificationsStore()
 
 const header = computed(() => {
-  return 'Item Tags Selector'
+  return 'Item Tagger2'
 })
 
 const groupHeader = computed(() => {
@@ -137,22 +137,22 @@ const selectedParams = computed({
   set: val => { val }
 })
 
-function pClicked(paramIndex: number) {
-  paramClicked(grpIndex.value, paramIndex)
+function pClicked(paramKey: string) {
+  paramClicked(paramKey)
 }
 
 async function submit() {
   showSpinner('Syncing tags...')
-  const res = await sync()
-  showSpinner(false)
+  // const res = await sync()
+  // showSpinner(false)
 
-  if (res.success) {
-    resetCategoryAndGroupIndices()
-    clearSelectedNewItemParams
-    routerPush('back1')
-  } else {
-    showSnackbar(`Syncing of tags failed. Error: ${res.message}`)
-  }
+  // if (res.success) {
+  //   resetCategoryAndGroupIndices()
+  //   clearSelectedNewItemParams
+  //   routerPush('back1')
+  // } else {
+  //   showSnackbar(`Syncing of tags failed. Error: ${res.message}`)
+  // }
 }
 
 function cancel() {
