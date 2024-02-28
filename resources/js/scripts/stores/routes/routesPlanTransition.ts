@@ -136,7 +136,7 @@ export const useRoutesPlanTransitionStore = defineStore('routesPlanTransition', 
                         return { success: true, data: [] }
 
                     case 'tag':
-                        return { success: true, data: [] }
+                        return { success: true, data: ['item.load'] }
 
                     case 'media':
                         return { success: true, data: [] }

@@ -268,8 +268,8 @@ export const useTrioStore2 = defineStore('trio2', () => {
 
   function trioReset2() {
     const { clearSelectedFilters } = useFilterStore()
-    const { resetNewItemParams } = useTaggerStore()
-    resetNewItemParams()
+    const { truncateNewItemParams } = useTaggerStore()
+    truncateNewItemParams()
     clearSelectedFilters()
 
     groupIndex.value = 0

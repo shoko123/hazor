@@ -43,7 +43,7 @@
           color="purple"
           :class="cat.hasSelected ? 'has-selected' : ''"
         >
-          {{ cat.hasSelected  ? cat.catName : `${cat.catName}(*)` }}
+          {{ cat.hasSelected  ?`${cat.catName}(*)` : cat.catName }}
         </v-tab>
       </v-tabs>
 
@@ -74,7 +74,7 @@
             :key="index"
             color="blue"
             large
-            @click="pClicked(param.key)"
+            @click="paramClicked(param.key)"
           >
             {{ param.text }}
           </v-chip>
@@ -95,7 +95,7 @@ import { useNotificationsStore } from '../../scripts/stores/notifications'
 const { routerPush } = useRoutesMainStore()
 const { visibleCategories, visibleGroups, visibleParams, categoryIndex, groupIndex } = storeToRefs(useTrioStore2())
 const { resetCategoryAndGroupIndices, paramClicked } = useTrioStore2()
-const { sync, clearSelectedNewItemParams, copyCurrentToNew } = useTaggerStore()
+const { sync, setDefaultNewItemParams, copyCurrentToNew, truncateNewItemParams } = useTaggerStore()
 const { showSpinner, showSnackbar } = useNotificationsStore()
 
 const header = computed(() => {
@@ -137,10 +137,6 @@ const selectedParams = computed({
   set: val => { val }
 })
 
-function pClicked(paramKey: string) {
-  paramClicked(paramKey)
-}
-
 async function submit() {
   showSpinner('Syncing tags...')
   const res = await sync()
@@ -148,7 +144,7 @@ async function submit() {
 
   if (res.success) {
     resetCategoryAndGroupIndices()
-    clearSelectedNewItemParams
+    truncateNewItemParams()
     routerPush('back1')
   } else {
     showSnackbar(`Syncing of tags failed. Error: ${res.message}`)
@@ -158,7 +154,7 @@ async function submit() {
 function cancel() {
   console.log(`cancelClicked`)
   resetCategoryAndGroupIndices()
-  clearSelectedNewItemParams()
+  truncateNewItemParams()
   routerPush('back1')
 }
 
@@ -171,7 +167,7 @@ function resetToItem() {
 function clear() {
   console.log(`clear`)
   resetCategoryAndGroupIndices()
-  clearSelectedNewItemParams()
+  setDefaultNewItemParams()
 }
 
 
