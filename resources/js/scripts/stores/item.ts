@@ -11,7 +11,6 @@ import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useModuleStore } from './module'
 import { useMediaStore } from './media'
-import { useTrioStore } from './trio/trio'
 import { useTrioStore2 } from './trio/trio2'
 
 export const useItemStore = defineStore('item', () => {
@@ -21,7 +20,6 @@ export const useItemStore = defineStore('item', () => {
   const moduleStore = useModuleStore()
   const { setItemMedia } = useMediaStore()
   const { send } = useXhrStore()
-  const { orderSelectedParams, getParamKeyByGroupAndId } = useTrioStore()
   const { trio, fieldNameToGroupKey, groupLabelToKey } = storeToRefs(useTrioStore2())
   const fields = ref<TFieldsUnion | undefined>(undefined)
   const slug = ref<string | undefined>(undefined)
@@ -99,15 +97,6 @@ export const useItemStore = defineStore('item', () => {
         selectedItemParams2.value.push(paramKey)
       }
     }
-
-    ////////////////
-    const selectedLookups = moduleStore.lookups.map(x => {
-      return getParamKeyByGroupAndId(x.group_name, fieldsObj[x.column_name])
-    })
-
-    console.log(`saveitemFieldsPlus() selectedLookups:\n${selectedLookups}`)
-    selectedItemParams.value = [...apiItem.model_tags, ...apiItem.global_tags, ...selectedLookups]
-    orderSelectedParams(selectedItemParams.value)
   }
 
   //return the newly created/update item's slug (need it only for create())

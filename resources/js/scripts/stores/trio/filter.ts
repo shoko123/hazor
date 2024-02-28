@@ -7,7 +7,6 @@ import type { TGroupLocalBase, TGroupLocalColumn } from '@/js/types/trioTypes2'
 import type { TParseQuery, TApiFilters, TSelectedFilterFromQuery } from '@/js/types/routesTypes'
 import type { IObject, IStringObject } from '@/js/types/generalTypes'
 import type { TApiArrayMain } from '@/js/types/collectionTypes'
-import { useTrioStore } from './trio'
 import { useTrioStore2 } from './trio2'
 import { useXhrStore } from '../xhr'
 import { useRoutesMainStore } from '../routes/routesMain'
@@ -15,7 +14,6 @@ import { useRoutesMainStore } from '../routes/routesMain'
 export const useFilterStore = defineStore('filter', () => {
   const { send } = useXhrStore()
   const { current } = storeToRefs(useRoutesMainStore())
-  const trio = useTrioStore()
   const trio2 = useTrioStore2()
 
   const selectedFilterParams = ref<string[]>([])
@@ -238,20 +236,20 @@ export const useFilterStore = defineStore('filter', () => {
 
   function clearSelectedFilters() {
     console.log(`filter.clearSelectedFilters()`)
-    selectedFilterParams.value.forEach(x => {
-      const pieces = x.split('.')
-      switch (trio.trio.entities.groups[pieces[0]].group_type_code) {
-        case 'OB':
-          trio.setOrderByString(x, "")
-          break
-        case 'CS':
-          trio.setFilterSearchTerm(x, "")
-          break
-        default:
-        //nothing to do except remove from selectedFilters
-      }
-    })
-    selectedFilterParams.value = []
+    // selectedFilterParams.value.forEach(x => {
+    //   const pieces = x.split('.')
+    //   switch (trio.trio.entities.groups[pieces[0]].group_type_code) {
+    //     case 'OB':
+    //       trio.setOrderByString(x, "")
+    //       break
+    //     case 'CS':
+    //       trio.setFilterSearchTerm(x, "")
+    //       break
+    //     default:
+    //     //nothing to do except remove from selectedFilters
+    //   }
+    // })
+    // selectedFilterParams.value = []
 
     for (const [key, value] of Object.entries(trio2.groupLabelToKey)) {
       if (trio2.trio.groupsObj[value].code === 'CS') {

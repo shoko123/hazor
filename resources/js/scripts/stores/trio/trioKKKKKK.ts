@@ -2,7 +2,7 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
 import type { TGroupTag, TGroupsWithDependency, Trio } from '../../../types/trioTypes'
-import normalizeTrio from './trioNormalizer'
+import normalizeTrio from './trioNormalizerKKKKKKK'
 import { useFilterStore } from './filter'
 import { useTaggerStore } from './tagger'
 import { useRoutesMainStore } from '../routes/routesMain'

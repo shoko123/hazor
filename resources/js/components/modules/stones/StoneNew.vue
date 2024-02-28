@@ -146,7 +146,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useTrioStore } from '../../../scripts/stores/trio/trio'
+import { useTrioStore2 } from '../../../scripts/stores/trio/trio2'
 import { TFieldsGeneric } from '@/js/types/moduleTypes'
 import { onMounted, reactive, computed } from "vue"
 import { storeToRefs } from 'pinia'
@@ -167,7 +167,7 @@ onMounted(() => {
 })
 
 const { fields } = storeToRefs(useItemStore())
-let { trio } = storeToRefs(useTrioStore())
+let { trio, groupLabelToKey } = storeToRefs(useTrioStore2())
 
 const data: TFieldsGeneric<'Stone'> = reactive({
   id: 0,
@@ -191,7 +191,8 @@ const data: TFieldsGeneric<'Stone'> = reactive({
 })
 
 const areas = computed(() => {
-  return trio.value.entities.groups["Area"].params.map(x => trio.value.entities.params[x].name)
+  let paramKeys = trio.value.groupsObj[groupLabelToKey.value['Area']].paramKeys
+  return paramKeys.map(x => trio.value.paramsObj[x].text)
 })
 
 const rules = computed(() => {

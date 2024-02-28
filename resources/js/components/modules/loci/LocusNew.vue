@@ -98,7 +98,7 @@ import type { TFieldsGeneric } from '@/js/types/moduleTypes'
 import { useVuelidate } from "@vuelidate/core"
 import { required, minValue, maxValue, maxLength, helpers } from "@vuelidate/validators";
 import { useItemStore } from '../../../scripts/stores/item'
-import { useTrioStore } from '../../../scripts/stores/trio/trio'
+import { useTrioStore2 } from '../../../scripts/stores/trio/trio2'
 
 const props = defineProps<{
   isCreate: boolean
@@ -112,7 +112,7 @@ onMounted(() => {
 })
 
 const { fields } = storeToRefs(useItemStore())
-const { trio } = storeToRefs(useTrioStore())
+const { trio, groupLabelToKey } = storeToRefs(useTrioStore2())
 
 let data: TFieldsGeneric<'Locus'> = reactive({
   id: 0,
@@ -138,7 +138,8 @@ let data: TFieldsGeneric<'Locus'> = reactive({
 const nameValidator = helpers.regex(/^\d{1,5}$|^\d{1,5}[a-c]$|^\d{2}-\d{3}$|^\d{2}[A-Z]\d{1}-\d{3}$/)
 
 const areas = computed(() => {
-  return trio.value.entities.groups["Area"].params.map(x => trio.value.entities.params[x].name)
+  let paramKeys = trio.value.groupsObj[groupLabelToKey.value['Area']].paramKeys
+  return paramKeys.map(x => trio.value.paramsObj[x].text)
 })
 
 const rules = computed(() => {

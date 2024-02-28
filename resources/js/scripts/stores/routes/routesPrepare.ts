@@ -13,7 +13,6 @@ import type { TFieldsUnion, TApiModuleInit, TModule} from '@/js/types/moduleType
 import type { TApiItemShow } from '@/js/types/itemTypes'
 import type { LocationQuery } from 'vue-router'
 import { useXhrStore } from '../xhr'
-import { useTrioStore } from '../trio/trio'
 import { useTrioStore2 } from '../trio/trio2'
 import { useFilterStore } from '../trio/filter'
 import { useCollectionsStore } from '../collections/collections'
@@ -35,7 +34,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   const p = useRoutesParserStore()
   const f = useFilterStore()
   const m = useModuleStore()
-  const { trioReset, setTrio } = useTrioStore()
   const { setTrio2, trioReset2 } = useTrioStore2()
   const { setItemMedia } = useMediaStore()
 
@@ -56,7 +54,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'module.clear':
-          trioReset()
           trioReset2()
           break
 
@@ -140,7 +137,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
   async function loadModule(module: TModule): Promise<{ success: boolean, message: string }> {
-    trioReset()
     trioReset2()
     const res = await send<TApiModuleInit>('model/init', 'post', { model: module })
     if (res.success) {
@@ -153,7 +149,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       i.itemViews = res.data.display_options.item_views
       c.clear(['main', 'media', 'related'])
 
-      setTrio(res.data.trio)
       setTrio2(res.data.trio2)
 
       c.setCollectionViews('main', res.data.display_options.main_collection_views)
