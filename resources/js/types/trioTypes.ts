@@ -1,4 +1,4 @@
-// trioTypes2.ts
+// trioTypes.ts
 
 type TApiParamName = {
   name: string,

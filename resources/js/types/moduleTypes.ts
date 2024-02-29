@@ -1,4 +1,4 @@
-import type { TApiTrio } from '@/js/types/trioTypes2'
+import type { TApiTrio } from '@/js/types/trioTypes'
 import type { TCollectionView } from '@/js/types/collectionTypes'
 
 type TModuleTypes = {

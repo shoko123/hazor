@@ -1,7 +1,7 @@
 // stores/trio.js
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
-import type { TApiTrio, TTrio, TGroupLabelToKey, TGroupLocalTag, TApiParamNameAndColumn, TGroupLocalBase } from '../../../types/trioTypes2'
+import type { TApiTrio, TTrio, TGroupLabelToKey, TGroupLocalTag, TApiParamNameAndColumn, TGroupLocalBase } from '../../../types/trioTypes'
 import { useTrioNormalizerStore } from './trioNormalizer'
 import { useRoutesMainStore } from '../routes/routesMain'
 import { useTaggerStore } from './tagger'
@@ -178,7 +178,7 @@ export const useTrioStore = defineStore('trio', () => {
   }
 
   function selectParam(prmKey: string) {
-    console.log(`selectParam2(${prmKey})`)
+    console.log(`selectParam(${prmKey})`)
     selected.value.push(prmKey)
   }
 
@@ -253,11 +253,11 @@ export const useTrioStore = defineStore('trio', () => {
   })
 
   const selected = computed(() => {
-    const { selectedFilterParams2 } = storeToRefs(useFilterStore())
+    const { selectedFilterParams } = storeToRefs(useFilterStore())
     const { selectedNewItemParams2 } = storeToRefs(useTaggerStore())
     switch (current.value.name) {
       case 'filter':
-        return selectedFilterParams2.value
+        return selectedFilterParams.value
       case 'tag':
         return selectedNewItemParams2.value
       default:
@@ -325,7 +325,7 @@ export const useTrioStore = defineStore('trio', () => {
     if (currentGroup.value === undefined || currentGroup.value.code !== 'CS') {
       return []
     }
-    let vals: string[] = []
+    const vals: string[] = []
     currentGroup.value.paramKeys.forEach(x => {
       vals.push(trio.value.paramsObj[x].text)
     })

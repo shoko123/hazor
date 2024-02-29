@@ -1,9 +1,9 @@
 // stores/trio.js
 import { defineStore, storeToRefs } from 'pinia'
-import type { TApiTrio, TApiGroupColumn, TGroupUnion, TGroupLocalUnion, TApiGroupTag, TApiGroupBasic, TParamObj, TApiParamNameAndColumn, TGroupObj, TCategoriesArray, TApiGroupOrderBy, TGroupLocalColumn, TGroupLabelToKey, TApiParamNameAndId, TApiParamName } from '../../../types/trioTypes2'
+import type { TApiTrio, TApiGroupColumn, TGroupUnion, TGroupLocalUnion, TApiGroupTag, TApiGroupBasic, TParamObj, TApiParamNameAndColumn, TGroupObj, TCategoriesArray, TApiGroupOrderBy, TGroupLocalColumn, TGroupLabelToKey, TApiParamNameAndId, TApiParamName } from '../../../types/trioTypes'
 import { useMediaStore } from '../media'
 
-export const useTrioNormalizerStore = defineStore('trioNorm2', () => {
+export const useTrioNormalizerStore = defineStore('trioNormalizr', () => {
   const { mediaCollectionNames } = storeToRefs(useMediaStore())
 
   let categories: TCategoriesArray = []

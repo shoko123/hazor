@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import type { TFieldsUnion } from '@/js/types/moduleTypes'
-import type { TGroupLocalColumn } from '@/js/types/trioTypes2'
+import type { TGroupLocalColumn } from '@/js/types/trioTypes'
 import { useXhrStore } from '../xhr'
 import { useItemStore } from '../item'
 import { useTrioStore } from './trio'

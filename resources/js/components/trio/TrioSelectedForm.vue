@@ -47,10 +47,10 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import type { TrioSourceName } from '../../types/trioTypes2'
-import { useTrioSelectedStore2 } from '../../scripts/stores/trio/selectedParams2'
+import type { TrioSourceName } from '../../types/trioTypes'
+import { useTrioSelectedStore } from '../../scripts/stores/trio/selectedParams'
 import { useItemStore } from '../../scripts/stores/item'
-let { selectedFilterTrio, selectedNewItemTrio, selectedItemTrio } = storeToRefs(useTrioSelectedStore2())
+let { selectedFilterTrio, selectedNewItemTrio, selectedItemTrio } = storeToRefs(useTrioSelectedStore())
 let { derived } = storeToRefs(useItemStore())
 
 const props = defineProps<{
