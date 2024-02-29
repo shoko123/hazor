@@ -1,10 +1,9 @@
 // stores/trio.js
 import { defineStore, storeToRefs } from 'pinia'
-import { ref, computed } from 'vue'
-import type { TApiTrio2, TApiGroupColumn, TGroupUnion, TGroupLocalUnion, TApiGroupTag, TApiGroupBasic, TParamObj, TApiParamNameAndColumn, TGroupObj, TCategoriesArray, TApiGroupOrderBy, TGroupLocalColumn, TGroupLocalTag, TParam, TGroupLabelToKey, TApiParamNameAndId, TApiParamName } from '../../../types/trioTypes2'
+import type { TApiTrio2, TApiGroupColumn, TGroupUnion, TGroupLocalUnion, TApiGroupTag, TApiGroupBasic, TParamObj, TApiParamNameAndColumn, TGroupObj, TCategoriesArray, TApiGroupOrderBy, TGroupLocalColumn, TGroupLabelToKey, TApiParamNameAndId, TApiParamName } from '../../../types/trioTypes2'
 import { useMediaStore } from '../media'
 
-export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
+export const useTrioNormalizerStore = defineStore('trioNorm2', () => {
   const { mediaCollectionNames } = storeToRefs(useMediaStore())
 
   let categories: TCategoriesArray = []
@@ -29,7 +28,7 @@ export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
     apiTrio.forEach(cat => {
       categories.push({ name: cat.name, groupKeys: [] })
       cat.groups.forEach(grp => {
-        let grpKey = pad(grpCnt, 3)
+        const grpKey = pad(grpCnt, 3)
         categories[catCnt].groupKeys.push(grpKey)
         let group: TGroupUnion = { label: '', code: 'CV', params: [] }
 
@@ -77,14 +76,14 @@ export const useTrioNormalizerStore2 = defineStore('trioNorm2', () => {
     //console.log(`saveGroup(): ${JSON.stringify(grp, null, 2)}`);
 
     //add trio related fields
-    let grpWithParams = { ...grp, paramKeys: [], categoryIndex: catCnt }
+    const grpWithParams = { ...grp, paramKeys: [], categoryIndex: catCnt }
 
     //remove params array
-    let grpToSave: TGroupLocalUnion = { ...(({ params, ...object }) => object)(grpWithParams) }
+    const grpToSave: TGroupLocalUnion = { ...(({ params, ...object }) => object)(grpWithParams) }
 
     //save params and then group
     grp.params.forEach(p => {
-      let prmKey = pad(prmCnt, 3)
+      const prmKey = pad(prmCnt, 3)
       grpToSave.paramKeys.push(prmKey)
       paramsObj[prmKey] = { text: p.text, extra: p.extra, groupKey: pad(grpCnt, 3) }
       prmCnt++

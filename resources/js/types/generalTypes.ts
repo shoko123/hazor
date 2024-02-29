@@ -1,8 +1,4 @@
 // generalTypes.ts
-interface IObject {
-  [key: string]: any
-}
-
 interface IStringObject {
   [key: string]: string
 }
@@ -16,7 +12,6 @@ export {
   TXhrMethod,
   TXhrResult,
   TXhrEmptyResult,
-  IObject,
   IStringObject,
   TAsyncSimpleReturn
 }

@@ -1,17 +1,15 @@
 // stores/trio.js
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { IObject } from '../../../types/generalTypes'
 import type { TFieldsUnion } from '@/js/types/moduleTypes'
 import type { TGroupLocalColumn } from '@/js/types/trioTypes2'
-import type { TModule } from '@/js/types/moduleTypes'
 import { useXhrStore } from '../xhr'
 import { useItemStore } from '../item'
 import { useTrioStore2 } from './trio2'
 import { useRoutesMainStore } from '../routes/routesMain'
 
 export const useTaggerStore = defineStore('tagger', () => {
-  const { trio, groupLabelToKey } = storeToRefs(useTrioStore2())
+  const { trio } = storeToRefs(useTrioStore2())
   const { fields, selectedItemParams2 } = storeToRefs(useItemStore())
 
   const selectedNewItemParams2 = ref<string[]>([])
@@ -24,10 +22,10 @@ export const useTaggerStore = defineStore('tagger', () => {
     selectedNewItemParams2.value = []
   }
 
-   //When clearing params, set columns lookup and value to default (index 0)
-   function setDefaultNewItemParams() {
+  //When clearing params, set columns lookup and value to default (index 0)
+  function setDefaultNewItemParams() {
     selectedNewItemParams2.value = []
-    let clCvParamKeys = selectedItemParams2.value.filter(x => ['CL', 'CV'].includes(trio.value.groupsObj[trio.value.paramsObj[x].groupKey].code))
+    const clCvParamKeys = selectedItemParams2.value.filter(x => ['CL', 'CV'].includes(trio.value.groupsObj[trio.value.paramsObj[x].groupKey].code))
 
     console.log(`tagger.clear('CL', 'CV' groupKeys): ${JSON.stringify(clCvParamKeys, null, 2)}`)
     clCvParamKeys.forEach(x => {
@@ -35,28 +33,17 @@ export const useTaggerStore = defineStore('tagger', () => {
       selectedNewItemParams2.value.push(group.paramKeys[0])
     })
   }
-  
-  type TSyncPayload = {
-    model: TModule | undefined,
-    id: number,
-    ids: number[],
-    model_tag_ids: number[],
-    columns: {
-      column_name: string,
-      val: number | string
-    }[]
-  }
 
   async function sync() {
     const { send } = useXhrStore()
     const { current } = storeToRefs(useRoutesMainStore())
 
-    let payload: TSyncPayload = {
+    const payload = {
       model: current.value.module,
       id: (<TFieldsUnion>fields.value).id,
-      ids: [],
-      model_tag_ids: [],
-      columns: []
+      ids: <number[]>[],
+      model_tag_ids: <number[]>[],
+      columns: <{ column_name: string, val: number | string }[]>[]
     }
 
     selectedNewItemParams2.value.forEach(paramKey => {

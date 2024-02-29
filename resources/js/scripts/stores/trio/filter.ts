@@ -1,10 +1,10 @@
 // stores/trio.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import type { LocationQuery, LocationQueryValue } from 'vue-router'
+import type { LocationQuery } from 'vue-router'
 import type { TGroupLocalBase, TGroupLocalColumn } from '@/js/types/trioTypes2'
-import type { TParseQuery, TApiFilters, TSelectedFilterFromQuery } from '@/js/types/routesTypes'
-import type { IObject, IStringObject } from '@/js/types/generalTypes'
+import type { TApiFilters } from '@/js/types/routesTypes'
+import type { IStringObject } from '@/js/types/generalTypes'
 import type { TApiArrayMain } from '@/js/types/collectionTypes'
 import { useTrioStore2 } from './trio2'
 import { useXhrStore } from '../xhr'
@@ -19,7 +19,7 @@ export const useFilterStore = defineStore('filter', () => {
   const selectedFilterParams2 = ref<string[]>([])
 
   function filtersToQueryObject() {
-    let q2: IStringObject = {}
+    const q2: IStringObject = {}
     selectedFilterParams2.value.sort((a, b) => { return a > b ? 1 : -1 })
     selectedFilterParams2.value.forEach(k => {
       const paramUlined = trio2.trio.paramsObj[k].text.replace(/ /g, "_")
@@ -196,7 +196,7 @@ export const useFilterStore = defineStore('filter', () => {
   }
 
   function processUrlOB(group: TGroupLocalBase, paramTexts: string[]): { success: true } | { success: false, message: string } {
-    let selected: string[] = []
+    const selected: string[] = []
     for (const x of paramTexts) {
       const nameOnly = x.slice(0, -2)
       const lastTwo = x.substring(x.length - 2)
@@ -239,7 +239,7 @@ export const useFilterStore = defineStore('filter', () => {
 
   function clearSelectedFilters() {
     console.log(`filter.clearSelectedFilters()`)
-    for (const [key, value] of Object.entries(trio2.groupLabelToKey)) {
+    for (const value of Object.values(trio2.groupLabelToKey)) {
       if (trio2.trio.groupsObj[value].code === 'CS') {
         trio2.trio.groupsObj[value].paramKeys.forEach(x => {
           trio2.trio.paramsObj[x].text = ''
@@ -261,7 +261,7 @@ export const useFilterStore = defineStore('filter', () => {
     return (<TGroupLocalBase>currentGroup).paramKeys
   })
 
-  function searchTextChanged(index: number, val: any) {
+  function searchTextChanged(index: number, val: string) {
     const paramKey = textSearchParamKeys.value[index]
     //console.log(`changeOccured() index: ${index} setting param with key ${paramKey} to: ${val}`)
     trio2.trio.paramsObj[paramKey].text = val
@@ -294,7 +294,7 @@ export const useFilterStore = defineStore('filter', () => {
   ///////////
 
   function orderParamClicked(index: number, asc: boolean) {
-    let orderByParams = trio2.orderByGroup?.paramKeys.map(x => { return { ...trio2.trio.paramsObj[x], key: x } })
+    const orderByParams = trio2.orderByGroup?.paramKeys.map(x => { return { ...trio2.trio.paramsObj[x], key: x } })
 
     if (orderByParams === undefined) {
       console.log(`serious error - abort *********`)
@@ -307,7 +307,7 @@ export const useFilterStore = defineStore('filter', () => {
       return
     }
 
-    let label = `${trio2.orderByAvailable[index].name}.${asc ? 'A' : 'D'}`
+    const label = `${trio2.orderByAvailable[index].name}.${asc ? 'A' : 'D'}`
     // console.log(`paramClicked(${index}) asc: ${asc} params:  ${JSON.stringify(orderByParams, null, 2)} key: ${firstEmptyParam.key} label: ${label}`)
 
     trio2.trio.paramsObj[firstEmptyParam.key].text = label

@@ -2,13 +2,13 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
 import type { TApiTrio2, TTrio, TGroupLabelToKey, TGroupLocalTag, TApiParamNameAndColumn, TGroupLocalBase } from '../../../types/trioTypes2'
-import { useTrioNormalizerStore2 } from './trioNormalizer2'
+import { useTrioNormalizerStore } from './trioNormalizer'
 import { useRoutesMainStore } from '../routes/routesMain'
 import { useTaggerStore } from './tagger'
 import { useFilterStore } from './filter'
 
 export const useTrioStore2 = defineStore('trio2', () => {
-  const { normalizeTrio2 } = useTrioNormalizerStore2()
+  const { normalizeTrio2 } = useTrioNormalizerStore()
   const { current } = storeToRefs(useRoutesMainStore())
 
   const trio = ref<TTrio>({ categories: [], groupsObj: {}, paramsObj: {} })
@@ -24,7 +24,7 @@ export const useTrioStore2 = defineStore('trio2', () => {
   const visibleCategories = computed(() => {
     const visCats: { catName: string, catIndex: number, hasSelected: boolean }[] = []
 
-    for (let [index, cat] of trio.value.categories.entries()) {
+    for (const [index, cat] of trio.value.categories.entries()) {
       //for (const cat of trio.value.categories) {
       let available = false
       let hasSelected = false
@@ -50,7 +50,7 @@ export const useTrioStore2 = defineStore('trio2', () => {
   const visibleGroups = computed(() => {
     if (trio.value.categories.length === 0) { return [] }
 
-    let grpKeys = trio.value.categories[visibleCategories.value[categoryIndex.value].catIndex].groupKeys
+    const grpKeys = trio.value.categories[visibleCategories.value[categoryIndex.value].catIndex].groupKeys
 
     //filter out unavailable groups
     const available = grpKeys.filter(x => groupIsAvailable(x))
@@ -196,8 +196,7 @@ export const useTrioStore2 = defineStore('trio2', () => {
     //step 1 - collect all groups affected by unselecting this param
     const groupsToUnselect: { grpKey: string, label: string, paramKeys: string[] }[] = []
 
-    for (const [key, value] of Object.entries(groupLabelToKey.value)) {
-      key//make eslint happy
+    for (const value of Object.values(groupLabelToKey.value)) {
       const group = trio.value.groupsObj[value]
 
       //if a group has a dependency that includes this param and will be unselected if param is unselected,
@@ -205,7 +204,7 @@ export const useTrioStore2 = defineStore('trio2', () => {
       if ('dependency' in group && group.dependency.includes(paramKey) && !group.dependency.some(x => {
         return (selected.value.includes(x))
       })) {
-        console.log(`group ${group.label} is dependent on "${key}" => ${value}`)
+        console.log(`group ${group.label} is dependent on "${value}"`)
         groupsToUnselect.push({ grpKey: value, label: group.label, paramKeys: group.paramKeys })
       }
     }
@@ -309,8 +308,8 @@ export const useTrioStore2 = defineStore('trio2', () => {
   }
 
   const groups = computed(() => {
-    let grpList = []
-    for (const [key, value] of Object.entries(trio.value.groupsObj)) {
+    const grpList = []
+    for (const key of Object.keys(trio.value.groupsObj)) {
       grpList.push(groupDetails(key))
     }
     return grpList
@@ -334,7 +333,8 @@ export const useTrioStore2 = defineStore('trio2', () => {
   })
 
   const orderByGroup = computed(() => {
-    if (!groupLabelToKey.value.hasOwnProperty('Order By')) { 
+    // if (!groupLabelToKey.value.hasOwnProperty('Order By')) { 
+    if (!Object.prototype.hasOwnProperty.call(groupLabelToKey.value, "Order By")){
       return undefined 
     }
     return trio.value.groupsObj[groupLabelToKey.value["Order By"]]
@@ -344,7 +344,7 @@ export const useTrioStore2 = defineStore('trio2', () => {
     if (orderByGroup.value === undefined) { return [] }
 
     return orderByGroup.value.paramKeys.filter(x => {
-      let label = trio.value.paramsObj[x].text
+      const label = trio.value.paramsObj[x].text
       return label !== ''
     }).map(x => { return { label: trio.value.paramsObj[x].text, key: x } })
   })

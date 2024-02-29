@@ -1,13 +1,19 @@
 <template>
-  <v-row wrap dense>
+  <v-row
+    wrap
+    dense
+  >
     <v-col :cols="widths[0]">
-      <ItemCard class="mb-2" />
+      <ItemCard />
     </v-col>
     <v-col :cols="widths[1]">
       <TagsForm2 source="Item" />
     </v-col>
   </v-row>
-  <CollectionForm source="media" class="mb-2" />
+  <CollectionForm
+    source="media"
+    class="my-2"
+  />
   <CollectionForm source="related" />
 </template>
 

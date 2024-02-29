@@ -20,8 +20,8 @@ export const useTrioSelectedStore2 = defineStore('trioSelected2', () => {
     if (trio.value.categories.length === 0) { return [] }
 
     let params: string[] = []
-    let groups = <TGroup[]>[]
-    let cats = <TCat[]>[]
+    const groups = <TGroup[]>[]
+    const cats = <TCat[]>[]
 
     //choose source
     switch (sourceName) {

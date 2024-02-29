@@ -4,7 +4,6 @@ import { defineStore, storeToRefs } from 'pinia'
 import type { TFieldsUnion, TModule } from '@/js/types/moduleTypes'
 import type { TApiItemShow } from '@/js/types/itemTypes'
 import type { TApiArrayMain } from '@/js/types/collectionTypes'
-import type { IObject } from '@/js/types/generalTypes'
 import { useCollectionsStore } from './collections/collections'
 import { useCollectionMainStore } from './collections/collectionMain'
 import { useRoutesMainStore } from './routes/routesMain'
@@ -17,7 +16,7 @@ export const useItemStore = defineStore('item', () => {
   const { pushToArray } = useCollectionMainStore()
   const { current } = storeToRefs(useRoutesMainStore())
   const { collection, itemByIndex, itemIndexById, next } = useCollectionsStore()
-  const moduleStore = useModuleStore()
+  const { tagFromSlug } = useModuleStore()
   const { setItemMedia } = useMediaStore()
   const { send } = useXhrStore()
   const { trio, fieldNameToGroupKey, groupLabelToKey } = storeToRefs(useTrioStore2())
@@ -56,22 +55,21 @@ export const useItemStore = defineStore('item', () => {
     }
   })
 
+  type KeyOfFields = keyof TFieldsUnion
+
   function saveitemFieldsPlus<F>(apiItem: TApiItemShow<F>) {
-    //const {fieldNameToGroupKey} = storeToRefs( useTrioStore2())
     fields.value = <TFieldsUnion>apiItem.fields
-    const fieldsObj = <IObject>apiItem.fields
     slug.value = apiItem.slug
     short.value = apiItem.short
-    tag.value = moduleStore.tagFromSlug(<TModule>current.value.module, apiItem.slug)
+    tag.value = tagFromSlug(<TModule>current.value.module, apiItem.slug)
 
     //add CV and CL field's "tags"
     selectedItemParams2.value = []
     for (const x in fieldNameToGroupKey.value) {
       const group = trio.value.groupsObj[fieldNameToGroupKey.value[x]]
       // console.log(`Save item column field: "${x}" groupKey: ${fieldNameToGroupKey.value[x]} groupKeys: ${group.paramKeys}`)
-      // console.log(`fieldVal: ${fieldsObj[x]}`)
       const paramPropertyToCompare = ['CR', 'CV'].includes(group.code) ? 'text' : 'extra'
-      const paramKey = group.paramKeys.find(y => trio.value.paramsObj[y][paramPropertyToCompare] === fieldsObj[x])
+      const paramKey = group.paramKeys.find(y => trio.value.paramsObj[y][paramPropertyToCompare] === (<TFieldsUnion>fields.value)[<KeyOfFields>x])
       if (paramKey === undefined) {
         console.log(`******serious error while saving item****`)
         return
@@ -87,7 +85,6 @@ export const useItemStore = defineStore('item', () => {
     for (const x of all) {
       const group = trio.value.groupsObj[groupLabelToKey.value[x.group_label]]
       // console.log(`Save item column field: "${x}" groupKey: ${fieldNameToGroupKey.value[x]} groupKeys: ${group.paramKeys}`)
-      // console.log(`fieldVal: ${fieldsObj[x]}`)
 
       const paramKey = group.paramKeys.find(y => trio.value.paramsObj[y].text === x.tag_text)
       if (paramKey === undefined) {

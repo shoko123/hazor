@@ -43,7 +43,7 @@
           color="purple"
           :class="cat.hasSelected ? 'has-selected' : ''"
         >
-          {{ cat.hasSelected  ?`${cat.catName}(*)` : cat.catName }}
+          {{ cat.hasSelected ?`${cat.catName}(*)` : cat.catName }}
         </v-tab>
       </v-tabs>
 
