@@ -31,6 +31,7 @@ import { type Component, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDisplay } from 'vuetify'
 
+import type { TModule } from '@/js/types/moduleTypes'
 import type { TCollectionName } from '@/js/types/collectionTypes'
 import { useItemStore } from '../../scripts/stores/item'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
@@ -67,7 +68,12 @@ const ico = computed(() => {
 
 async function asynLoadPage(val: number) {
   showSpinner('Loading page...')
-  const res = await loadGenericPage(props.source, val, meta.value.view, derived.value.module)
+  const res = await loadGenericPage(
+    props.source,
+    val,
+    meta.value.view,
+    <TModule>derived.value.module,
+  )
   showSpinner(false)
   if (!res.success) {
     pushHome(`${res.message}. Redirected to home page`)

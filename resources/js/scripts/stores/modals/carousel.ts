@@ -8,6 +8,7 @@ import {
   TApiArray,
 } from '@/js/types/collectionTypes'
 import { TCarousel, TApiCarouselMain, TApiCarouselMedia } from '@/js/types/mediaTypes'
+import { TModule } from '@/js/types/moduleTypes'
 import { useCollectionsStore } from '../collections/collections'
 import { useCollectionMainStore } from '../collections/collectionMain'
 import { useXhrStore } from '../xhr'
@@ -72,7 +73,7 @@ export const useCarouselStore = defineStore('carousel', () => {
             module: res.data.module,
             id: res.data.id,
             slug: res.data.slug,
-            tag: tagFromSlug(derived.value.module, res.data.slug),
+            tag: tagFromSlug(<TModule>derived.value.module, res.data.slug),
             short: res.data.short,
             media: buildMedia(res.data.urls, derived.value.module),
           }
@@ -112,7 +113,7 @@ export const useCarouselStore = defineStore('carousel', () => {
           collectionName.value,
           view,
           index,
-          derived.value.module,
+          <TModule>derived.value.module,
         )
         showSpinner(false)
         if (!res.success) {
