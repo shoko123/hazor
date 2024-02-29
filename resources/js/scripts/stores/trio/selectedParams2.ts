@@ -2,7 +2,7 @@ import { defineStore, storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { TrioSourceName } from '../../../types/trioTypes2'
 
-import { useTrioStore } from './trio2'
+import { useTrioStore } from './trio'
 import { useItemStore } from '../item'
 import { useFilterStore } from './filter'
 import { useTaggerStore } from './tagger'

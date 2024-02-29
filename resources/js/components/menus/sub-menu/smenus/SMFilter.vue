@@ -33,7 +33,7 @@
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
-import { useTrioStore } from '../../../../scripts/stores/trio/trio2'
+import { useTrioStore } from '../../../../scripts/stores/trio/trio'
 import { useFilterStore } from '../../../../scripts/stores/trio/filter'
 import { useNotificationsStore } from '../../../../scripts/stores/notifications'
 import WelcomeButton from '../elements/WelcomeButton.vue'

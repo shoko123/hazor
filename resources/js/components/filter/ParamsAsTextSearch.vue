@@ -40,7 +40,7 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { useFilterStore } from '../../scripts/stores/trio/filter'
-import { useTrioStore } from '../../scripts/stores/trio/trio2'
+import { useTrioStore } from '../../scripts/stores/trio/trio'
 const { searchTextChanged, searchTextClearCurrent } = useFilterStore()
 const { textSearchValues } = storeToRefs(useTrioStore())
 

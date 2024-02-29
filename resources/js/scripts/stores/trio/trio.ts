@@ -7,7 +7,7 @@ import { useRoutesMainStore } from '../routes/routesMain'
 import { useTaggerStore } from './tagger'
 import { useFilterStore } from './filter'
 
-export const useTrioStore = defineStore('trio2', () => {
+export const useTrioStore = defineStore('trio', () => {
   const { normalizeTrio } = useTrioNormalizerStore()
   const { current } = storeToRefs(useRoutesMainStore())
 
@@ -190,7 +190,7 @@ export const useTrioStore = defineStore('trio2', () => {
 
   //When unselecting a param, unselect dependencies.
   function clearDependecies(paramKey: string) {
-    console.log(`*** trio2 clearDependecies param: ${paramKey} currently selected: ${selected.value} ***`)
+    console.log(`*** trio clearDependecies param: ${paramKey} currently selected: ${selected.value} ***`)
     //We assume that this param was already removed from paramClickedSource (selectedFilterParams/selectedNewItemParams).
 
     //step 1 - collect all groups affected by unselecting this param

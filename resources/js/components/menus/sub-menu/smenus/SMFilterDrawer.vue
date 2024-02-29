@@ -18,7 +18,7 @@
 import { computed, } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
-import { useTrioStore } from '../../../../scripts/stores/trio/trio2'
+import { useTrioStore } from '../../../../scripts/stores/trio/trio'
 import { useFilterStore } from '../../../../scripts/stores/trio/filter'
 import { useRouter } from 'vue-router'
 import { useNotificationsStore } from '../../../../scripts/stores/notifications'

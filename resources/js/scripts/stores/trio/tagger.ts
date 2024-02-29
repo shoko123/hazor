@@ -5,7 +5,7 @@ import type { TFieldsUnion } from '@/js/types/moduleTypes'
 import type { TGroupLocalColumn } from '@/js/types/trioTypes2'
 import { useXhrStore } from '../xhr'
 import { useItemStore } from '../item'
-import { useTrioStore } from './trio2'
+import { useTrioStore } from './trio'
 import { useRoutesMainStore } from '../routes/routesMain'
 
 export const useTaggerStore = defineStore('tagger', () => {

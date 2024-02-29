@@ -19,7 +19,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useTrioStore } from '../../scripts/stores/trio/trio2'
+import { useTrioStore } from '../../scripts/stores/trio/trio'
 
 let trio = useTrioStore()
 

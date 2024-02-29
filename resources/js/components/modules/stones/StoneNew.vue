@@ -146,7 +146,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useTrioStore } from '../../../scripts/stores/trio/trio2'
+import { useTrioStore } from '../../../scripts/stores/trio/trio'
 import { TFieldsGeneric } from '@/js/types/moduleTypes'
 import { onMounted, reactive, computed } from "vue"
 import { storeToRefs } from 'pinia'

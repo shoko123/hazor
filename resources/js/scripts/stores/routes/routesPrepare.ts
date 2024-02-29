@@ -13,7 +13,7 @@ import type { TFieldsUnion, TApiModuleInit, TModule} from '@/js/types/moduleType
 import type { TApiItemShow } from '@/js/types/itemTypes'
 import type { LocationQuery } from 'vue-router'
 import { useXhrStore } from '../xhr'
-import { useTrioStore } from '../trio/trio2'
+import { useTrioStore } from '../trio/trio'
 import { useFilterStore } from '../trio/filter'
 import { useCollectionsStore } from '../collections/collections'
 import { useMediaStore } from '../media'

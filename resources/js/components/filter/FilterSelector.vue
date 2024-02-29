@@ -50,7 +50,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useTrioStore } from '../../scripts/stores/trio/trio2'
+import { useTrioStore } from '../../scripts/stores/trio/trio'
 import ParamsAsChips from './ParamsAsChips.vue'
 import ParamsAsTextSearch from './ParamsAsTextSearch.vue'
 import ParamsAsOrderBy from './ParamsAsOrderBy.vue'

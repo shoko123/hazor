@@ -98,7 +98,7 @@ import type { TFieldsGeneric } from '@/js/types/moduleTypes'
 import { useVuelidate } from "@vuelidate/core"
 import { required, minValue, maxValue, maxLength, helpers } from "@vuelidate/validators";
 import { useItemStore } from '../../../scripts/stores/item'
-import { useTrioStore } from '../../../scripts/stores/trio/trio2'
+import { useTrioStore } from '../../../scripts/stores/trio/trio'
 
 const props = defineProps<{
   isCreate: boolean

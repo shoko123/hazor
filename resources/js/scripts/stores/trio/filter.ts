@@ -6,7 +6,7 @@ import type { TGroupLocalBase, TGroupLocalColumn } from '@/js/types/trioTypes2'
 import type { TApiFilters } from '@/js/types/routesTypes'
 import type { IStringObject } from '@/js/types/generalTypes'
 import type { TApiArrayMain } from '@/js/types/collectionTypes'
-import { useTrioStore } from './trio2'
+import { useTrioStore } from './trio'
 import { useXhrStore } from '../xhr'
 import { useRoutesMainStore } from '../routes/routesMain'
 
