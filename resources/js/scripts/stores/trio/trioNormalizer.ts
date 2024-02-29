@@ -1,6 +1,6 @@
 // stores/trio.js
 import { defineStore, storeToRefs } from 'pinia'
-import type { TApiTrio2, TApiGroupColumn, TGroupUnion, TGroupLocalUnion, TApiGroupTag, TApiGroupBasic, TParamObj, TApiParamNameAndColumn, TGroupObj, TCategoriesArray, TApiGroupOrderBy, TGroupLocalColumn, TGroupLabelToKey, TApiParamNameAndId, TApiParamName } from '../../../types/trioTypes2'
+import type { TApiTrio, TApiGroupColumn, TGroupUnion, TGroupLocalUnion, TApiGroupTag, TApiGroupBasic, TParamObj, TApiParamNameAndColumn, TGroupObj, TCategoriesArray, TApiGroupOrderBy, TGroupLocalColumn, TGroupLabelToKey, TApiParamNameAndId, TApiParamName } from '../../../types/trioTypes2'
 import { useMediaStore } from '../media'
 
 export const useTrioNormalizerStore = defineStore('trioNorm2', () => {
@@ -23,7 +23,7 @@ export const useTrioNormalizerStore = defineStore('trioNorm2', () => {
     catCnt = 0, grpCnt = 0, prmCnt = 0
   }
 
-  function normalizeTrio2(apiTrio: TApiTrio2) {
+  function normalizeTrio(apiTrio: TApiTrio) {
     reset()
     apiTrio.forEach(cat => {
       categories.push({ name: cat.name, groupKeys: [] })
@@ -209,6 +209,6 @@ export const useTrioNormalizerStore = defineStore('trioNorm2', () => {
   }
 
   return {
-    normalizeTrio2,
+    normalizeTrio,
   }
 })

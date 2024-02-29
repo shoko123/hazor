@@ -1,14 +1,14 @@
 // stores/trio.js
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
-import type { TApiTrio2, TTrio, TGroupLabelToKey, TGroupLocalTag, TApiParamNameAndColumn, TGroupLocalBase } from '../../../types/trioTypes2'
+import type { TApiTrio, TTrio, TGroupLabelToKey, TGroupLocalTag, TApiParamNameAndColumn, TGroupLocalBase } from '../../../types/trioTypes2'
 import { useTrioNormalizerStore } from './trioNormalizer'
 import { useRoutesMainStore } from '../routes/routesMain'
 import { useTaggerStore } from './tagger'
 import { useFilterStore } from './filter'
 
-export const useTrioStore2 = defineStore('trio2', () => {
-  const { normalizeTrio2 } = useTrioNormalizerStore()
+export const useTrioStore = defineStore('trio2', () => {
+  const { normalizeTrio } = useTrioNormalizerStore()
   const { current } = storeToRefs(useRoutesMainStore())
 
   const trio = ref<TTrio>({ categories: [], groupsObj: {}, paramsObj: {} })
@@ -265,7 +265,7 @@ export const useTrioStore2 = defineStore('trio2', () => {
     }
   })
 
-  function trioReset2() {
+  function trioReset() {
     const { clearSelectedFilters } = useFilterStore()
     const { truncateNewItemParams } = useTaggerStore()
     truncateNewItemParams()
@@ -278,10 +278,10 @@ export const useTrioStore2 = defineStore('trio2', () => {
     orderByOptions.value = []
   }
 
-  function setTrio2(apiTrio: TApiTrio2) {
-    trioReset2()
+  function setTrio(apiTrio: TApiTrio) {
+    trioReset()
 
-    const res = normalizeTrio2(apiTrio)
+    const res = normalizeTrio(apiTrio)
     trio.value = res.trio
     groupLabelToKey.value = res.groupLabelToKey
     orderByOptions.value = res.orderByOptions
@@ -372,8 +372,8 @@ export const useTrioStore2 = defineStore('trio2', () => {
     orderBySelected,
     groups,
     textSearchValues,
-    trioReset2,
-    setTrio2,
+    trioReset,
+    setTrio,
     categoryIndex,
     groupIndex,
     currentGroup,

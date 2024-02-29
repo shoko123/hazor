@@ -6,14 +6,14 @@ import type { TGroupLocalBase, TGroupLocalColumn } from '@/js/types/trioTypes2'
 import type { TApiFilters } from '@/js/types/routesTypes'
 import type { IStringObject } from '@/js/types/generalTypes'
 import type { TApiArrayMain } from '@/js/types/collectionTypes'
-import { useTrioStore2 } from './trio2'
+import { useTrioStore } from './trio2'
 import { useXhrStore } from '../xhr'
 import { useRoutesMainStore } from '../routes/routesMain'
 
 export const useFilterStore = defineStore('filter', () => {
   const { send } = useXhrStore()
   const { current } = storeToRefs(useRoutesMainStore())
-  const trio2 = useTrioStore2()
+  const trio2 = useTrioStore()
 
   const selectedFilterParams = ref<string[]>([])
   const selectedFilterParams2 = ref<string[]>([])

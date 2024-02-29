@@ -50,11 +50,11 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useTrioStore2 } from '../../scripts/stores/trio/trio2'
+import { useTrioStore } from '../../scripts/stores/trio/trio2'
 import ParamsAsChips from './ParamsAsChips.vue'
 import ParamsAsTextSearch from './ParamsAsTextSearch.vue'
 import ParamsAsOrderBy from './ParamsAsOrderBy.vue'
-let { visibleCategories, visibleGroups, categoryIndex, groupIndex } = storeToRefs(useTrioStore2())
+let { visibleCategories, visibleGroups, categoryIndex, groupIndex } = storeToRefs(useTrioStore())
 
 const header = computed(() => {
   return 'Filter Selector'

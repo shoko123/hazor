@@ -13,7 +13,7 @@ import type { TFieldsUnion, TApiModuleInit, TModule} from '@/js/types/moduleType
 import type { TApiItemShow } from '@/js/types/itemTypes'
 import type { LocationQuery } from 'vue-router'
 import { useXhrStore } from '../xhr'
-import { useTrioStore2 } from '../trio/trio2'
+import { useTrioStore } from '../trio/trio2'
 import { useFilterStore } from '../trio/filter'
 import { useCollectionsStore } from '../collections/collections'
 import { useMediaStore } from '../media'
@@ -34,7 +34,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   const p = useRoutesParserStore()
   const f = useFilterStore()
   const m = useModuleStore()
-  const { setTrio2, trioReset2 } = useTrioStore2()
+  const { setTrio, trioReset } = useTrioStore()
   const { setItemMedia } = useMediaStore()
 
   const fromUndef = ref<boolean>(false)
@@ -54,7 +54,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           break
 
         case 'module.clear':
-          trioReset2()
+          trioReset()
           break
 
         case 'collection.item.load': {
@@ -137,7 +137,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   }
 
   async function loadModule(module: TModule): Promise<{ success: boolean, message: string }> {
-    trioReset2()
+    trioReset()
     const res = await send<TApiModuleInit>('model/init', 'post', { model: module })
     if (res.success) {
       m.counts = res.data.counts
@@ -148,7 +148,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       i.itemViews = res.data.display_options.item_views
       c.clear(['main', 'media', 'related'])
 
-      setTrio2(res.data.trio2)
+      setTrio(res.data.trio)
 
       c.setCollectionViews('main', res.data.display_options.main_collection_views)
       c.setCollectionViews('related', res.data.display_options.related_collection_views)

@@ -10,7 +10,7 @@ import { useRoutesMainStore } from './routes/routesMain'
 import { useXhrStore } from './xhr'
 import { useModuleStore } from './module'
 import { useMediaStore } from './media'
-import { useTrioStore2 } from './trio/trio2'
+import { useTrioStore } from './trio/trio2'
 
 export const useItemStore = defineStore('item', () => {
   const { pushToArray } = useCollectionMainStore()
@@ -19,7 +19,7 @@ export const useItemStore = defineStore('item', () => {
   const { tagFromSlug } = useModuleStore()
   const { setItemMedia } = useMediaStore()
   const { send } = useXhrStore()
-  const { trio, fieldNameToGroupKey, groupLabelToKey } = storeToRefs(useTrioStore2())
+  const { trio, fieldNameToGroupKey, groupLabelToKey } = storeToRefs(useTrioStore())
   const fields = ref<TFieldsUnion | undefined>(undefined)
   const slug = ref<string | undefined>(undefined)
   const tag = ref<string | undefined>(undefined)

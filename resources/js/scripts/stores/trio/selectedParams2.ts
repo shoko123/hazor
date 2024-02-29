@@ -2,7 +2,7 @@ import { defineStore, storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { TrioSourceName } from '../../../types/trioTypes2'
 
-import { useTrioStore2 } from './trio2'
+import { useTrioStore } from './trio2'
 import { useItemStore } from '../item'
 import { useFilterStore } from './filter'
 import { useTaggerStore } from './tagger'
@@ -11,7 +11,7 @@ type TGroup = { label: string, params: string[] }
 type TCat = { label: string, groups: TGroup[] }
 
 export const useTrioSelectedStore2 = defineStore('trioSelected2', () => {
-  const { trio, groupLabelToKey } = storeToRefs(useTrioStore2())
+  const { trio, groupLabelToKey } = storeToRefs(useTrioStore())
   const { selectedItemParams2 } = storeToRefs(useItemStore())
   const { selectedFilterParams2 } = storeToRefs(useFilterStore())
   const { selectedNewItemParams2 } = storeToRefs(useTaggerStore())

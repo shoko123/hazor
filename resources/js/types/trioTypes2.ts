@@ -151,7 +151,7 @@ type TGroupLabelToKey = { [key: string]: string }
 type TTrio = { categories: TCategoriesArray, groupsObj: TGroupObj, paramsObj: TParamObj }
 
 //type TApiGroup = { group_name: string, group_type_code: TTrioCodeUnion, params: TApiParamUnion[] }
-type TApiTrio2 = { name: string, groups: TApiGroupUnion[] }[]
+type TApiTrio = { name: string, groups: TApiGroupUnion[] }[]
 
 export {
   TApiParamNameAndId,
@@ -165,7 +165,7 @@ export {
   TTrioApiGroupUnion,
   TTrioCodeUnion,
   TTrioAll,
-  TApiTrio2,
+  TApiTrio,
   TApiParamNameAndColumn,
   TTrioAllGeneric,
   TTrioGroupUnion,

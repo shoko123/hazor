@@ -112,8 +112,8 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useFilterStore } from '../../scripts/stores/trio/filter'
-import { useTrioStore2 } from '../../scripts/stores/trio/trio2'
-let { orderByAvailable, orderBySelected } = storeToRefs(useTrioStore2())
+import { useTrioStore } from '../../scripts/stores/trio/trio2'
+let { orderByAvailable, orderBySelected } = storeToRefs(useTrioStore())
 let { orderParamClicked, orderByClear } = useFilterStore()
 
 const selected = computed(() => {

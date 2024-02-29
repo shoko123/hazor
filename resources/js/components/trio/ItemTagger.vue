@@ -87,14 +87,14 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useTrioStore2 } from '../../scripts/stores/trio/trio2'
+import { useTrioStore } from '../../scripts/stores/trio/trio2'
 import { useTaggerStore } from '../../scripts/stores/trio/tagger'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 
 const { routerPush } = useRoutesMainStore()
-const { visibleCategories, visibleGroups, visibleParams, categoryIndex, groupIndex } = storeToRefs(useTrioStore2())
-const { resetCategoryAndGroupIndices, paramClicked } = useTrioStore2()
+const { visibleCategories, visibleGroups, visibleParams, categoryIndex, groupIndex } = storeToRefs(useTrioStore())
+const { resetCategoryAndGroupIndices, paramClicked } = useTrioStore()
 const { sync, setDefaultNewItemParams, copyCurrentToNew, truncateNewItemParams } = useTaggerStore()
 const { showSpinner, showSnackbar } = useNotificationsStore()
 

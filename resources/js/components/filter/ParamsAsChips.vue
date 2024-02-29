@@ -19,9 +19,9 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useTrioStore2 } from '../../scripts/stores/trio/trio2'
+import { useTrioStore } from '../../scripts/stores/trio/trio2'
 
-let trio = useTrioStore2()
+let trio = useTrioStore()
 
 const params = computed(() => {
   return trio.visibleParams

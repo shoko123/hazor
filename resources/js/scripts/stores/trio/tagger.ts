@@ -5,11 +5,11 @@ import type { TFieldsUnion } from '@/js/types/moduleTypes'
 import type { TGroupLocalColumn } from '@/js/types/trioTypes2'
 import { useXhrStore } from '../xhr'
 import { useItemStore } from '../item'
-import { useTrioStore2 } from './trio2'
+import { useTrioStore } from './trio2'
 import { useRoutesMainStore } from '../routes/routesMain'
 
 export const useTaggerStore = defineStore('tagger', () => {
-  const { trio } = storeToRefs(useTrioStore2())
+  const { trio } = storeToRefs(useTrioStore())
   const { fields, selectedItemParams2 } = storeToRefs(useItemStore())
 
   const selectedNewItemParams2 = ref<string[]>([])
