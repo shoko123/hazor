@@ -24,8 +24,8 @@ export const useItemStore = defineStore('item', () => {
   const slug = ref<string | undefined>(undefined)
   const tag = ref<string | undefined>(undefined)
   const short = ref<string | undefined>(undefined)
+
   const selectedItemParams = ref<string[]>([])
-  const selectedItemParams2 = ref<string[]>([])
   const ready = ref<boolean>(false)
 
   const itemViews = ref<string[]>([])
@@ -64,7 +64,7 @@ export const useItemStore = defineStore('item', () => {
     tag.value = tagFromSlug(<TModule>current.value.module, apiItem.slug)
 
     //add CV and CL field's "tags"
-    selectedItemParams2.value = []
+    selectedItemParams.value = []
     for (const x in fieldNameToGroupKey.value) {
       const group = trio.value.groupsObj[fieldNameToGroupKey.value[x]]
       // console.log(`Save item column field: "${x}" groupKey: ${fieldNameToGroupKey.value[x]} groupKeys: ${group.paramKeys}`)
@@ -75,7 +75,7 @@ export const useItemStore = defineStore('item', () => {
         return
       } else {
         if (['CV', 'CL'].includes(group.code)) {
-          selectedItemParams2.value.push(paramKey)
+          selectedItemParams.value.push(paramKey)
         }
       }
     }
@@ -91,7 +91,7 @@ export const useItemStore = defineStore('item', () => {
         console.log(`******serious error while saving item****`)
         return
       } else {
-        selectedItemParams2.value.push(paramKey)
+        selectedItemParams.value.push(paramKey)
       }
     }
   }
@@ -127,7 +127,6 @@ export const useItemStore = defineStore('item', () => {
     short.value = undefined
     tag.value = undefined
     selectedItemParams.value = []
-    selectedItemParams2.value = []
   }
 
   function nextSlug(isRight: boolean) {
@@ -175,7 +174,6 @@ export const useItemStore = defineStore('item', () => {
     id,
     derived,
     selectedItemParams,
-    selectedItemParams2,
     itemIndex,
     nextSlug,
     itemClear,

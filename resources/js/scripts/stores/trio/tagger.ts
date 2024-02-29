@@ -10,27 +10,27 @@ import { useRoutesMainStore } from '../routes/routesMain'
 
 export const useTaggerStore = defineStore('tagger', () => {
   const { trio } = storeToRefs(useTrioStore())
-  const { fields, selectedItemParams2 } = storeToRefs(useItemStore())
+  const { fields, selectedItemParams } = storeToRefs(useItemStore())
 
-  const selectedNewItemParams2 = ref<string[]>([])
+  const selectedNewItemParams = ref<string[]>([])
 
   function copyCurrentToNew() {
-    selectedNewItemParams2.value = [...selectedItemParams2.value]
+    selectedNewItemParams.value = [...selectedItemParams.value]
   }
 
   function truncateNewItemParams() {
-    selectedNewItemParams2.value = []
+    selectedNewItemParams.value = []
   }
 
   //When clearing params, set columns lookup and value to default (index 0)
   function setDefaultNewItemParams() {
-    selectedNewItemParams2.value = []
-    const clCvParamKeys = selectedItemParams2.value.filter(x => ['CL', 'CV'].includes(trio.value.groupsObj[trio.value.paramsObj[x].groupKey].code))
+    selectedNewItemParams.value = []
+    const clCvParamKeys = selectedItemParams.value.filter(x => ['CL', 'CV'].includes(trio.value.groupsObj[trio.value.paramsObj[x].groupKey].code))
 
     console.log(`tagger.clear('CL', 'CV' groupKeys): ${JSON.stringify(clCvParamKeys, null, 2)}`)
     clCvParamKeys.forEach(x => {
       const group = trio.value.groupsObj[trio.value.paramsObj[x].groupKey]
-      selectedNewItemParams2.value.push(group.paramKeys[0])
+      selectedNewItemParams.value.push(group.paramKeys[0])
     })
   }
 
@@ -46,7 +46,7 @@ export const useTaggerStore = defineStore('tagger', () => {
       columns: <{ column_name: string, val: number | string }[]>[]
     }
 
-    selectedNewItemParams2.value.forEach(paramKey => {
+    selectedNewItemParams.value.forEach(paramKey => {
       const group = <TGroupLocalColumn>trio.value.groupsObj[trio.value.paramsObj[paramKey].groupKey]
       switch (group.code) {
         case "TG":
@@ -76,7 +76,7 @@ export const useTaggerStore = defineStore('tagger', () => {
   }
 
   return {
-    selectedNewItemParams2,
+    selectedNewItemParams,
     setDefaultNewItemParams,
     truncateNewItemParams,
     copyCurrentToNew,

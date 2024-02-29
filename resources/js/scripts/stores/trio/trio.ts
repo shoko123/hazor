@@ -254,12 +254,12 @@ export const useTrioStore = defineStore('trio', () => {
 
   const selected = computed(() => {
     const { selectedFilterParams } = storeToRefs(useFilterStore())
-    const { selectedNewItemParams2 } = storeToRefs(useTaggerStore())
+    const { selectedNewItemParams } = storeToRefs(useTaggerStore())
     switch (current.value.name) {
       case 'filter':
         return selectedFilterParams.value
       case 'tag':
-        return selectedNewItemParams2.value
+        return selectedNewItemParams.value
       default:
         return []
     }

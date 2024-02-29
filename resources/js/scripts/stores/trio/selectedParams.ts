@@ -12,9 +12,9 @@ type TCat = { label: string, groups: TGroup[] }
 
 export const useTrioSelectedStore = defineStore('trioSelected2', () => {
   const { trio, groupLabelToKey } = storeToRefs(useTrioStore())
-  const { selectedItemParams2 } = storeToRefs(useItemStore())
+  const { selectedItemParams } = storeToRefs(useItemStore())
   const { selectedFilterParams } = storeToRefs(useFilterStore())
-  const { selectedNewItemParams2 } = storeToRefs(useTaggerStore())
+  const { selectedNewItemParams } = storeToRefs(useTaggerStore())
 
   function selectedTrio(sourceName: TrioSourceName) {
     if (trio.value.categories.length === 0) { return [] }
@@ -29,10 +29,10 @@ export const useTrioSelectedStore = defineStore('trioSelected2', () => {
         params = selectedFilterParams.value
         break
       case 'Item':
-        params = selectedItemParams2.value.filter(x => trio.value.paramsObj[x].text !== 'Unassigned')
+        params = selectedItemParams.value.filter(x => trio.value.paramsObj[x].text !== 'Unassigned')
         break
       case 'New':
-        params = selectedNewItemParams2.value
+        params = selectedNewItemParams.value
         break
     }
 
