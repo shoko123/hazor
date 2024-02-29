@@ -9,11 +9,7 @@
       </slot>
     </v-card-text>
   </v-card>
-  <v-dialog
-    v-model="dialog.open"
-    persistent
-    width="500"
-  >
+  <v-dialog v-model="dialog.open" persistent width="500">
     <v-card>
       <v-card-text>
         {{ dialog.message }}
@@ -24,6 +20,7 @@
     </v-card>
   </v-dialog>
 </template>
+
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'

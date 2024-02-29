@@ -20,17 +20,15 @@ export const useItemStore = defineStore('item', () => {
   const { setItemMedia } = useMediaStore()
   const { send } = useXhrStore()
   const { trio, fieldNameToGroupKey, groupLabelToKey } = storeToRefs(useTrioStore())
+
   const fields = ref<TFieldsUnion | undefined>(undefined)
   const slug = ref<string | undefined>(undefined)
   const tag = ref<string | undefined>(undefined)
   const short = ref<string | undefined>(undefined)
-
   const selectedItemParams = ref<string[]>([])
   const ready = ref<boolean>(false)
-
   const itemViews = ref<string[]>([])
   const itemViewIndex = ref<number>(0)
-
   const itemIndex = ref<number>(-1)
 
   const id = computed(() => {
@@ -50,8 +48,8 @@ export const useItemStore = defineStore('item', () => {
       module: current.value.module,
       slug: current.value.slug,
       tag: tag.value,
-      moduleAndTag: `${current.value === undefined ? "" : current.value.module} ${tag.value === undefined ? "" : tag.value}`,
-      short: short.value
+      moduleAndTag: `${current.value === undefined ? '' : current.value.module} ${tag.value === undefined ? '' : tag.value}`,
+      short: short.value,
     }
   })
 
@@ -69,7 +67,11 @@ export const useItemStore = defineStore('item', () => {
       const group = trio.value.groupsObj[fieldNameToGroupKey.value[x]]
       // console.log(`Save item column field: "${x}" groupKey: ${fieldNameToGroupKey.value[x]} groupKeys: ${group.paramKeys}`)
       const paramPropertyToCompare = ['CR', 'CV'].includes(group.code) ? 'text' : 'extra'
-      const paramKey = group.paramKeys.find(y => trio.value.paramsObj[y][paramPropertyToCompare] === (<TFieldsUnion>fields.value)[<KeyOfFields>x])
+      const paramKey = group.paramKeys.find(
+        (y) =>
+          trio.value.paramsObj[y][paramPropertyToCompare] ===
+          (<TFieldsUnion>fields.value)[<KeyOfFields>x],
+      )
       if (paramKey === undefined) {
         console.log(`******serious error while saving item****`)
         return
@@ -86,7 +88,7 @@ export const useItemStore = defineStore('item', () => {
       const group = trio.value.groupsObj[groupLabelToKey.value[x.group_label]]
       // console.log(`Save item column field: "${x}" groupKey: ${fieldNameToGroupKey.value[x]} groupKeys: ${group.paramKeys}`)
 
-      const paramKey = group.paramKeys.find(y => trio.value.paramsObj[y].text === x.tag_text)
+      const paramKey = group.paramKeys.find((y) => trio.value.paramsObj[y].text === x.tag_text)
       if (paramKey === undefined) {
         console.log(`******serious error while saving item****`)
         return
@@ -97,19 +99,30 @@ export const useItemStore = defineStore('item', () => {
   }
 
   //return the newly created/update item's slug (need it only for create())
-  async function upload(isCreate: boolean, newFields: TFieldsUnion): Promise<{ success: true, slug: string } | { success: false, message: string }> {
-    console.log(`item.upload isCreate: ${isCreate}, module: ${current.value.module}, fields: ${JSON.stringify(newFields, null, 2)}`)
+  async function upload(
+    isCreate: boolean,
+    newFields: TFieldsUnion,
+  ): Promise<{ success: true; slug: string } | { success: false; message: string }> {
+    console.log(
+      `item.upload isCreate: ${isCreate}, module: ${current.value.module}, fields: ${JSON.stringify(newFields, null, 2)}`,
+    )
 
-    const res = await send<TApiItemShow<TFieldsUnion>>('model/store', isCreate ? 'post' : 'put', { model: current.value.module, item: newFields, id: newFields.id })
+    const res = await send<TApiItemShow<TFieldsUnion>>('model/store', isCreate ? 'post' : 'put', {
+      model: current.value.module,
+      item: newFields,
+      id: newFields.id,
+    })
     if (!res.success) {
       return res
     }
 
-
     if (isCreate) {
       setItemMedia([])
       saveitemFieldsPlus(res.data)
-      const newIndex = pushToArray({ "id": res.data.fields.id, "slug": res.data.slug })
+      const newIndex = pushToArray({
+        id: res.data.fields.id,
+        slug: res.data.slug,
+      })
       itemIndex.value = newIndex
       //console.log(`item pushed to main array. index: ${itemIndex.value}`)
     } else {
@@ -133,9 +146,9 @@ export const useItemStore = defineStore('item', () => {
     let newIndex
     const length = collection('main').value.meta.length
     if (isRight) {
-      newIndex = (itemIndex.value === length - 1) ? 0 : itemIndex.value + 1
+      newIndex = itemIndex.value === length - 1 ? 0 : itemIndex.value + 1
     } else {
-      newIndex = (itemIndex.value === 0) ? length - 1 : itemIndex.value - 1
+      newIndex = itemIndex.value === 0 ? length - 1 : itemIndex.value - 1
     }
 
     const mainArrayItem = <TApiArrayMain>itemByIndex('main', newIndex)
@@ -143,12 +156,17 @@ export const useItemStore = defineStore('item', () => {
     return mainArrayItem.slug
   }
 
-  async function itemRemove(): Promise<{ success: true, slug: string | null } | { success: false, message: string }> {
+  async function itemRemove(): Promise<
+    { success: true; slug: string | null } | { success: false; message: string }
+  > {
     const { removeItemFromArrayById } = useCollectionMainStore()
     const prev = next('main', itemIndexById((<TFieldsUnion>fields.value).id), false)
 
-
-    const res = await send<TApiItemShow<TFieldsUnion>>('model/destroy', 'post', { model: current.value.module, slug: slug.value, id: fields.value?.id })
+    const res = await send<TApiItemShow<TFieldsUnion>>('model/destroy', 'post', {
+      model: current.value.module,
+      slug: slug.value,
+      id: fields.value?.id,
+    })
 
     if (!res.success) {
       return res
@@ -183,6 +201,6 @@ export const useItemStore = defineStore('item', () => {
     setItemViewIndex,
     saveitemFieldsPlus,
     upload,
-    itemRemove
+    itemRemove,
   }
 })

@@ -4,10 +4,7 @@
       {{ header }}
     </v-card-title>
     <v-card-text>
-      <v-tabs
-        v-model="catIndex"
-        class="primary"
-      >
+      <v-tabs v-model="catIndex" class="primary">
         <v-tab
           v-for="(cat, index) in visibleCategories"
           :key="index"
@@ -17,7 +14,6 @@
           {{ cat.hasSelected ? `${cat.catName}(*)` : cat.catName }}
         </v-tab>
       </v-tabs>
-
       <v-tabs v-model="grpIndex">
         <v-tab
           v-for="(group, index) in visibleGroups"
@@ -29,10 +25,7 @@
         </v-tab>
       </v-tabs>
 
-      <v-sheet
-        elevation="10"
-        class="ma-2"
-      >
+      <v-sheet elevation="10" class="ma-2">
         <div v-if="isColumnSearch">
           <ParamsAsTextSearch />
         </div>
@@ -61,20 +54,24 @@ const header = computed(() => {
 })
 
 const catIndex = computed({
-  get: () => { return categoryIndex.value },
-  set: val => {
+  get: () => {
+    return categoryIndex.value
+  },
+  set: (val) => {
     console.log(`categoryIndex set to ${val}`)
     groupIndex.value = 0
     categoryIndex.value = val
-  }
+  },
 })
 
 const grpIndex = computed({
-  get: () => { return groupIndex.value },
-  set: val => {
+  get: () => {
+    return groupIndex.value
+  },
+  set: (val) => {
     console.log(`groupIndex set to ${val}`)
     groupIndex.value = val
-  }
+  },
 })
 
 const isColumnSearch = computed(() => {
@@ -86,7 +83,6 @@ const isOrderBy = computed(() => {
   if (visibleGroups.value.length === 0) return false
   return visibleGroups.value[groupIndex.value].groupType === 'OB'
 })
-
 </script>
 <style scoped>
 .has-selected {

@@ -1,10 +1,5 @@
 <template>
-  <v-chip-group
-    v-model="selectedParamIndexes"
-    multiple
-    column
-    selected-class="primary"
-  >
+  <v-chip-group v-model="selectedParamIndexes" multiple column selected-class="primary">
     <v-chip
       v-for="(param, index) in params"
       :key="index"
@@ -37,13 +32,12 @@ const selectedParamIndexes = computed({
     })
     return selected
   },
-  set: val => { val }
+  set: (val) => {
+    val
+  },
 })
 
 function paramClicked(prmKey: string) {
-    trio.paramClicked(prmKey)
+  trio.paramClicked(prmKey)
 }
-
 </script>
-
-

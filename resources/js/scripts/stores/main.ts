@@ -5,13 +5,13 @@ import { useAuthStore } from './auth'
 import { useMediaStore } from './media'
 
 type sendApiAppInit = {
-  appUrl: string,
-  bucketUrl: string,
+  appUrl: string
+  bucketUrl: string
   accessibility: {
-    readOnly: boolean,
+    readOnly: boolean
     authenticatedUsersOnly: boolean
-  },
-  media_collections: string[],
+  }
+  media_collections: string[]
   msg: string
 }
 
@@ -31,10 +31,9 @@ export const useMainStore = defineStore('main', () => {
       initialized.value = true
     } else {
       console.log(`app/init failed status: ${res.status} message: ${res.message}`)
-      throw ("app.init() failed")
+      throw 'app.init() failed'
     }
   }
 
   return { initialized, appInit }
 })
-
