@@ -25,10 +25,12 @@ export const useTaggerStore = defineStore('tagger', () => {
   //When clearing params, set columns lookup and value to default (index 0)
   function setDefaultNewItemParams() {
     selectedNewItemParams.value = []
-    const clCvParamKeys = selectedItemParams.value.filter(x => ['CL', 'CV'].includes(trio.value.groupsObj[trio.value.paramsObj[x].groupKey].code))
+    const clCvParamKeys = selectedItemParams.value.filter((x) =>
+      ['CL', 'CV'].includes(trio.value.groupsObj[trio.value.paramsObj[x].groupKey].code),
+    )
 
     console.log(`tagger.clear('CL', 'CV' groupKeys): ${JSON.stringify(clCvParamKeys, null, 2)}`)
-    clCvParamKeys.forEach(x => {
+    clCvParamKeys.forEach((x) => {
       const group = trio.value.groupsObj[trio.value.paramsObj[x].groupKey]
       selectedNewItemParams.value.push(group.paramKeys[0])
     })
@@ -43,25 +45,29 @@ export const useTaggerStore = defineStore('tagger', () => {
       id: (<TFieldsUnion>fields.value).id,
       ids: <number[]>[],
       model_tag_ids: <number[]>[],
-      columns: <{ column_name: string, val: number | string }[]>[]
+      columns: <{ column_name: string; val: number | string }[]>[],
     }
 
-    selectedNewItemParams.value.forEach(paramKey => {
+    selectedNewItemParams.value.forEach((paramKey) => {
       const group = <TGroupLocalColumn>trio.value.groupsObj[trio.value.paramsObj[paramKey].groupKey]
       switch (group.code) {
-        case "TG":
+        case 'TG':
           payload.ids.push(<number>trio.value.paramsObj[paramKey].extra)
           break
 
-        case "TM":
+        case 'TM':
           payload.model_tag_ids.push(<number>trio.value.paramsObj[paramKey].extra)
           break
 
-        case "CL":
-        case "CV": {
-          const param = trio.value.paramsObj[paramKey]
-          payload.columns.push({ column_name: group.column_name, val: group.code === "CL" ? <number>param.extra : param.text })
-        }
+        case 'CL':
+        case 'CV':
+          {
+            const param = trio.value.paramsObj[paramKey]
+            payload.columns.push({
+              column_name: group.column_name,
+              val: group.code === 'CL' ? <number>param.extra : param.text,
+            })
+          }
           break
       }
     })
@@ -80,6 +86,6 @@ export const useTaggerStore = defineStore('tagger', () => {
     setDefaultNewItemParams,
     truncateNewItemParams,
     copyCurrentToNew,
-    sync
+    sync,
   }
 })

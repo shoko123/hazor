@@ -21,7 +21,6 @@
   </v-dialog>
 </template>
 
-
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
@@ -50,20 +49,28 @@ const parts = computed(() => {
       return { form: LoginForm, header: `User Login Form`, dialogForm: LoginDialog }
 
     case 'register':
-      return { form: RegistrationForm, header: `User Registration Form`, dialogForm: RegistrationDialog }
+      return {
+        form: RegistrationForm,
+        header: `User Registration Form`,
+        dialogForm: RegistrationDialog,
+      }
 
     case 'forgot-password':
-      return { form: ForgotPasswordForm, header: `Forgot Password Form`, dialogForm: ForgotPasswordDialog }
+      return {
+        form: ForgotPasswordForm,
+        header: `Forgot Password Form`,
+        dialogForm: ForgotPasswordDialog,
+      }
 
     case 'reset-password':
-      return { form: ResetPasswordForm, header: `Reset Password Form`, dialogForm: ResetPasswordDialog }
+      return {
+        form: ResetPasswordForm,
+        header: `Reset Password Form`,
+        dialogForm: ResetPasswordDialog,
+      }
 
     default:
       return null
   }
 })
-
 </script>
-
-
-

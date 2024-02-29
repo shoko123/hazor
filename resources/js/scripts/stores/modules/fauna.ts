@@ -3,12 +3,11 @@ import { defineStore } from 'pinia'
 import { TFieldsGeneric, TFieldsUnion, TFuncValidateSlug } from '@/js/types/moduleTypes'
 
 export const useFaunaStore = defineStore('fauna', () => {
-
-  const validateSlug: TFuncValidateSlug = function(slug: string) { 
+  const validateSlug: TFuncValidateSlug = function (slug: string) {
     return {
       success: true,
       data: { label: slug },
-      message: ''
+      message: '',
     }
   }
 
@@ -17,7 +16,9 @@ export const useFaunaStore = defineStore('fauna', () => {
   }
 
   function beforeStore(isCreate: boolean, fields: TFieldsUnion): TFieldsUnion | false {
-    console.log(`fauna.beforStores() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`)
+    console.log(
+      `fauna.beforStores() isCreate: ${isCreate}  fields: ${JSON.stringify(fields, null, 2)}`,
+    )
     const sf = <TFieldsGeneric<'Fauna'>>fields
     if (isCreate) {
       const rf = { ...sf }
@@ -30,7 +31,7 @@ export const useFaunaStore = defineStore('fauna', () => {
 
   const headers = computed(() => {
     return [
-      { title: 'Tag', align: 'start', key: 'tag', },
+      { title: 'Tag', align: 'start', key: 'tag' },
       { title: 'Area', align: 'start', key: 'area' },
       { title: 'Locus', align: 'start', key: 'locus' },
       { title: 'Basket', align: 'start', key: 'basket' },
@@ -47,11 +48,10 @@ export const useFaunaStore = defineStore('fauna', () => {
     ]
   })
 
-
   return {
     beforeStore,
     tagFromSlug,
     validateSlug,
-    headers
+    headers,
   }
 })

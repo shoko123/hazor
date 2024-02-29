@@ -1,8 +1,6 @@
 <template>
   <template v-if="!isLoggedIn">
-    <div class="text-subtitle-1 text-medium-emphasis">
-      Email
-    </div>
+    <div class="text-subtitle-1 text-medium-emphasis">Email</div>
     <v-text-field
       v-model="data.email"
       readonly
@@ -37,14 +35,7 @@
       @click:append-inner="visible = !visible"
     />
 
-    <v-btn
-      block
-      class="mb-8"
-      color="blue"
-      size="large"
-      variant="tonal"
-      @click="sendResetPassword"
-    >
+    <v-btn block class="mb-8" color="blue" size="large" variant="tonal" @click="sendResetPassword">
       Reset Password
     </v-btn>
   </template>
@@ -52,14 +43,7 @@
     <div class="text-h4">
       {{ problemText }}
     </div>
-    <v-btn
-      block
-      class="mb-8"
-      color="blue"
-      size="large"
-      variant="tonal"
-      @click="closeTab"
-    >
+    <v-btn block class="mb-8" color="blue" size="large" variant="tonal" @click="closeTab">
       Close Tab
     </v-btn>
   </template>
@@ -69,9 +53,9 @@
 import { computed, ref, reactive, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '../../scripts/stores/auth'
-import { useNotificationsStore } from '../../scripts/stores/notifications';
-import { useVuelidate } from "@vuelidate/core"
-import { required, email, minLength, helpers, sameAs } from "@vuelidate/validators"
+import { useNotificationsStore } from '../../scripts/stores/notifications'
+import { useVuelidate } from '@vuelidate/core'
+import { required, email, minLength, helpers, sameAs } from '@vuelidate/validators'
 
 onMounted(() => {
   prefetch()
@@ -84,15 +68,14 @@ onMounted(() => {
 let { showSnackbar } = useNotificationsStore()
 let { resetPassword, getUser, openDialog } = useAuthStore()
 
-
 const visible = ref(false)
 let isLoggedIn = ref(false)
 
 const data = reactive({
-  email: "",
-  password: "",
-  password_confirmation: "",
-  token: ""
+  email: '',
+  password: '',
+  password_confirmation: '',
+  token: '',
 })
 
 async function prefetch() {
@@ -110,11 +93,11 @@ const rules = computed(() => {
       minLength: minLength(8),
       containsPasswordRequirement: helpers.withMessage(
         () => `The password requires an uppercase, lowercase, and a number`,
-        (value) => /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])/.test(<string>value)
+        (value) => /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])/.test(<string>value),
       ),
     },
     password_confirmation: { required, sameAsPassword: sameAs(data.password) },
-    token: { required }
+    token: { required },
   }
 })
 
@@ -129,23 +112,31 @@ const passwordErrors = computed(() => {
 })
 
 const password_confirmationErrors = computed(() => {
-  return <string>(v$.value.password_confirmation.$error ? v$.value.password_confirmation.$errors[0].$message : undefined)
+  return <string>(
+    (v$.value.password_confirmation.$error
+      ? v$.value.password_confirmation.$errors[0].$message
+      : undefined)
+  )
 })
 
 async function sendResetPassword() {
   await v$.value.$validate()
   if (v$.value.$error || v$.value.$silentErrors.length > 0) {
-    showSnackbar("Please correct the marked errors!", "orange")
-    console.log(`validation errors: ${JSON.stringify(v$.value.$errors, null, 2)} silent: ${JSON.stringify(v$.value.$silentErrors, null, 2)}`)
+    showSnackbar('Please correct the marked errors!', 'orange')
+    console.log(
+      `validation errors: ${JSON.stringify(v$.value.$errors, null, 2)} silent: ${JSON.stringify(v$.value.$silentErrors, null, 2)}`,
+    )
     return
   }
 
   const res = await resetPassword(data)
- 
+
   if (res.success) {
-    openDialog(`Your password was successfuly reset. Please close this tab and follow the instructions in the app to login.`)
-  }  else {
-    openDialog(`Password-reset request failed. Please close this tab and try later.`)   
+    openDialog(
+      `Your password was successfuly reset. Please close this tab and follow the instructions in the app to login.`,
+    )
+  } else {
+    openDialog(`Password-reset request failed. Please close this tab and try later.`)
   }
 }
 
@@ -154,10 +145,9 @@ async function closeTab() {
 }
 
 const problemText = computed(() => {
-  return isLoggedIn.value ? `You are currently logged in and therefore can't reset your password.\
+  return isLoggedIn.value
+    ? `You are currently logged in and therefore can't reset your password.\
   Please close this tab and log out of the application before clicking the reset-password link in your email.`
     : ''
 })
 </script>
-
-

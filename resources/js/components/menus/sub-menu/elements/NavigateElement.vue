@@ -8,13 +8,7 @@
     variant="flat"
     @click="next(false)"
   />
-  <v-btn
-    color="blue-lighten-2"
-    large
-    rounded="0"
-    variant="flat"
-    class="text-none"
-  >
+  <v-btn color="blue-lighten-2" large rounded="0" variant="flat" class="text-none">
     {{ tag }}
   </v-btn>
   <v-btn
@@ -48,5 +42,4 @@ const tag = computed(() => {
 function next(isRight: boolean) {
   routerPush('show', nextSlug(isRight))
 }
-
 </script>

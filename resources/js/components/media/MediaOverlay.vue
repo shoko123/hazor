@@ -1,13 +1,6 @@
 <template>
-  <v-container
-    fluid
-    pa-0
-  >
-    <component
-      :is="overlay"
-      :item-index="itemIndex"
-      :record="props.record"
-    />
+  <v-container fluid pa-0>
+    <component :is="overlay" :item-index="itemIndex" :record="props.record" />
   </v-container>
 </template>
 
@@ -23,8 +16,8 @@ import OverlayMediaEdit from './OverlayMediaEdit.vue'
 import OverlayCMain from './OverlayCMain.vue'
 
 const props = defineProps<{
-  source: TCollectionName,
-  itemIndex: number,
+  source: TCollectionName
+  itemIndex: number
   record: TPageGallery
 }>()
 
@@ -45,6 +38,4 @@ const overlay = computed(() => {
       return OverlayRelated
   }
 })
-
 </script>
-

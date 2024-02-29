@@ -1,18 +1,8 @@
 <template>
   <div class="hidden-sm-and-down">
-    <v-btn
-      v-if="showLoginButton"
-      @click="loginClick()"
-    >
-      Login
-    </v-btn>
+    <v-btn v-if="showLoginButton" @click="loginClick()"> Login </v-btn>
     <v-btn v-if="auth.authenticated">
-      <v-icon
-        left
-        dark
-      >
-        mdi-account
-      </v-icon>
+      <v-icon left dark> mdi-account </v-icon>
       {{ auth.user?.name }}
       <v-menu activator="parent">
         <v-list>
@@ -30,11 +20,10 @@
   </div>
 </template>
 
-
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useAuthStore } from '../../../../scripts/stores/auth';
-import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain';
+import { useAuthStore } from '../../../../scripts/stores/auth'
+import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 import { useNotificationsStore } from '../../../../scripts/stores/notifications'
 import { storeToRefs } from 'pinia'
 
@@ -56,16 +45,15 @@ function loginClick() {
 
 async function userOptionsClicked(item: TUserOption) {
   switch (item) {
-    case "Logout":
+    case 'Logout':
       {
         const res = await auth.logout()
         showSnackbar(res.success ? 'You have successfully logged out.' : 'Logout Failed!')
-      } 
+      }
       break
-    case "Dashboard":
-      console.log("Dashboard clicked")
+    case 'Dashboard':
+      console.log('Dashboard clicked')
       break
   }
 }
 </script>
-

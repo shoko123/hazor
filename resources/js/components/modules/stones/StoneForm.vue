@@ -1,27 +1,8 @@
 <template>
-  <v-container
-    v-if="item"
-    fluid
-    class="pa-1 ma-0"
-  >
-    <v-row
-      wrap
-      no-gutters
-    >
-      <v-text-field
-        v-model="item.area"
-        label="Area"
-        class="mr-1"
-        filled
-        readonly
-      />
-      <v-text-field
-        v-model="item.locus"
-        label="Locus"
-        class="mr-1"
-        filled
-        readonly
-      />
+  <v-container v-if="item" fluid class="pa-1 ma-0">
+    <v-row wrap no-gutters>
+      <v-text-field v-model="item.area" label="Area" class="mr-1" filled readonly />
+      <v-text-field v-model="item.locus" label="Locus" class="mr-1" filled readonly />
       <v-text-field
         id="stone"
         v-model="stone"
@@ -30,13 +11,7 @@
         filled
         readonly
       />
-      <v-text-field
-        v-model="item.year"
-        label="Year"
-        class="mr-1"
-        filled
-        readonly
-      />
+      <v-text-field v-model="item.year" label="Year" class="mr-1" filled readonly />
       <v-text-field
         v-show="item.date"
         v-model="item.date"
@@ -47,17 +22,8 @@
       />
     </v-row>
 
-    <v-row
-      wrap
-      no-gutters
-    >
-      <v-text-field
-        v-model="item.type"
-        label="Type"
-        class="mr-1"
-        filled
-        readonly
-      />
+    <v-row wrap no-gutters>
+      <v-text-field v-model="item.type" label="Type" class="mr-1" filled readonly />
       <v-text-field
         v-model="item.material_code"
         label="Material Code"
@@ -75,10 +41,7 @@
       />
     </v-row>
 
-    <v-row
-      wrap
-      no-gutters
-    >
+    <v-row wrap no-gutters>
       <v-textarea
         v-model="item.description"
         label="Description"
@@ -98,10 +61,7 @@
       />
     </v-row>
 
-    <v-row
-      wrap
-      no-gutters
-    >
+    <v-row wrap no-gutters>
       <v-textarea
         v-model="item.prov_notes"
         label="Provenience Notes"
@@ -122,10 +82,7 @@
       />
     </v-row>
 
-    <v-row
-      wrap
-      no-gutters
-    >
+    <v-row wrap no-gutters>
       <v-textarea
         v-model="item.publication"
         label="Publication"
@@ -146,7 +103,7 @@ import { useItemStore } from '../../../scripts/stores/item'
 let { fields } = useItemStore()
 
 const rimDiameterInCm = computed(() => {
-  return item.value.rim_diameter === null ? "" : item.value.rim_diameter / 10
+  return item.value.rim_diameter === null ? '' : item.value.rim_diameter / 10
 })
 const item = computed(() => {
   return <TFieldsGeneric<'Stone'>>fields
@@ -155,4 +112,3 @@ const stone = computed(() => {
   return item.value.basket + `-${item.value.stone_no}`
 })
 </script>
-

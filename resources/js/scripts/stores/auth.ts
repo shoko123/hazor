@@ -2,7 +2,13 @@
 //handles and stores user's login and capabilities
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import type { TLoginForm, TRegistrationForm, TForgotPasswordForm, TResetPasswordForm, TUser } from '@/js/types/authTypes'
+import type {
+  TLoginForm,
+  TRegistrationForm,
+  TForgotPasswordForm,
+  TResetPasswordForm,
+  TUser,
+} from '@/js/types/authTypes'
 import type { TPageName } from '@/js/types/routesTypes'
 import type { TXhrEmptyResult, TXhrResult } from '@/js/types/generalTypes'
 import { useXhrStore } from './xhr'
@@ -29,19 +35,19 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function logout(): Promise<TXhrEmptyResult> {
-    console.log("auth.logout")
+    console.log('auth.logout')
     user.value = null
     return await send<TUser>('fortify/logout', 'post')
   }
 
   async function register(form: TRegistrationForm): Promise<TXhrEmptyResult> {
-    console.log("auth.register()")
+    console.log('auth.register()')
     user.value = null
     return await send('fortify/register', 'post', form)
   }
 
   async function getUser(): Promise<TXhrResult<TUser>> {
-    console.log("auth.getUser()")    
+    console.log('auth.getUser()')
     const res = await send<TUser>('about/me', 'get')
     if (res.success) {
       return res
@@ -62,25 +68,39 @@ export const useAuthStore = defineStore('auth', () => {
 
   //currently not used, maybe later add option to re-send verification email
   async function sendVerificationNatification(): Promise<TXhrEmptyResult> {
-    console.log("auth.sendVerificationNatification")
+    console.log('auth.sendVerificationNatification')
     return await send('fortify/email/verification-notification', 'post')
   }
 
   async function forgotPassword(form: TForgotPasswordForm): Promise<TXhrEmptyResult> {
-    console.log("auth.forgotPassword()")
+    console.log('auth.forgotPassword()')
     return await send('fortify/forgot-password', 'post', form)
   }
 
   async function resetPassword(form: TResetPasswordForm): Promise<TXhrEmptyResult> {
-    console.log("auth.resetPassword()")
+    console.log('auth.resetPassword()')
     return send('fortify/reset-password', 'post', form)
   }
 
   function resetAndGoTo(routeName: TPageName | null = null) {
     dialog.value = { open: false, message: '' }
-    if (routeName !== null)
-      routerPush(routeName)
+    if (routeName !== null) routerPush(routeName)
   }
 
-  return { register, loginGetUser, getUser, forgotPassword, resetPassword, logout, resetAndGoTo, sendVerificationNatification, openDialog, dialog, user, accessibility, authenticated, permissions }
+  return {
+    register,
+    loginGetUser,
+    getUser,
+    forgotPassword,
+    resetPassword,
+    logout,
+    resetAndGoTo,
+    sendVerificationNatification,
+    openDialog,
+    dialog,
+    user,
+    accessibility,
+    authenticated,
+    permissions,
+  }
 })

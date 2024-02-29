@@ -1,13 +1,13 @@
 <template>
   <v-data-table-virtual
     v-if="collectionIsNotEmpty"
-    :headers="(heads as any)"
+    :headers="heads as any"
     :items="page"
     class="elevation-1"
     height="80vh"
     item-value="slug"
     fixed-header
-  > 
+  >
     <template #[`item.tag`]="{ item }">
       <v-btn @click="btnClicked(item)">
         {{ item.tag }}
@@ -57,7 +57,6 @@ const page = computed(() => {
     return c.value.page as TPageRelatedTabular[]
   }
 })
-
 
 const collectionIsNotEmpty = computed(() => {
   return page.value === undefined ? 0 : page.value.length > 0

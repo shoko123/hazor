@@ -19,22 +19,35 @@ export const useXhrStore = defineStore('xhr', () => {
     }
   }
 
-  async function send<T = null>(endpoint: string, method: TXhrMethod, data?: object): Promise<TXhrResult<T>> {
-    const fullUrl = endpoint.substring(0, 8) === 'fortify/' ? `${axios.defaults.baseURL}/${endpoint}` : `${axios.defaults.baseURL}/api/${endpoint}`
+  async function send<T = null>(
+    endpoint: string,
+    method: TXhrMethod,
+    data?: object,
+  ): Promise<TXhrResult<T>> {
+    const fullUrl =
+      endpoint.substring(0, 8) === 'fortify/'
+        ? `${axios.defaults.baseURL}/${endpoint}`
+        : `${axios.defaults.baseURL}/api/${endpoint}`
     console.log(`xhr.send() endpoint: ${fullUrl}`)
     try {
       const res = await axios<T>({
         url: fullUrl,
         method,
-        data: (data === undefined) ? null : data
+        data: data === undefined ? null : data,
       })
       return { success: true, data: res.data, message: res.statusText, status: res.status }
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        console.log(`**** axios.err **** resData:${JSON.stringify({ message: err.response?.data?.message, status: err.response ? err.response.status : 777 }, null, 2)}`);
-        return { success: false, message: err.response?.data?.message.substring(0,200), status: err.response ? err.response.status : 777 }
+        console.log(
+          `**** axios.err **** resData:${JSON.stringify({ message: err.response?.data?.message, status: err.response ? err.response.status : 777 }, null, 2)}`,
+        )
+        return {
+          success: false,
+          message: err.response?.data?.message.substring(0, 200),
+          status: err.response ? err.response.status : 777,
+        }
       } else {
-        console.log(`**** axios.err **** no-response or setup error`);
+        console.log(`**** axios.err **** no-response or setup error`)
         return { success: false, status: 999, message: 'unexpected error' }
       }
     }

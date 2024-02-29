@@ -1,28 +1,7 @@
 <template>
-  <v-btn
-    class="primary--text"
-    large
-    variant="outlined"
-    @click="submit"
-  >
-    Submit
-  </v-btn>
-  <v-btn
-    class="primary--text"
-    large
-    variant="outlined"
-    @click="getCnt"
-  >
-    Count
-  </v-btn>
-  <v-btn
-    class="primary--text"
-    large
-    variant="outlined"
-    @click="clear"
-  >
-    clear
-  </v-btn>
+  <v-btn class="primary--text" large variant="outlined" @click="submit"> Submit </v-btn>
+  <v-btn class="primary--text" large variant="outlined" @click="getCnt"> Count </v-btn>
+  <v-btn class="primary--text" large variant="outlined" @click="clear"> clear </v-btn>
 
   <div class="hidden-sm-and-down">
     <WelcomeButton />

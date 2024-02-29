@@ -8,12 +8,7 @@
   >
     {{ snackbar.message }}
     <template #actions>
-      <v-btn
-        variant="outlined"
-        @click="snackbar.model = false"
-      >
-        Close
-      </v-btn>
+      <v-btn variant="outlined" @click="snackbar.model = false"> Close </v-btn>
     </template>
   </v-snackbar>
 </template>

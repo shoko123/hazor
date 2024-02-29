@@ -1,17 +1,7 @@
 <template>
-  <v-container
-    fluid
-    class="pa-1 ma-0"
-  >
-    <v-row
-      wrap
-      no-gutters
-    >
-      <v-select
-        v-model="data.area"
-        label="Area"
-        :items="areas"
-      />
+  <v-container fluid class="pa-1 ma-0">
+    <v-row wrap no-gutters>
+      <v-select v-model="data.area" label="Area" :items="areas" />
       <v-text-field
         id="locus"
         v-model="data.locus"
@@ -55,10 +45,7 @@
       />
     </v-row>
 
-    <v-row
-      wrap
-      no-gutters
-    >
+    <v-row wrap no-gutters>
       <v-text-field
         v-model="data.type"
         label="Type"
@@ -82,10 +69,7 @@
       />
     </v-row>
 
-    <v-row
-      wrap
-      no-gutters
-    >
+    <v-row wrap no-gutters>
       <v-textarea
         v-model="data.description"
         label="Description"
@@ -104,10 +88,7 @@
       />
     </v-row>
 
-    <v-row
-      wrap
-      no-gutters
-    >
+    <v-row wrap no-gutters>
       <v-textarea
         v-model="data.prov_notes"
         label="Provenience notes"
@@ -124,10 +105,7 @@
       />
     </v-row>
 
-    <v-row
-      wrap
-      no-gutters
-    >
+    <v-row wrap no-gutters>
       <v-textarea
         v-model="data.publication"
         label="Publication(s)"
@@ -136,24 +114,18 @@
         class="mr-1"
       />
     </v-row>
-    <slot
-      :id="data.id"
-      name="data"
-      :v="v"
-      :data="data"
-    />
+    <slot :id="data.id" name="data" :v="v" :data="data" />
   </v-container>
 </template>
 
 <script lang="ts" setup>
 import { useTrioStore } from '../../../scripts/stores/trio/trio'
 import { TFieldsGeneric } from '@/js/types/moduleTypes'
-import { onMounted, reactive, computed } from "vue"
+import { onMounted, reactive, computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useVuelidate } from "@vuelidate/core"
-import { required, numeric, maxLength, minValue, maxValue } from "@vuelidate/validators"
+import { useVuelidate } from '@vuelidate/core'
+import { required, numeric, maxLength, minValue, maxValue } from '@vuelidate/validators'
 import { useItemStore } from '../../../scripts/stores/item'
-
 
 const props = defineProps<{
   isCreate: boolean
@@ -171,9 +143,9 @@ let { trio, groupLabelToKey } = storeToRefs(useTrioStore())
 
 const data: TFieldsGeneric<'Stone'> = reactive({
   id: 0,
-  area: "A",
-  locus: "Change Me",
-  basket: "Change Me",
+  area: 'A',
+  locus: 'Change Me',
+  basket: 'Change Me',
   stone_no: 0,
   year: null,
   date: null,
@@ -187,18 +159,18 @@ const data: TFieldsGeneric<'Stone'> = reactive({
   rim_diameter: null,
   order_column: null,
   material_id: 1,
-  base_type_id: 1
+  base_type_id: 1,
 })
 
 const areas = computed(() => {
   let paramKeys = trio.value.groupsObj[groupLabelToKey.value['Area']].paramKeys
-  return paramKeys.map(x => trio.value.paramsObj[x].text)
+  return paramKeys.map((x) => trio.value.paramsObj[x].text)
 })
 
 const rules = computed(() => {
   return {
     id: {},
-    area: { required },//no need for validation - from select 
+    area: { required }, //no need for validation - from select
     locus: { required, maxLength: maxLength(50) },
     basket: { required, maxLength: maxLength(50) },
     stone_no: { required, numeric, minValue: minValue(0), maxValue: maxValue(99) },
@@ -213,7 +185,7 @@ const rules = computed(() => {
     description: { maxLength: maxLength(500) },
     publication: { maxLength: maxLength(250) },
     material_id: { required, minValue: minValue(1), maxValue: maxValue(200) },
-    base_type_id: { required, minValue: minValue(1), maxValue: maxValue(99) }
+    base_type_id: { required, minValue: minValue(1), maxValue: maxValue(99) },
   }
 })
 
@@ -243,7 +215,9 @@ const typeErrors = computed(() => {
 })
 
 const material_codeErrors = computed(() => {
-  return <string>(v.value.material_code.$error ? v.value.material_code.$errors[0].$message : undefined)
+  return <string>(
+    (v.value.material_code.$error ? v.value.material_code.$errors[0].$message : undefined)
+  )
 })
 const provErrors = computed(() => {
   return <string>(v.value.prov_notes.$error ? v.value.prov_notes.$errors[0].$message : undefined)
@@ -266,6 +240,8 @@ const dimensionsErrors = computed(() => {
 })
 
 const rim_diameterErrors = computed(() => {
-  return <string>(v.value.rim_diameter.$error ? v.value.rim_diameter.$errors[0].$message : undefined)
+  return <string>(
+    (v.value.rim_diameter.$error ? v.value.rim_diameter.$errors[0].$message : undefined)
+  )
 })
 </script>

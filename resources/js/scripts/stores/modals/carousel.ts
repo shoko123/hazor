@@ -1,7 +1,12 @@
 // stores/media.js
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { TCollectionName, TApiArrayMain, TApiArrayRelated, TApiArray } from '@/js/types/collectionTypes'
+import {
+  TCollectionName,
+  TApiArrayMain,
+  TApiArrayRelated,
+  TApiArray,
+} from '@/js/types/collectionTypes'
 import { TCarousel, TApiCarouselMain, TApiCarouselMedia } from '@/js/types/mediaTypes'
 import { useCollectionsStore } from '../collections/collections'
 import { useCollectionMainStore } from '../collections/collectionMain'
@@ -50,12 +55,18 @@ export const useCarouselStore = defineStore('carousel', () => {
     // let sendParams = { url = ''
     if (collectionName.value === 'related') {
       const tmp = <TApiArrayRelated>item
-      carouselItemDetails.value = { ...tmp, tag: tagFromSlug(tmp.module, tmp.slug), media: buildMedia(tmp.media, tmp.module) }
-    }
-    else {
+      carouselItemDetails.value = {
+        ...tmp,
+        tag: tagFromSlug(tmp.module, tmp.slug),
+        media: buildMedia(tmp.media, tmp.module),
+      }
+    } else {
       showSpinner(`Loading carousel item...`)
       if (collectionName.value === 'main') {
-        const res = await send<TApiCarouselMain>('model/carousel', 'post', { id: (<TApiArrayMain>item).id, model: derived.value.module })
+        const res = await send<TApiCarouselMain>('model/carousel', 'post', {
+          id: (<TApiArrayMain>item).id,
+          model: derived.value.module,
+        })
         if (res.success) {
           carouselItemDetails.value = {
             module: res.data.module,
@@ -63,7 +74,7 @@ export const useCarouselStore = defineStore('carousel', () => {
             slug: res.data.slug,
             tag: tagFromSlug(derived.value.module, res.data.slug),
             short: res.data.short,
-            media: buildMedia(res.data.urls, derived.value.module)
+            media: buildMedia(res.data.urls, derived.value.module),
           }
         } else {
           pushHome('Failed to load carousel item. Redirected to home page.')
@@ -80,7 +91,7 @@ export const useCarouselStore = defineStore('carousel', () => {
             file_name: res.data.file_name,
             order_column: res.data.order_column,
             title: res.data.title,
-            text: res.data.text
+            text: res.data.text,
           }
         } else {
           pushHome('Failed to load carousel item. Redirected to home page.')
@@ -88,7 +99,6 @@ export const useCarouselStore = defineStore('carousel', () => {
       }
       showSpinner(false)
     }
-
   }
 
   async function close() {
@@ -98,11 +108,16 @@ export const useCarouselStore = defineStore('carousel', () => {
       if (!c.itemIsInPage(<number>carouselItemDetails.value?.id)) {
         const index = c.itemIndexById(<number>carouselItemDetails.value?.id)
         showSpinner('Loading a new page...')
-        const res = await c.loadPageByItemIndex(collectionName.value, view, index, derived.value.module)
-          showSpinner(false)
-          if(!res.success) {
-            pushHome('Failed to load page. Redirected to home page.')
-          }
+        const res = await c.loadPageByItemIndex(
+          collectionName.value,
+          view,
+          index,
+          derived.value.module,
+        )
+        showSpinner(false)
+        if (!res.success) {
+          pushHome('Failed to load page. Redirected to home page.')
+        }
       } else {
         console.log(`carousel.close() no need to load a new page`)
       }

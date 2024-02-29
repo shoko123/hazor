@@ -1,10 +1,5 @@
 <template>
-  <v-btn
-    class="ml-2 bg-grey-lighten-1"
-    @click="goToItem()"
-  >
-    Visit
-  </v-btn>
+  <v-btn class="ml-2 bg-grey-lighten-1" @click="goToItem()"> Visit </v-btn>
   <v-btn
     v-if="props.record.media.hasMedia"
     class="ml-2 bg-grey-lighten-1"
@@ -20,8 +15,8 @@ import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
 
 const props = defineProps<{
-  itemIndex: number,
-  record: TPageRelatedGallery,
+  itemIndex: number
+  record: TPageRelatedGallery
 }>()
 
 let { moveFromItemToItem } = useRoutesMainStore()

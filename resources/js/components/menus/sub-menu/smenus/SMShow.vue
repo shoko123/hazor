@@ -4,11 +4,7 @@
     <FilterButton />
     <CollectionButton />
   </div>
-  <v-divider
-    class="ms-3"
-    inset
-    vertical
-  />
+  <v-divider class="ms-3" inset vertical />
   <NavigateElement />
   <v-spacer />
   <div class="hidden-sm-and-down">
@@ -16,16 +12,8 @@
 
     <v-menu>
       <template #activator="{ props }">
-        <v-btn
-          color="primary"
-          v-bind="props"
-        >
-          <v-icon
-            left
-            dark
-          >
-            mdi-eye
-          </v-icon>
+        <v-btn color="primary" v-bind="props">
+          <v-icon left dark> mdi-eye </v-icon>
           {{ itemViewText }}
         </v-btn>
       </template>
@@ -44,7 +32,6 @@
 </template>
 
 <script lang="ts" setup>
-
 import { computed } from 'vue'
 import { useItemStore } from '../../../../scripts/stores/item'
 
@@ -53,7 +40,6 @@ import ModifyButtons from '../elements/ModifyButtons.vue'
 import WelcomeButton from '../elements/WelcomeButton.vue'
 import FilterButton from '../elements/FilterButton.vue'
 import CollectionButton from '../elements/CollectionButton.vue'
-
 
 let is = useItemStore()
 

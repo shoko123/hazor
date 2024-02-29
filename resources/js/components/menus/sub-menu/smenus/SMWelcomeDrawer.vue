@@ -1,17 +1,10 @@
 <template>
-  <v-list-item @click="toFilter">
-    Filter
-  </v-list-item>
-  <v-list-item @click="toCollection">
-    Collection
-  </v-list-item>
-  <v-list-item @click="toItem">
-    Item
-  </v-list-item>
+  <v-list-item @click="toFilter"> Filter </v-list-item>
+  <v-list-item @click="toCollection"> Collection </v-list-item>
+  <v-list-item @click="toItem"> Item </v-list-item>
 </template>
 
 <script lang="ts" setup>
-
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 import { useCollectionsStore } from '../../../../scripts/stores/collections/collections'
 
@@ -34,5 +27,4 @@ async function toItem() {
 function toFilter() {
   routerPush('filter')
 }
-
 </script>

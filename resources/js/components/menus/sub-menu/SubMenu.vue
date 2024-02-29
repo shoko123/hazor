@@ -1,17 +1,10 @@
 <template>
   <v-app-bar :height="35">
-    <v-app-bar-nav-icon
-      class="hidden-md-and-up"
-      @click="showDrawer = !showDrawer"
-    />
+    <v-app-bar-nav-icon class="hidden-md-and-up" @click="showDrawer = !showDrawer" />
     <component :is="menu?.elements" />
   </v-app-bar>
 
-  <v-navigation-drawer
-    v-model="showDrawer"
-    temporary
-    color="blue-grey darken-4"
-  >
+  <v-navigation-drawer v-model="showDrawer" temporary color="blue-grey darken-4">
     <component :is="menu?.drawer" />
   </v-navigation-drawer>
 </template>
@@ -49,5 +42,4 @@ const menu = computed(() => {
       return null
   }
 })
-
 </script>

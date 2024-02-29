@@ -1,28 +1,19 @@
 <template>
-  <v-list-item @click="submit">
-    Submit
-  </v-list-item>
-  <v-list-item @click="getCnt">
-    Count
-  </v-list-item>
-  <v-list-item @click="clear">
-    Clear
-  </v-list-item>
+  <v-list-item @click="submit"> Submit </v-list-item>
+  <v-list-item @click="getCnt"> Count </v-list-item>
+  <v-list-item @click="clear"> Clear </v-list-item>
   <v-divider />
-  <v-list-item :to="{ name: 'welcome', params: { module } }">
-    Welcome
-  </v-list-item>
+  <v-list-item :to="{ name: 'welcome', params: { module } }"> Welcome </v-list-item>
 </template>
 
 <script lang="ts" setup>
-import { computed, } from 'vue'
+import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoutesMainStore } from '../../../../scripts/stores/routes/routesMain'
 import { useTrioStore } from '../../../../scripts/stores/trio/trio'
 import { useFilterStore } from '../../../../scripts/stores/trio/filter'
 import { useRouter } from 'vue-router'
 import { useNotificationsStore } from '../../../../scripts/stores/notifications'
-
 
 const { current } = storeToRefs(useRoutesMainStore())
 const { resetCategoryAndGroupIndices } = useTrioStore()

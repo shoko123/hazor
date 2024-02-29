@@ -1,16 +1,8 @@
-
-
 <template>
-  <v-dialog
-    v-model="isOpen"
-    fullscreen
-  >
+  <v-dialog v-model="isOpen" fullscreen>
     <v-container fluid>
       <v-card height="97vh">
-        <v-toolbar
-          height="36"
-          class="bg-grey-lighten-1"
-        >
+        <v-toolbar height="36" class="bg-grey-lighten-1">
           <v-toolbar-title>{{ details.header }}</v-toolbar-title>
           <v-btn
             v-if="showNextArrows"
@@ -24,11 +16,7 @@
             icon="mdi-arrow-right"
             @click="nextClicked(true)"
           />
-          <v-btn
-            size="small"
-            icon="mdi-close"
-            @click="closeCarousel"
-          />
+          <v-btn size="small" icon="mdi-close" @click="closeCarousel" />
         </v-toolbar>
         <v-card-text>
           <v-row wrap>
@@ -63,14 +51,21 @@ import CarouselFormRelated from './CarouselFormRelated.vue'
 
 const { smAndDown } = useDisplay()
 const { close, next } = useCarouselStore()
-const { isOpen, index, arrayLength, collectionName, carouselItemDetails } = storeToRefs(useCarouselStore())
+const { isOpen, index, arrayLength, collectionName, carouselItemDetails } =
+  storeToRefs(useCarouselStore())
 const { derived } = storeToRefs(useItemStore())
 const details = computed(() => {
   switch (collectionName.value) {
     case 'main':
-      return { form: CarouselFormMain, header: mainHeader(<TCarouselMain>carouselItemDetails.value) }
+      return {
+        form: CarouselFormMain,
+        header: mainHeader(<TCarouselMain>carouselItemDetails.value),
+      }
     case 'related':
-      return { form: CarouselFormRelated, header: relatedHeader(<TCarouselRelated>carouselItemDetails.value) }
+      return {
+        form: CarouselFormRelated,
+        header: relatedHeader(<TCarouselRelated>carouselItemDetails.value),
+      }
     case 'media':
     default:
       return { form: CarouselFormMedia, header: mediaHeader() }
@@ -85,7 +80,9 @@ function mainHeader(item: TCarouselMain) {
   return `${item?.module} ${item?.tag} ${counter.value}`
 }
 function relatedHeader(item: TCarouselRelated) {
-  return smAndDown.value ? `` : `${item?.module} ${item?.tag}. Relation: ${item?.relation_name} ${counter.value}`
+  return smAndDown.value
+    ? ``
+    : `${item?.module} ${item?.tag}. Relation: ${item?.relation_name} ${counter.value}`
 }
 function mediaHeader() {
   return `${derived.value.moduleAndTag}: Media  ${counter.value}`
@@ -106,5 +103,4 @@ async function nextClicked(isRight: boolean) {
 async function closeCarousel() {
   await close()
 }
-
 </script>

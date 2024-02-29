@@ -12,14 +12,14 @@ export const useModuleStore = defineStore('module', () => {
   const { bucketUrl } = storeToRefs(useMediaStore())
   const { current } = storeToRefs(useRoutesMainStore())
   const counts = ref({ items: 0, media: 0 })
-  const welcomeText = ref<string>("")
+  const welcomeText = ref<string>('')
 
   const backgroundImage = computed(() => {
     switch (current.value.name) {
       case 'welcome':
         return {
           fullUrl: `${bucketUrl.value}app/background/${current.value.module}.jpg`,
-          tnUrl: `${bucketUrl.value}app/background/${current.value.module}-tn.jpg`
+          tnUrl: `${bucketUrl.value}app/background/${current.value.module}-tn.jpg`,
         }
       case 'login':
       case 'register':
@@ -27,7 +27,7 @@ export const useModuleStore = defineStore('module', () => {
       case 'reset-password':
         return {
           fullUrl: `${bucketUrl.value}app/background/Auth.jpg`,
-          tnUrl: `${bucketUrl.value}app/background/Auth-tn.jpg`
+          tnUrl: `${bucketUrl.value}app/background/Auth-tn.jpg`,
         }
       default:
         return undefined

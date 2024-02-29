@@ -8,29 +8,16 @@
         {{ d.emptyTitle }}
       </div>
       <v-list v-if="d.data.length">
-        <v-list-item
-          v-for="(cat, keyC) in d.data"
-          :key="keyC"
-        >
+        <v-list-item v-for="(cat, keyC) in d.data" :key="keyC">
           <div class="font-weight-bold">
             {{ cat.label }}
           </div>
-          <v-list-item
-            v-for="(group, keyG) in cat.groups"
-            :key="keyG"
-          >
+          <v-list-item v-for="(group, keyG) in cat.groups" :key="keyG">
             <v-list-item-title>
-              <v-container
-                fluid
-                class="pa-0 ma-0"
-              >
+              <v-container fluid class="pa-0 ma-0">
                 <v-row class="pa-2 ma-2">
                   <div>{{ group.label }}:</div>
-                  <v-chip
-                    v-for="(param, keyP) in group.params"
-                    :key="keyP"
-                    class="ml-2 mb-2"
-                  >
+                  <v-chip v-for="(param, keyP) in group.params" :key="keyP" class="ml-2 mb-2">
                     {{ param }}
                   </v-chip>
                 </v-row>
@@ -50,7 +37,8 @@ import { storeToRefs } from 'pinia'
 import type { TrioSourceName } from '../../types/trioTypes'
 import { useTrioSelectedStore } from '../../scripts/stores/trio/selectedParams'
 import { useItemStore } from '../../scripts/stores/item'
-let { selectedFilterTrio, selectedNewItemTrio, selectedItemTrio } = storeToRefs(useTrioSelectedStore())
+let { selectedFilterTrio, selectedNewItemTrio, selectedItemTrio } =
+  storeToRefs(useTrioSelectedStore())
 let { derived } = storeToRefs(useItemStore())
 
 const props = defineProps<{
@@ -60,16 +48,26 @@ const props = defineProps<{
 const d = computed(() => {
   switch (props.source) {
     case 'Filter':
-      return { data: selectedFilterTrio.value, header: `Selected Filters`, emptyTitle: `[ No filters selected ]` }
+      return {
+        data: selectedFilterTrio.value,
+        header: `Selected Filters`,
+        emptyTitle: `[ No filters selected ]`,
+      }
 
     case 'Item':
-      return { data: selectedItemTrio.value, header: `${derived.value.moduleAndTag} - Tags`, emptyTitle: `[ Item has no tags ]` }
+      return {
+        data: selectedItemTrio.value,
+        header: `${derived.value.moduleAndTag} - Tags`,
+        emptyTitle: `[ Item has no tags ]`,
+      }
 
     case 'New':
-      default:
-      return { data: selectedNewItemTrio.value, header: `Selected Tags`, emptyTitle: `[ No tags selected ]` }
+    default:
+      return {
+        data: selectedNewItemTrio.value,
+        header: `Selected Tags`,
+        emptyTitle: `[ No tags selected ]`,
+      }
   }
 })
-
 </script>
-

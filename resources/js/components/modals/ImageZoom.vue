@@ -1,10 +1,5 @@
-
-
 <template>
-  <div
-    id="zoomy-container"
-    height="100vh"
-  >
+  <div id="zoomy-container" height="100vh">
     <v-img
       id="zoomy"
       :src="media?.urls.full"
@@ -13,21 +8,14 @@
       height="95vh"
       :cover="isFiller"
     >
-      <v-overlay
-        v-model="isFiller"
-        contained
-        class="align-center justify-center"
-      >
-        <div class="text-white text-h2">
-          No Media Available
-        </div>
+      <v-overlay v-model="isFiller" contained class="align-center justify-center">
+        <div class="text-white text-h2">No Media Available</div>
       </v-overlay>
     </v-img>
   </div>
 </template>
-  
-<script lang="ts" setup>
 
+<script lang="ts" setup>
 import { computed, onMounted, onBeforeUnmount, watch, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useCarouselStore } from '../../scripts/stores/modals/carousel'
@@ -36,7 +24,7 @@ import Zoomy from './zoomy/Zoomy.js'
 onMounted(() => {
   //console.log(`ImageZoom.mount`)
   if (media.value?.hasMedia) {
-    zm.value = new Zoomy('zoomy', options);
+    zm.value = new Zoomy('zoomy', options)
   } else {
     zm.value?.detach()
     zm.value = null
@@ -75,7 +63,11 @@ watch(media, () => {
 
 //isFiller includes a set function as v-overlays requires a modifiable boolean
 const isFiller = computed({
-  get: () => { return !media.value?.hasMedia },
-  set: val => { val }
+  get: () => {
+    return !media.value?.hasMedia
+  },
+  set: (val) => {
+    val
+  },
 })
 </script>

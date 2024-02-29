@@ -5,17 +5,11 @@
     </v-card-title>
     <v-card-text>
       <div v-if="hasMedia">
-        <v-row
-          wrap
-          no-gutters
-        >
+        <v-row wrap no-gutters>
           <v-col :cols="widths[0]">
             <component :is="itemForm" />
           </v-col>
-          <v-col
-            :cols="widths[1]"
-            class="px-1"
-          >
+          <v-col :cols="widths[1]" class="px-1">
             <MediaSquare
               v-bind="{
                 source: 'media',
@@ -33,7 +27,7 @@
 </template>
 
 <script lang="ts" setup>
-import {type Component, computed } from 'vue'
+import { type Component, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDisplay } from 'vuetify'
 import { useItemStore } from '../../../scripts/stores/item'
@@ -73,7 +67,4 @@ const widths = computed(() => {
   const { smAndDown } = useDisplay()
   return smAndDown.value ? [12, 12] : [9, 3]
 })
-
-
 </script>
-

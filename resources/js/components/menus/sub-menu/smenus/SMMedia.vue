@@ -1,24 +1,11 @@
 <template>
-  <v-btn
-    :disabled="disableShowUploaderButton"
-    variant="outlined"
-    @click="showUpldr"
-  >
+  <v-btn :disabled="disableShowUploaderButton" variant="outlined" @click="showUpldr">
     Upload files
   </v-btn>
-  <v-btn
-    variant="outlined"
-    @click="back"
-  >
+  <v-btn variant="outlined" @click="back">
     {{ backText }}
   </v-btn>
-  <v-btn
-    v-if="orderChanged"
-    variant="outlined"
-    @click="reorderAndBack"
-  >
-    Save Order & back
-  </v-btn>
+  <v-btn v-if="orderChanged" variant="outlined" @click="reorderAndBack"> Save Order & back </v-btn>
 </template>
 
 <script lang="ts" setup>
@@ -40,26 +27,25 @@ const disableShowUploaderButton = computed(() => {
 })
 
 const backText = computed(() => {
-  return orderChanged.value ? "Back without saving order" : "back"
+  return orderChanged.value ? 'Back without saving order' : 'back'
 })
 
 function showUpldr() {
   showUploader.value = true
 }
 
-
 async function reorderAndBack() {
-  console.log("Reorder")
+  console.log('Reorder')
   showSpinner('Reordering media...')
   let res = await mediaReorder()
   showSpinner(false)
-  if(res.success)
-  showSnackbar(res.success ? `Reorder completed successfully`: `Reorde failed. ${res.message}`)
+  if (res.success)
+    showSnackbar(res.success ? `Reorder completed successfully` : `Reorde failed. ${res.message}`)
   clear()
-  routerPush('show', <string>derived.value.slug) 
+  routerPush('show', <string>derived.value.slug)
 }
 function back() {
   clear()
-  routerPush('show', <string>derived.value.slug)   
+  routerPush('show', <string>derived.value.slug)
 }
 </script>

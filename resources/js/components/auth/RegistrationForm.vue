@@ -1,7 +1,5 @@
 <template>
-  <div class="text-subtitle-1 text-medium-emphasis">
-    User Name
-  </div>
+  <div class="text-subtitle-1 text-medium-emphasis">User Name</div>
 
   <v-text-field
     v-model="data.name"
@@ -12,9 +10,7 @@
     variant="outlined"
   />
 
-  <div class="text-subtitle-1 text-medium-emphasis">
-    Email
-  </div>
+  <div class="text-subtitle-1 text-medium-emphasis">Email</div>
 
   <v-text-field
     v-model="data.email"
@@ -57,22 +53,12 @@
     @click:append-inner="visible = !visible"
   />
 
-  <v-btn
-    block
-    class="mb-8"
-    color="blue"
-    size="large"
-    variant="tonal"
-    @click="register1"
-  >
+  <v-btn block class="mb-8" color="blue" size="large" variant="tonal" @click="register1">
     Register
   </v-btn>
 
   <div class="d-flex justify-center">
-    <a
-      class="text-blue text-decoration-none"
-      @click="goToLogin"
-    >
+    <a class="text-blue text-decoration-none" @click="goToLogin">
       To Login Page<v-icon icon="mdi-chevron-right" />
     </a>
   </div>
@@ -81,34 +67,34 @@
 <script setup lang="ts">
 import { computed, ref, reactive } from 'vue'
 import { useAuthStore } from '../../scripts/stores/auth'
-import { useNotificationsStore } from '../../scripts/stores/notifications';
+import { useNotificationsStore } from '../../scripts/stores/notifications'
 
 const { showSnackbar } = useNotificationsStore()
 const { logout, register, resetAndGoTo, openDialog } = useAuthStore()
 
-import { useVuelidate } from "@vuelidate/core"
-import { required, email, minLength, maxLength, helpers, sameAs, } from "@vuelidate/validators"
+import { useVuelidate } from '@vuelidate/core'
+import { required, email, minLength, maxLength, helpers, sameAs } from '@vuelidate/validators'
 
 const data = reactive({
-  name: "",
-  email: "",
-  password: "",
-  password_confirmation: "",
+  name: '',
+  email: '',
+  password: '',
+  password_confirmation: '',
 })
 
 const rules = computed(() => {
   return {
-    name: { required, minValue: minLength(4), maxValue: maxLength(40), },
+    name: { required, minValue: minLength(4), maxValue: maxLength(40) },
     email: { required, email },
     password: {
       required,
       minLength: minLength(8),
       containsPasswordRequirement: helpers.withMessage(
         () => `The password requires an uppercase, lowercase, and a number`,
-        (value) => /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])/.test(<string>value)
+        (value) => /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])/.test(<string>value),
       ),
     },
-    password_confirmation: { required, sameAsPassword: sameAs(data.password) }
+    password_confirmation: { required, sameAsPassword: sameAs(data.password) },
   }
 })
 
@@ -127,16 +113,22 @@ const passwordErrors = computed(() => {
 })
 
 const password_confirmationErrors = computed(() => {
-  return <string>(v$.value.password_confirmation.$error ? v$.value.password_confirmation.$errors[0].$message : undefined)
+  return <string>(
+    (v$.value.password_confirmation.$error
+      ? v$.value.password_confirmation.$errors[0].$message
+      : undefined)
+  )
 })
 
 const visible = ref(false)
 
 async function register1() {
-  await v$.value.$validate();
+  await v$.value.$validate()
   if (v$.value.$error || v$.value.$silentErrors.length > 0) {
-    showSnackbar("Please correct the marked errors!", "orange")
-    console.log(`validation errors: ${JSON.stringify(v$.value.$errors, null, 2)} silent: ${JSON.stringify(v$.value.$silentErrors, null, 2)}`)
+    showSnackbar('Please correct the marked errors!', 'orange')
+    console.log(
+      `validation errors: ${JSON.stringify(v$.value.$errors, null, 2)} silent: ${JSON.stringify(v$.value.$silentErrors, null, 2)}`,
+    )
     return
   }
 
@@ -151,12 +143,13 @@ async function register1() {
 
   if (res2.success) {
     //if successful, a verification email was sent by laravel. Verification handeling is done in the dialog form.
-    openDialog(`A verification email has been sent to ${data.email}. After verifying your email please click below to close this tab`)
+    openDialog(
+      `A verification email has been sent to ${data.email}. After verifying your email please click below to close this tab`,
+    )
   } else {
     if (res2.status === 422) {
       showSnackbar(<string>res2.message)
-    }
-    else {
+    } else {
       showSnackbar(`Registration Error: ${<string>res2.message} Redirected to home page.`)
       resetAndGoTo('home')
     }
@@ -166,7 +159,4 @@ async function register1() {
 function goToLogin() {
   resetAndGoTo('login')
 }
-
 </script>
-
-

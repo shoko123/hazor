@@ -1,8 +1,5 @@
 <template>
-  <v-row
-    wrap
-    dense
-  >
+  <v-row wrap dense>
     <v-col :cols="widths[0]">
       <ItemCard />
     </v-col>
@@ -10,10 +7,7 @@
       <TagsForm2 source="Item" />
     </v-col>
   </v-row>
-  <CollectionForm
-    source="media"
-    class="my-2"
-  />
+  <CollectionForm source="media" class="my-2" />
   <CollectionForm source="related" />
 </template>
 
@@ -29,4 +23,3 @@ const widths = computed(() => {
   return smAndDown.value ? [12, 12] : [9, 3]
 })
 </script>
-

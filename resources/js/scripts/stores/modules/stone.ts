@@ -3,25 +3,26 @@ import { defineStore } from 'pinia'
 import { TFieldsGeneric, TFieldsUnion, TFuncValidateSlug } from '@/js/types/moduleTypes'
 
 export const useStoneStore = defineStore('stone', () => {
-  const validateSlug: TFuncValidateSlug = function(slug: string) { 
+  const validateSlug: TFuncValidateSlug = function (slug: string) {
     const arr = slug.split('.')
 
     if (arr.length === 1) {
       return {
         success: false,
         data: null,
-        message: "No . [dot] detected in slug"
+        message: 'No . [dot] detected in slug',
       }
     } else {
       return {
-        success: true, data: {
+        success: true,
+        data: {
           basket: arr[0],
-          stone_no: arr[1]
+          stone_no: arr[1],
         },
-        message: ''
+        message: '',
       }
     }
-  } 
+  }
 
   function tagFromSlug(slug: string): string {
     //console.log(`Stone.tagFromSlug()`)
@@ -42,12 +43,12 @@ export const useStoneStore = defineStore('stone', () => {
 
   const headers = computed(() => {
     return [
-      { title: 'Name', align: 'start', key: 'tag', },
+      { title: 'Name', align: 'start', key: 'tag' },
       { title: 'Area', align: 'start', key: 'area' },
       { title: 'Locus', align: 'start', key: 'locus' },
       { title: 'Year', align: 'end', key: 'year' },
       { title: 'Type', align: 'start', key: 'type' },
-      { title: 'Description', key: 'description', align: 'start', sortable: false, },
+      { title: 'Description', key: 'description', align: 'start', sortable: false },
       { title: 'Base Type', align: 'start', key: 'base_type' },
       { title: 'Material Code', align: 'start', key: 'material_code' },
       { title: 'Material', align: 'start', key: 'material' },
@@ -62,6 +63,6 @@ export const useStoneStore = defineStore('stone', () => {
     beforeStore,
     validateSlug,
     tagFromSlug,
-    headers
+    headers,
   }
 })

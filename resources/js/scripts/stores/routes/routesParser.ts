@@ -7,51 +7,56 @@ import { useFaunaStore } from '../modules/fauna'
 import { useStoneStore } from '../modules/stone'
 
 const moduleConversion = {
-    loci: 'Locus',
-    fauna: 'Fauna',
-    stones: "Stone"
+  loci: 'Locus',
+  fauna: 'Fauna',
+  stones: 'Stone',
 }
 
 export const useRoutesParserStore = defineStore('routesParser', () => {
-    function parseModule(module: string) {
-        //console.log(`parseModule() module: "${module}"`)
-        switch (module) {
-            case "loci":
-            case "stones":
-            case 'fauna':
-                return { success: true, module: <TModule>moduleConversion[module], url_module: module, message: '' }
+  function parseModule(module: string) {
+    //console.log(`parseModule() module: "${module}"`)
+    switch (module) {
+      case 'loci':
+      case 'stones':
+      case 'fauna':
+        return {
+          success: true,
+          module: <TModule>moduleConversion[module],
+          url_module: module,
+          message: '',
+        }
 
-            default:
-                console.log(`******* URL Parser error: Unsupported module name "${module}" *********`)
-                return {
-                    success: false,
-                    data: {},
-                    message: `Error: unknown url module "${module}"`
-                }
+      default:
+        console.log(`******* URL Parser error: Unsupported module name "${module}" *********`)
+        return {
+          success: false,
+          data: {},
+          message: `Error: unknown url module "${module}"`,
         }
     }
+  }
 
-    function parseSlug(module: TModule, slug: string) {
-        //console.log(`parseSlug() module: ${module}, slug: ${slug}`);
-        let store
-        switch (module) {
-            case "Locus":
-                store = useLocusStore()
-                break
+  function parseSlug(module: TModule, slug: string) {
+    //console.log(`parseSlug() module: ${module}, slug: ${slug}`);
+    let store
+    switch (module) {
+      case 'Locus':
+        store = useLocusStore()
+        break
 
-            case "Fauna":
-                store = useFaunaStore()
-                break
+      case 'Fauna':
+        store = useFaunaStore()
+        break
 
-            case "Stone":
-                store = useStoneStore()
-                break
+      case 'Stone':
+        store = useStoneStore()
+        break
 
-            default:
-                return { success: false, data: null, message: `Error: bad module name ${module}` }
-        }
-        return store.validateSlug(slug)
+      default:
+        return { success: false, data: null, message: `Error: bad module name ${module}` }
     }
+    return store.validateSlug(slug)
+  }
 
-    return { parseModule, parseSlug }
+  return { parseModule, parseSlug }
 })

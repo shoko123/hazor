@@ -1,13 +1,7 @@
 <template>
-  <v-btn
-    variant="outlined"
-    @click="toCollection"
-  >
+  <v-btn variant="outlined" @click="toCollection">
     Collection
-    <v-tooltip
-      activator="parent"
-      location="bottom left"
-    >
+    <v-tooltip activator="parent" location="bottom left">
       {{ tip }}
     </v-tooltip>
   </v-btn>
@@ -24,6 +18,6 @@ const tip = computed(() => {
 })
 
 function toCollection() {
-  routerPush('index')    
+  routerPush('index')
 }
 </script>

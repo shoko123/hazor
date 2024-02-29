@@ -1,5 +1,3 @@
-
-
 <template>
   <v-card-text>
     <v-row class="text-body-1">
@@ -7,12 +5,7 @@
     </v-row>
   </v-card-text>
   <v-card-actions>
-    <v-btn
-      variant="outlined"
-      @click="clicked"
-    >
-      {{ item?.module }} {{ item?.tag }}
-    </v-btn>
+    <v-btn variant="outlined" @click="clicked"> {{ item?.module }} {{ item?.tag }} </v-btn>
   </v-card-actions>
 </template>
 

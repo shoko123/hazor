@@ -1,20 +1,12 @@
 <template>
-  <v-row
-    justify="space-between"
-    align="center"
-  >
+  <v-row justify="space-between" align="center">
     <v-btn
       icon="mdi-arrow-left"
       variant="text"
       :disabled="disableLeft"
       @click="switchMedia(true)"
     />
-    <v-btn
-      class="bg-grey-lighten-1"
-      @click="deleteMedia()"
-    >
-      Delete
-    </v-btn>
+    <v-btn class="bg-grey-lighten-1" @click="deleteMedia()"> Delete </v-btn>
     <v-btn
       icon="mdi-arrow-right"
       variant="text"
@@ -33,7 +25,7 @@ import { useCollectionMediaStore } from '../../scripts/stores/collections/collec
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 
 const props = defineProps<{
-  itemIndex: number,
+  itemIndex: number
   record: TPageMediaGallery
 }>()
 
@@ -44,23 +36,23 @@ const { array } = storeToRefs(useCollectionMediaStore())
 const { showSpinner, showSnackbar } = useNotificationsStore()
 
 const disableLeft = computed(() => {
-  return (array.value.length === 1 || props.itemIndex === 0)
+  return array.value.length === 1 || props.itemIndex === 0
 })
 
 const disableRight = computed(() => {
-  return (array.value.length === 1 || props.itemIndex === array.value.length - 1)
+  return array.value.length === 1 || props.itemIndex === array.value.length - 1
 })
 
 function switchMedia(withLeft: boolean) {
-  console.log(`switchMedia with ${withLeft === true ? "Left" : "Right"}`)
+  console.log(`switchMedia with ${withLeft === true ? 'Left' : 'Right'}`)
   orderChanged.value = true
 
   switchArrayItems(props.itemIndex, withLeft ? props.itemIndex - 1 : props.itemIndex + 1)
 }
 
 async function deleteMedia() {
-  if (!confirm("Are you sure you want to delete this media item?")) { 
-    return 
+  if (!confirm('Are you sure you want to delete this media item?')) {
+    return
   }
 
   showSpinner('Deleting media...')

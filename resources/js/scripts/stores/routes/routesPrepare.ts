@@ -2,14 +2,14 @@
 //At this point the new route is assured to have a correct form and all
 //relevant fields are stored in routesStore.from and .to. Actions needed
 //to complete the transition to the new route are stored in TPlanAction[].
-//Here we execute the loading of assets (collection, page, item)and other 
+//Here we execute the loading of assets (collection, page, item)and other
 //activities (e.g. clear, copy current -> new,), before
 //proceeding to the new route.
 
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { TPlanAction,  } from '@/js/types/routesTypes'
-import type { TFieldsUnion, TApiModuleInit, TModule} from '@/js/types/moduleTypes'
+import type { TPlanAction } from '@/js/types/routesTypes'
+import type { TFieldsUnion, TApiModuleInit, TModule } from '@/js/types/moduleTypes'
 import type { TApiItemShow } from '@/js/types/itemTypes'
 import type { LocationQuery } from 'vue-router'
 import { useXhrStore } from '../xhr'
@@ -29,7 +29,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   const n = useNotificationsStore()
 
   const c = useCollectionsStore()
-  const i = useItemStore();
+  const i = useItemStore()
   const r = useRoutesMainStore()
   const p = useRoutesParserStore()
   const f = useFilterStore()
@@ -39,57 +39,67 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
 
   const fromUndef = ref<boolean>(false)
 
-  async function prepareForNewRoute(module: TModule, query: LocationQuery, slug: string, plan: TPlanAction[], fromUndefined: boolean): Promise<{ success: boolean, message: string }> {
+  async function prepareForNewRoute(
+    module: TModule,
+    query: LocationQuery,
+    slug: string,
+    plan: TPlanAction[],
+    fromUndefined: boolean,
+  ): Promise<{ success: boolean; message: string }> {
     fromUndef.value = fromUndefined
     for (const x of plan) {
       switch (x) {
-        case 'module.load': {
-          n.showSpinner('Loading module data ...')
-          const res = await loadModule(module)
-          n.showSpinner(false)
-          if (!res.success) {
-            return res
+        case 'module.load':
+          {
+            n.showSpinner('Loading module data ...')
+            const res = await loadModule(module)
+            n.showSpinner(false)
+            if (!res.success) {
+              return res
+            }
           }
-        }
           break
 
         case 'module.clear':
           trioReset()
           break
 
-        case 'collection.item.load': {
-          n.showSpinner('Loading collection and item...')
-          const res = await loadCollectionAndItem(module, query, slug)
-          n.showSpinner(false)
-          if (!res.success) {
-            return res
+        case 'collection.item.load':
+          {
+            n.showSpinner('Loading collection and item...')
+            const res = await loadCollectionAndItem(module, query, slug)
+            n.showSpinner(false)
+            if (!res.success) {
+              return res
+            }
           }
-        }
           break
 
-        case 'collection.load': {
-          n.showSpinner(`Loading ${module} collection...`)
-          const res = await loadMainCollection(module, query)
-          n.showSpinner(false)
+        case 'collection.load':
+          {
+            n.showSpinner(`Loading ${module} collection...`)
+            const res = await loadMainCollection(module, query)
+            n.showSpinner(false)
 
-          if (!res.success) {
-            return res
+            if (!res.success) {
+              return res
+            }
           }
-        }
           break
 
         case 'collection.clear':
           c.clear(['main', 'media', 'related'])
           break
 
-        case 'item.load': {
-          n.showSpinner(`Loading ${module} item...`)
-          const res = await loadItem(module, slug)
-          n.showSpinner(false)
-          if (!res.success) {
-            return res
+        case 'item.load':
+          {
+            n.showSpinner(`Loading ${module} item...`)
+            const res = await loadItem(module, slug)
+            n.showSpinner(false)
+            if (!res.success) {
+              return res
+            }
           }
-        }
           break
 
         case 'item.clear':
@@ -103,24 +113,26 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
           }
           break
 
-        case 'page.load': {
-          n.showSpinner(`Loading ${module} page...`)
-          const res = await loadPage(false)
-          n.showSpinner(false)
-          if (!res.success) {
-            return res
+        case 'page.load':
+          {
+            n.showSpinner(`Loading ${module} page...`)
+            const res = await loadPage(false)
+            n.showSpinner(false)
+            if (!res.success) {
+              return res
+            }
           }
-        }
           break
 
-        case 'page.load1': {
-          n.showSpinner(`Loading ${module} page...`)
-          const res = await loadPage(true)
-          n.showSpinner(false)
-          if (!res.success) {
-            return res
+        case 'page.load1':
+          {
+            n.showSpinner(`Loading ${module} page...`)
+            const res = await loadPage(true)
+            n.showSpinner(false)
+            if (!res.success) {
+              return res
+            }
           }
-        }
           break
 
         case 'item.prepareForMedia':
@@ -136,7 +148,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     return { success: true, message: '' }
   }
 
-  async function loadModule(module: TModule): Promise<{ success: boolean, message: string }> {
+  async function loadModule(module: TModule): Promise<{ success: boolean; message: string }> {
     trioReset()
     const res = await send<TApiModuleInit>('model/init', 'post', { model: module })
     if (res.success) {
@@ -161,10 +173,7 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
   async function loadCollectionAndItem(module: TModule, query: LocationQuery, slug: string) {
     console.log(`prepare.loadCollectionAndItem()`)
 
-    const res = await Promise.all([
-      loadMainCollection(module, query),
-      loadItem(module, slug)
-    ])
+    const res = await Promise.all([loadMainCollection(module, query), loadItem(module, slug)])
 
     for (const x of res) {
       if (!x.success) {
@@ -174,7 +183,10 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     return res[0]
   }
 
-  async function loadMainCollection(module: TModule, query: LocationQuery): Promise<{ success: boolean, message: string }> {
+  async function loadMainCollection(
+    module: TModule,
+    query: LocationQuery,
+  ): Promise<{ success: boolean; message: string }> {
     f.clearSelectedFilters()
     const res1 = f.urlQueryToApiFilters(query)
     console.log(`loadMainCollection parse result: res: ${JSON.stringify(res1, null, 2)}`)
@@ -183,7 +195,10 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       return { success: false, message: `${res1.message}` }
     }
 
-    const res2 = await send<TApiArrayMain[]>('model/index', 'post', { model: module, query: f.apiQueryPayload })
+    const res2 = await send<TApiArrayMain[]>('model/index', 'post', {
+      model: module,
+      query: f.apiQueryPayload,
+    })
 
     if (res2.success) {
       if (res2.data.length === 0) {
@@ -199,7 +214,10 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     }
   }
 
-  async function loadItem(module: TModule, slug: string): Promise<{ success: boolean, message: string }> {
+  async function loadItem(
+    module: TModule,
+    slug: string,
+  ): Promise<{ success: boolean; message: string }> {
     //console.log(`loadItem() slug: ${slug}`)
     const sp = p.parseSlug(module, slug)
     if (!sp.success) {
@@ -207,7 +225,11 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       return { success: false, message: sp.message }
     }
 
-    const res = await send<TApiItemShow<TFieldsUnion>>('model/show', 'post', { model: module, slug: slug, params: sp.data })
+    const res = await send<TApiItemShow<TFieldsUnion>>('model/show', 'post', {
+      model: module,
+      slug: slug,
+      params: sp.data,
+    })
 
     if (res.success) {
       r.to.slug = res.data.slug
@@ -220,8 +242,13 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
     }
   }
 
-  async function loadPage(firstPage: boolean): Promise<{ success: boolean, message: string }> {
-    const res = await c.loadPageByItemIndex('main', c.collection('main').value.meta.view, firstPage ? 0 : i.itemIndex, <TModule>r.to.module)
+  async function loadPage(firstPage: boolean): Promise<{ success: boolean; message: string }> {
+    const res = await c.loadPageByItemIndex(
+      'main',
+      c.collection('main').value.meta.view,
+      firstPage ? 0 : i.itemIndex,
+      <TModule>r.to.module,
+    )
     return res
   }
 
@@ -238,7 +265,6 @@ export const useRoutesPrepareStore = defineStore('routesPrepare', () => {
       return true
     }
   }
-
 
   function prepareForMedia(): void {
     console.log(`prepareForMedia()`)

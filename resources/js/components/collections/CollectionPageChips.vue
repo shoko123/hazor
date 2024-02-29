@@ -7,17 +7,19 @@
       class="font-weight-normal ma-2 body-1"
       @click="goTo(item)"
     >
-      {{
-        item.tag
-      }}
+      {{ item.tag }}
     </v-chip>
   </v-row>
 </template>
 
 <script lang="ts" setup>
-
 import { computed } from 'vue'
-import type { TCollectionName, TPageChips, TPageMain, TPageRelated } from '../../types/collectionTypes'
+import type {
+  TCollectionName,
+  TPageChips,
+  TPageMain,
+  TPageRelated,
+} from '../../types/collectionTypes'
 import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 
@@ -42,17 +44,16 @@ function goTo(item: TPageMain | TPageRelated) {
     rms.routerPush('show', (<TPageMain>item).slug)
   } else {
     const related = <TPageRelated>item
-      rms.moveFromItemToItem(related.slug, related.id, related.module)
+    rms.moveFromItemToItem(related.slug, related.id, related.module)
   }
   // switch (props.source) {
   //   case 'main':
   //     rms.routerPush('show', (<TPageMain>item).slug)
   //     break
 
-  //   case 'related':    
+  //   case 'related':
   //     rms.moveFromItemToItem((<TPageRelated>item).slug, (<TPageRelated>item).id, (<TPageRelated>item).module)
   //     break
   // }
 }
 </script>
-

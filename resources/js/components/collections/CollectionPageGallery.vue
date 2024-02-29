@@ -1,13 +1,6 @@
 <template>
-  <v-row
-    wrap
-    no-gutters
-  >
-    <v-col
-      v-for="(item, index) in page"
-      :key="index"
-      :cols="`${mediaSizeInColumns}`"
-    >
+  <v-row wrap no-gutters>
+    <v-col v-for="(item, index) in page" :key="index" :cols="`${mediaSizeInColumns}`">
       <MediaSquare
         v-bind="{
           source: source,
@@ -23,7 +16,7 @@ import { computed } from 'vue'
 import { useDisplay } from 'vuetify'
 
 import { TCollectionName } from '../../types/collectionTypes'
-import { useCollectionsStore } from '../../scripts/stores/collections/collections';
+import { useCollectionsStore } from '../../scripts/stores/collections/collections'
 import MediaSquare from '../media/MediaSquare.vue'
 
 const props = defineProps<{
@@ -48,18 +41,20 @@ const mediaSizeInColumns = computed(() => {
     case 'xs':
     case 'sm':
       return 6
+
     case 'md':
       return 4
+
     case 'lg':
     case 'xl':
     case 'xxl':
       return 2
-  }
 
-  return collection(props.source).value
+    default:
+      return 1
+  }
 })
 function itemIndex(index: number): number {
   return (props.pageNoB1 - 1) * c.value.meta.itemsPerPage + index
 }
-
 </script>

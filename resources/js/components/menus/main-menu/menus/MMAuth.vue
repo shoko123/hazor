@@ -1,10 +1,5 @@
 <template>
-  <v-btn
-    :disabled="disable"
-    icon="mdi-home-circle"
-    :to="{ name: 'home' }"
-    rounded="0"
-  />
+  <v-btn :disabled="disable" icon="mdi-home-circle" :to="{ name: 'home' }" rounded="0" />
   <v-btn> {{ title }} </v-btn>
 </template>
 
@@ -17,7 +12,6 @@ let { current } = storeToRefs(useRoutesMainStore())
 import { useMenusStore } from '../../../../scripts/stores/menus'
 const { title } = storeToRefs(useMenusStore())
 const disable = computed(() => {
-    return current.value.name === 'reset-password'
+  return current.value.name === 'reset-password'
 })
 </script>
-

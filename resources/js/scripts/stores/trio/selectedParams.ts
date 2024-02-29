@@ -7,8 +7,8 @@ import { useItemStore } from '../item'
 import { useFilterStore } from './filter'
 import { useTaggerStore } from './tagger'
 
-type TGroup = { label: string, params: string[] }
-type TCat = { label: string, groups: TGroup[] }
+type TGroup = { label: string; params: string[] }
+type TCat = { label: string; groups: TGroup[] }
 
 export const useTrioSelectedStore = defineStore('trioSelected2', () => {
   const { trio, groupLabelToKey } = storeToRefs(useTrioStore())
@@ -17,7 +17,9 @@ export const useTrioSelectedStore = defineStore('trioSelected2', () => {
   const { selectedNewItemParams } = storeToRefs(useTaggerStore())
 
   function selectedTrio(sourceName: TrioSourceName) {
-    if (trio.value.categories.length === 0) { return [] }
+    if (trio.value.categories.length === 0) {
+      return []
+    }
 
     let params: string[] = []
     const groups = <TGroup[]>[]
@@ -29,7 +31,9 @@ export const useTrioSelectedStore = defineStore('trioSelected2', () => {
         params = selectedFilterParams.value
         break
       case 'Item':
-        params = selectedItemParams.value.filter(x => trio.value.paramsObj[x].text !== 'Unassigned')
+        params = selectedItemParams.value.filter(
+          (x) => trio.value.paramsObj[x].text !== 'Unassigned',
+        )
         break
       case 'New':
         params = selectedNewItemParams.value
@@ -37,13 +41,15 @@ export const useTrioSelectedStore = defineStore('trioSelected2', () => {
     }
 
     //order params by their keys
-    params.sort((a, b) => { return a > b ? 1 : -1 })
+    params.sort((a, b) => {
+      return a > b ? 1 : -1
+    })
 
     //push params into "groups" objects array, each entry consisting of label and its params array
-    params.forEach(p => {
-      const group = trio.value.groupsObj[trio.value.paramsObj[p].groupKey]    
-      
-      const i = groups.findIndex(g => {
+    params.forEach((p) => {
+      const group = trio.value.groupsObj[trio.value.paramsObj[p].groupKey]
+
+      const i = groups.findIndex((g) => {
         return g.label === group.label
       })
 
@@ -57,11 +63,11 @@ export const useTrioSelectedStore = defineStore('trioSelected2', () => {
     })
 
     //Now all the groups are organized in a sorted array, find their categories.
-    groups.forEach(g => {
+    groups.forEach((g) => {
       const group = trio.value.groupsObj[groupLabelToKey.value[g.label]]
       const cat = trio.value.categories[group.categoryIndex]
 
-      const i = cats.findIndex(c => {
+      const i = cats.findIndex((c) => {
         return c.label === cat.name
       })
 

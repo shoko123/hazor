@@ -1,13 +1,7 @@
 <template>
-  <v-btn
-    variant="outlined"
-    @click="toFilter"
-  >
+  <v-btn variant="outlined" @click="toFilter">
     Filters
-    <v-tooltip
-      activator="parent"
-      location="bottom left"
-    >
+    <v-tooltip activator="parent" location="bottom left">
       <v-text-field>{{ tip }}</v-text-field>
       <TagsForm source="Filter" />
     </v-tooltip>
@@ -26,6 +20,6 @@ const tip = computed(() => {
 })
 
 function toFilter() {
-  routerPush('filter') 
+  routerPush('filter')
 }
 </script>

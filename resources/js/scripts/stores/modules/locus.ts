@@ -8,20 +8,20 @@ export const useLocusStore = defineStore('locus', () => {
   // const reNameIsYearHyphenLocusNo = /^\d{2}-\d{3}$/
   // const reNameIsYearAreaHyphenLocusNo = /^\d{2}[A-Z]\d{1}-\d{3}$/
 
-  const validateSlug: TFuncValidateSlug = function(slug: string) { 
-    const arr = slug.split('.');
+  const validateSlug: TFuncValidateSlug = function (slug: string) {
+    const arr = slug.split('.')
 
     if (arr.length === 2) {
       return {
         success: true,
         data: {
           area: arr[0],
-          name: arr[1]
+          name: arr[1],
         },
         message: '',
       }
     }
-    return { success: false, data: null, message: "No . [dot] detected in slug." }
+    return { success: false, data: null, message: 'No . [dot] detected in slug.' }
   }
 
   function tagFromSlug(slug: string): string {
@@ -35,7 +35,7 @@ export const useLocusStore = defineStore('locus', () => {
       const rf = { ...lf }
       if (reNameIsLocusNo) {
         rf.locus_no = lf.name as unknown as number
-        rf.addendum = ""
+        rf.addendum = ''
       }
       return rf
     } else {
@@ -45,7 +45,7 @@ export const useLocusStore = defineStore('locus', () => {
 
   const headers = computed(() => {
     return [
-      { title: 'Name', align: 'start', key: 'tag', },
+      { title: 'Name', align: 'start', key: 'tag' },
       { title: 'Year', align: 'end', key: 'year' },
       { title: 'Type', align: 'start', key: 'type' },
       { title: 'Cross Reference', align: 'start', key: 'cross_ref' },
@@ -53,7 +53,6 @@ export const useLocusStore = defineStore('locus', () => {
       { title: 'Stratum', align: 'start', key: 'stratum' },
       { title: 'Square', align: 'start', key: 'square' },
       { title: 'Elevation', align: 'start', key: 'elevation' },
-
     ]
   })
 
@@ -61,6 +60,6 @@ export const useLocusStore = defineStore('locus', () => {
     beforeStore,
     tagFromSlug,
     validateSlug,
-    headers
+    headers,
   }
 })

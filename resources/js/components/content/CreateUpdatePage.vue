@@ -5,24 +5,10 @@
         {{ title }}
       </v-card-title>
       <v-card-text>
-        <component
-          :is="formNew"
-          :is-create="props.isCreate"
-        >
+        <component :is="formNew" :is-create="props.isCreate">
           <template #data="{ v, data }">
-            <v-btn
-              variant="outlined"
-              @click="submit(v, data)"
-            >
-              Submit
-            </v-btn>
-            <v-btn
-              variant="outlined"
-              class="ml-1"
-              @click="cancel"
-            >
-              Cancel
-            </v-btn>
+            <v-btn variant="outlined" @click="submit(v, data)"> Submit </v-btn>
+            <v-btn variant="outlined" class="ml-1" @click="cancel"> Cancel </v-btn>
           </template>
         </component>
       </v-card-text>
@@ -31,10 +17,9 @@
 </template>
 
 <script lang="ts" setup>
-
 import { computed, type Component } from 'vue'
 import { storeToRefs } from 'pinia'
-import { type Validation } from "@vuelidate/core"
+import { type Validation } from '@vuelidate/core'
 
 import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useItemStore } from '../../scripts/stores/item'
@@ -58,7 +43,7 @@ let { routerPush } = useRoutesMainStore()
 let { current } = storeToRefs(useRoutesMainStore())
 
 const title = computed(() => {
-  return props.isCreate ? "Create" : "Update"
+  return props.isCreate ? 'Create' : 'Update'
 })
 
 const formNew = computed<Component>(() => {
@@ -98,10 +83,10 @@ async function submit(v: Validation, data: TFieldsUnion) {
   //console.log(`CreateUpdate.submit() data: ${JSON.stringify(data, null, 2)}`)
 
   // vuelidate validation
-  await v.$validate();
+  await v.$validate()
 
   if (v.$error || v.$silentErrors.length > 0) {
-    showSnackbar("Please correct the marked errors!", "orange")
+    showSnackbar('Please correct the marked errors!', 'orange')
     console.log(`validation errors: ${JSON.stringify(v.$errors, null, 2)}`)
     console.log(`validation silent errors: ${JSON.stringify(v.$silentErrors, null, 2)}`)
     return
@@ -115,18 +100,20 @@ async function submit(v: Validation, data: TFieldsUnion) {
     return
   }
 
-  showSpinner(`${props.isCreate ? "Creating" : "Updating"} ${current.value.module} item...`)
+  showSpinner(`${props.isCreate ? 'Creating' : 'Updating'} ${current.value.module} item...`)
   const res = await upload(props.isCreate, fieldsToSend)
   showSpinner(false)
 
-  if(!res.success){
-    showSnackbar(`Failed to ${props.isCreate ? "create" : "update"} item. ${res.message}`, 'red')
+  if (!res.success) {
+    showSnackbar(`Failed to ${props.isCreate ? 'create' : 'update'} item. ${res.message}`, 'red')
     return
   }
 
-  showSnackbar(`${current.value.module} item ${props.isCreate ? "created" : "updated"} successfully!`)
+  showSnackbar(
+    `${current.value.module} item ${props.isCreate ? 'created' : 'updated'} successfully!`,
+  )
   console.log(`CreateUpdate. success! res: ${JSON.stringify(res, null, 2)}`)
-  
+
   if (props.isCreate) {
     routerPush('show', res.slug)
   } else {
@@ -138,7 +125,4 @@ const cancel = () => {
   console.log(`cancel`)
   routerPush('back1')
 }
-
 </script>
-
-

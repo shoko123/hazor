@@ -1,6 +1,4 @@
-<template>
-  {{ name }} - Modify
-</template>
+<template>{{ name }} - Modify</template>
 
 <script lang="ts" setup>
 import { computed } from 'vue'
@@ -13,4 +11,3 @@ const name = computed(() => {
   return current.value.module
 })
 </script>
-

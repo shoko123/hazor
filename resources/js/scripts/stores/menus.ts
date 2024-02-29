@@ -17,7 +17,7 @@ export const useMenusStore = defineStore('menus', () => {
       'reset-password',
       'create',
       'update',
-      'tag'
+      'tag',
     ].includes(current.value.name)
   })
 
@@ -70,8 +70,7 @@ export const useMenusStore = defineStore('menus', () => {
         pageTxt = `: ${current.value.name} Page`
         break
     }
-    return `Hazor${current.value.module  === undefined ? ``: `( ${current.value.module} )`}${pageTxt}`
+    return `Hazor${current.value.module === undefined ? `` : `( ${current.value.module} )`}${pageTxt}`
   })
   return { hasSubMenu, mainMenuType, title }
 })
-

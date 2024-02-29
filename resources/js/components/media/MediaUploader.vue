@@ -1,40 +1,20 @@
 <template>
-  <v-container
-    fluid
-    class="pa-1"
-  >
+  <v-container fluid class="pa-1">
     <v-card class="elevation-12">
-      <v-toolbar
-        class="bg-grey text-black"
-        density="compact"
-        :height="50"
-      >
+      <v-toolbar class="bg-grey text-black" density="compact" :height="50">
         <v-toolbar-title> {{ header }}</v-toolbar-title>
       </v-toolbar>
 
       <v-card-text>
-        <v-container
-          fluid
-          class="pa-1"
-        >
+        <v-container fluid class="pa-1">
           <v-row v-if="mediaReady">
-            <v-container
-              fluid
-              class="pa-1"
-            >
+            <v-container fluid class="pa-1">
               <v-card class="elevation-12">
                 <v-card-title>Upload Preview</v-card-title>
                 <v-card-text>
                   <v-row>
-                    <v-col
-                      v-for="(item, index) in imagesAsBrowserReadable"
-                      :key="index"
-                      cols="2"
-                    >
-                      <v-img
-                        :src="item"
-                        height="30vh"
-                      />
+                    <v-col v-for="(item, index) in imagesAsBrowserReadable" :key="index" cols="2">
+                      <v-img :src="item" height="30vh" />
                     </v-col>
                   </v-row>
                 </v-card-text>
@@ -74,26 +54,11 @@
               </v-menu>
             </v-btn>
 
-            <v-btn
-              v-if="mediaReady"
-              class="ml-2"
-              @click="upload"
-            >
-              Upload
-            </v-btn>
-            <v-btn
-              v-if="mediaReady"
-              class="ml-2"
-              @click="openMultiItemSelector"
-            >
+            <v-btn v-if="mediaReady" class="ml-2" @click="upload"> Upload </v-btn>
+            <v-btn v-if="mediaReady" class="ml-2" @click="openMultiItemSelector">
               Upload as multi item media
             </v-btn>
-            <v-btn
-              class="ml-2"
-              @click="clear"
-            >
-              Cancel
-            </v-btn>
+            <v-btn class="ml-2" @click="clear"> Cancel </v-btn>
           </v-row>
         </v-container>
       </v-card-text>
@@ -117,7 +82,7 @@ const mediaReady = computed(() => {
 })
 
 const header = computed(() => {
-  return "Media Uploader"
+  return 'Media Uploader'
 })
 
 const fileInputLabel = computed(() => {
@@ -126,10 +91,12 @@ const fileInputLabel = computed(() => {
 
 //load media to browser
 const images = computed({
-  get: () => { return m.images },
-  set: val => {
+  get: () => {
+    return m.images
+  },
+  set: (val) => {
     m.images = <File[]>val
-  }
+  },
 })
 
 const imagesAsBrowserReadable = computed(() => {
@@ -157,9 +124,7 @@ function setMediaCollectionName(val: string) {
   m.mediaCollectionName = val
 }
 
-function openMultiItemSelector() {
-
-}
+function openMultiItemSelector() {}
 
 async function upload() {
   showSpinner('Uploading media...')
@@ -172,5 +137,4 @@ async function upload() {
     showSnackbar(`Media upload failed. Error: ${res.message}`)
   }
 }
-
 </script>

@@ -1,18 +1,7 @@
 <template>
-  <v-container
-    fluid
-    class="pa-1 ma-0"
-  >
-    <slot
-      :id="data.id"
-      name="data"
-      :v="v"
-      :data="data"
-    />
-    <v-row
-      wrap
-      no-gutters
-    >
+  <v-container fluid class="pa-1 ma-0">
+    <slot :id="data.id" name="data" :v="v" :data="data" />
+    <v-row wrap no-gutters>
       <v-text-field
         v-model="data.label"
         label="Label"
@@ -48,10 +37,7 @@
         class="mr-1"
         filled
       />
-      <v-checkbox
-        v-model="clean"
-        label="Registration Clean"
-      />
+      <v-checkbox v-model="clean" label="Registration Clean" />
       <!-- <v-text-field label="Registration Clean" v-model="data.registration_clean" :error-messages="item_categoryErrors"
         class="mr-1" filled> </v-text-field> -->
     </v-row>
@@ -64,50 +50,15 @@
         class="mr-1"
         filled
       />
-      <v-text-field
-        v-model="data.taxon_common_name"
-        label="Common Name"
-        class="mr-1"
-        filled
-      />
-      <v-text-field
-        v-model="data.anatomical_label"
-        label="Anatomical Label"
-        class="mr-1"
-        filled
-      />
-      <v-text-field
-        v-model="data.element"
-        label="Element"
-        class="mr-1"
-        filled
-      />
+      <v-text-field v-model="data.taxon_common_name" label="Common Name" class="mr-1" filled />
+      <v-text-field v-model="data.anatomical_label" label="Anatomical Label" class="mr-1" filled />
+      <v-text-field v-model="data.element" label="Element" class="mr-1" filled />
     </v-row>
     <v-row>
-      <v-text-field
-        v-model="data.fragment_present"
-        label="Fragment Present"
-        class="mr-1"
-        filled
-      />
-      <v-text-field
-        v-model="data.modifications"
-        label="Modifications"
-        class="mr-1"
-        filled
-      />
-      <v-text-field
-        v-model="data.phase"
-        label="Phase"
-        class="mr-1"
-        filled
-      />
-      <v-text-field
-        v-model="data.age"
-        label="Age"
-        class="mr-1"
-        filled
-      />
+      <v-text-field v-model="data.fragment_present" label="Fragment Present" class="mr-1" filled />
+      <v-text-field v-model="data.modifications" label="Modifications" class="mr-1" filled />
+      <v-text-field v-model="data.phase" label="Phase" class="mr-1" filled />
+      <v-text-field v-model="data.age" label="Age" class="mr-1" filled />
     </v-row>
   </v-container>
 </template>
@@ -115,8 +66,8 @@
 <script lang="ts" setup>
 import { onMounted, reactive, computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useVuelidate } from "@vuelidate/core"
-import { required, maxLength, minValue, maxValue } from "@vuelidate/validators";
+import { useVuelidate } from '@vuelidate/core'
+import { required, maxLength, minValue, maxValue } from '@vuelidate/validators'
 import { TFieldsGeneric } from '@/js/types/moduleTypes'
 import { useItemStore } from '../../../scripts/stores/item'
 
@@ -135,27 +86,27 @@ onMounted(() => {
 
 const data: TFieldsGeneric<'Fauna'> = reactive({
   id: 0,
-  uri: "",
-  label: "",
-  area: "",
-  locus: "",
-  basket: "",
-  stratum: "",
+  uri: '',
+  label: '',
+  area: '',
+  locus: '',
+  basket: '',
+  stratum: '',
   registration_clean: 1,
-  taxon: "",
-  taxon_common_name: "",
+  taxon: '',
+  taxon_common_name: '',
   base_taxon_id: 1,
-  fragment_present: "",
-  anatomical_label: "",
-  element: "",
-  modifications: "",
-  phase: "",
-  age: "",
+  fragment_present: '',
+  anatomical_label: '',
+  element: '',
+  modifications: '',
+  phase: '',
+  age: '',
   scope_id: 1,
   material_id: 1,
   symmetry_id: 1,
   fusion_proximal_id: 1,
-  fusion_distal_id: 1
+  fusion_distal_id: 1,
 })
 
 const rules = computed(() => {
@@ -179,10 +130,12 @@ const rules = computed(() => {
 })
 
 const clean = computed({
-  get: () => { return data.registration_clean ? true : false},
-  set: val => {
+  get: () => {
+    return data.registration_clean ? true : false
+  },
+  set: (val) => {
     data.registration_clean = val ? 1 : 0
-  }
+  },
 })
 
 const v = useVuelidate(rules, data)

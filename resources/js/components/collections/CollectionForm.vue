@@ -1,10 +1,6 @@
 <template>
   <v-card class="elevation-12">
-    <v-toolbar
-      class="bg-grey text-black"
-      density="compact"
-      :height="50"
-    >
+    <v-toolbar class="bg-grey text-black" density="compact" :height="50">
       <v-toolbar-title>{{ header }}</v-toolbar-title>
 
       <v-pagination
@@ -23,15 +19,8 @@
       />
     </v-toolbar>
     <v-card-text>
-      <v-container
-        fluid
-        class="ma-0 pa-0"
-      >
-        <component
-          :is="collectionPage"
-          :source="props.source"
-          :page-no-b1="meta.pageNoB1"
-        />
+      <v-container fluid class="ma-0 pa-0">
+        <component :is="collectionPage" :source="props.source" :page-no-b1="meta.pageNoB1" />
       </v-container>
     </v-card-text>
   </v-card>
@@ -64,7 +53,7 @@ const { smAndDown, mdAndDown } = useDisplay()
 const viewToIcon = {
   Gallery: 'mdi-image-area',
   Tabular: 'mdi-table-of-contents',
-  Chips: 'mdi-dots-horizontal'
+  Chips: 'mdi-dots-horizontal',
 }
 
 const meta = computed(() => {
@@ -86,14 +75,17 @@ async function asynLoadPage(val: number) {
 }
 
 const page = computed({
-  get: () => { return paginator.value.page },
-  set: val => {
+  get: () => {
+    return paginator.value.page
+  },
+  set: (val) => {
     asynLoadPage(val)
-  }
+  },
 })
 
 const header = computed(() => {
-  let pageInfo, headerText = ``
+  let pageInfo,
+    headerText = ``
   switch (meta.value.length) {
     case 0:
       pageInfo = `(Empty)`
@@ -107,15 +99,19 @@ const header = computed(() => {
 
   switch (props.source) {
     case 'main':
-      headerText = smAndDown.value ?
-        `Collection(${meta.value.length}): ${pageInfo}` :
-        `${derived.value.module} Collection(${meta.value.length}): ${pageInfo}, items (${meta.value.firstItemNo}-${meta.value.lastItemNo})`
+      headerText = smAndDown.value
+        ? `Collection(${meta.value.length}): ${pageInfo}`
+        : `${derived.value.module} Collection(${meta.value.length}): ${pageInfo}, items (${meta.value.firstItemNo}-${meta.value.lastItemNo})`
       break
     case 'media':
-      headerText = smAndDown.value ? `Media(${meta.value.length}) ${pageInfo}` : `${derived.value.moduleAndTag} - Media(${meta.value.length}) ${pageInfo}`
+      headerText = smAndDown.value
+        ? `Media(${meta.value.length}) ${pageInfo}`
+        : `${derived.value.moduleAndTag} - Media(${meta.value.length}) ${pageInfo}`
       break
     case 'related':
-      headerText = smAndDown.value ? `Related(${meta.value.length}) ${pageInfo}` : `${derived.value.moduleAndTag} - Related(${meta.value.length}) ${pageInfo}`
+      headerText = smAndDown.value
+        ? `Related(${meta.value.length}) ${pageInfo}`
+        : `${derived.value.moduleAndTag} - Related(${meta.value.length}) ${pageInfo}`
   }
   return headerText
 })
@@ -124,7 +120,7 @@ const paginator = computed(() => {
   return {
     show: meta.value.noOfPages > 1,
     page: meta.value.pageNoB1,
-    pages: meta.value.noOfPages
+    pages: meta.value.noOfPages,
   }
 })
 
@@ -154,7 +150,4 @@ async function toggleCollectionDisplayOption() {
   await toggleCollectionView(props.source)
   showSpinner(false)
 }
-
 </script>
-
-

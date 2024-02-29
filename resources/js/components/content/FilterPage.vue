@@ -1,10 +1,6 @@
 <template>
   <div>
-    <v-row
-      wrap
-      dense
-      class="mt-1"
-    >
+    <v-row wrap dense class="mt-1">
       <v-col :cols="widths[0]">
         <TagsForm2 source="Filter" />
       </v-col>

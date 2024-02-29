@@ -5,45 +5,19 @@
     </v-card-title>
     <v-card-text>
       <div class="mb-2">
-        <v-btn
-          color="green"
-          @click="submit"
-        >
-          Submit
-        </v-btn>
-        <v-btn
-          class="ml-2"
-          color="red"
-          @click="cancel"
-        >
-          Cancel
-        </v-btn>
-        <v-btn
-          class="ml-2"
-          color="blue"
-          @click="resetToItem"
-        >
-          Reset To Item
-        </v-btn>
-        <v-btn
-          class="ml-2"
-          color="blue"
-          @click="clear"
-        >
-          Clear
-        </v-btn>
+        <v-btn color="green" @click="submit"> Submit </v-btn>
+        <v-btn class="ml-2" color="red" @click="cancel"> Cancel </v-btn>
+        <v-btn class="ml-2" color="blue" @click="resetToItem"> Reset To Item </v-btn>
+        <v-btn class="ml-2" color="blue" @click="clear"> Clear </v-btn>
       </div>
-      <v-tabs
-        v-model="catIndex"
-        class="primary"
-      >
+      <v-tabs v-model="catIndex" class="primary">
         <v-tab
           v-for="(cat, index) in visibleCategories"
           :key="index"
           color="purple"
           :class="cat.hasSelected ? 'has-selected' : ''"
         >
-          {{ cat.hasSelected ?`${cat.catName}(*)` : cat.catName }}
+          {{ cat.hasSelected ? `${cat.catName}(*)` : cat.catName }}
         </v-tab>
       </v-tabs>
 
@@ -58,17 +32,9 @@
         </v-tab>
       </v-tabs>
 
-      <v-sheet
-        elevation="10"
-        class="mt-2 pa-4"
-      >
-        <div> {{ groupHeader }}</div>
-        <v-chip-group
-          v-model="selectedParams"
-          multiple
-          column
-          active-class="primary"
-        >
+      <v-sheet elevation="10" class="mt-2 pa-4">
+        <div>{{ groupHeader }}</div>
+        <v-chip-group v-model="selectedParams" multiple column active-class="primary">
           <v-chip
             v-for="(param, index) in visibleParams"
             :key="index"
@@ -93,7 +59,8 @@ import { useRoutesMainStore } from '../../scripts/stores/routes/routesMain'
 import { useNotificationsStore } from '../../scripts/stores/notifications'
 
 const { routerPush } = useRoutesMainStore()
-const { visibleCategories, visibleGroups, visibleParams, categoryIndex, groupIndex } = storeToRefs(useTrioStore())
+const { visibleCategories, visibleGroups, visibleParams, categoryIndex, groupIndex } =
+  storeToRefs(useTrioStore())
 const { resetCategoryAndGroupIndices, paramClicked } = useTrioStore()
 const { sync, setDefaultNewItemParams, copyCurrentToNew, truncateNewItemParams } = useTaggerStore()
 const { showSpinner, showSnackbar } = useNotificationsStore()
@@ -104,24 +71,28 @@ const header = computed(() => {
 
 const groupHeader = computed(() => {
   let group = visibleGroups.value[grpIndex.value]
-  return `${group.required ? "R" : "Not r"}equired,  ${group.multiple ? "multiple" : "single"} selection`
+  return `${group.required ? 'R' : 'Not r'}equired,  ${group.multiple ? 'multiple' : 'single'} selection`
 })
 
 const catIndex = computed({
-  get: () => { return categoryIndex.value },
-  set: val => {
+  get: () => {
+    return categoryIndex.value
+  },
+  set: (val) => {
     console.log(`categoryIndex set to ${val}`)
     groupIndex.value = 0
     categoryIndex.value = val
-  }
+  },
 })
 
 const grpIndex = computed({
-  get: () => { return groupIndex.value },
-  set: val => {
+  get: () => {
+    return groupIndex.value
+  },
+  set: (val) => {
     console.log(`groupIndex set to ${val}`)
     groupIndex.value = val
-  }
+  },
 })
 
 const selectedParams = computed({
@@ -134,7 +105,9 @@ const selectedParams = computed({
     })
     return selected
   },
-  set: val => { val }
+  set: (val) => {
+    val
+  },
 })
 
 async function submit() {
@@ -169,8 +142,6 @@ function clear() {
   resetCategoryAndGroupIndices()
   setDefaultNewItemParams()
 }
-
-
 </script>
 <style scoped>
 .has-selected {
