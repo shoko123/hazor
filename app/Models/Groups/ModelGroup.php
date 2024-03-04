@@ -328,7 +328,6 @@ abstract class ModelGroup
     private function getOrderByDetails2($group_name, $group)
     {
         return array_merge($group, [
-            "params" => [["name" => "ob1"], ["name" => "ob2"], ["name" => "ob3"], ["name" => "ob4"]],
             "group_name" => $group_name,
         ]);
     }

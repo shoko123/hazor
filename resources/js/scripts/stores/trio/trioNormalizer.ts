@@ -102,6 +102,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalizr', () => {
     const grpWithParams = { ...grp, paramKeys: [], categoryIndex: catCnt }
 
     //remove params array
+    // eslint-disable-next-line
     const grpToSave: TGroupLocalUnion = { ...(({ params, ...object }) => object)(grpWithParams) }
 
     //save params and then group
@@ -209,23 +210,14 @@ export const useTrioNormalizerStore = defineStore('trioNormalizr', () => {
       }),
     }
   }
-  function handleBF(grp: TApiGroupColumn) {
-    return {
-      label: grp.group_name,
-      code: grp.group_type_code,
-      params: [],
-    }
-  }
+
   function handleOB(grp: TApiGroupOrderBy) {
-    orderByOptions = grp.options
+    orderByOptions = <TApiParamNameAndColumn[]>grp.params
     return {
       label: grp.group_name,
       code: grp.group_type_code,
-      params: Array(grp.options.length).fill({ text: '', extra: null }),
+      params: Array(grp.params.length).fill({ text: '', extra: null }),
     }
-  }
-  function assert(condition: unknown, msg?: string): asserts condition {
-    if (condition === false) throw new Error(msg)
   }
 
   function pad(num: number, size: number): string {

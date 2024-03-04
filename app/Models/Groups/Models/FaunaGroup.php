@@ -122,7 +122,7 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
         ],
         "Order By" => [
             "group_type_code" => "OB",
-            "options" => [
+            "params" => [
                 ["name" => "Area", "column_name" => "area"],
                 ["name" => "Locus", "column_name" => "locus"],
                 ["name" => "Basket", "column_name" => "basket"],

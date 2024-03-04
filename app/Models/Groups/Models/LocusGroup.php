@@ -46,7 +46,7 @@ class LocusGroup extends ModelGroup implements ModelGroupInterface
         ],
         "Order By" => [
             "group_type_code" => "OB",
-            "options" => [
+            "params" => [
                 ["name" => "Area", "column_name" => "area"],
                 ["name" => "Locus No", "column_name" => "locus_no"],
                 ["name" => "Locus Name", "column_name" => "name"],
