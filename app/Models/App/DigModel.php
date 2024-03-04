@@ -219,25 +219,14 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
 
         $mediaArray = MediaModel::getUrlsOfAll($item->media);
 
-        //model tags (discrete)        
-        $model_tags = $item->model_tags->map(function ($tag, int $key) {
-            return $tag->tag_group->name . '.' . $tag->name;
-        });
-
-
-        //global tags
-        $global_tags = $item->global_tags->map(function ($tag, int $key) {
-            return $tag->tag_group->name . '.' . $tag->name;
-        });
-
          //model tags (discrete)        
-         $model_tags2 = $item->model_tags->map(function ($tag, int $key) {
+         $model_tags = $item->model_tags->map(function ($tag, int $key) {
             return ["group_label" => $tag->tag_group->name, "tag_text" => $tag->name];
         });
 
 
         //global tags
-        $global_tags2 = $item->global_tags->map(function ($tag, int $key) {
+        $global_tags = $item->global_tags->map(function ($tag, int $key) {
             return ["group_label" => $tag->tag_group->name, "tag_text" => $tag->name];
         });
         //unset
@@ -249,9 +238,7 @@ abstract class DigModel extends Model implements HasMedia, DigModelInterface
             "fields" => $item->makeHidden(['slug', 'short']),
             "media" => $mediaArray,
             "global_tags" => $global_tags,
-            "model_tags" => $model_tags,
-            "global_tags2" => $global_tags2,
-            "model_tags2" => $model_tags2,            
+            "model_tags" => $model_tags,            
             "slug" => $item->slug,
             "short" => $item->short,
             "related" => $related

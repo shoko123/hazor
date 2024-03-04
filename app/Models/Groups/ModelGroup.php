@@ -128,8 +128,9 @@ abstract class ModelGroup
 
         return array_merge($group, [
             "group_name" => $group_name,
+            //"params"  => $params
             "params"  => $params->map(function ($y, $key) use ($column_name) {
-                return ["name" => $y->$column_name];
+                return $y->$column_name;
             })
         ]);
     }

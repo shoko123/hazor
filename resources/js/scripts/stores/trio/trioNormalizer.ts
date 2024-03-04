@@ -144,18 +144,7 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
 
   function handleCV(grp: TApiGroupByCode<'CV'>) {
     tmpParams = grp.params.map((x) => {
-      return { text: x.name, extra: null }
-    })
-    tmpGroup = {
-      label: grp.group_name,
-      code: grp.group_type_code,
-      column_name: grp.column_name,
-    }
-  }
-
-  function handleCB(grp: TApiGroupByCode<'CB'>) {
-    tmpParams = grp.params.map((x, index) => {
-      return { text: x.name, extra: index === 0 ? 1 : 0 }
+      return { text: x, extra: null }
     })
     tmpGroup = {
       label: grp.group_name,
@@ -166,7 +155,18 @@ export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
 
   function handleCR(grp: TApiGroupByCode<'CR'>) {
     tmpParams = grp.params.map((x) => {
-      return { text: x.name, extra: null }
+      return { text: x, extra: null }
+    })
+    tmpGroup = {
+      label: grp.group_name,
+      code: grp.group_type_code,
+      column_name: grp.column_name,
+    }
+  }
+
+  function handleCB(grp: TApiGroupByCode<'CB'>) {
+    tmpParams = grp.params.map((x, index) => {
+      return { text: x, extra: index === 0 ? 1 : 0 }
     })
     tmpGroup = {
       label: grp.group_name,

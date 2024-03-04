@@ -2,15 +2,15 @@ type TrioSourceName = 'Item' | 'New' | 'Filter'
 
 type TAllGroups = {
   CV: {
-    apiGroup: TApiGroupColumn<TApiParamName[]>
+    apiGroup: TApiGroupColumn<string[]>
     group: TGroupColumn
   }
   CR: {
-    apiGroup: TApiGroupColumn<TApiParamName[]>
+    apiGroup: TApiGroupColumn<string[]>
     group: TGroupColumn
   }
   CB: {
-    apiGroup: TApiGroupColumn<TApiParamName[]>
+    apiGroup: TApiGroupColumn<string[]>
     group: TGroupColumn
   }
   CL: {
@@ -41,11 +41,9 @@ type TAllGroups = {
 
 //////////// Backend types /////////////////
 
-type TApiParamName = { name: string }
+type TApiParamNameAndId = { name: string; id: number }
 
-type TApiParamNameAndId = TApiParamName & { id: number }
-
-type TApiParamNameAndColumn = TApiParamName & { column_name: string }
+type TApiParamNameAndColumn = { name: string; column_name: string }
 
 type TApiGroupBase<T> = {
   group_type_code: TCodeUnion

@@ -83,7 +83,7 @@ export const useItemStore = defineStore('item', () => {
     }
 
     //add model and global tags
-    const all = apiItem.model_tags2.concat(apiItem.global_tags2)
+    const all = apiItem.model_tags.concat(apiItem.global_tags)
     for (const x of all) {
       const group = trio.value.groupsObj[groupLabelToKey.value[x.group_label]]
       // console.log(`Save item column field: "${x}" groupKey: ${fieldNameToGroupKey.value[x]} groupKeys: ${group.paramKeys}`)

@@ -253,7 +253,14 @@ export const useTrioStore = defineStore('trio', () => {
       if (i === -1) {
         console.log(`ERRRRR - trying to remove param ${x} which is NOT selected`)
       } else {
-        selected.value.splice(i, 1)
+        const param = trio.value.paramsObj[x]
+        const group = trio.value.groupsObj[param.groupKey]
+        if (current.value.name === 'tag' && group.code === 'CL') {
+          //unselect required, single selection - replace with default (first entry in group.params[])
+          selected.value[i] = group.paramKeys[0]
+        } else {
+          selected.value.splice(i, 1)
+        }
         if (selected.value.length > 0) {
           clearDependecies(x)
         }

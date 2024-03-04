@@ -41,7 +41,7 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
         "Registration Clean" => [
             "group_type_code" => "CB",
             "column_name" => "registration_clean",
-            "params" => [["name" => "True"], ["name" => "False"]]//true label, false label
+            "params" => ["True","False"]
         ],
         "Scope" => [
             "group_type_code" => "CL",
@@ -51,7 +51,7 @@ class FaunaGroup  extends ModelGroup implements ModelGroupInterface
         ],
         "Base Taxon" => [
             "group_type_code" => "CL",
-            "dependency" => null,
+            "dependency" => ["Scope.Single Element", "Scope.Multiple Elements"],
             "table_name" => "fauna_base_taxa",
             "column_name" => "base_taxon_id",
         ],
