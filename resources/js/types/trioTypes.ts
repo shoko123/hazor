@@ -37,11 +37,11 @@ type TApiGroupTag = TApiGroupBasic & {
   multiple: boolean
 }
 
-type TApiGroupOrderBy = TApiGroupBasic & {
-  options: TApiParamNameAndColumn[]
-}
+// type TApiGroupOrderBy = TApiGroupBasic & {
+//   options: TApiParamNameAndColumn[]
+// }
 
-type TApiGroupUnion = TApiGroupBasic | TApiGroupColumn | TApiGroupTag | TApiGroupOrderBy
+type TApiGroupUnion = TApiGroupBasic | TApiGroupColumn | TApiGroupTag //| TApiGroupOrderBy
 
 //////////// Front-end types /////////////////
 
@@ -167,7 +167,6 @@ export {
   TApiGroupColumn,
   TApiGroupTag,
   TApiGroupUnion,
-  TApiGroupOrderBy,
   TTrioApiGroupUnion,
   TTrioCodeUnion,
   TTrioAll,

@@ -9,13 +9,15 @@ import type {
   TApiParamNameAndColumn,
   TGroupLocalBase,
 } from '../../../types/trioTypes'
-import { useTrioNormalizerStore } from './trioNormalizer'
+//import { useTrioNormalizerStore } from './trioNormalizer'
+import { useTrioNormalizerStore2 } from './trioNormalizer2'
 import { useRoutesMainStore } from '../routes/routesMain'
 import { useTaggerStore } from './tagger'
 import { useFilterStore } from './filter'
 
 export const useTrioStore = defineStore('trio', () => {
-  const { normalizeTrio } = useTrioNormalizerStore()
+  //const { normalizeTrio } = useTrioNormalizerStore()
+  const { normalizeTrio2 } = useTrioNormalizerStore2()
   const { current } = storeToRefs(useRoutesMainStore())
 
   const trio = ref<TTrio>({ categories: [], groupsObj: {}, paramsObj: {} })
@@ -308,7 +310,8 @@ export const useTrioStore = defineStore('trio', () => {
   function setTrio(apiTrio: TApiTrio) {
     trioReset()
 
-    const res = normalizeTrio(apiTrio)
+    //const res = normalizeTrio(apiTrio)
+    const res = normalizeTrio2(apiTrio)
     trio.value = res.trio
     groupLabelToKey.value = res.groupLabelToKey
     orderByOptions.value = res.orderByOptions

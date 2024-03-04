@@ -87,29 +87,29 @@ type TGroupColumn = TGroupBase & {
 
 type TGroupUnion = TGroupBase | TGroupTag | TGroupColumn
 type TAllGroups = {
-  CV: { apiGroup: TApiGroupColumn<TApiParamName[]>; apiParams: string[]; group: TGroupColumn }
-  CR: { apiGroup: TApiGroupColumn<TApiParamName[]>; apiParams: string[]; group: TGroupColumn }
-  CB: { apiGroup: TApiGroupColumn<TApiParamName[]>; apiParams: string[]; group: TGroupColumn }
+  CV: { apiGroup: TApiGroupColumn<TApiParamName[]>; group: TGroupColumn }
+  CR: { apiGroup: TApiGroupColumn<TApiParamName[]>; group: TGroupColumn }
+  CB: { apiGroup: TApiGroupColumn<TApiParamName[]>; group: TGroupColumn }
   CL: {
     apiGroup: TApiGroupColumn<TApiParamNameAndId[]>
-    apiParams: TApiParamNameAndId[]
+
     group: TGroupColumn
   }
-  CS: { apiGroup: TApiGroupColumn<null>; apiParams: null; group: TGroupColumn }
+  CS: { apiGroup: TApiGroupColumn<null>; group: TGroupColumn }
   TM: {
     apiGroup: TApiGroupTag<TApiParamNameAndId[]>
-    apiParams: TApiParamNameAndId
+
     group: TGroupTag
   }
   TG: {
     apiGroup: TApiGroupTag<TApiParamNameAndId[]>
-    apiParams: TApiParamNameAndId
+
     group: TGroupTag
   }
-  MD: { apiGroup: TApiGroupBase<null>; apiParams: null; group: TGroupBase }
+  MD: { apiGroup: TApiGroupBase<null>; group: TGroupBase }
   OB: {
     apiGroup: TApiGroupBase<TApiParamNameAndColumn[]>
-    apiParams: TApiParamNameAndColumn[]
+
     group: TGroupColumn
   }
 }
@@ -127,14 +127,13 @@ type TCodeUnion = keyof TAllGroups
 type GroupUnion = AddCode<GroupUnionB['group'], GroupUnionB['group_type_code']>
 type TAllByCode<Code extends TCodeUnion> = TAllGroups[Code]
 type TApiGroupByCode<Code extends TCodeUnion> = TAllByCode<Code>['apiGroup']
-// type TApiParamByCode<Code extends TCodeUnion> = TAllByCode<Code>['apiParams']
 // type TGroupByCode<Code extends TCodeUnion> = TAllByCode<Code>['group']
 type TParamObj = { [key: string]: TParam }
 type TGroupObj = { [key: string]: GroupUnion }
 type TCategoriesArray = { name: string; groupKeys: string[] }[]
 type TGroupLabelToKey = { [key: string]: string }
 
-export const useTrioNormalizerStore2 = defineStore('trioNormalizr2', () => {
+export const useTrioNormalizerStore2 = defineStore('trioNormalize2', () => {
   const { mediaCollectionNames } = storeToRefs(useMediaStore())
 
   let categories: TCategoriesArray = []
@@ -162,7 +161,7 @@ export const useTrioNormalizerStore2 = defineStore('trioNormalizr2', () => {
     tmpParams = []
   }
 
-  function normalizeTrio(apiTrio: TApiTrio) {
+  function normalizeTrio2(apiTrio: TApiTrio) {
     reset()
 
     apiTrio.forEach((cat) => {
@@ -215,7 +214,9 @@ export const useTrioNormalizerStore2 = defineStore('trioNormalizr2', () => {
   }
 
   function saveGroupAndParams(grpKey: string) {
-    //console.log(`saveGroup(): ${JSON.stringify(grp, null, 2)}`);
+    console.log(
+      `saveGroup() group: ${JSON.stringify(tmpGroup, null, 2)} params: ${JSON.stringify(tmpParams, null, 2)}`,
+    )
     const grpToSave: TGroupUnion = {
       ...(tmpGroup as TGroupTmpUnion),
       paramKeys: <string[]>[],
@@ -255,7 +256,7 @@ export const useTrioNormalizerStore2 = defineStore('trioNormalizr2', () => {
       code: grp.group_type_code,
       label: grp.group_name,
       column_name: grp.column_name,
-      dependency: processDependency(<string[]>grp.dependency),
+      dependency: grp.dependency === null ? [] : processDependency(<string[]>grp.dependency),
     }
   }
 
@@ -309,7 +310,7 @@ export const useTrioNormalizerStore2 = defineStore('trioNormalizr2', () => {
     tmpGroup = {
       label: grp.group_name,
       code: grp.group_type_code,
-      dependency: processDependency(<string[]>grp.dependency),
+      dependency: grp.dependency === null ? [] : processDependency(<string[]>grp.dependency),
       multiple: grp.multiple,
       group_id: grp.group_id,
     }
@@ -323,7 +324,7 @@ export const useTrioNormalizerStore2 = defineStore('trioNormalizr2', () => {
     tmpGroup = {
       label: grp.group_name,
       code: grp.group_type_code,
-      dependency: processDependency(<string[]>grp.dependency),
+      dependency: grp.dependency === null ? [] : processDependency(<string[]>grp.dependency),
       multiple: grp.multiple,
       group_id: grp.group_id,
     }
@@ -355,6 +356,6 @@ export const useTrioNormalizerStore2 = defineStore('trioNormalizr2', () => {
   }
 
   return {
-    normalizeTrio,
+    normalizeTrio2,
   }
 })
