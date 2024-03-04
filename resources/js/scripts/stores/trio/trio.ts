@@ -10,13 +10,13 @@ import type {
   TGroupBase,
 } from '../../../types/trioTypes'
 
-import { useTrioNormalizerStore2 } from './trioNormalizer2'
+import { useTrioNormalizerStore } from './trioNormalizer'
 import { useRoutesMainStore } from '../routes/routesMain'
 import { useTaggerStore } from './tagger'
 import { useFilterStore } from './filter'
 
 export const useTrioStore = defineStore('trio', () => {
-  const { normalizeTrio2 } = useTrioNormalizerStore2()
+  const { normalizeTrio2 } = useTrioNormalizerStore()
   const { current } = storeToRefs(useRoutesMainStore())
 
   const trio = ref<TTrio>({ categories: [], groupsObj: {}, paramsObj: {} })

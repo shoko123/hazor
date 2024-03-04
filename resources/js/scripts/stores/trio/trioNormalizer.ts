@@ -15,7 +15,7 @@ import type {
   TApiParamNameAndColumn,
 } from '@/js/types/trioTypes'
 
-export const useTrioNormalizerStore2 = defineStore('trioNormalize2', () => {
+export const useTrioNormalizerStore = defineStore('trioNormalize', () => {
   const { mediaCollectionNames } = storeToRefs(useMediaStore())
 
   let categories: TCategoriesArray = []
@@ -96,9 +96,9 @@ export const useTrioNormalizerStore2 = defineStore('trioNormalize2', () => {
   }
 
   function saveGroupAndParams(grpKey: string) {
-    console.log(
-      `saveGroup() group: ${JSON.stringify(tmpGroup, null, 2)} params: ${JSON.stringify(tmpParams, null, 2)}`,
-    )
+    // console.log(
+    //   `saveGroup() group: ${JSON.stringify(tmpGroup, null, 2)} params: ${JSON.stringify(tmpParams, null, 2)}`,
+    // )
     const grpToSave: TGroupUnion = {
       ...(tmpGroup as TGroupTmpUnion),
       paramKeys: <string[]>[],
