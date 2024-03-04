@@ -3,39 +3,39 @@ type TrioSourceName = 'Item' | 'New' | 'Filter'
 type TAllGroups = {
   CV: {
     apiGroup: TApiGroupColumn<string[]>
-    group: TGroupColumn
+    group: TGroupColumnTmp
   }
   CR: {
     apiGroup: TApiGroupColumn<string[]>
-    group: TGroupColumn
+    group: TGroupColumnTmp
   }
   CB: {
     apiGroup: TApiGroupColumn<string[]>
-    group: TGroupColumn
+    group: TGroupColumnTmp
   }
   CL: {
     apiGroup: TApiGroupColumn<TApiParamNameAndId[]>
-    group: TGroupColumn
+    group: TGroupColumnTmp
   }
   CS: {
     apiGroup: TApiGroupColumn<null>
-    group: TGroupColumn
+    group: TGroupColumnTmp
   }
   TM: {
     apiGroup: TApiGroupTag<TApiParamNameAndId[]>
-    group: TGroupTag
+    group: TGroupTagTmp
   }
   TG: {
     apiGroup: TApiGroupTag<TApiParamNameAndId[]>
-    group: TGroupTag
+    group: TGroupTagTmp
   }
   MD: {
     apiGroup: TApiGroupBase<null>
-    group: TGroupBase
+    group: TGroupBaseTmp
   }
   OB: {
     apiGroup: TApiGroupBase<TApiParamNameAndColumn[]>
-    group: TGroupColumn
+    group: TGroupColumnTmp
   }
 }
 
@@ -75,10 +75,7 @@ type TParam = TParamTmp & {
   groupKey: string
 }
 
-type AddTrioFields<T> = T & {
-  categoryIndex: number
-  paramKeys: string[]
-}
+//"Tmp" ending is for group fields prior to adding the trio "keep track" mechanisms (categoryIndex & paramKeys).
 
 type TGroupBaseTmp = {
   label: string
@@ -96,7 +93,10 @@ type TGroupColumnTmp = TGroupBaseTmp & {
   dependency: string[]
 }
 
-type TGroupTmpUnion = TGroupBaseTmp | TGroupTagTmp | TGroupColumnTmp
+type AddTrioFields<T> = T & {
+  categoryIndex: number
+  paramKeys: string[]
+}
 
 type TGroupBase = AddTrioFields<TGroupBaseTmp>
 type TGroupTag = AddTrioFields<TGroupTagTmp>
@@ -112,8 +112,8 @@ type GroupUnionA<T extends object> = {
 type GroupUnionB = GroupUnionA<TAllGroups>
 type TCodeUnion = keyof TAllGroups
 type TGroupApiUnion = AddGroupTypeCode<GroupUnionB['apiGroup'], GroupUnionB['group_type_code']>
-type TGroupUnion = AddCode<GroupUnionB['group'], GroupUnionB['group_type_code']>
-
+type TGroupTmpUnion = AddCode<GroupUnionB['group'], GroupUnionB['group_type_code']>
+type TGroupUnion = AddTrioFields<TGroupTmpUnion>
 type TAllByCode<Code extends TCodeUnion> = TAllGroups[Code]
 type TApiGroupByCode<Code extends TCodeUnion> = TAllByCode<Code>['apiGroup']
 
