@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import type { TFieldsUnion } from '@/js/types/moduleTypes'
-import type { TGroupLocalColumn } from '@/js/types/trioTypes'
+import type { TGroupColumn } from '@/js/types/trioTypes'
 import { useXhrStore } from '../xhr'
 import { useItemStore } from '../item'
 import { useTrioStore } from './trio'
@@ -49,7 +49,7 @@ export const useTaggerStore = defineStore('tagger', () => {
     }
 
     selectedNewItemParams.value.forEach((paramKey) => {
-      const group = <TGroupLocalColumn>trio.value.groupsObj[trio.value.paramsObj[paramKey].groupKey]
+      const group = <TGroupColumn>trio.value.groupsObj[trio.value.paramsObj[paramKey].groupKey]
       switch (group.code) {
         case 'TG':
           payload.ids.push(<number>trio.value.paramsObj[paramKey].extra)

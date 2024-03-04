@@ -1,8 +1,8 @@
-// stores/trio.js
+// stores/trio.jsTGroupBase
 import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import type { LocationQuery } from 'vue-router'
-import type { TGroupLocalBase, TGroupLocalColumn } from '@/js/types/trioTypes'
+import type { TGroupBase, TGroupColumn } from '@/js/types/trioTypes'
 import type { TApiFilters } from '@/js/types/routesTypes'
 import type { IStringObject } from '@/js/types/generalTypes'
 import type { TApiArrayMain } from '@/js/types/collectionTypes'
@@ -64,12 +64,12 @@ export const useFilterStore = defineStore('filter', () => {
         case 'CR':
           {
             const i = all.column_values.findIndex((x) => {
-              return x.column_name === (<TGroupLocalColumn>group).column_name
+              return x.column_name === (<TGroupColumn>group).column_name
             })
             if (i === -1) {
               //if new group, push the param's group into the groups array with itself as the first param
               all.column_values.push({
-                column_name: (<TGroupLocalColumn>group).column_name,
+                column_name: (<TGroupColumn>group).column_name,
                 vals: [param.text],
               })
             } else {
@@ -82,12 +82,12 @@ export const useFilterStore = defineStore('filter', () => {
         case 'CL':
           {
             const i = all.column_lookup_ids.findIndex((x) => {
-              return x.column_name === (<TGroupLocalColumn>group).column_name
+              return x.column_name === (<TGroupColumn>group).column_name
             })
             if (i === -1) {
               //if new group, push the param's group into the groups array with itself as the first param
               all.column_lookup_ids.push({
-                column_name: (<TGroupLocalColumn>group).column_name,
+                column_name: (<TGroupColumn>group).column_name,
                 vals: [<number>param.extra],
               })
             } else {
@@ -100,12 +100,12 @@ export const useFilterStore = defineStore('filter', () => {
         case 'CB':
           {
             const i = all.column_values.findIndex((x) => {
-              return x.column_name === (<TGroupLocalColumn>group).column_name
+              return x.column_name === (<TGroupColumn>group).column_name
             })
             if (i === -1) {
               //if new group, push the param's group into the groups array with itself as the first param
               all.column_values.push({
-                column_name: (<TGroupLocalColumn>group).column_name,
+                column_name: (<TGroupColumn>group).column_name,
                 vals: [<string>param.extra],
               })
             } else {
@@ -118,12 +118,12 @@ export const useFilterStore = defineStore('filter', () => {
         case 'CS':
           {
             const i = all.column_search.findIndex((x) => {
-              return x.column_name === (<TGroupLocalColumn>group).column_name
+              return x.column_name === (<TGroupColumn>group).column_name
             })
             if (i === -1) {
               //if new group, push the param's group into the groups array with itself as the first param
               all.column_search.push({
-                column_name: (<TGroupLocalColumn>group).column_name,
+                column_name: (<TGroupColumn>group).column_name,
                 vals: [param.text],
               })
             } else {
@@ -224,7 +224,7 @@ export const useFilterStore = defineStore('filter', () => {
   }
 
   function processUrlDefault(
-    group: TGroupLocalBase,
+    group: TGroupBase,
     paramTexts: string[],
   ): { success: true } | { success: false; message: string } {
     for (const x of paramTexts) {
@@ -241,7 +241,7 @@ export const useFilterStore = defineStore('filter', () => {
   }
 
   function processUrlOB(
-    group: TGroupLocalBase,
+    group: TGroupBase,
     paramTexts: string[],
   ): { success: true } | { success: false; message: string } {
     const selected: string[] = []
@@ -271,7 +271,7 @@ export const useFilterStore = defineStore('filter', () => {
   }
 
   function processUrlCS(
-    group: TGroupLocalBase,
+    group: TGroupBase,
     paramTexts: string[],
   ): { success: true } | { success: false; message: string } {
     if (paramTexts.length > 6) {
@@ -314,7 +314,7 @@ export const useFilterStore = defineStore('filter', () => {
   }
 
   const textSearchParamKeys = computed(() => {
-    return (<TGroupLocalBase>currentGroup.value).paramKeys
+    return (<TGroupBase>currentGroup.value).paramKeys
   })
 
   function searchTextChanged(index: number, val: string) {

@@ -5,18 +5,17 @@ import type {
   TApiTrio,
   TTrio,
   TGroupLabelToKey,
-  TGroupLocalTag,
+  TGroupTag,
   TApiParamNameAndColumn,
-  TGroupLocalBase,
+  TGroupBase,
 } from '../../../types/trioTypes'
-//import { useTrioNormalizerStore } from './trioNormalizer'
+
 import { useTrioNormalizerStore2 } from './trioNormalizer2'
 import { useRoutesMainStore } from '../routes/routesMain'
 import { useTaggerStore } from './tagger'
 import { useFilterStore } from './filter'
 
 export const useTrioStore = defineStore('trio', () => {
-  //const { normalizeTrio } = useTrioNormalizerStore()
   const { normalizeTrio2 } = useTrioNormalizerStore2()
   const { current } = storeToRefs(useRoutesMainStore())
 
@@ -80,7 +79,7 @@ export const useTrioStore = defineStore('trio', () => {
         case 'TM':
         case 'TG':
           required = false
-          multiple = (<TGroupLocalTag>group).multiple
+          multiple = (<TGroupTag>group).multiple
           break
         default:
           break
@@ -113,7 +112,7 @@ export const useTrioStore = defineStore('trio', () => {
     }
 
     if (['TM', 'TG', 'CL'].includes(g.code)) {
-      const tagGroup = <TGroupLocalTag>g
+      const tagGroup = <TGroupTag>g
       return (
         tagGroup.dependency.length === 0 ||
         tagGroup.dependency.some((x) => {
@@ -145,7 +144,7 @@ export const useTrioStore = defineStore('trio', () => {
     switch (group.code) {
       case 'TG':
       case 'TM':
-        if ((<TGroupLocalTag>group).multiple) {
+        if ((<TGroupTag>group).multiple) {
           if (isSelected) {
             unSelectParam(prmKey)
           } else {
@@ -275,7 +274,7 @@ export const useTrioStore = defineStore('trio', () => {
     if (trio.value.categories.length === 0) {
       return []
     }
-    const paramKeys = (<TGroupLocalBase>currentGroup.value).paramKeys
+    const paramKeys = (<TGroupBase>currentGroup.value).paramKeys
     return paramKeys.map((x) => {
       return { ...trio.value.paramsObj[x], selected: selected.value.includes(x), key: x }
     })
